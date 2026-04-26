@@ -1,0 +1,61 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  flex: 1;
+}
+
+.label {
+  font-size: $fs-small;
+  color: $color-text-secondary;
+  font-weight: $fw-medium;
+}
+
+.track {
+  width: 100%;
+  height: 6px;
+  background: $color-bg-input;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: var(--progress, 0%);
+  background: $gradient-accent;
+  border-radius: $radius-full;
+  transition: width $transition-slow;
+}
+
+.fillWarning {
+  background: linear-gradient(135deg, $color-warning, color-mix(in srgb, $color-warning, black 15%));
+}
+
+.fillDanger {
+  background: linear-gradient(135deg, $color-danger, $color-danger-hover);
+}
+
+.count {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  white-space: nowrap;
+
+  span {
+    color: $color-text-muted;
+    font-weight: $fw-regular;
+    font-size: $fs-small;
+  }
+}

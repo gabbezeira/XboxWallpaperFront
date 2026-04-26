@@ -1,0 +1,71 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page {
+  flex: 1;
+  padding: $spacing-2xl 0;
+  display: flex;
+  flex-direction: column;
+
+  @include respond-to(md) {
+    padding: $spacing-2xl 0;
+  }
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+  width: 100%;
+
+  @include respond-to(md) {
+    gap: $spacing-3xl;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+  }
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.subtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+}
+
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    padding: 0;
+  }
+}
+
+.overlayLoader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  @include flex-center;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  animation: fadeIn $transition-base ease-out;
+}

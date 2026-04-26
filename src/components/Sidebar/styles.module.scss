@@ -1,0 +1,216 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex: 0 0 $sidebar-width;
+  height: 100vh;
+  background: $color-bg-secondary;
+  border-right: 1px solid rgba($color-text-primary, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-xl $spacing-md;
+  z-index: 50;
+
+  @include respond-to(2xl) {
+    flex: 0 0 $sidebar-width-2xl;
+    padding: $spacing-xl $spacing-lg;
+  }
+
+  @include respond-to(4k) {
+    flex: 0 0 $sidebar-width-4k;
+    padding: $spacing-2xl $spacing-xl;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  color: $color-text-primary;
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  margin-bottom: $spacing-2xl;
+  padding: 0 $spacing-sm;
+  @include gamepad-focus;
+  border-radius: $radius-md;
+}
+
+.brandIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+
+  @include respond-to(2xl) {
+    width: 36px;
+    height: 36px;
+  }
+
+  @include respond-to(4k) {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  color: $color-text-secondary;
+  font-size: $fs-body;
+  font-family: inherit;
+  font-weight: $fw-medium;
+  border-radius: $radius-md;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all $transition-fast;
+  background: transparent;
+  position: relative;
+  @include touch-target;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  &:hover {
+    color: $color-text-primary;
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  &.active {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: $color-text-primary;
+    font-weight: $fw-semibold;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 18px;
+      background-color: $color-primary;
+      border-radius: 0 4px 4px 0;
+    }
+  }
+}
+
+.userSection {
+  margin-top: auto;
+  padding-top: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-full;
+  background-color: rgba($color-text-primary, 0.1);
+  @include flex-center;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  border: 1px solid rgba($color-text-primary, 0.2);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatarWithColor {
+  border: none;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userName {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  background-color: #fff;
+  color: #000;
+  font-size: 8px;
+  font-weight: $fw-bold;
+  border-radius: 2px;
+  width: fit-content;
+  letter-spacing: 0.5px;
+
+  @include respond-to(2xl) {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+
+  @include respond-to(4k) {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+}
+
+.btnLogin {
+  @include btn-primary;
+  width: 100%;
+}
+
+.btnLogout {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  color: $color-text-secondary;
+  font-size: $fs-small;
+  font-family: $font-primary;
+  font-weight: $fw-medium;
+  cursor: pointer;
+  transition: all $transition-fast;
+  width: 100%;
+  @include touch-target;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  &:hover {
+    color: #000;
+    background-color: #fff;
+    border-color: #fff;
+  }
+}

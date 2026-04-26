@@ -1,0 +1,114 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: $color-bg-main;
+  @include flex-center;
+  padding: $spacing-xl;
+  background-image: radial-gradient(circle at top right, rgba($color-primary, 0.15), transparent 50%),
+                    radial-gradient(circle at bottom left, rgba($color-primary, 0.05), transparent 50%);
+  overflow-y: auto;
+}
+
+.box {
+  width: 100%;
+  max-width: 440px;
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba($color-text-primary, 0.05);
+  border-radius: $radius-lg;
+  padding: $spacing-2xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.brand {
+  @include flex-center;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  .logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+  }
+
+  h1 {
+    font-size: $fs-title;
+    color: $color-text-primary;
+    font-weight: $fw-bold;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+
+  label {
+    font-size: $fs-body;
+    font-weight: $fw-semibold;
+    color: $color-text-secondary;
+  }
+
+  input {
+    padding: $spacing-sm $spacing-md;
+    background-color: $color-bg-main;
+    border: 1px solid rgba($color-text-primary, 0.1);
+    border-radius: $radius-md;
+    color: $color-text-primary;
+    font-size: $fs-body;
+    transition: all $transition-fast;
+    font-family: $font-primary;
+    @include gamepad-focus;
+
+    &::placeholder {
+      color: $color-text-muted;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+.error {
+  padding: $spacing-sm $spacing-md;
+  background: rgba($color-danger, 0.1);
+  border: 1px solid rgba($color-danger, 0.2);
+  border-radius: $radius-md;
+  color: $color-danger;
+  font-size: $fs-body;
+}
+
+.submitBtn {
+  @include btn-primary;
+  width: 100%;
+  padding: $spacing-md;
+}
+
+.loadingBox {
+  @include flex-center;
+  min-height: 300px;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba($color-text-primary, 0.1);
+  border-top-color: $color-primary;
+  border-radius: $radius-full;
+  animation: spin 1s linear infinite;
+}
+

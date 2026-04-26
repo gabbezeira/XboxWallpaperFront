@@ -1,0 +1,70 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+  animation: fadeIn 0.3s ease-out;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    padding: 0;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.btnBack {
+  @include flex-center;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  background-color: $color-bg-tertiary;
+  color: $color-text-primary;
+  border: 1px solid rgba($color-text-primary, 0.1);
+  cursor: pointer;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  &:hover {
+    background-color: $color-primary;
+    border-color: $color-primary;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-size: $fs-small;
+  color: $color-text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.empty {
+  padding: $spacing-3xl 0;
+  text-align: center;
+  color: $color-text-muted;
+  font-size: $fs-body;
+}

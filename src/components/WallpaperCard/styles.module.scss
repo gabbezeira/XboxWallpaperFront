@@ -1,0 +1,94 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.card {
+  position: relative;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 16 / 9;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  display: block;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  @include gamepad-focus;
+
+  &:hover,
+  &:focus-visible {
+    .image {
+      transform: scale(1.05);
+    }
+    .overlay {
+      opacity: 1;
+    }
+  }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform $transition-slow, opacity $transition-base;
+  opacity: 0;
+}
+
+.loaded {
+  opacity: 1;
+}
+
+.skeleton {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.02);
+  animation: pulse 1.5s infinite ease-in-out;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% { background-color: rgba(255, 255, 255, 0.02); }
+  50% { background-color: rgba(255, 255, 255, 0.08); }
+  100% { background-color: rgba(255, 255, 255, 0.02); }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba($color-bg-main, 0.9), transparent 50%);
+  opacity: 0;
+  transition: opacity $transition-base;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: $spacing-md;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.size {
+  font-size: $fs-small;
+  color: $color-text-secondary;
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-sm;
+  z-index: 20;
+}
+
+
+.btnDelete {
+  @include btn-ghost;
+  padding: $spacing-xs;
+  background-color: rgba($color-bg-secondary, 0.8);
+  color: $color-danger;
+
+  &:hover {
+    background-color: rgba($color-danger, 0.2);
+  }
+}

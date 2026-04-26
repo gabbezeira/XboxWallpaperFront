@@ -1,0 +1,70 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to(xl) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @include respond-to(2xl) {
+    grid-template-columns: repeat(5, 1fr);
+    gap: $spacing-lg;
+  }
+
+  @include respond-to(3xl) {
+    grid-template-columns: repeat(min(6, var(--max-columns, 6)), 1fr);
+  }
+
+  @include respond-to(4k) {
+    grid-template-columns: repeat(min(7, var(--max-columns, 7)), 1fr);
+    gap: $spacing-xl;
+  }
+}
+
+.empty {
+  grid-column: 1 / -1;
+  @include flex-center;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-4xl $spacing-xl;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: $radius-xl;
+  margin: $spacing-lg 0;
+}
+
+.emptyIcon {
+  color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  padding: $spacing-xl;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.emptyTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.emptyText {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  max-width: 400px;
+  line-height: 1.5;
+}

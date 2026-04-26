@@ -1,0 +1,127 @@
+@use 'variables' as *;
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == md {
+    @media (min-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) { @content; }
+  } @else if $breakpoint == 2xl {
+    @media (min-width: $breakpoint-2xl) { @content; }
+  } @else if $breakpoint == 3xl {
+    @media (min-width: $breakpoint-3xl) { @content; }
+  } @else if $breakpoint == 4k {
+    @media (min-width: $breakpoint-4k) { @content; }
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin glass-effect {
+  background: rgba(12, 12, 12, 0.7);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid $color-border;
+}
+
+@mixin gamepad-focus {
+  transition: all $transition-base;
+  outline: none;
+
+  &:focus-visible,
+  &.force-focus {
+    outline: 3px solid $color-primary;
+    outline-offset: 2px;
+    transform: scale(1.05);
+    z-index: 10;
+    position: relative;
+
+    @include respond-to(2xl) {
+      outline-width: 4px;
+      outline-offset: 4px;
+    }
+
+    @include respond-to(4k) {
+      outline-width: 5px;
+      outline-offset: 6px;
+    }
+  }
+}
+
+@mixin touch-target {
+  min-width: $touch-target-min;
+  min-height: $touch-target-min;
+
+  @include respond-to(2xl) {
+    min-width: 56px;
+    min-height: 56px;
+  }
+
+  @include respond-to(4k) {
+    min-width: 64px;
+    min-height: 64px;
+  }
+}
+
+@mixin btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-lg;
+  font-family: $font-primary;
+  font-weight: $fw-semibold;
+  font-size: $fs-body;
+  cursor: pointer;
+  border: none;
+  @include touch-target;
+  @include gamepad-focus;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+@mixin btn-primary {
+  @include btn-base;
+  background-color: $color-primary;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-hover;
+  }
+}
+
+@mixin btn-secondary {
+  @include btn-base;
+  background-color: $color-bg-tertiary;
+  color: $color-text-primary;
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in srgb, $color-bg-tertiary, white 5%);
+  }
+}
+
+@mixin btn-ghost {
+  @include btn-base;
+  background-color: transparent;
+  color: $color-text-primary;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}

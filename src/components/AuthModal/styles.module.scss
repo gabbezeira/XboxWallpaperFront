@@ -1,0 +1,184 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba($color-bg-main, 0.8);
+  backdrop-filter: blur(8px);
+  @include flex-center;
+  animation: fadeIn $transition-fast forwards;
+}
+
+.modal {
+  width: 90%;
+  max-width: 440px;
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba($color-text-primary, 0.05);
+  border-radius: $radius-lg;
+  padding: $spacing-2xl;
+  animation: scaleIn $transition-base forwards;
+  position: relative;
+
+  @include respond-to(2xl) {
+    max-width: 520px;
+    padding: $spacing-3xl;
+  }
+
+  @include respond-to(4k) {
+    max-width: 640px;
+    padding: $spacing-4xl;
+  }
+}
+
+.close {
+  position: absolute;
+  top: $spacing-md;
+  right: $spacing-md;
+  width: 36px;
+  height: 36px;
+  @include flex-center;
+  color: $color-text-muted;
+  background: transparent;
+  border-radius: $radius-full;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  &:hover {
+    color: $color-text-primary;
+    background: rgba($color-text-primary, 0.05);
+  }
+
+  @include respond-to(2xl) {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.subtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xl;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-secondary;
+}
+
+.input {
+  padding: $spacing-sm $spacing-md;
+  background-color: $color-bg-main;
+  border: 1px solid rgba($color-text-primary, 0.1);
+  border-radius: $radius-md;
+  color: $color-text-primary;
+  font-size: $fs-body;
+  transition: all $transition-fast;
+  font-family: $font-primary;
+  @include touch-target;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+    outline-offset: 0;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+.btnSubmit {
+  @include btn-primary;
+  width: 100%;
+  padding: $spacing-md;
+  margin-top: $spacing-sm;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin: $spacing-md 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba($color-text-primary, 0.1);
+  }
+
+  span {
+    font-size: $fs-small;
+    color: $color-text-muted;
+  }
+}
+
+.btnMicrosoft {
+  @include btn-secondary;
+  width: 100%;
+  padding: $spacing-md;
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(248, 249, 250, 0.1);
+  color: $color-text-primary;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.toggle {
+  text-align: center;
+  margin-top: $spacing-xl;
+  font-size: $fs-body;
+  color: $color-text-muted;
+
+  button {
+    background: transparent;
+    border: none;
+    color: $color-primary;
+    font-weight: $fw-semibold;
+    margin-left: $spacing-xs;
+    border-radius: $radius-md;
+    padding: $spacing-xs $spacing-sm;
+    @include gamepad-focus;
+
+    &:focus-visible {
+      transform: none;
+    }
+  }
+}
+
+.error {
+  padding: $spacing-sm $spacing-md;
+  background: rgba($color-danger, 0.1);
+  border: 1px solid rgba($color-danger, 0.2);
+  border-radius: $radius-md;
+  color: $color-danger;
+  font-size: $fs-body;
+}

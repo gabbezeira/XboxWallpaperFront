@@ -1,0 +1,171 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page {
+  flex: 1;
+  padding: $spacing-2xl 0;
+  display: flex;
+  flex-direction: column;
+
+  @include respond-to(md) {
+    padding: $spacing-2xl 0;
+  }
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3xl;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.subtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+}
+
+.mobileSearch {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid $color-border;
+  border-radius: $radius-full;
+  padding: 0 $spacing-md;
+  height: 44px;
+  transition: border-color $transition-fast;
+
+  @include respond-to(md) {
+    display: none;
+  }
+
+  &:focus-within {
+    border-color: $color-primary;
+  }
+}
+
+.searchIcon {
+  color: $color-text-muted;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: $color-text-primary;
+  font-family: $font-primary;
+  font-size: $fs-body;
+  width: 100%;
+  outline: none;
+
+  &::placeholder {
+    color: $color-text-secondary;
+  }
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    padding: 0;
+  }
+}
+
+.categories {
+  display: flex;
+  gap: $spacing-sm;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.categoryBtn {
+  padding: $spacing-sm $spacing-lg;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid $color-border;
+  border-radius: $radius-full;
+  color: $color-text-secondary;
+  font-size: $fs-body;
+  font-family: $font-primary;
+  font-weight: $fw-medium;
+  cursor: pointer;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+  white-space: nowrap;
+  @include touch-target;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: $color-text-primary;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &.active {
+    background-color: rgba($color-primary, 0.15);
+    border-color: $color-primary;
+    color: $color-primary;
+    font-weight: $fw-semibold;
+  }
+}
+
+.resultsInfo {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  padding: 0 $spacing-md;
+
+  @include respond-to(md) {
+    padding: 0 $spacing-xl;
+  }
+
+  strong {
+    color: $color-primary;
+    font-weight: $fw-semibold;
+  }
+}
+
+.empty {
+  @include flex-center;
+  flex: 1;
+  min-height: 200px;
+  color: $color-text-secondary;
+  font-size: $fs-body;
+}

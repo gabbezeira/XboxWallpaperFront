@@ -1,0 +1,205 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp($spacing-sm, 1.5vw, $spacing-md);
+
+  @include respond-to(2xl) {
+    gap: clamp($spacing-md, 1.2vw, $spacing-lg);
+  }
+
+  @include respond-to(4k) {
+    gap: $spacing-xl;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.title {
+  font-size: clamp(1rem, 0.7rem + 0.9vw, 1.4rem);
+  font-weight: $fw-bold;
+  line-height: 1.2;
+  color: $color-text-primary;
+
+  @include respond-to(md) {
+    font-size: clamp(1.05rem, 0.8rem + 0.7vw, 1.5rem);
+  }
+
+  @include respond-to(2xl) {
+    font-size: clamp(1.1rem, 0.75rem + 0.5vw, 1.75rem);
+  }
+
+  @include respond-to(4k) {
+    font-size: clamp(1.25rem, 0.6rem + 0.45vw, 2.25rem);
+  }
+}
+
+.btnVerTudo {
+  background: transparent;
+  border: none;
+  color: $color-text-secondary;
+  font-size: clamp(0.7rem, 0.5rem + 0.4vw, 0.8rem);
+  font-weight: $fw-bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: $spacing-xs;
+  @include touch-target;
+  transition: color $transition-fast;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  @include respond-to(2xl) {
+    font-size: clamp(0.8rem, 0.5rem + 0.3vw, 0.95rem);
+    padding: $spacing-sm;
+  }
+
+  @include respond-to(4k) {
+    font-size: clamp(0.9rem, 0.45rem + 0.25vw, 1.1rem);
+  }
+
+  &:hover {
+    color: $color-text-primary;
+  }
+}
+
+.sliderWrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.grid {
+  display: flex;
+  gap: clamp($spacing-sm, 1.2vw, $spacing-md);
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  padding-bottom: $spacing-sm;
+
+  @include respond-to(2xl) {
+    gap: $spacing-md;
+  }
+
+  @include respond-to(4k) {
+    gap: $spacing-lg;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.item {
+  flex: 0 0 calc(80vw - 32px);
+  scroll-snap-align: start;
+
+  @include respond-to(md) {
+    flex: 0 0 calc(33.333% - $spacing-md);
+  }
+
+  @include respond-to(lg) {
+    flex: 0 0 calc(25% - $spacing-md);
+  }
+
+  @include respond-to(xl) {
+    flex: 0 0 calc(20% - $spacing-md);
+  }
+
+  @include respond-to(2xl) {
+    flex: 0 0 calc(16.666% - $spacing-md);
+  }
+
+  @include respond-to(3xl) {
+    flex: 0 0 calc(16.666% - $spacing-md);
+  }
+
+  @include respond-to(4k) {
+    flex: 0 0 calc(20% - $spacing-md);
+  }
+}
+
+.skeletonCard {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: $radius-md;
+  background: linear-gradient(90deg, $color-bg-secondary 25%, $color-bg-tertiary 50%, $color-bg-secondary 75%);
+  background-size: 200% 100%;
+  animation: loadingPulse 0.8s infinite;
+}
+
+@keyframes loadingPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.navBtn {
+  display: none;
+
+  @include respond-to(md) {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    @include flex-center;
+    background-color: rgba($color-bg-secondary, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: $radius-full;
+    color: $color-text-primary;
+    z-index: 10;
+    cursor: pointer;
+    border: 1px solid rgba($color-text-primary, 0.1);
+    @include gamepad-focus;
+
+    &:focus-visible {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    &:hover {
+      background-color: $color-primary;
+      border-color: $color-primary;
+    }
+
+    @include respond-to(3xl) {
+      width: 56px;
+      height: 56px;
+    }
+
+    @include respond-to(4k) {
+      width: 64px;
+      height: 64px;
+    }
+  }
+}
+
+.prevBtn {
+  left: $spacing-sm;
+}
+
+.nextBtn {
+  right: $spacing-sm;
+}
+
+.emptyContainer {
+  width: 100%;
+  min-height: 120px;
+  @include flex-center;
+}
+
+.emptyText {
+  font-size: $fs-body;
+  color: $color-text-muted;
+}

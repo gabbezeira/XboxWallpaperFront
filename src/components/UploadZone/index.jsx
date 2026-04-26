@@ -1,0 +1,280 @@
+import { useState, useRef } from 'react'
+import { UploadCloud, Ban, X } from 'lucide-react'
+import { useUpload } from '../../hooks/useUpload'
+import { useAuth } from '../../hooks/useAuth'
+import styles from './styles.module.scss'
+
+const SUGGESTED_GAMES = [
+  'Halo Infinite', 'Forza Horizon 5', 'Gears 5', 'Minecraft', 
+  'Starfield', 'Sea of Thieves', 'Cyberpunk 2077', 'Elden Ring',
+  'Grounded', 'Redfall', 'Hi-Fi RUSH', 'Hellblade II'
+]
+
+const SUGGESTED_TAGS = [
+  'Halo', 'Forza', 'Gears', 'Minecraft', 'Starfield', 
+  'Dark', 'Abstract', 'Nature', 'Minimal', 'Retro', 'Neon', 'Space'
+]
+
+export default function UploadZone({ onUploadComplete }) {
+  const { upload, uploading, progress, error } = useUpload()
+  const { profile } = useAuth()
+  const [dragging, setDragging] = useState(false)
+  const [localError, setLocalError] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(null)
+  const [title, setTitle] = useState('')
+  const [game, setGame] = useState('')
+  const [tags, setTags] = useState([])
+  const [tagInput, setTagInput] = useState('')
+  
+  const [showGameSuggestions, setShowGameSuggestions] = useState(false)
+  const [showTagSuggestions, setShowTagSuggestions] = useState(false)
+  const inputRef = useRef(null)
+
+  const isQuotaFull = profile && profile.imageCount >= profile.maxImages
+
+  const handleSelectFile = (file) => {
+    setLocalError(null)
+
+    const isImage = file.type?.startsWith('image/') || file.name?.match(/\.(jpg|jpeg|png|webp|gif)$/i)
+    if (!isImage) {
+      setLocalError('Apenas imagens são permitidas')
+      return
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      setLocalError('Imagem muito grande (máx. 20 MB)')
+      return
+    }
+
+    setSelectedFile(file)
+    setPreviewUrl(URL.createObjectURL(file))
+  }
+
+  const handleSubmit = async () => {
+    if (!selectedFile) return
+
+    try {
+      await upload(selectedFile, { title: title || null, game: game || null, tags })
+      setSelectedFile(null)
+      setPreviewUrl(null)
+      setTitle('')
+      setGame('')
+      setTags([])
+      if (onUploadComplete) onUploadComplete()
+    } catch (err) {
+      setLocalError(err.message)
+    }
+  }
+
+  const handleCancel = () => {
+    setSelectedFile(null)
+    setPreviewUrl(null)
+    setTitle('')
+    setGame('')
+    setTags([])
+    setLocalError(null)
+  }
+
+  const addTag = (tag) => {
+    const cleaned = tag.trim()
+    if (cleaned && !tags.includes(cleaned) && tags.length < 5) {
+      setTags(prev => [...prev, cleaned])
+    }
+    setTagInput('')
+    setShowTagSuggestions(false)
+  }
+
+  const handleGameSelect = (selectedGame) => {
+    setGame(selectedGame)
+    setShowGameSuggestions(false)
+    addTag(selectedGame)
+  }
+
+  const removeTag = (tag) => {
+    setTags(tags.filter(t => t !== tag))
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    setDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file) {
+      handleSelectFile(file)
+    }
+  }
+
+  const handleChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      handleSelectFile(file)
+    }
+  }
+
+  const filteredGames = SUGGESTED_GAMES.filter(g => g.toLowerCase().includes(game.toLowerCase()))
+  const filteredTags = SUGGESTED_TAGS.filter(t => t.toLowerCase().includes(tagInput.toLowerCase()) && !tags.includes(t))
+
+  if (uploading) {
+    return (
+      <div className={styles.zone}>
+        <div className={styles.uploading}>
+          <div className={styles.spinner} />
+          <span className={styles.progressText}>{progress}</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (selectedFile && previewUrl) {
+    return (
+      <div className={styles.formContainer}>
+        <div className={styles.previewRow}>
+          <img src={previewUrl} alt="Preview" className={styles.preview} />
+          <div className={styles.formFields}>
+            <input
+              type="text"
+              placeholder="Nome do wallpaper"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className={styles.fieldInput}
+            />
+            
+            <div className={styles.inputWrapper}>
+              <input
+                type="text"
+                placeholder="Jogo (ex: Halo Infinite)"
+                value={game}
+                onChange={(e) => {
+                  setGame(e.target.value)
+                  setShowGameSuggestions(true)
+                }}
+                onFocus={() => setShowGameSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowGameSuggestions(false), 200)}
+                className={styles.fieldInput}
+              />
+              {showGameSuggestions && filteredGames.length > 0 && (
+                <div className={styles.dropdownList}>
+                  {filteredGames.map(g => (
+                    <button 
+                      key={g} 
+                      className={styles.dropdownItem} 
+                      onClick={() => handleGameSelect(g)}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className={styles.tagSection}>
+              <div className={styles.inputWrapper}>
+                <input
+                  type="text"
+                  placeholder="Adicionar tag..."
+                  value={tagInput}
+                  onChange={(e) => {
+                    setTagInput(e.target.value)
+                    setShowTagSuggestions(true)
+                  }}
+                  onFocus={() => setShowTagSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowTagSuggestions(false), 200)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addTag(tagInput)
+                    }
+                  }}
+                  className={styles.fieldInput}
+                />
+                {showTagSuggestions && filteredTags.length > 0 && (
+                  <div className={styles.dropdownList}>
+                    {filteredTags.map(t => (
+                      <button 
+                        key={t} 
+                        className={styles.dropdownItem} 
+                        onClick={() => addTag(t)}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {tags.length > 0 && (
+                <div className={styles.selectedTags}>
+                  {tags.map(tag => (
+                    <span key={tag} className={styles.tag}>
+                      {tag}
+                      <button className={styles.tagRemove} onClick={() => removeTag(tag)}>
+                        <X size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className={styles.formActions}>
+          <button className={styles.btnCancel} onClick={handleCancel}>Cancelar</button>
+          <button className={styles.btnSubmit} onClick={handleSubmit}>Enviar Wallpaper</button>
+        </div>
+        {(localError || error) && (
+          <div className={styles.error}>{localError || error}</div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div
+        className={`${styles.zone} ${dragging ? styles.zoneDragging : ''} ${isQuotaFull ? styles.zoneDisabled : ''}`}
+        onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={handleDrop}
+        onClick={() => !isQuotaFull && inputRef.current?.click()}
+        role="button"
+        tabIndex={isQuotaFull ? -1 : 0}
+        onKeyDown={(e) => e.key === 'Enter' && !isQuotaFull && inputRef.current?.click()}
+      >
+        <div className={styles.icon}>
+          {isQuotaFull ? <Ban size={48} /> : <UploadCloud size={48} />}
+        </div>
+        <div className={styles.title}>
+          {isQuotaFull
+            ? 'Limite de imagens atingido'
+            : 'Arraste uma imagem ou clique para enviar'}
+        </div>
+        <div className={styles.subtitle}>
+          {isQuotaFull
+            ? `Você já tem ${profile.maxImages} imagens. Delete alguma para enviar novas.`
+            : 'Sua imagem será processada para garantir a melhor qualidade (máx 20MB)'}
+        </div>
+        <div className={styles.formats}>
+          <span className={styles.badge}>JPG</span>
+          <span className={styles.badge}>PNG</span>
+          <span className={styles.badge}>WebP</span>
+          <span className={styles.badge}>Máx 20 MB</span>
+        </div>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className={styles.input}
+          onChange={handleChange}
+          onClick={(e) => { 
+            e.stopPropagation()
+            e.target.value = null 
+          }}
+          disabled={isQuotaFull}
+          tabIndex={-1}
+        />
+      </div>
+      {(localError || error) && (
+        <div className={styles.error}>{localError || error}</div>
+      )}
+    </div>
+  )
+}

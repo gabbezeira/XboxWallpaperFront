@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { api } from '../services/api'
+import { handleAuthRedirectResult } from '../services/auth'
 
 export const AuthContext = createContext(null)
 
@@ -58,6 +59,9 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    // Processa o resultado do redirecionamento do Microsoft SignIn (necessário para PWA/Gamepad)
+    handleAuthRedirectResult().catch(console.error)
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser)
 

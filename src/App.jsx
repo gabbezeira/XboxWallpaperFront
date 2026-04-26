@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
+import useGamepad from './hooks/useGamepad'
 import { AuthProvider } from './contexts/AuthContext'
 import { FavoritesProvider } from './contexts/FavoritesContext'
 import Layout from './components/Layout'
@@ -18,7 +19,7 @@ import AdminRoute from './components/AdminRoute'
 
 function AppRoutes() {
   const [showAuthModal, setShowAuthModal] = useState(false)
-  //force
+  useGamepad()
   return (
     <>
       <Routes>

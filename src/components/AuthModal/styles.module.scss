@@ -5,30 +5,34 @@
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba($color-bg-main, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(#000, 0.4); /* Backdrop mais claro */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   @include flex-center;
   animation: fadeIn $transition-fast forwards;
+  padding: $spacing-xl;
 }
 
 .modal {
   width: 90%;
-  max-width: 440px;
+  max-width: 400px;
   background-color: $color-bg-secondary;
-  border: 1px solid rgba($color-text-primary, 0.05);
-  border-radius: $radius-lg;
-  padding: $spacing-2xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
   animation: scaleIn $transition-base forwards;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
 
-  @include respond-to(2xl) {
-    max-width: 520px;
-    padding: $spacing-3xl;
+  @include respond-to(md) {
+    padding: $spacing-2xl;
   }
 
-  @include respond-to(4k) {
-    max-width: 640px;
-    padding: $spacing-4xl;
+  @include respond-to(2xl) {
+    max-width: 480px;
+    padding: $spacing-3xl;
   }
 }
 
@@ -36,26 +40,44 @@
   position: absolute;
   top: $spacing-md;
   right: $spacing-md;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   @include flex-center;
   color: $color-text-muted;
   background: transparent;
   border-radius: $radius-full;
   @include gamepad-focus;
+  transition: background-color $transition-fast;
 
   &:focus-visible {
     transform: none;
+    position: absolute !important;
   }
 
   &:hover {
     color: $color-text-primary;
-    background: rgba($color-text-primary, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
   }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 
   @include respond-to(2xl) {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
   }
 }
 
@@ -63,13 +85,12 @@
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-text-primary;
-  margin-bottom: $spacing-xs;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   font-size: $fs-body;
   color: $color-text-secondary;
-  margin-bottom: $spacing-xl;
 }
 
 .form {
@@ -85,19 +106,20 @@
 }
 
 .label {
-  font-size: $fs-body;
+  font-size: $fs-small;
   font-weight: $fw-semibold;
   color: $color-text-secondary;
+  margin-left: 4px;
 }
 
 .input {
-  padding: $spacing-sm $spacing-md;
+  padding: $spacing-md;
   background-color: $color-bg-main;
-  border: 1px solid rgba($color-text-primary, 0.1);
-  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
   color: $color-text-primary;
   font-size: $fs-body;
-  transition: all $transition-fast;
+  transition: border-color $transition-fast;
   font-family: $font-primary;
   @include touch-target;
   @include gamepad-focus;
@@ -105,6 +127,10 @@
   &:focus-visible {
     transform: none;
     outline-offset: 0;
+  }
+
+  &:focus {
+    border-color: $color-primary;
   }
 
   &::placeholder {
@@ -117,59 +143,91 @@
   width: 100%;
   padding: $spacing-md;
   margin-top: $spacing-sm;
+  font-size: $fs-body;
+  border-radius: $radius-lg;
+}
+
+.btnLoading {
+  @include flex-center;
+  gap: $spacing-sm;
+}
+
+.btnSpinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: $radius-full;
+  animation: spin 0.6s linear infinite;
 }
 
 .divider {
   display: flex;
   align-items: center;
   gap: $spacing-md;
-  margin: $spacing-md 0;
+  margin: $spacing-sm 0;
 
   &::before,
   &::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba($color-text-primary, 0.1);
+    background: $color-border;
   }
 
   span {
     font-size: $fs-small;
     color: $color-text-muted;
+    font-weight: $fw-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 }
 
 .btnMicrosoft {
-  @include btn-secondary;
+  @include btn-base;
   width: 100%;
   padding: $spacing-md;
-  background-color: $color-bg-secondary;
-  border: 1px solid rgba(248, 249, 250, 0.1);
-  color: $color-text-primary;
-  
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  color: #000000;
+  gap: $spacing-md;
+  font-size: $fs-body;
+  border-radius: $radius-lg;
+  font-weight: $fw-bold;
+  transition: all $transition-fast;
+
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: #e6e6e6;
+    border-color: #e6e6e6;
   }
 }
 
 .toggle {
   text-align: center;
-  margin-top: $spacing-xl;
   font-size: $fs-body;
   color: $color-text-muted;
+  margin-top: $spacing-sm;
 
   button {
     background: transparent;
     border: none;
     color: $color-primary;
     font-weight: $fw-semibold;
+    font-size: $fs-body;
     margin-left: $spacing-xs;
     border-radius: $radius-md;
     padding: $spacing-xs $spacing-sm;
     @include gamepad-focus;
+    transition: color $transition-fast;
 
     &:focus-visible {
       transform: none;
+    }
+
+    &:hover {
+      color: $color-primary-hover;
+      text-decoration: underline;
     }
   }
 }
@@ -181,4 +239,6 @@
   border-radius: $radius-md;
   color: $color-danger;
   font-size: $fs-body;
+  text-align: center;
+  font-weight: $fw-medium;
 }

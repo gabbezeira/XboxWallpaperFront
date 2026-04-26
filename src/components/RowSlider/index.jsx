@@ -24,8 +24,21 @@ export default function RowSlider({ title, items, loading, onVerTudo, onView }) 
     const ro = new ResizeObserver(checkScroll)
     ro.observe(el)
 
+    const handleFocusIn = (e) => {
+      const focused = e.target.closest(`.${styles.item}`)
+      if (!focused) return
+      const gridRect = el.getBoundingClientRect()
+      const itemRect = focused.getBoundingClientRect()
+      if (itemRect.left < gridRect.left || itemRect.right > gridRect.right) {
+        const scrollTarget = itemRect.left - gridRect.left + el.scrollLeft - (gridRect.width / 2) + (itemRect.width / 2)
+        el.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' })
+      }
+    }
+    el.addEventListener('focusin', handleFocusIn)
+
     return () => {
       el.removeEventListener('scroll', checkScroll)
+      el.removeEventListener('focusin', handleFocusIn)
       ro.disconnect()
     }
   }, [checkScroll, items])

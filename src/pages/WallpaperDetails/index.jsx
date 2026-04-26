@@ -167,7 +167,14 @@ export default function WallpaperDetailsPage() {
           <button type="button" className={styles.btnBack} onClick={() => navigate(-1)} aria-label="Voltar">
             <ArrowLeft size={24} />
           </button>
-          <img src={imageSrc} alt={wallpaper.title || 'Wallpaper'} className={styles.image} />
+          <button
+            type="button"
+            className={styles.imageBtn}
+            onClick={handleSetWallpaper}
+            aria-label="Ver em tela cheia"
+          >
+            <img src={imageSrc} alt={wallpaper.title || 'Wallpaper'} className={styles.image} />
+          </button>
           <div className={styles.gradient} />
         </div>
 

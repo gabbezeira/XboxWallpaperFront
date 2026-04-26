@@ -58,6 +58,7 @@ export default function AuthModal({ onClose }) {
       await refreshProfile()
       onClose()
     } catch (err) {
+      console.error('Erro no login da Microsoft:', err)
       if (err.code !== 'auth/popup-closed-by-user') {
         setError('Erro ao entrar com Microsoft')
       }

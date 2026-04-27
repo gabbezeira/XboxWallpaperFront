@@ -116,23 +116,25 @@ async function uploadProfilePhotoToBackend(user, blob, contentType) {
   return data.photoURL || null
 }
 
-export const signInWithMicrosoft = async () => {
-  try {
-    const result = await signInWithPopup(auth, microsoftProvider)
-    return await processMicrosoftLoginResult(result)
-  } catch (error) {
-    if (error.code?.includes('popup')) {
-      console.warn('Popup bloqueado. Usando Fallback de Redirect...')
-      try {
-        await signInWithRedirect(auth, microsoftProvider)
-      } catch (redirectError) {
-        console.error('Redirect também falhou:', redirectError)
-        throw redirectError
+export const signInWithMicrosoft = () => {
+  // Dispara o popup sincronamente sem NENHUM delay de microtask (para o Chrome/Arc não bloquear o clique do mouse)
+  const popupPromise = signInWithPopup(auth, microsoftProvider)
+
+  return popupPromise
+    .then((result) => processMicrosoftLoginResult(result))
+    .catch((error) => {
+      if (error.code?.includes('popup')) {
+        console.warn('Popup bloqueado. Usando Fallback de Redirect...')
+        try {
+          // O redirect não sofre bloqueio pois não abre janelas
+          return signInWithRedirect(auth, microsoftProvider).then(() => null)
+        } catch (redirectError) {
+          console.error('Redirect também falhou:', redirectError)
+          throw redirectError
+        }
       }
-      return null
-    }
-    throw error
-  }
+      throw error
+    })
 }
 
 export const handleAuthRedirectResult = async () => {

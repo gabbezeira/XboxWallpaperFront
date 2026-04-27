@@ -53,10 +53,21 @@ export default function AuthModal({ onClose }) {
   }
 
   const handleMicrosoft = () => {
-    signInWithMicrosoft().catch((err) => {
-      console.error('Erro no login da Microsoft:', err)
-      setError('Erro ao entrar com Microsoft')
-    })
+    signInWithMicrosoft()
+      .then(() => {
+        refreshProfile()
+          .then(() => onClose())
+          .catch(console.error)
+      })
+      .catch((err) => {
+        console.error('Erro no login da Microsoft:', err)
+        if (err.code === 'auth/popup-closed-by-user') return
+        if (err.code === 'auth/popup-blocked') {
+          setError('Popup bloqueado. Permita popups para este site.')
+          return
+        }
+        setError('Erro ao entrar com Microsoft')
+      })
   }
 
   return (

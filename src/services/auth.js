@@ -1,6 +1,5 @@
 import {
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   OAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -114,19 +113,9 @@ async function uploadProfilePhotoToBackend(user, blob, contentType) {
   return data.photoURL || null
 }
 
-export const signInWithMicrosoft = async () => {
-  await signInWithRedirect(auth, microsoftProvider)
-}
-
-export const handleAuthRedirectResult = async () => {
-  try {
-    const result = await getRedirectResult(auth)
-    if (!result) return null
-    return await processMicrosoftLoginResult(result)
-  } catch (error) {
-    console.error('Erro no handleAuthRedirectResult:', error)
-    throw error
-  }
+export const signInWithMicrosoft = () => {
+  return signInWithPopup(auth, microsoftProvider)
+    .then((result) => processMicrosoftLoginResult(result))
 }
 
 async function processMicrosoftLoginResult(result) {

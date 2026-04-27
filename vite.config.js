@@ -57,13 +57,5 @@ export default defineConfig({
         ]
       }
     })
-  ],
-  server: {
-    proxy: {
-      '/__': {
-        target: 'https://xboxwallpaper-734da.firebaseapp.com',
-        changeOrigin: true
-      }
-    }
-  }
+  ]
 })

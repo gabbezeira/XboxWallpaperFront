@@ -172,6 +172,7 @@ export default function WallpaperDetailsPage() {
             className={styles.imageBtn}
             onClick={handleSetWallpaper}
             aria-label="Ver em tela cheia"
+            tabIndex="-1"
           >
             <img src={imageSrc} alt={wallpaper.title || 'Wallpaper'} className={styles.image} />
           </button>

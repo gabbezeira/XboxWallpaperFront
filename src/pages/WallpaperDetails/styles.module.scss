@@ -57,12 +57,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  @include gamepad-focus;
-
-  &:focus-visible {
-    transform: none;
-    outline-offset: -3px;
-  }
+  outline: none;
 }
 
 .gradient {
@@ -90,10 +85,11 @@
   cursor: pointer;
   z-index: 10;
   transition: background-color $transition-fast;
-  @include gamepad-focus;
-
+  
   &:focus-visible {
-    transform: none;
+    outline: 2px solid #ffffff;
+    outline-offset: -2px;
+    background-color: rgba(#000, 0.8);
   }
 
   &:hover {

@@ -19,6 +19,14 @@ export default function AuthModal({ onClose }) {
     return () => { document.body.style.overflow = '' }
   }, [])
 
+  // Fecha o modal automaticamente ao logar
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user) {
+      onClose()
+    }
+  }, [user, onClose])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
@@ -56,11 +64,7 @@ export default function AuthModal({ onClose }) {
   const handleGoogle = () => {
     setError(null)
     setLoading(true)
-    signInWithGoogle().catch((err) => {
-      console.error('Erro no login Google:', err)
-      setError('Erro ao inicializar o login com o Google')
-      setLoading(false)
-    })
+    signInWithGoogle()
   }
 
   return (

@@ -73,12 +73,12 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <FavoritesProvider>
-        <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <FavoritesProvider>
           <AppRoutes />
-        </BrowserRouter>
-      </FavoritesProvider>
-    </AuthProvider>
+        </FavoritesProvider>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }

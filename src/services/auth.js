@@ -70,12 +70,15 @@ async function fetchGraphPhoto(accessToken) {
   return null
 }
 
-import { signInWithPopup } from 'firebase/auth'
-
 export const signInWithMicrosoft = async () => {
+  await signInWithRedirect(auth, microsoftProvider)
+}
+
+export const handleAuthRedirectResult = async () => {
   try {
-    const result = await signInWithPopup(auth, microsoftProvider)
-    
+    const result = await getRedirectResult(auth)
+    if (!result) return null
+
     const credential = OAuthProvider.credentialFromResult(result)
     const accessToken = credential?.accessToken
     const user = result.user
@@ -104,17 +107,18 @@ export const signInWithMicrosoft = async () => {
     // 2. Sincroniza com o backend PRIMEIRO (cria o usuário no banco de dados)
     await syncWithBackend(auth.currentUser)
 
-    // 3. Busca a foto do Graph API usando o token de acesso da Microsoft
+    // 3. AGORA que o usuário existe no backend, busca e faz upload da foto do Graph API
     const graphPhoto = await fetchGraphPhoto(accessToken)
     if (graphPhoto) {
       photoURL = graphPhoto
       await updateProfile(auth.currentUser, { photoURL })
       await auth.currentUser.reload()
+      // Opcional: sincronizar de novo, mas a rota de profile-photo já deve ter atualizado no backend
     }
 
     return auth.currentUser
   } catch (error) {
-    console.error('Erro no signInWithMicrosoft (Popup):', error)
+    console.error('Erro no handleAuthRedirectResult:', error)
     throw error
   }
 }

@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { api } from '../services/api'
+import { handleAuthRedirectResult } from '../services/auth'
 
 export const AuthContext = createContext(null)
 
@@ -59,6 +60,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let isMounted = true
+
+    handleAuthRedirectResult()
+      .then(async (resultUser) => {
+        if (resultUser && isMounted) {
+          await fetchProfile(resultUser)
+        }
+      })
+      .catch(console.warn)
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser)

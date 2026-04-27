@@ -65,28 +65,33 @@ export function AuthProvider({ children }) {
     isMountedRef.current = true
 
     // Intercepta o redirecionamento assim que o app carrega
-    handleAuthRedirectResult()
-      .then(async (resultUser) => {
+    const handleRedirect = async () => {
+      try {
+        const resultUser = await handleAuthRedirectResult()
         if (resultUser && isMountedRef.current) {
-          setUser(resultUser) // <--- ESTAVA FALTANDO ISSO!
+          setUser(resultUser)
           await fetchProfile(resultUser)
         }
-      })
-      .catch((err) => console.warn('Erro ao processar redirect do Auth:', err))
+      } catch (err) {
+        console.warn('Erro ao processar redirect do Auth:', err)
+      } finally {
+        if (isMountedRef.current) setLoading(false)
+      }
+    }
+
+    handleRedirect()
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (isMountedRef.current) setUser(firebaseUser)
-
-      if (firebaseUser) {
-        await fetchProfile(firebaseUser)
-      } else {
-        if (isMountedRef.current) {
+      if (isMountedRef.current) {
+        setUser(firebaseUser)
+        if (firebaseUser) {
+          await fetchProfile(firebaseUser)
+        } else {
           setProfile(null)
           setCachedAuth(null, null)
         }
+        setLoading(false)
       }
-
-      if (isMountedRef.current) setLoading(false)
     })
 
     return () => {

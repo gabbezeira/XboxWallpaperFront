@@ -66,6 +66,9 @@ export function AuthProvider({ children }) {
 
     // Intercepta o redirecionamento assim que o app carrega
     const handleRedirect = async () => {
+      // Pequeno delay para garantir que os cookies/storage foram processados pelo browser
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
       try {
         const resultUser = await handleAuthRedirectResult()
         if (resultUser && isMountedRef.current) {

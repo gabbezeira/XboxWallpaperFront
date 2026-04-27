@@ -74,7 +74,7 @@
 
 .sliderWrapper {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .grid {
@@ -86,7 +86,8 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
-  padding-bottom: $spacing-sm;
+  padding: $spacing-xs;
+  margin: -$spacing-xs;
 
   @include respond-to(2xl) {
     gap: $spacing-md;

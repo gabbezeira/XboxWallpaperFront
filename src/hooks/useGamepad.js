@@ -34,6 +34,7 @@ function getVisibleFocusables() {
     if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return false
     const rect = el.getBoundingClientRect()
     if (rect.width === 0 || rect.height === 0) return false
+    if (rect.top > window.innerHeight + 200 || rect.bottom < -200) return false
     return true
   })
 }

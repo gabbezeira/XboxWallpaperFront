@@ -13,21 +13,25 @@ export default function Collection() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
+
     const fetchCollection = async () => {
       try {
         setLoading(true)
         const response = await api.wallpapers.list({ tag, page: 1, limit: 100 })
-        setWallpapers(response.data || [])
+        if (isMounted) setWallpapers(response.data || [])
       } catch (error) {
-        console.error('Erro ao carregar coleção:', error)
+        if (isMounted) console.error('Erro ao carregar coleção:', error)
       } finally {
-        setLoading(false)
+        if (isMounted) setLoading(false)
       }
     }
 
     if (tag) {
       fetchCollection()
     }
+
+    return () => { isMounted = false }
   }, [tag])
 
   const handleViewDetails = (wallpaper) => {

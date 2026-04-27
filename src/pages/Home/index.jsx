@@ -59,29 +59,32 @@ export default function Home() {
   }
 
   useEffect(() => {
+    let isMounted = true
     const fetchHero = async () => {
       const cached = readHeroCache()
-      if (cached?.length) {
+      if (cached?.length && isMounted) {
         setHeroSlides(cached)
         setLoadingHero(false)
       }
       try {
         const data = await api.heroSlides.list()
-        if (data.length > 0) {
+        if (data.length > 0 && isMounted) {
           const shuffled = shuffleArray(data)
           setHeroSlides(shuffled)
           writeHeroCache(shuffled)
         }
       } catch (error) {
-        console.error('Erro ao buscar hero slides:', error)
+        if (isMounted) console.error('Erro ao buscar hero slides:', error)
       } finally {
-        setLoadingHero(false)
+        if (isMounted) setLoadingHero(false)
       }
     }
     fetchHero()
+    return () => { isMounted = false }
   }, [])
 
   useEffect(() => {
+    let isMounted = true
     const fetchWallpapers = async () => {
       try {
         const [recentRes, popularRes] = await Promise.all([
@@ -89,19 +92,18 @@ export default function Home() {
           api.wallpapers.list({ limit: 10, sort: 'popular' })
         ])
         
-        if (recentRes.data) {
-          setRecentWallpapers(recentRes.data)
-        }
-        if (popularRes.data) {
-          setPopularWallpapers(popularRes.data)
+        if (isMounted) {
+          if (recentRes.data) setRecentWallpapers(recentRes.data)
+          if (popularRes.data) setPopularWallpapers(popularRes.data)
         }
       } catch (error) {
-        console.error('Erro ao buscar wallpapers:', error)
+        if (isMounted) console.error('Erro ao buscar wallpapers:', error)
       } finally {
-        setLoadingWallpapers(false)
+        if (isMounted) setLoadingWallpapers(false)
       }
     }
     fetchWallpapers()
+    return () => { isMounted = false }
   }, [])
 
   useEffect(() => {

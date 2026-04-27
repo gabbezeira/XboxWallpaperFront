@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { api } from '../services/api'
 import { useAuth } from '../hooks/useAuth'
 import { attachAuthenticatedMediaUrls } from '../utils/wallpaperMedia.js'
@@ -38,9 +38,9 @@ export function FavoritesProvider({ children }) {
     fetchFavorites()
   }, [fetchFavorites])
 
-  const isFavorite = (id) => favoriteIds.has(id)
+  const isFavorite = useCallback((id) => favoriteIds.has(id), [favoriteIds])
 
-  const toggleFavorite = async (wallpaper) => {
+  const toggleFavorite = useCallback(async (wallpaper) => {
     if (!user) return
 
     try {
@@ -62,12 +62,18 @@ export function FavoritesProvider({ children }) {
     } catch (error) {
       console.warn('Erro ao alternar favorito:', error)
     }
-  }
+  }, [user, isFavorite])
+
+  const contextValue = useMemo(() => ({
+    favorites,
+    loading,
+    isFavorite,
+    toggleFavorite,
+    refetch: fetchFavorites
+  }), [favorites, loading, isFavorite, toggleFavorite, fetchFavorites])
 
   return (
-    <FavoritesContext.Provider
-      value={{ favorites, loading, isFavorite, toggleFavorite, refetch: fetchFavorites }}
-    >
+    <FavoritesContext.Provider value={contextValue}>
       {children}
     </FavoritesContext.Provider>
   )

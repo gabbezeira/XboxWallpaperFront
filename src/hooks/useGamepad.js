@@ -160,6 +160,7 @@ export default function useGamepad() {
   const prevButtons = useRef({})
   const repeatTimers = useRef({})
   const connectedRef = useRef(false)
+  const activeScrollTargetRef = useRef({ v: null, h: null })
 
   const navigateFocus = useCallback((direction) => {
     const focused = document.activeElement
@@ -346,17 +347,25 @@ export default function useGamepad() {
       const rsY = axes.length > 3 ? axes[3] : 0
 
       if (Math.abs(rsY) > RIGHT_STICK_DEAD_ZONE) {
-        const vTarget = findVerticalScrollTarget()
-        if (vTarget) {
-          vTarget.scrollTop += rsY * RIGHT_STICK_SPEED
+        if (!activeScrollTargetRef.current.v) {
+          activeScrollTargetRef.current.v = findVerticalScrollTarget()
         }
+        if (activeScrollTargetRef.current.v) {
+          activeScrollTargetRef.current.v.scrollTop += rsY * RIGHT_STICK_SPEED
+        }
+      } else {
+        activeScrollTargetRef.current.v = null
       }
 
       if (Math.abs(rsX) > RIGHT_STICK_DEAD_ZONE) {
-        const hTarget = findHorizontalScrollTarget(document.activeElement)
-        if (hTarget) {
-          hTarget.scrollLeft += rsX * RIGHT_STICK_SPEED
+        if (!activeScrollTargetRef.current.h) {
+          activeScrollTargetRef.current.h = findHorizontalScrollTarget(document.activeElement)
         }
+        if (activeScrollTargetRef.current.h) {
+          activeScrollTargetRef.current.h.scrollLeft += rsX * RIGHT_STICK_SPEED
+        }
+      } else {
+        activeScrollTargetRef.current.h = null
       }
 
       prevButtons.current[i] = curr

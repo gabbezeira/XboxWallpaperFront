@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { Trash2 } from 'lucide-react'
 import { formatFileSize } from '../../utils/format.js'
 import styles from './styles.module.scss'
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
 
-export default function WallpaperCard({ wallpaper, onView, onDelete, showDelete }) {
+const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete, showDelete }) {
   const [loaded, setLoaded] = useState(false)
 
   const thumbSrc = wallpaper.thumbUrl?.startsWith('http')
@@ -47,4 +47,6 @@ export default function WallpaperCard({ wallpaper, onView, onDelete, showDelete 
       </div>
     </button>
   )
-}
+})
+
+export default WallpaperCard

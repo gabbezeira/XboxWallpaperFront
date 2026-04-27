@@ -25,21 +25,29 @@ export default function Gallery() {
   const [localSearch, setLocalSearch] = useState(q)
 
   useEffect(() => {
+    let isMounted = true
+
     const fetchWallpapers = async () => {
       try {
         setLoading(true)
         const res = await api.wallpapers.list({ q, tag: tag !== 'Tudo' ? tag : '', page, limit: 12 })
-        setWallpapers(res.data)
-        setTotalPages(res.totalPages)
-        setTotalItems(res.totalItems)
+        if (isMounted) {
+          setWallpapers(res.data)
+          setTotalPages(res.totalPages)
+          setTotalItems(res.totalItems)
+        }
       } catch (error) {
-        console.error('Erro ao buscar galeria:', error)
+        if (isMounted) console.error('Erro ao buscar galeria:', error)
       } finally {
-        setLoading(false)
+        if (isMounted) setLoading(false)
       }
     }
 
     fetchWallpapers()
+
+    return () => {
+      isMounted = false
+    }
   }, [q, tag, page])
 
   const handleViewDetails = (wallpaper) => {

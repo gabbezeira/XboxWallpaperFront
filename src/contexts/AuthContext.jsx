@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { api } from '../services/api'
@@ -40,6 +40,7 @@ function setCachedAuth(user, profile) {
 }
 
 export function AuthProvider({ children }) {
+  const isMountedRef = useRef(true)
   const cached = getCachedAuth()
 
   const [user, setUser] = useState(
@@ -48,23 +49,25 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(cached?.profile || null)
   const [loading, setLoading] = useState(true)
 
-  const fetchProfile = async (firebaseUser) => {
+  const fetchProfile = useCallback(async (firebaseUser) => {
     try {
       const data = await api.profile.get()
-      setProfile(data)
-      setCachedAuth(firebaseUser, data)
+      if (isMountedRef.current) {
+        setProfile(data)
+        setCachedAuth(firebaseUser, data)
+      }
     } catch (error) {
       console.warn('Erro ao buscar perfil:', error)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    let isMounted = true
+    isMountedRef.current = true
 
     // Intercepta o redirecionamento assim que o app carrega
     handleAuthRedirectResult()
       .then(async (resultUser) => {
-        if (resultUser && isMounted) {
+        if (resultUser && isMountedRef.current) {
           setUser(resultUser) // <--- ESTAVA FALTANDO ISSO!
           await fetchProfile(resultUser)
         }
@@ -72,33 +75,41 @@ export function AuthProvider({ children }) {
       .catch((err) => console.warn('Erro ao processar redirect do Auth:', err))
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log('[AUTH] onAuthStateChanged disparou! firebaseUser:', firebaseUser?.email || 'null')
-      setUser(firebaseUser)
+      if (isMountedRef.current) setUser(firebaseUser)
 
       if (firebaseUser) {
         await fetchProfile(firebaseUser)
       } else {
-        setProfile(null)
-        setCachedAuth(null, null)
+        if (isMountedRef.current) {
+          setProfile(null)
+          setCachedAuth(null, null)
+        }
       }
 
-      if (isMounted) setLoading(false)
+      if (isMountedRef.current) setLoading(false)
     })
 
     return () => {
-      isMounted = false
+      isMountedRef.current = false
       unsubscribe()
     }
-  }, [])
+  }, [fetchProfile])
 
-  const refreshProfile = async () => {
+  const refreshProfile = useCallback(async () => {
     if (user) {
       await fetchProfile(user)
     }
-  }
+  }, [user, fetchProfile])
+
+  const contextValue = useMemo(() => ({
+    user,
+    profile,
+    loading,
+    refreshProfile
+  }), [user, profile, loading, refreshProfile])
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, refreshProfile }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   )

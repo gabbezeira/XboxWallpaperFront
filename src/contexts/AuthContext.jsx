@@ -65,6 +65,7 @@ export function AuthProvider({ children }) {
     handleAuthRedirectResult()
       .then(async (resultUser) => {
         if (resultUser && isMounted) {
+          setUser(resultUser) // <--- ESTAVA FALTANDO ISSO!
           await fetchProfile(resultUser)
         }
       })

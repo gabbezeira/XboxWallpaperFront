@@ -1,6 +1,5 @@
 import {
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   OAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -117,56 +116,46 @@ async function uploadProfilePhotoToBackend(user, blob, contentType) {
 
 export const signInWithMicrosoft = async () => {
   await initPersistence()
-  await signInWithRedirect(auth, microsoftProvider)
-}
+  const result = await signInWithPopup(auth, microsoftProvider)
 
-export const handleAuthRedirectResult = async () => {
+  const credential = OAuthProvider.credentialFromResult(result)
+  const accessToken = credential?.accessToken
+
+  let extraInfoPicture = null
   try {
-    const result = await getRedirectResult(auth)
-    if (!result) return null
-
-    const credential = OAuthProvider.credentialFromResult(result)
-    const accessToken = credential?.accessToken
-
-    let extraInfoPicture = null
-    try {
-      const additional = getAdditionalUserInfo(result)
-      extraInfoPicture = additional?.profile?.picture || null
-    } catch {
-      /* ignore */
-    }
-
-    const fromFirebase =
-      result.user.photoURL || result.user.providerData?.find((p) => p.photoURL)?.photoURL || null
-
-    let photoURL = fromFirebase || extraInfoPicture
-
-    const graphResult = await fetchMicrosoftProfilePhoto(accessToken)
-    if (graphResult?.kind === 'url' && graphResult.url) {
-      photoURL = graphResult.url
-    } else if (graphResult?.kind === 'blob' && graphResult.blob?.size) {
-      try {
-        photoURL = await uploadProfilePhotoToBackend(
-          result.user,
-          graphResult.blob,
-          graphResult.contentType
-        )
-      } catch (e) {
-        console.warn('Upload da foto Microsoft para o backend falhou:', e)
-      }
-    }
-
-    if (photoURL) {
-      await updateProfile(result.user, { photoURL })
-    }
-
-    await result.user.reload()
-    await ensureUserOnBackend(result.user)
-    return result.user
-  } catch (error) {
-    console.error('Erro no handleAuthRedirectResult:', error)
-    throw error
+    const additional = getAdditionalUserInfo(result)
+    extraInfoPicture = additional?.profile?.picture || null
+  } catch {
+    /* ignore */
   }
+
+  const fromFirebase =
+    result.user.photoURL || result.user.providerData?.find((p) => p.photoURL)?.photoURL || null
+
+  let photoURL = fromFirebase || extraInfoPicture
+
+  const graphResult = await fetchMicrosoftProfilePhoto(accessToken)
+  if (graphResult?.kind === 'url' && graphResult.url) {
+    photoURL = graphResult.url
+  } else if (graphResult?.kind === 'blob' && graphResult.blob?.size) {
+    try {
+      photoURL = await uploadProfilePhotoToBackend(
+        result.user,
+        graphResult.blob,
+        graphResult.contentType
+      )
+    } catch (e) {
+      console.warn('Upload da foto Microsoft para o backend falhou:', e)
+    }
+  }
+
+  if (photoURL) {
+    await updateProfile(result.user, { photoURL })
+  }
+
+  await result.user.reload()
+  await ensureUserOnBackend(result.user)
+  return result.user
 }
 
 export const signInWithEmail = async (email, password) => {

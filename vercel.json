@@ -1,22 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/__/auth/handler",
-      "destination": "https://xboxwallpaper-734da.firebaseapp.com/__/auth/handler"
-    },
-    {
-      "source": "/__/auth/iframe",
-      "destination": "https://xboxwallpaper-734da.firebaseapp.com/__/auth/iframe"
-    },
-    {
-      "source": "/__/auth/handler.js",
-      "destination": "https://xboxwallpaper-734da.firebaseapp.com/__/auth/handler.js"
-    },
-    {
-      "source": "/__/firebase/init.json",
-      "destination": "https://xboxwallpaper-734da.firebaseapp.com/__/firebase/init.json"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

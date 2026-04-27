@@ -52,12 +52,24 @@ export default function AuthModal({ onClose }) {
     }
   }
 
-  const handleMicrosoft = () => {
+  const handleMicrosoft = async () => {
     setError(null)
-    signInWithMicrosoft().catch((err) => {
+    setLoading(true)
+    try {
+      await signInWithMicrosoft()
+      await refreshProfile()
+      onClose()
+    } catch (err) {
       console.error('Erro no login Microsoft:', err)
-      setError('Erro ao redirecionar para a Microsoft')
-    })
+      // O código de erro comum quando o usuário fecha o popup manualmente
+      if (err.code === 'auth/popup-closed-by-user') {
+        setError('O login foi cancelado.')
+      } else {
+        setError('Erro ao fazer login com a Microsoft')
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

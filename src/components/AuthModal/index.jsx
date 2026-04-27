@@ -38,6 +38,7 @@ export default function AuthModal({ onClose }) {
       await refreshProfile()
       onClose()
     } catch (err) {
+      console.error('Erro detalhado no submit:', err)
       const messages = {
         'auth/user-not-found': 'Usuário não encontrado',
         'auth/wrong-password': 'Senha incorreta',
@@ -54,9 +55,11 @@ export default function AuthModal({ onClose }) {
 
   const handleMicrosoft = () => {
     setError(null)
+    setLoading(true)
     signInWithMicrosoft().catch((err) => {
       console.error('Erro no login Microsoft:', err)
-      setError('Erro ao redirecionar para a Microsoft')
+      setError('Erro ao inicializar o login com a Microsoft')
+      setLoading(false)
     })
   }
 

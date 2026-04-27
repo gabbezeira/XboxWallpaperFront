@@ -1,22 +1,25 @@
 import {
-  signInWithRedirect,
-  getRedirectResult,
-  OAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
-  getAdditionalUserInfo
+  signInWithRedirect,
+  getRedirectResult,
+  OAuthProvider
 } from 'firebase/auth'
 import { auth } from './firebase'
 
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+
 const microsoftProvider = new OAuthProvider('microsoft.com')
+// Parâmetro customizado para evitar login silencioso na conta errada, útil no Edge do Xbox
+microsoftProvider.setCustomParameters({
+  prompt: 'select_account'
+})
 microsoftProvider.addScope('openid')
 microsoftProvider.addScope('profile')
 microsoftProvider.addScope('email')
-microsoftProvider.addScope('User.Read')
-
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+microsoftProvider.addScope('user.read')
 
 async function syncWithBackend(user) {
   try {
@@ -37,92 +40,6 @@ async function syncWithBackend(user) {
   }
 }
 
-async function fetchGraphPhoto(accessToken) {
-  if (!accessToken) return null
-
-  try {
-    const res = await fetch('https://graph.microsoft.com/v1.0/me/photo/$value', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
-    if (!res.ok) return null
-
-    const blob = await res.blob()
-    if (blob.size === 0) return null
-
-    const token = await auth.currentUser.getIdToken()
-    const fd = new FormData()
-    fd.append('photo', blob, 'profile.jpg')
-
-    const upload = await fetch(`${API_URL}/api/auth/profile-photo`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: fd
-    })
-
-    if (upload.ok) {
-      const data = await upload.json()
-      return data.photoURL || null
-    }
-  } catch (e) {
-    console.warn('Erro ao buscar foto do Graph:', e)
-  }
-
-  return null
-}
-
-export const signInWithMicrosoft = async () => {
-  await signInWithRedirect(auth, microsoftProvider)
-}
-
-export const handleAuthRedirectResult = async () => {
-  try {
-    const result = await getRedirectResult(auth)
-    if (!result) return null
-
-    const credential = OAuthProvider.credentialFromResult(result)
-    const accessToken = credential?.accessToken
-    const user = result.user
-
-    let photoURL = user.photoURL || user.providerData?.[0]?.photoURL || null
-    let displayName = user.displayName || user.providerData?.[0]?.displayName || null
-
-    if (!displayName) {
-      try {
-        const additional = getAdditionalUserInfo(result)
-        displayName = additional?.profile?.displayName || additional?.profile?.name || user.email?.split('@')[0] || 'Jogador'
-      } catch {
-        displayName = user.email?.split('@')[0] || 'Jogador'
-      }
-    }
-
-    // 1. Atualiza o perfil básico (nome e foto padrão se houver)
-    if (displayName || photoURL) {
-      await updateProfile(user, {
-        ...(displayName && { displayName }),
-        ...(photoURL && { photoURL })
-      })
-    }
-    await user.reload()
-
-    // 2. Sincroniza com o backend PRIMEIRO (cria o usuário no banco de dados)
-    await syncWithBackend(auth.currentUser)
-
-    // 3. AGORA que o usuário existe no backend, busca e faz upload da foto do Graph API
-    const graphPhoto = await fetchGraphPhoto(accessToken)
-    if (graphPhoto) {
-      photoURL = graphPhoto
-      await updateProfile(auth.currentUser, { photoURL })
-      await auth.currentUser.reload()
-      // Opcional: sincronizar de novo, mas a rota de profile-photo já deve ter atualizado no backend
-    }
-
-    return auth.currentUser
-  } catch (error) {
-    console.error('Erro no handleAuthRedirectResult:', error)
-    throw error
-  }
-}
-
 export const signInWithEmail = async (email, password) => {
   const result = await signInWithEmailAndPassword(auth, email, password)
   await syncWithBackend(result.user)
@@ -138,4 +55,26 @@ export const signUpWithEmail = async (email, password, displayName) => {
 
 export const logOut = async () => {
   await signOut(auth)
+}
+
+export const signInWithMicrosoft = async () => {
+  // Uso estrito de Redirect para garantir compatibilidade com PWA/UWP no Xbox
+  await signInWithRedirect(auth, microsoftProvider)
+}
+
+export const handleAuthRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth)
+    if (!result) return null
+
+    const user = result.user
+    
+    // Atualiza/Cria perfil no backend assim que volta do redirecionamento
+    await syncWithBackend(user)
+
+    return user
+  } catch (error) {
+    console.error('Erro no handleAuthRedirectResult:', error)
+    throw error
+  }
 }

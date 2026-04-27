@@ -242,3 +242,9 @@
   text-align: center;
   font-weight: $fw-medium;
 }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

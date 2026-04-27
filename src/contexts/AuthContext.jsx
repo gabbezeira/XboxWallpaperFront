@@ -61,13 +61,14 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let isMounted = true
 
+    // Intercepta o redirecionamento assim que o app carrega
     handleAuthRedirectResult()
       .then(async (resultUser) => {
         if (resultUser && isMounted) {
           await fetchProfile(resultUser)
         }
       })
-      .catch(console.warn)
+      .catch((err) => console.warn('Erro ao processar redirect do Auth:', err))
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser)

@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { api } from '../services/api'
+import { initPersistence } from '../services/auth'
 
 export const AuthContext = createContext(null)
 
@@ -58,6 +59,8 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    initPersistence().catch(console.warn)
+    
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser)
 

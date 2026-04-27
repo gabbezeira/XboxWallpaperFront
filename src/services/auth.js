@@ -115,7 +115,6 @@ async function uploadProfilePhotoToBackend(user, blob, contentType) {
 }
 
 export const signInWithMicrosoft = async () => {
-  await initPersistence()
   const result = await signInWithPopup(auth, microsoftProvider)
 
   const credential = OAuthProvider.credentialFromResult(result)
@@ -159,14 +158,12 @@ export const signInWithMicrosoft = async () => {
 }
 
 export const signInWithEmail = async (email, password) => {
-  await initPersistence()
   const result = await signInWithEmailAndPassword(auth, email, password)
   await ensureUserOnBackend(result.user)
   return result.user
 }
 
 export const signUpWithEmail = async (email, password, displayName) => {
-  await initPersistence()
   const result = await createUserWithEmailAndPassword(auth, email, password)
   await updateProfile(result.user, { displayName })
   await ensureUserOnBackend(result.user, { displayName })

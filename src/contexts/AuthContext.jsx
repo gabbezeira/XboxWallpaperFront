@@ -64,42 +64,45 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     isMountedRef.current = true
 
-    // Intercepta o redirecionamento assim que o app carrega
-    const handleRedirect = async () => {
-      // Pequeno delay para garantir que os cookies/storage foram processados pelo browser
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
+    const initializeAuth = async () => {
       try {
+        // 1. Processa o resultado do redirecionamento primeiro
         const resultUser = await handleAuthRedirectResult()
+        
         if (resultUser && isMountedRef.current) {
+          // Se houve login via redirect, o onAuthStateChanged será disparado em breve
+          // mas já podemos adiantar o estado aqui se quisermos.
           setUser(resultUser)
           await fetchProfile(resultUser)
         }
       } catch (err) {
-        console.warn('Erro ao processar redirect do Auth:', err)
+        console.error('Erro ao processar redirect do Auth:', err)
       } finally {
-        if (isMountedRef.current) setLoading(false)
+        // 2. Só depois de checar o redirect, começamos a ouvir mudanças de estado
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+          if (isMountedRef.current) {
+            setUser(firebaseUser)
+            if (firebaseUser) {
+              await fetchProfile(firebaseUser)
+            } else {
+              setProfile(null)
+              setCachedAuth(null, null)
+            }
+            setLoading(false)
+          }
+        })
+
+        return () => {
+          unsubscribe()
+        }
       }
     }
 
-    handleRedirect()
-
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (isMountedRef.current) {
-        setUser(firebaseUser)
-        if (firebaseUser) {
-          await fetchProfile(firebaseUser)
-        } else {
-          setProfile(null)
-          setCachedAuth(null, null)
-        }
-        setLoading(false)
-      }
-    })
+    const authCleanupPromise = initializeAuth()
 
     return () => {
       isMountedRef.current = false
-      unsubscribe()
+      authCleanupPromise.then(cleanup => cleanup && cleanup())
     }
   }, [fetchProfile])
 

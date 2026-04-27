@@ -32,7 +32,8 @@ export function AuthProvider({ children }) {
     console.log('[Auth] Config:', {
       apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? 'OK' : 'MISSING',
       authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      apiUrl: import.meta.env.VITE_API_URL
     })
 
     // 1. OUVINTE DE ESTADO (O motor principal)

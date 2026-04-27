@@ -60,27 +60,43 @@ export const logOut = async () => {
 }
 
 export const signInWithGoogle = async () => {
-  const isLocalhost = window.location.hostname === 'localhost'
-  
-  // No localhost, o Popup é 100% confiável e evita problemas de cookies de terceiros
-  // No Xbox/Vercel, usamos o Redirect para compatibilidade
-  if (isLocalhost) {
-    console.log('[Auth] Usando Popup para login no localhost')
+  // Forçamos o uso de Popup em todos os ambientes (Local e Vercel)
+  // O Popup evita o problema de bloqueio de cookies de terceiros que mata o Redirect na Vercel
+  try {
+    console.log('[Auth] Iniciando login via Popup...')
     const result = await signInWithPopup(auth, googleProvider)
+    console.log('[Auth] Login via Popup realizado com sucesso')
     await syncWithBackend(result.user)
     return result.user
-  } else {
-    console.log('[Auth] Usando Redirect para login em produção')
-    await signInWithRedirect(auth, googleProvider)
+  } catch (error) {
+    console.error('[Auth] Erro no login via Popup:', error)
+    
+    // Se o Popup for bloqueado pelo navegador, tentamos o Redirect como última alternativa
+    if (error.code === 'auth/popup-blocked') {
+      console.log('[Auth] Popup bloqueado, tentando Redirect...')
+      await signInWithRedirect(auth, googleProvider)
+    } else {
+      throw error
+    }
   }
 }
 
 export const handleAuthRedirectResult = async () => {
   try {
-    // Garante persistência local antes de checar o resultado
-    await setPersistence(auth, browserLocalPersistence)
-    
-    const result = await getRedirectResult(auth)
+    // Adicionamos um timeout manual para não deixar o app travado se o Firebase falhar
+    const redirectPromise = getRedirectResult(auth)
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('timeout')), 5000)
+    )
+
+    const result = await Promise.race([redirectPromise, timeoutPromise]).catch(err => {
+      if (err.message === 'timeout') {
+        console.warn('[Auth] Tempo limite atingido ao verificar redirecionamento (possível bloqueio de cookies)')
+        return null
+      }
+      throw err
+    })
+
     if (!result) return null
 
     const user = result.user
@@ -88,6 +104,6 @@ export const handleAuthRedirectResult = async () => {
     return user
   } catch (error) {
     console.error('[Auth] Erro no handleAuthRedirectResult:', error)
-    throw error
+    return null
   }
 }

@@ -163,17 +163,32 @@ export default function useGamepad() {
 
   const navigateFocus = useCallback((direction) => {
     const focused = document.activeElement
-    const candidates = getVisibleFocusables()
+    const allCandidates = getVisibleFocusables()
 
     if (!focused || focused === document.body) {
-      if (candidates.length > 0) {
-        candidates[0].focus({ preventScroll: true })
-        scrollIntoViewIfNeeded(candidates[0])
+      if (allCandidates.length > 0) {
+        allCandidates[0].focus({ preventScroll: true })
+        scrollIntoViewIfNeeded(allCandidates[0])
       }
       return
     }
 
-    const best = findBestCandidate(focused, direction, candidates)
+    const isHorizontal = direction === 'left' || direction === 'right'
+
+    if (isHorizontal) {
+      const scroller = findHorizontalScrollTarget(focused)
+      if (scroller) {
+        const siblingItems = allCandidates.filter(el => scroller.contains(el))
+        const best = findBestCandidate(focused, direction, siblingItems)
+        if (best) {
+          best.focus({ preventScroll: true })
+          scrollIntoViewIfNeeded(best)
+          return
+        }
+      }
+    }
+
+    const best = findBestCandidate(focused, direction, allCandidates)
     if (best) {
       best.focus({ preventScroll: true })
       scrollIntoViewIfNeeded(best)

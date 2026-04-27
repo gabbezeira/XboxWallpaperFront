@@ -62,14 +62,22 @@ export default function AuthModal({ onClose }) {
   }
 
   const handleGoogle = () => {
+    // DISPARO IMEDIATO: O navegador permite o popup porque a função 
+    // é chamada diretamente no evento de clique, sem await antes.
+    signInWithGoogle()
+      .then(() => {
+        // O modal se fechará sozinho pelo useEffect do user
+      })
+      .catch((err) => {
+        if (err.code !== 'auth/popup-blocked') {
+          setError('Erro ao entrar com Google')
+          setLoading(false)
+        }
+      })
+
+    // Só atualizamos o UI depois de disparar o comando de rede
     setError(null)
     setLoading(true)
-    signInWithGoogle().catch((err) => {
-      if (err.code !== 'auth/popup-blocked') {
-        setError('Erro ao entrar com Google')
-        setLoading(false)
-      }
-    })
   }
 
   return (

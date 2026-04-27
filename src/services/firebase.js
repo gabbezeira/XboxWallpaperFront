@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth'
+import { getAuth, setPersistence, browserLocalPersistence, indexedDBLocalPersistence } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,11 +13,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 
-// Força a persistência local nativa do Firebase
-if (typeof window !== 'undefined') {
-  setPersistence(auth, browserLocalPersistence).catch(err => {
-    console.error('[Firebase] Erro ao definir persistência:', err)
-  })
+// Inicialização ultra-robusta da persistência
+// No PC, o IndexedDB é mais estável que o LocalStorage para o Firebase
+const initAuth = async () => {
+  if (typeof window !== 'undefined') {
+    try {
+      await setPersistence(auth, indexedDBLocalPersistence)
+      console.log('%c[Firebase] Persistência IndexedDB ativada', 'color: #2ecc71')
+    } catch {
+      await setPersistence(auth, browserLocalPersistence)
+      console.log('%c[Firebase] Persistência LocalStorage ativada', 'color: #f1c40f')
+    }
+  }
 }
+
+initAuth()
 
 export default app

@@ -60,31 +60,23 @@ export const logOut = async () => {
 }
 
 /**
- * Tenta login via Popup primeiro (melhor UX no PC).
- * Se for bloqueado ou falhar, cai automaticamente para Redirect (Xbox/Mobile).
+ * Tenta login via Google.
+ * No PC, o segredo é chamar o Popup síncronamente ao clique.
  */
 export const signInWithGoogle = () => {
-  console.log('[Auth] Iniciando fluxo Google...')
-  
-  // IMPORTANTE: Chamamos signInWithPopup sem 'await' ou promessas antes
-  // para que o navegador reconheça o clique do usuário e não barre o popup.
+  // Disparo imediato para evitar bloqueio de popup pelo navegador
   return signInWithPopup(auth, googleProvider)
     .then(async (result) => {
-      console.log('[Auth] Login via Popup OK')
       await syncWithBackend(result.user)
       return result.user
     })
     .catch((error) => {
-      // Se o popup foi bloqueado ou fechado, tentamos o Redirect
-      if (
-        error.code === 'auth/popup-blocked' || 
-        error.code === 'auth/cancelled-popup-request' ||
-        error.code === 'auth/popup-closed-by-user'
-      ) {
-        console.log('[Auth] Popup não disponível, iniciando Redirect...')
+      // Se falhar ou for bloqueado, o fallback é o redirect
+      // O redirect na Vercel só funcionará se o navegador permitir cookies de terceiros
+      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+        console.warn('[Auth] Popup bloqueado ou fechado, tentando redirect...')
         return signInWithRedirect(auth, googleProvider)
       }
-      console.error('[Auth] Erro no login Google:', error)
       throw error
     })
 }
@@ -93,8 +85,6 @@ export const handleAuthRedirectResult = async () => {
   try {
     const result = await getRedirectResult(auth)
     if (!result) return null
-
-    console.log('[Auth] Usuário capturado do redirecionamento:', result.user.email)
     await syncWithBackend(result.user)
     return result.user
   } catch (error) {

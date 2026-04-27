@@ -13,13 +13,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   const fetchProfile = useCallback(async (firebaseUser) => {
-    if (!firebaseUser) return
-    console.log('%c[Auth] Buscando perfil no backend...', 'color: #3498db')
+    if (!firebaseUser || !isMountedRef.current) return
     try {
       const data = await api.profile.get()
       if (isMountedRef.current) {
         setProfile(data)
-        console.log('%c[Auth] Perfil carregado com sucesso', 'color: #2ecc71')
       }
     } catch (error) {
       console.warn('[Auth] Erro ao buscar perfil:', error)
@@ -28,19 +26,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     isMountedRef.current = true
-    console.log('%c[Auth] Inicializando sistema de autenticação...', 'color: #f1c40f; font-weight: bold')
-    console.log('[Auth] Config:', {
-      apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? 'OK' : 'MISSING',
-      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-      apiUrl: import.meta.env.VITE_API_URL
-    })
+    console.log('[Auth] Inicializando sistema...')
 
-    // 1. OUVINTE DE ESTADO (O motor principal)
-    // Ele deve rodar IMEDIATAMENTE e de forma independente
+    // 1. OUVINTE DE ESTADO (Eficiente e Grátis)
+    // Esse ouvinte só dispara quando o estado REALMENTE muda.
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log('%c[Auth] Mudança de estado detectada:', 'color: #9b59b6', firebaseUser ? `Usuário: ${firebaseUser.email}` : 'Deslogado')
-
       if (isMountedRef.current) {
         setUser(firebaseUser)
         if (firebaseUser) {
@@ -52,23 +42,19 @@ export function AuthProvider({ children }) {
       }
     })
 
-    // 2. CAPTURA DE REDIRECT (Processo paralelo)
+    // 2. CAPTURA DE REDIRECT (Uma única vez ao carregar a página)
     const checkRedirect = async () => {
-      try {
-        console.log('%c[Auth] Verificando resultado de redirecionamento...', 'color: #e67e22')
-        const resultUser = await handleAuthRedirectResult()
-
-        if (resultUser) {
-          console.log('%c[Auth] Login via Redirect detectado com sucesso!', 'color: #2ecc71; font-weight: bold')
-          if (isMountedRef.current) {
+      // Só tentamos capturar o redirect se houver sinal de que viemos do Google na URL
+      if (window.location.href.includes('apiKey=')) {
+        try {
+          const resultUser = await handleAuthRedirectResult()
+          if (resultUser && isMountedRef.current) {
             setUser(resultUser)
             await fetchProfile(resultUser)
           }
-        } else {
-          console.log('%c[Auth] Nenhum redirecionamento pendente.', 'color: #7f8c8d')
+        } catch (err) {
+          console.error('[Auth] Erro no redirect:', err)
         }
-      } catch (err) {
-        console.error('%c[Auth] Erro crítico no processamento do Redirect:', 'color: #e74c3c', err)
       }
     }
 
@@ -81,9 +67,7 @@ export function AuthProvider({ children }) {
   }, [fetchProfile])
 
   const refreshProfile = useCallback(async () => {
-    if (user) {
-      await fetchProfile(user)
-    }
+    if (user) await fetchProfile(user)
   }, [user, fetchProfile])
 
   const contextValue = useMemo(() => ({

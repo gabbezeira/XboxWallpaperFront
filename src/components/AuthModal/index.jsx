@@ -55,7 +55,7 @@ export default function AuthModal({ onClose }) {
   const handleMicrosoft = () => {
     signInWithMicrosoft().catch((err) => {
       console.error('Erro no login da Microsoft:', err)
-      setError('Erro ao iniciar login com Microsoft')
+      setError('Erro ao entrar com Microsoft')
     })
   }
 

@@ -55,23 +55,22 @@ export default function Gallery() {
   }
 
   const handlePageChange = (newPage) => {
-    const newParams = new URLSearchParams(searchParams)
-    newParams.set('page', newPage.toString())
-    setSearchParams(newParams)
+    searchParams.set('page', newPage.toString())
+    setSearchParams(searchParams)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleMobileSearch = (e) => {
     e.preventDefault()
-    const newParams = new URLSearchParams(searchParams)
     if (localSearch.trim()) {
-      newParams.set('q', localSearch.trim())
-      newParams.set('page', '1')
+      searchParams.set('q', localSearch.trim())
+      searchParams.set('page', '1')
+      setSearchParams(searchParams)
     } else {
-      newParams.delete('q')
-      newParams.set('page', '1')
+      searchParams.delete('q')
+      searchParams.set('page', '1')
+      setSearchParams(searchParams)
     }
-    setSearchParams(newParams)
   }
 
   return (

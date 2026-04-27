@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 import styles from './styles.module.scss'
 
 export default function BottomNav({ onLoginClick }) {
-  const { user, loading } = useAuth()
+  const { user } = useAuth()
 
   const navClass = ({ isActive }) => 
     `${styles.navItem} ${isActive ? styles.active : ''}`
@@ -26,24 +26,24 @@ export default function BottomNav({ onLoginClick }) {
           <Heart size={20} />
           <span>Favoritos</span>
         </NavLink>
-      ) : !loading ? (
+      ) : (
         <button className={styles.navItem} onClick={onLoginClick}>
           <Heart size={20} />
           <span>Favoritos</span>
         </button>
-      ) : null}
+      )}
 
       {user ? (
         <NavLink to="/my-wallpapers" className={navClass}>
           <UploadCloud size={20} />
           <span>Seus</span>
         </NavLink>
-      ) : !loading ? (
+      ) : (
         <button className={styles.navItem} onClick={onLoginClick}>
           <UploadCloud size={20} />
           <span>Seus</span>
         </button>
-      ) : null}
+      )}
     </nav>
   )
 }

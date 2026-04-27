@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { Search, LogOut, User, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-import { logOut } from '../../services/auth'
+import { signOut } from 'firebase/auth'
+import { auth } from '../../services/firebase'
 import Sidebar from '../Sidebar'
 import BottomNav from '../BottomNav'
 import styles from './styles.module.scss'
@@ -13,7 +14,7 @@ const RESIZE_THROTTLE_MS = 120
 import logo from '../../assets/logo.png'
 
 export default function Layout({ children, onLoginClick }) {
-  const { user, loading } = useAuth()
+  const { user } = useAuth()
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' ? window.innerWidth < MOBILE_MAX : false
   )
@@ -94,7 +95,7 @@ export default function Layout({ children, onLoginClick }) {
                       <span className={styles.mobileUserName}>{user?.displayName || user?.email?.split('@')[0] || 'Usuário'}</span>
                     </div>
                   </>
-                ) : !loading ? (
+                ) : (
                   <>
                     <div className={`${styles.mobileAvatar} ${styles.mobileAvatarFallback}`}>
                       <User size={18} />
@@ -103,7 +104,7 @@ export default function Layout({ children, onLoginClick }) {
                       Entrar
                     </button>
                   </>
-                ) : null}
+                )}
                 <button
                   className={styles.mobileActionBtn}
                   onClick={() => setMobileSearchOpen(true)}
@@ -112,7 +113,7 @@ export default function Layout({ children, onLoginClick }) {
                   <Search size={18} />
                 </button>
                 {user && (
-                  <button className={styles.mobileActionBtn} onClick={logOut} aria-label="Sair">
+                  <button className={styles.mobileActionBtn} onClick={() => signOut(auth)} aria-label="Sair">
                     <LogOut size={18} />
                   </button>
                 )}

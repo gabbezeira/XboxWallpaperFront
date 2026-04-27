@@ -1,12 +1,13 @@
 import { NavLink, Link } from 'react-router-dom'
 import { Home, Compass, UploadCloud, Heart, LogOut } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
-import { logOut } from '../../services/auth'
+import { signOut } from 'firebase/auth'
+import { auth } from '../../services/firebase'
 import logo from '../../assets/logo.png'
 import styles from './styles.module.scss'
 
 export default function Sidebar({ onLoginClick }) {
-  const { user, profile, loading } = useAuth()
+  const { user, profile } = useAuth()
 
   const navClass = ({ isActive }) => 
     `${styles.navItem} ${isActive ? styles.active : ''}`
@@ -73,16 +74,16 @@ export default function Sidebar({ onLoginClick }) {
                 <div className={styles.badge}>ULTIMATE</div>
               </div>
             </div>
-            <button className={styles.btnLogout} onClick={logOut}>
+            <button className={styles.btnLogout} onClick={() => signOut(auth)}>
               <LogOut size={16} />
               Sair
             </button>
           </>
-        ) : !loading ? (
+        ) : (
           <button className={styles.btnLogin} onClick={onLoginClick}>
             Entrar
           </button>
-        ) : null}
+        )}
       </div>
     </aside>
   )

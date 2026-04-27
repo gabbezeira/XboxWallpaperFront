@@ -11,8 +11,8 @@ import {
   getAdditionalUserInfo
 } from 'firebase/auth'
 import { auth } from './firebase'
-import { API_URL } from './api'
 const microsoftProvider = new OAuthProvider('microsoft.com')
+// Escopos no formato que o Microsoft Identity / Graph espera (evita token sem audience do Graph)
 microsoftProvider.addScope('openid')
 microsoftProvider.addScope('profile')
 microsoftProvider.addScope('email')
@@ -20,6 +20,7 @@ microsoftProvider.addScope('https://graph.microsoft.com/User.Read')
 // Depois de alterar permissões no Azure, o usuário pode precisar revogar o app em
 // account.microsoft.com/consent ou usar uma vez: setCustomParameters({ prompt: 'consent' })
 
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
 
 async function ensureUserOnBackend(user, extraData = {}) {
   try {
@@ -184,6 +185,5 @@ export const signUpWithEmail = async (email, password, displayName) => {
 }
 
 export const logOut = async () => {
-  try { localStorage.removeItem('xbox_auth_cache') } catch { /* ignore */ }
   await signOut(auth)
 }

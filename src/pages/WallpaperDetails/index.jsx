@@ -3,10 +3,12 @@ import { ArrowLeft, Heart, Monitor, HardDrive, Download } from 'lucide-react'
 import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
 import { useFavorites } from '../../hooks/useFavorites'
 import { useAuth } from '../../hooks/useAuth'
-import { api, API_URL } from '../../services/api'
+import { api } from '../../services/api'
 import { formatFileSize } from '../../utils/format.js'
 import Loader from '../../components/Loader'
 import styles from './styles.module.scss'
+
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
 
 function formatResolution(width, height) {
   if (!width || !height) return '—'

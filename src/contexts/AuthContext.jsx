@@ -59,7 +59,15 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    handleAuthRedirectResult().catch(console.warn)
+    let isMounted = true
+
+    handleAuthRedirectResult()
+      .then(async (resultUser) => {
+        if (resultUser && isMounted) {
+          await fetchProfile(resultUser)
+        }
+      })
+      .catch(console.warn)
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser)
@@ -71,10 +79,13 @@ export function AuthProvider({ children }) {
         setCachedAuth(null, null)
       }
 
-      setLoading(false)
+      if (isMounted) setLoading(false)
     })
 
-    return () => unsubscribe()
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
   }, [])
 
   const refreshProfile = async () => {

@@ -95,20 +95,27 @@ export const handleAuthRedirectResult = async () => {
       }
     }
 
-    const graphPhoto = await fetchGraphPhoto(accessToken)
-    if (graphPhoto) {
-      photoURL = graphPhoto
-    }
-
+    // 1. Atualiza o perfil básico (nome e foto padrão se houver)
     if (displayName || photoURL) {
       await updateProfile(user, {
         ...(displayName && { displayName }),
         ...(photoURL && { photoURL })
       })
     }
-
     await user.reload()
+
+    // 2. Sincroniza com o backend PRIMEIRO (cria o usuário no banco de dados)
     await syncWithBackend(auth.currentUser)
+
+    // 3. AGORA que o usuário existe no backend, busca e faz upload da foto do Graph API
+    const graphPhoto = await fetchGraphPhoto(accessToken)
+    if (graphPhoto) {
+      photoURL = graphPhoto
+      await updateProfile(auth.currentUser, { photoURL })
+      await auth.currentUser.reload()
+      // Opcional: sincronizar de novo, mas a rota de profile-photo já deve ter atualizado no backend
+    }
+
     return auth.currentUser
   } catch (error) {
     console.error('Erro no handleAuthRedirectResult:', error)

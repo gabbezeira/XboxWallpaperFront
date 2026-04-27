@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
     // Ele deve rodar IMEDIATAMENTE e de forma independente
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       console.log('%c[Auth] Mudança de estado detectada:', 'color: #9b59b6', firebaseUser ? `Usuário: ${firebaseUser.email}` : 'Deslogado')
-      
+
       if (isMountedRef.current) {
         setUser(firebaseUser)
         if (firebaseUser) {
@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
       try {
         console.log('%c[Auth] Verificando resultado de redirecionamento...', 'color: #e67e22')
         const resultUser = await handleAuthRedirectResult()
-        
+
         if (resultUser) {
           console.log('%c[Auth] Login via Redirect detectado com sucesso!', 'color: #2ecc71; font-weight: bold')
           if (isMountedRef.current) {

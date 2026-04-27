@@ -4,6 +4,7 @@ import {
   updateProfile,
   signOut,
   signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
   GoogleAuthProvider,
   browserLocalPersistence,
@@ -58,32 +59,39 @@ export const logOut = async () => {
   await signOut(auth)
 }
 
+/**
+ * Tenta login via Popup primeiro (melhor UX no PC).
+ * Se for bloqueado ou falhar, cai automaticamente para Redirect (Xbox/Mobile).
+ */
 export const signInWithGoogle = () => {
-  console.log('[Auth] Iniciando login via Redirect (Otimizado para Xbox/PC)...')
-  // Usamos Redirect direto para garantir consistência entre PC/Xbox/Mobile
-  // Não usamos async/await aqui no início para o clique ser processado instantaneamente pelo navegador
-  return signInWithRedirect(auth, googleProvider)
+  console.log('[Auth] Iniciando fluxo Google...')
+  
+  // IMPORTANTE: Chamamos signInWithPopup sem 'await' ou promessas antes
+  // para que o navegador reconheça o clique do usuário e não barre o popup.
+  return signInWithPopup(auth, googleProvider)
+    .then(async (result) => {
+      console.log('[Auth] Login via Popup OK')
+      await syncWithBackend(result.user)
+      return result.user
+    })
+    .catch((error) => {
+      // Se o popup foi bloqueado ou fechado, tentamos o Redirect
+      if (
+        error.code === 'auth/popup-blocked' || 
+        error.code === 'auth/cancelled-popup-request' ||
+        error.code === 'auth/popup-closed-by-user'
+      ) {
+        console.log('[Auth] Popup não disponível, iniciando Redirect...')
+        return signInWithRedirect(auth, googleProvider)
+      }
+      console.error('[Auth] Erro no login Google:', error)
+      throw error
+    })
 }
 
 export const handleAuthRedirectResult = async () => {
   try {
-    // Define persistência antes de checar
-    await setPersistence(auth, browserLocalPersistence)
-    
-    // Aumentamos o timeout para 10 segundos para conexões mais lentas ou PCs
-    const redirectPromise = getRedirectResult(auth)
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('timeout')), 10000)
-    )
-
-    const result = await Promise.race([redirectPromise, timeoutPromise]).catch(err => {
-      if (err.message === 'timeout') {
-        console.warn('[Auth] Tempo limite de 10s atingido no redirecionamento')
-        return null
-      }
-      throw err
-    })
-
+    const result = await getRedirectResult(auth)
     if (!result) return null
 
     console.log('[Auth] Usuário capturado do redirecionamento:', result.user.email)

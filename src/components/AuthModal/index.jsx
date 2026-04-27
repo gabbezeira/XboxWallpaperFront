@@ -64,7 +64,12 @@ export default function AuthModal({ onClose }) {
   const handleGoogle = () => {
     setError(null)
     setLoading(true)
-    signInWithGoogle()
+    signInWithGoogle().catch((err) => {
+      if (err.code !== 'auth/popup-blocked') {
+        setError('Erro ao entrar com Google')
+        setLoading(false)
+      }
+    })
   }
 
   return (

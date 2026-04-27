@@ -5,7 +5,8 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
-  getAdditionalUserInfo
+  getAdditionalUserInfo,
+  browserPopupRedirectResolver
 } from 'firebase/auth'
 import { auth } from './firebase'
 
@@ -70,7 +71,7 @@ async function fetchGraphPhoto(accessToken) {
 }
 
 export const signInWithMicrosoft = () => {
-  return signInWithPopup(auth, microsoftProvider).then(async (result) => {
+  return signInWithPopup(auth, microsoftProvider, browserPopupRedirectResolver).then(async (result) => {
     const credential = OAuthProvider.credentialFromResult(result)
     const accessToken = credential?.accessToken
     const user = result.user

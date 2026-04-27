@@ -53,7 +53,6 @@ export default function AuthModal({ onClose }) {
   }
 
   const handleMicrosoft = () => {
-    setError(null)
     signInWithMicrosoft()
       .then(() => refreshProfile())
       .then(() => onClose())

@@ -5,27 +5,27 @@ import {
   signOut,
   signInWithRedirect,
   getRedirectResult,
-  OAuthProvider
+  GoogleAuthProvider
 } from 'firebase/auth'
 import { auth } from './firebase'
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
 
-const microsoftProvider = new OAuthProvider('microsoft.com')
-// Parâmetro customizado para evitar login silencioso na conta errada, útil no Edge do Xbox
-microsoftProvider.setCustomParameters({
+const googleProvider = new GoogleAuthProvider()
+googleProvider.setCustomParameters({
   prompt: 'select_account'
 })
-microsoftProvider.addScope('openid')
-microsoftProvider.addScope('profile')
-microsoftProvider.addScope('email')
-microsoftProvider.addScope('user.read')
 
 async function syncWithBackend(user) {
   try {
     const token = await user.getIdToken()
     const displayName = user.displayName || user.providerData?.[0]?.displayName || user.email?.split('@')[0] || 'Jogador'
-    const photoURL = user.photoURL || user.providerData?.[0]?.photoURL || null
+    let photoURL = user.photoURL || user.providerData?.[0]?.photoURL || null
+    
+    // Se for Google, tenta pegar uma versão de alta resolução da foto
+    if (photoURL && photoURL.includes('googleusercontent.com')) {
+      photoURL = photoURL.replace(/s\d+(-c)/, 's400$1')
+    }
 
     await fetch(`${API_URL}/api/auth/sync`, {
       method: 'POST',
@@ -57,9 +57,9 @@ export const logOut = async () => {
   await signOut(auth)
 }
 
-export const signInWithMicrosoft = async () => {
+export const signInWithGoogle = async () => {
   // Uso estrito de Redirect para garantir compatibilidade com PWA/UWP no Xbox
-  await signInWithRedirect(auth, microsoftProvider)
+  await signInWithRedirect(auth, googleProvider)
 }
 
 export const handleAuthRedirectResult = async () => {

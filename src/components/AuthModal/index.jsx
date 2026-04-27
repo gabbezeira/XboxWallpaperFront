@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
-import { signInWithMicrosoft, signInWithEmail, signUpWithEmail } from '../../services/auth'
+import { signInWithGoogle, signInWithEmail, signUpWithEmail } from '../../services/auth'
 import { useAuth } from '../../hooks/useAuth'
 import logo from '../../assets/logo.png'
 import styles from './styles.module.scss'
@@ -53,12 +53,12 @@ export default function AuthModal({ onClose }) {
     }
   }
 
-  const handleMicrosoft = () => {
+  const handleGoogle = () => {
     setError(null)
     setLoading(true)
-    signInWithMicrosoft().catch((err) => {
-      console.error('Erro no login Microsoft:', err)
-      setError('Erro ao inicializar o login com a Microsoft')
+    signInWithGoogle().catch((err) => {
+      console.error('Erro no login Google:', err)
+      setError('Erro ao inicializar o login com o Google')
       setLoading(false)
     })
   }
@@ -87,14 +87,14 @@ export default function AuthModal({ onClose }) {
           </p>
         </div>
 
-        <button className={styles.btnMicrosoft} onClick={handleMicrosoft}>
-          <svg width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 0H0V10H10V0Z" fill="#F25022"/>
-            <path d="M21 0H11V10H21V0Z" fill="#7FBA00"/>
-            <path d="M10 11H0V21H10V11Z" fill="#00A4EF"/>
-            <path d="M21 11H11V21H21V11Z" fill="#FFB900"/>
+        <button className={styles.btnGoogle} onClick={handleGoogle}>
+          <svg width="20" height="20" viewBox="0 0 20 20" focusable="false">
+            <path fill="#4285f4" d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.31-2.04 3.22v2.45h3.16c1.89-1.73 2.98-4.3 2.98-7.34"></path>
+            <path fill="#34a853" d="M13.46 15.13c-.83.59-1.96 1-3.46 1-2.64 0-4.88-1.74-5.68-4.15H1.07v2.52C2.72 17.75 6.09 20 10 20c2.7 0 4.96-.89 6.62-2.42z"></path>
+            <path fill="#fbbc05" d="M3.99 10c0-.69.12-1.35.32-1.97V5.51H1.07A10 10 0 000 10c0 1.61.39 3.14 1.07 4.49l3.24-2.52c-.2-.62-.32-1.28-.32-1.97"></path>
+            <path fill="#ea4335" d="M10 3.88c1.88 0 3.13.81 3.85 1.48l2.84-2.76C14.96.99 12.7 0 10 0 6.09 0 2.72 2.25 1.07 5.51l3.24 2.52C5.12 5.62 7.36 3.88 10 3.88"></path>
           </svg>
-          Continuar com Microsoft
+          Continuar com Google
         </button>
 
         <div className={styles.divider}>

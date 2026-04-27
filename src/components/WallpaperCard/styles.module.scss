@@ -87,8 +87,12 @@
   padding: $spacing-xs;
   background-color: rgba($color-bg-secondary, 0.8);
   color: $color-danger;
+  @include gamepad-focus;
 
-  &:hover {
-    background-color: rgba($color-danger, 0.2);
+  &:hover,
+  &:focus-visible {
+    background-color: $color-danger !important;
+    color: #ffffff !important;
+    border-color: #ffffff;
   }
 }

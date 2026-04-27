@@ -4,9 +4,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  background-color: rgba(0, 0, 0, 0.9);
   z-index: 99999;
   @include flex-center;
   animation: fadeIn $transition-base ease-out;
@@ -14,7 +12,8 @@
 }
 
 .modal {
-  @include glass-effect;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
   border-radius: $radius-xl;
   width: 100%;
   max-width: 420px;

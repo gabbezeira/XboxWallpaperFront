@@ -1,12 +1,12 @@
 import {
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   OAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
-  getAdditionalUserInfo,
-  browserPopupRedirectResolver
+  getAdditionalUserInfo
 } from 'firebase/auth'
 import { auth } from './firebase'
 
@@ -70,8 +70,15 @@ async function fetchGraphPhoto(accessToken) {
   return null
 }
 
-export const signInWithMicrosoft = () => {
-  return signInWithPopup(auth, microsoftProvider, browserPopupRedirectResolver).then(async (result) => {
+export const signInWithMicrosoft = async () => {
+  await signInWithRedirect(auth, microsoftProvider)
+}
+
+export const handleAuthRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth)
+    if (!result) return null
+
     const credential = OAuthProvider.credentialFromResult(result)
     const accessToken = credential?.accessToken
     const user = result.user
@@ -103,7 +110,10 @@ export const signInWithMicrosoft = () => {
     await user.reload()
     await syncWithBackend(auth.currentUser)
     return auth.currentUser
-  })
+  } catch (error) {
+    console.error('Erro no handleAuthRedirectResult:', error)
+    throw error
+  }
 }
 
 export const signInWithEmail = async (email, password) => {

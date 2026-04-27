@@ -33,7 +33,7 @@
   height: clamp(22rem, 45vw, 50rem);
   z-index: -1;
   pointer-events: none;
-  opacity: 0.25;
+  opacity: 0.45;
   overflow: hidden;
   mask-image: linear-gradient(to bottom, black 0%, transparent 80%);
   -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 80%);
@@ -54,7 +54,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(120px) saturate(200%);
+  filter: blur(120px) saturate(250%);
   opacity: 0;
   transition: opacity 2s ease-in-out;
   transform: translateZ(0);

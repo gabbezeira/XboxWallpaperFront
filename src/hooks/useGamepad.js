@@ -184,10 +184,6 @@ export default function useGamepad() {
       case BUTTON_A: {
         const focused = document.activeElement
         if (focused && focused.tagName !== 'INPUT') {
-          // If the element requires a native click (to bypass popup blockers), skip the synthetic click
-          if (focused.hasAttribute('data-native-click')) {
-            return
-          }
           focused.click()
         }
         break

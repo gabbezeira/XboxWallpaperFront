@@ -90,7 +90,7 @@ export default function AuthModal({ onClose }) {
           </p>
         </div>
 
-        <button className={styles.btnMicrosoft} onClick={handleMicrosoft} data-native-click="true">
+        <button className={styles.btnMicrosoft} onClick={handleMicrosoft}>
           <svg width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10 0H0V10H10V0Z" fill="#F25022"/>
             <path d="M21 0H11V10H21V0Z" fill="#7FBA00"/>

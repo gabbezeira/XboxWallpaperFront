@@ -1,5 +1,7 @@
 import {
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   OAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -115,8 +117,31 @@ async function uploadProfilePhotoToBackend(user, blob, contentType) {
 }
 
 export const signInWithMicrosoft = async () => {
-  const result = await signInWithPopup(auth, microsoftProvider)
+  try {
+    const result = await signInWithPopup(auth, microsoftProvider)
+    return await processMicrosoftLoginResult(result)
+  } catch (error) {
+    if (error.code === 'auth/popup-blocked') {
+      console.warn('Popup bloqueado (possível clique de Gamepad). Usando Fallback de Redirect...')
+      await signInWithRedirect(auth, microsoftProvider)
+      return null
+    }
+    throw error
+  }
+}
 
+export const handleAuthRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth)
+    if (!result) return null
+    return await processMicrosoftLoginResult(result)
+  } catch (error) {
+    console.error('Erro no handleAuthRedirectResult:', error)
+    throw error
+  }
+}
+
+async function processMicrosoftLoginResult(result) {
   const credential = OAuthProvider.credentialFromResult(result)
   const accessToken = credential?.accessToken
 

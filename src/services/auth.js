@@ -3,8 +3,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   OAuthProvider
 } from 'firebase/auth'
 import { auth } from './firebase'
@@ -58,23 +57,17 @@ export const logOut = async () => {
 }
 
 export const signInWithMicrosoft = async () => {
-  // Uso estrito de Redirect para garantir compatibilidade com PWA/UWP no Xbox
-  await signInWithRedirect(auth, microsoftProvider)
+  // Alterado para Popup: O fluxo de Redirect sofre bloqueios severos no Edge (Xbox)
+  // devido ao Tracking Prevention, que apaga o IndexedDB entre os redirecionamentos de domínio.
+  const result = await signInWithPopup(auth, microsoftProvider)
+  
+  // Sincroniza logo após o popup fechar com sucesso
+  await syncWithBackend(result.user)
+  return result.user
 }
 
 export const handleAuthRedirectResult = async () => {
-  try {
-    const result = await getRedirectResult(auth)
-    if (!result) return null
-
-    const user = result.user
-    
-    // Atualiza/Cria perfil no backend assim que volta do redirecionamento
-    await syncWithBackend(user)
-
-    return user
-  } catch (error) {
-    console.error('Erro no handleAuthRedirectResult:', error)
-    throw error
-  }
+  // Mantido apenas por compatibilidade com a chamada no AuthContext,
+  // mas o fluxo agora é totalmente gerido pelo popup acima.
+  return null
 }

@@ -53,14 +53,19 @@ export default function AuthModal({ onClose }) {
     }
   }
 
-  const handleMicrosoft = () => {
+  const handleMicrosoft = async () => {
     setError(null)
     setLoading(true)
-    signInWithMicrosoft().catch((err) => {
+    try {
+      await signInWithMicrosoft()
+      await refreshProfile()
+      onClose()
+    } catch (err) {
       console.error('Erro no login Microsoft:', err)
-      setError('Erro ao inicializar o login com a Microsoft')
+      setError('Erro ao efetuar o login com a Microsoft')
+    } finally {
       setLoading(false)
-    })
+    }
   }
 
   return (

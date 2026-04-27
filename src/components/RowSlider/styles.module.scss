@@ -86,19 +86,16 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
-  padding: $spacing-md;
-  margin: -$spacing-md;
+  padding: $spacing-md 0;
 
   @include respond-to(2xl) {
     gap: $spacing-md;
-    padding: $spacing-lg;
-    margin: -$spacing-lg;
+    padding: $spacing-lg 0;
   }
 
   @include respond-to(4k) {
     gap: $spacing-lg;
-    padding: $spacing-xl;
-    margin: -$spacing-xl;
+    padding: $spacing-xl 0;
   }
 
   &::-webkit-scrollbar {

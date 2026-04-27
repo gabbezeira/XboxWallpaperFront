@@ -107,6 +107,8 @@
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  padding: $spacing-xs;
+  margin: -$spacing-xs;
 
   &::-webkit-scrollbar {
     display: none;

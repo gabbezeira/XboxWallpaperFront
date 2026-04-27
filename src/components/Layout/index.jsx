@@ -14,7 +14,7 @@ const RESIZE_THROTTLE_MS = 120
 import logo from '../../assets/logo.png'
 
 export default function Layout({ children, onLoginClick }) {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' ? window.innerWidth < MOBILE_MAX : false
   )
@@ -95,7 +95,7 @@ export default function Layout({ children, onLoginClick }) {
                       <span className={styles.mobileUserName}>{user?.displayName || user?.email?.split('@')[0] || 'Usuário'}</span>
                     </div>
                   </>
-                ) : (
+                ) : !loading ? (
                   <>
                     <div className={`${styles.mobileAvatar} ${styles.mobileAvatarFallback}`}>
                       <User size={18} />
@@ -104,7 +104,7 @@ export default function Layout({ children, onLoginClick }) {
                       Entrar
                     </button>
                   </>
-                )}
+                ) : null}
                 <button
                   className={styles.mobileActionBtn}
                   onClick={() => setMobileSearchOpen(true)}

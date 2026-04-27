@@ -43,10 +43,55 @@ function getCenter(el) {
   return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
 }
 
+function getScrollParent(el) {
+  let parent = el.parentElement
+  while (parent) {
+    const style = getComputedStyle(parent)
+    if (style.overflowX === 'auto' || style.overflowX === 'scroll') {
+      return parent
+    }
+    parent = parent.parentElement
+  }
+  return null
+}
+
 function findBestCandidate(current, direction, candidates) {
   const from = getCenter(current)
+  const isHorizontal = direction === 'left' || direction === 'right'
+  const scrollParent = isHorizontal ? getScrollParent(current) : null
+
   let best = null
   let bestScore = Infinity
+
+  if (scrollParent && isHorizontal) {
+    const siblings = Array.from(scrollParent.querySelectorAll(FOCUSABLE_SELECTOR))
+      .filter(el => {
+        if (el === current) return false
+        if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return false
+        const rect = el.getBoundingClientRect()
+        if (rect.width === 0 || rect.height === 0) return false
+        return true
+      })
+
+    for (const el of siblings) {
+      const to = getCenter(el)
+      const dx = to.x - from.x
+
+      if (direction === 'right' && dx > 0) {
+        if (dx < bestScore) {
+          bestScore = dx
+          best = el
+        }
+      } else if (direction === 'left' && dx < 0) {
+        if (-dx < bestScore) {
+          bestScore = -dx
+          best = el
+        }
+      }
+    }
+
+    if (best) return best
+  }
 
   for (const el of candidates) {
     if (el === current) continue

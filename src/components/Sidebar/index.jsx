@@ -7,7 +7,7 @@ import logo from '../../assets/logo.png'
 import styles from './styles.module.scss'
 
 export default function Sidebar({ onLoginClick }) {
-  const { user, profile } = useAuth()
+  const { user, profile, loading } = useAuth()
 
   const navClass = ({ isActive }) => 
     `${styles.navItem} ${isActive ? styles.active : ''}`
@@ -79,11 +79,11 @@ export default function Sidebar({ onLoginClick }) {
               Sair
             </button>
           </>
-        ) : (
+        ) : !loading ? (
           <button className={styles.btnLogin} onClick={onLoginClick}>
             Entrar
           </button>
-        )}
+        ) : null}
       </div>
     </aside>
   )

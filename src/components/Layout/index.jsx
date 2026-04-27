@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Search, LogOut, User, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-import { signOut } from 'firebase/auth'
-import { auth } from '../../services/firebase'
+import { logOut } from '../../services/auth'
 import Sidebar from '../Sidebar'
 import BottomNav from '../BottomNav'
 import styles from './styles.module.scss'
@@ -113,7 +112,7 @@ export default function Layout({ children, onLoginClick }) {
                   <Search size={18} />
                 </button>
                 {user && (
-                  <button className={styles.mobileActionBtn} onClick={() => signOut(auth)} aria-label="Sair">
+                  <button className={styles.mobileActionBtn} onClick={logOut} aria-label="Sair">
                     <LogOut size={18} />
                   </button>
                 )}

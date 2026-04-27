@@ -1,8 +1,7 @@
 import { NavLink, Link } from 'react-router-dom'
 import { Home, Compass, UploadCloud, Heart, LogOut } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
-import { signOut } from 'firebase/auth'
-import { auth } from '../../services/firebase'
+import { logOut } from '../../services/auth'
 import logo from '../../assets/logo.png'
 import styles from './styles.module.scss'
 
@@ -74,7 +73,7 @@ export default function Sidebar({ onLoginClick }) {
                 <div className={styles.badge}>ULTIMATE</div>
               </div>
             </div>
-            <button className={styles.btnLogout} onClick={() => signOut(auth)}>
+            <button className={styles.btnLogout} onClick={logOut}>
               <LogOut size={16} />
               Sair
             </button>

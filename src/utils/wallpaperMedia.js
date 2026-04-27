@@ -1,4 +1,4 @@
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+import { API_URL } from '../../services/api'
 /**
  * URLs relativas da API (/api/...) precisam do token para imagens privadas.
  */

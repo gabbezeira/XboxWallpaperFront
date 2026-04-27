@@ -4,7 +4,7 @@ import RowSlider from '../../components/RowSlider'
 import { api } from '../../services/api'
 import styles from './styles.module.scss'
 
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+import { API_URL } from '../../services/api'
 
 const HERO_CACHE_KEY = 'xboxwall_hero_slides_v2'
 const HERO_CACHE_TTL_MS = 8 * 60 * 1000

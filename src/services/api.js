@@ -1,5 +1,5 @@
 import { auth } from './firebase'
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+export const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
 
 async function getToken() {
   const user = auth.currentUser

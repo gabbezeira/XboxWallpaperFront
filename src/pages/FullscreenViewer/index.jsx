@@ -2,9 +2,10 @@ import { useEffect, useState, useMemo } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { API_URL } from '../../services/api'
 import styles from './styles.module.scss'
 
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+
 
 export default function FullscreenViewer() {
   const location = useLocation()

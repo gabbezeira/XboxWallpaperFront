@@ -72,6 +72,7 @@ export function AuthProvider({ children }) {
       .catch((err) => console.warn('Erro ao processar redirect do Auth:', err))
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log('[AUTH] onAuthStateChanged disparou! firebaseUser:', firebaseUser?.email || 'null')
       setUser(firebaseUser)
 
       if (firebaseUser) {

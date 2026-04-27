@@ -61,7 +61,10 @@ export default function AuthModal({ onClose }) {
       })
       .catch((err) => {
         console.error('Erro no login da Microsoft:', err)
-        if (err.code !== 'auth/popup-closed-by-user') {
+        if (err.code === 'auth/popup-closed-by-user') return
+        if (err.code === 'auth/popup-blocked') {
+          setError('Popup bloqueado. Permita popups para este site nas configurações do navegador.')
+        } else {
           setError('Erro ao entrar com Microsoft')
         }
       })

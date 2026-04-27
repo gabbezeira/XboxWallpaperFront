@@ -29,6 +29,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     isMountedRef.current = true
     console.log('%c[Auth] Inicializando sistema de autenticação...', 'color: #f1c40f; font-weight: bold')
+    console.log('[Auth] Config:', {
+      apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? 'OK' : 'MISSING',
+      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID
+    })
 
     // 1. OUVINTE DE ESTADO (O motor principal)
     // Ele deve rodar IMEDIATAMENTE e de forma independente

@@ -4,8 +4,11 @@ import {
   updateProfile,
   signOut,
   signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
-  GoogleAuthProvider
+  GoogleAuthProvider,
+  browserLocalPersistence,
+  setPersistence
 } from 'firebase/auth'
 import { auth } from './firebase'
 
@@ -22,7 +25,6 @@ async function syncWithBackend(user) {
     const displayName = user.displayName || user.providerData?.[0]?.displayName || user.email?.split('@')[0] || 'Jogador'
     let photoURL = user.photoURL || user.providerData?.[0]?.photoURL || null
     
-    // Se for Google, tenta pegar uma versão de alta resolução da foto
     if (photoURL && photoURL.includes('googleusercontent.com')) {
       photoURL = photoURL.replace(/s\d+(-c)/, 's400$1')
     }
@@ -36,7 +38,7 @@ async function syncWithBackend(user) {
       body: JSON.stringify({ displayName, photoURL })
     })
   } catch (error) {
-    console.warn('Erro ao sincronizar com backend:', error)
+    console.warn('[Auth] Erro ao sincronizar com backend:', error)
   }
 }
 
@@ -58,23 +60,34 @@ export const logOut = async () => {
 }
 
 export const signInWithGoogle = async () => {
-  // Uso estrito de Redirect para garantir compatibilidade com PWA/UWP no Xbox
-  await signInWithRedirect(auth, googleProvider)
+  const isLocalhost = window.location.hostname === 'localhost'
+  
+  // No localhost, o Popup é 100% confiável e evita problemas de cookies de terceiros
+  // No Xbox/Vercel, usamos o Redirect para compatibilidade
+  if (isLocalhost) {
+    console.log('[Auth] Usando Popup para login no localhost')
+    const result = await signInWithPopup(auth, googleProvider)
+    await syncWithBackend(result.user)
+    return result.user
+  } else {
+    console.log('[Auth] Usando Redirect para login em produção')
+    await signInWithRedirect(auth, googleProvider)
+  }
 }
 
 export const handleAuthRedirectResult = async () => {
   try {
+    // Garante persistência local antes de checar o resultado
+    await setPersistence(auth, browserLocalPersistence)
+    
     const result = await getRedirectResult(auth)
     if (!result) return null
 
     const user = result.user
-    
-    // Atualiza/Cria perfil no backend assim que volta do redirecionamento
     await syncWithBackend(user)
-
     return user
   } catch (error) {
-    console.error('Erro no handleAuthRedirectResult:', error)
+    console.error('[Auth] Erro no handleAuthRedirectResult:', error)
     throw error
   }
 }

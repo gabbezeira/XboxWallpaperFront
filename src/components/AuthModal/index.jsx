@@ -54,7 +54,6 @@ export default function AuthModal({ onClose }) {
 
   const handleMicrosoft = async () => {
     try {
-      setError(null)
       await signInWithMicrosoft()
       await refreshProfile()
       onClose()

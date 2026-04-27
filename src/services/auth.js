@@ -121,9 +121,14 @@ export const signInWithMicrosoft = async () => {
     const result = await signInWithPopup(auth, microsoftProvider)
     return await processMicrosoftLoginResult(result)
   } catch (error) {
-    if (error.code === 'auth/popup-blocked') {
-      console.warn('Popup bloqueado (possível clique de Gamepad). Usando Fallback de Redirect...')
-      await signInWithRedirect(auth, microsoftProvider)
+    if (error.code?.includes('popup')) {
+      console.warn('Popup bloqueado. Usando Fallback de Redirect...')
+      try {
+        await signInWithRedirect(auth, microsoftProvider)
+      } catch (redirectError) {
+        console.error('Redirect também falhou:', redirectError)
+        throw redirectError
+      }
       return null
     }
     throw error

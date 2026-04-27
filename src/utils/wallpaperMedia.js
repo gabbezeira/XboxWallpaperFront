@@ -1,4 +1,4 @@
-import { API_URL } from '../../services/api'
+import { API_URL } from '../services/api'
 /**
  * URLs relativas da API (/api/...) precisam do token para imagens privadas.
  */

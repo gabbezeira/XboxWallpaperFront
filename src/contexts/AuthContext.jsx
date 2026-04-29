@@ -33,17 +33,6 @@ export function AuthProvider({ children }) {
     const init = async () => {
       await authReady
 
-      unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-        if (!isMountedRef.current) return
-        setUser(firebaseUser)
-        if (firebaseUser) {
-          await fetchProfile(firebaseUser)
-        } else {
-          setProfile(null)
-        }
-        setLoading(false)
-      })
-
       try {
         const resultUser = await handleAuthRedirectResult()
         if (resultUser && isMountedRef.current) {
@@ -56,6 +45,17 @@ export function AuthProvider({ children }) {
           setAuthError('Erro ao completar o login. Tente novamente.')
         }
       }
+
+      unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        if (!isMountedRef.current) return
+        setUser(firebaseUser)
+        if (firebaseUser) {
+          await fetchProfile(firebaseUser)
+        } else {
+          setProfile(null)
+        }
+        setLoading(false)
+      })
     }
 
     init()

@@ -259,3 +259,35 @@
   border-radius: $radius-full;
   border: 2px solid $color-bg-main;
 }
+
+.mobileFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: 6px $spacing-xl;
+  border-bottom: 1px solid $color-border;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.mobileFooterLink {
+  font-size: 10px;
+  color: $color-text-muted;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color $transition-fast;
+  border-radius: $radius-md;
+  padding: 2px 6px;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  &:hover {
+    color: $color-primary;
+  }
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, LogOut, User, X, Info } from 'lucide-react';
+import { Search, LogOut, User, X } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
@@ -122,13 +122,6 @@ export default function Layout({ children, onLoginClick }) {
                     </button>
                   </>
                 )}
-                <Link
-                  to="/terms"
-                  className={styles.mobileActionBtn}
-                  aria-label="Termos de Uso"
-                >
-                  <Info size={18} />
-                </Link>
                 <button
                   className={styles.mobileActionBtn}
                   onClick={() => setMobileSearchOpen(true)}
@@ -144,6 +137,9 @@ export default function Layout({ children, onLoginClick }) {
               </div>
             )}
           </header>
+          <div className={styles.mobileFooter}>
+            <Link to="/terms" className={styles.mobileFooterLink}>Termos &amp; Privacidade</Link>
+          </div>
           <BottomNav onLoginClick={onLoginClick} />
         </>
       ) : (

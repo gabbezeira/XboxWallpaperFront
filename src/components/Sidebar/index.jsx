@@ -17,8 +17,8 @@ export default function Sidebar({ onLoginClick }) {
   return (
     <aside className={styles.sidebar}>
       <Link to="/" className={styles.brand} tabIndex={0}>
-        <img src={logo} alt="Xbox Wallpapers" className={styles.brandIcon} />
-        <span>Xbox Wallpapers</span>
+        <img src={logo} alt="Spartan Wallpapers" className={styles.brandIcon} />
+        <span>Spartan Wallpapers</span>
       </Link>
 
       <nav className={styles.nav}>
@@ -96,7 +96,7 @@ export default function Sidebar({ onLoginClick }) {
         )}
         <div className={styles.sidebarFooter}>
           <Link to="/terms" className={styles.footerLink}>
-            Termos de Uso • Feito por @gabbezeira
+            Termos &amp; Privacidade
           </Link>
         </div>
       </div>

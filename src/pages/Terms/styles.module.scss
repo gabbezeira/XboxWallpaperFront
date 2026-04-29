@@ -1,77 +1,179 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-.container {
-  padding: $spacing-xl;
+.page {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: calc(100vh - 80px);
-  background-color: $color-bg-secondary;
-  overflow-y: auto;
+  flex-direction: column;
+  padding: $spacing-xl;
 
   @include respond-to(md) {
     padding: $spacing-2xl;
   }
-}
 
-.card {
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: $radius-lg;
-  padding: $spacing-xl;
-  max-width: 800px;
-  width: 100%;
-  backdrop-filter: blur(10px);
-
-  @include respond-to(md) {
+  @include respond-to(2xl) {
     padding: $spacing-3xl;
   }
+}
+
+.inner {
+  max-width: 820px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+
+  @include respond-to(2xl) {
+    max-width: 1000px;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
 }
 
 .title {
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-text-primary;
-  margin-bottom: $spacing-xl;
-  border-bottom: 2px solid rgba($color-primary, 0.3);
-  padding-bottom: $spacing-sm;
+}
+
+.subtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+}
+
+.divider {
+  width: 48px;
+  height: 3px;
+  background-color: $color-primary;
+  border-radius: $radius-full;
+  margin-top: $spacing-sm;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
 }
 
 .section {
-  margin-bottom: $spacing-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
 
-  h2 {
-    font-size: $fs-subtitle;
-    color: $color-primary;
+  @include respond-to(md) {
+    padding: $spacing-2xl;
+  }
+}
+
+.sectionTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.sectionText {
+  font-size: $fs-body;
+  line-height: 1.65;
+  color: $color-text-secondary;
+
+  strong {
+    color: $color-text-primary;
     font-weight: $fw-semibold;
-    margin-bottom: $spacing-md;
   }
+}
 
-  p {
-    font-size: $fs-body;
-    line-height: 1.6;
-    color: $color-text-secondary;
-    margin-bottom: $spacing-md;
+.highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  border-radius: $radius-lg;
+  background-color: rgba($color-primary, 0.06);
+  border: 1px solid rgba($color-primary, 0.15);
+}
 
-    strong {
-      color: $color-text-primary;
-    }
+.highlightIcon {
+  color: $color-primary;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 
-    &:last-child {
-      margin-bottom: 0;
-    }
+.highlightText {
+  font-size: $fs-body;
+  line-height: 1.6;
+  color: $color-text-secondary;
+
+  strong {
+    color: $color-text-primary;
+    font-weight: $fw-semibold;
   }
+}
+
+.authorCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  padding: $spacing-xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+}
+
+.authorAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: $radius-full;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba($color-primary, 0.4);
+
+  @include respond-to(md) {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authorName {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.authorHandle {
+  font-size: $fs-body;
+  color: $color-primary;
+  font-weight: $fw-medium;
+}
+
+.authorRole {
+  font-size: $fs-small;
+  color: $color-text-muted;
 }
 
 .footer {
-  margin-top: $spacing-2xl;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: $spacing-md;
-  text-align: center;
-
-  p {
-    font-size: $fs-small;
-    color: $color-text-muted;
-  }
+  padding-top: $spacing-xl;
+  border-top: 1px solid $color-border;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
 }
+
+.footerText {
+  font-size: $fs-small;
+  color: $color-text-muted;
+}
+

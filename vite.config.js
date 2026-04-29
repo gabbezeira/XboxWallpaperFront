@@ -9,10 +9,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/*.png'],
       manifest: {
-        id: 'xbox-wallpaper-app',
-        name: 'Xbox Wallpaper',
-        short_name: 'Xbox Wallpaper',
-        description: 'Gerencie seus wallpapers do Xbox de forma simples',
+        id: 'spartan-wallpaper-app',
+        name: 'Spartan Wallpapers',
+        short_name: 'Spartan',
+        description: 'A forma mais fácil de personalizar o fundo do seu Xbox. Wallpapers em 4K para toda a comunidade.',
         lang: 'pt-BR',
         dir: 'ltr',
         theme_color: '#00ab00',
@@ -68,7 +68,21 @@ export default defineConfig({
             sizes: '640x1386',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Visualização Mobile'
+            label: 'Mobile Home Page'
+          },
+          {
+            src: '/screenshots/mobile-2.png',
+            sizes: '640x1386',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Mobile Gallery Page'
+          },
+          {
+            src: '/screenshots/mobile-3.png',
+            sizes: '640x1386',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Mobile Wallpaper Detail'
           }
         ],
         icons: [

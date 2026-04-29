@@ -219,7 +219,10 @@
   margin-top: $spacing-sm;
   padding-top: $spacing-md;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .footerLink {
@@ -227,9 +230,23 @@
   color: $color-text-muted;
   text-decoration: none;
   transition: color $transition-fast;
-  display: inline-block;
+  letter-spacing: 0.02em;
+  border-radius: $radius-md;
+  padding: 2px 4px;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
 
   &:hover {
     color: $color-primary;
   }
+}
+
+.footerCredit {
+  font-size: 9px;
+  color: rgba($color-text-muted, 0.5);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }

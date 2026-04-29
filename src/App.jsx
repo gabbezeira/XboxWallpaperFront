@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
-import { useAuth } from './hooks/useAuth';
 import useGamepad from './hooks/useGamepad';
 import { AuthProvider } from './contexts/AuthContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
@@ -18,7 +17,7 @@ import Terms from './pages/Terms';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/Admin/Login';
 import AdminRoute from './components/AdminRoute';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from '@vercel/analytics/react';
 
 import GlobalLoader from './components/GlobalLoader';
 

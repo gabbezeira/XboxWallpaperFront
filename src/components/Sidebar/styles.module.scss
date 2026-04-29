@@ -25,31 +25,30 @@
 }
 
 .brand {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  color: $color-text-primary;
-  font-size: $fs-subtitle;
-  font-weight: $fw-bold;
+  display: block;
   margin-bottom: $spacing-2xl;
   padding: 0 $spacing-sm;
-  @include gamepad-focus;
   border-radius: $radius-md;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
 }
 
-.brandIcon {
-  width: 32px;
-  height: 32px;
+.brandLogo {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
   object-fit: contain;
+  display: block;
 
   @include respond-to(2xl) {
-    width: 36px;
-    height: 36px;
+    max-width: 200px;
   }
 
   @include respond-to(4k) {
-    width: 44px;
-    height: 44px;
+    max-width: 260px;
   }
 }
 

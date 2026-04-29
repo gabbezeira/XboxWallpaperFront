@@ -2,7 +2,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { Home, Compass, UploadCloud, Heart, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
-import logo from '../../assets/logo.png';
+import horizontalLogo from '../../assets/horizontal-logo.png';
 import styles from './styles.module.scss';
 
 export default function Sidebar({ onLoginClick }) {
@@ -17,8 +17,7 @@ export default function Sidebar({ onLoginClick }) {
   return (
     <aside className={styles.sidebar}>
       <Link to="/" className={styles.brand} tabIndex={0}>
-        <img src={logo} alt="Spartan Wallpapers" className={styles.brandIcon} />
-        <span>Spartan Wallpapers</span>
+        <img src={horizontalLogo} alt="Spartan Wallpapers" className={styles.brandLogo} />
       </Link>
 
       <nav className={styles.nav}>

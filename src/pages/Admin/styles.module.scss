@@ -335,7 +335,7 @@
 }
 
 .textarea {
-  composes: field;
+  @extend .field;
   min-height: 5.5rem;
   padding-top: $spacing-md;
   padding-bottom: $spacing-md;
@@ -411,7 +411,7 @@
 }
 
 .listHeaderField {
-  composes: field;
+  @extend .field;
   min-width: 0;
   flex: 1 1 8.5rem;
   max-width: 14rem;

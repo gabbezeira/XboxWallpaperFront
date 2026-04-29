@@ -52,6 +52,7 @@ export const signUpWithEmail = async (email, password, displayName) => {
 
 export const logOut = async () => {
   await signOut(auth)
+  sessionStorage.clear()
 }
 
 export const signInWithMicrosoft = () => {

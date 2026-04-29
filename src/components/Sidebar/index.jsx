@@ -1,8 +1,7 @@
 import { NavLink, Link } from 'react-router-dom'
 import { Home, Compass, UploadCloud, Heart, LogOut } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
-import { signOut } from 'firebase/auth'
-import { auth } from '../../services/firebase'
+import { logOut } from '../../services/auth'
 import logo from '../../assets/logo.png'
 import styles from './styles.module.scss'
 
@@ -64,7 +63,16 @@ export default function Sidebar({ onLoginClick }) {
             <div className={styles.userInfo}>
               <div className={`${styles.avatar} ${!photoURL ? styles.avatarWithColor : ''}`}>
                 {photoURL ? (
-                  <img src={photoURL} alt={displayName} className={styles.avatarImg} />
+                  <img 
+                    src={photoURL} 
+                    alt={displayName} 
+                    className={styles.avatarImg} 
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.insertAdjacentText('afterend', displayName.charAt(0).toUpperCase());
+                    }}
+                  />
                 ) : (
                   displayName.charAt(0).toUpperCase()
                 )}
@@ -74,7 +82,7 @@ export default function Sidebar({ onLoginClick }) {
                 <div className={styles.badge}>ULTIMATE</div>
               </div>
             </div>
-            <button className={styles.btnLogout} onClick={() => signOut(auth)}>
+            <button className={styles.btnLogout} onClick={logOut}>
               <LogOut size={16} />
               Sair
             </button>

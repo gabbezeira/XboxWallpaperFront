@@ -71,7 +71,19 @@ export default function AuthModal({ onClose }) {
   const handleMicrosoft = () => {
     setRedirecting(true);
     sessionStorage.setItem('oauth_redirect', 'true');
-    signInWithMicrosoft();
+    
+    signInWithMicrosoft().catch((err) => {
+      console.warn('Erro ao iniciar redirecionamento:', err);
+      setRedirecting(false);
+      sessionStorage.removeItem('oauth_redirect');
+      setError('Ocorreu um erro ao tentar acessar a Microsoft.');
+    });
+
+    // Fallback caso a navegação falhe silenciosamente (ex: bloqueadores agressivos)
+    setTimeout(() => {
+      setRedirecting(false);
+      sessionStorage.removeItem('oauth_redirect');
+    }, 10000);
   };
 
   if (redirecting) {

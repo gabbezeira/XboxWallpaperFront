@@ -21,10 +21,26 @@ import AdminRoute from './components/AdminRoute';
 
 function GlobalLoader() {
   const { loading } = useAuth();
-  const isRedirecting = sessionStorage.getItem('oauth_redirect') === 'true';
+  const [isRedirecting, setIsRedirecting] = useState(
+    () => sessionStorage.getItem('oauth_redirect') === 'true'
+  );
+
+  useEffect(() => {
+    let timeoutId;
+    if (isRedirecting) {
+      // Timeout de 10 segundos caso o Firebase não responda
+      // ou se o usuário voltar da página pelo cache do navegador
+      timeoutId = setTimeout(() => {
+        setIsRedirecting(false);
+        sessionStorage.removeItem('oauth_redirect');
+      }, 10000);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [isRedirecting]);
 
   useEffect(() => {
     if (!loading && isRedirecting) {
+      setIsRedirecting(false);
       sessionStorage.removeItem('oauth_redirect');
     }
   }, [loading, isRedirecting]);

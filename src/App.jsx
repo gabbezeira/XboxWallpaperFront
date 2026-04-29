@@ -18,6 +18,7 @@ import Terms from './pages/Terms';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/Admin/Login';
 import AdminRoute from './components/AdminRoute';
+import { Analytics } from "@vercel/analytics/next"
 
 import GlobalLoader from './components/GlobalLoader';
 
@@ -82,6 +83,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <FavoritesProvider>
+          <Analytics />
           <AppRoutes />
         </FavoritesProvider>
       </AuthProvider>

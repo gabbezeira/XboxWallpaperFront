@@ -16,7 +16,7 @@
 }
 
 .errorTitle {
-  font-size: $fs-h3;
+  font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-danger;
   margin-bottom: $spacing-sm;
@@ -35,7 +35,7 @@
 
 .backButton {
   padding: 10px $spacing-2xl;
-  background-color: $color-bg-dark;
+  background-color: $color-bg-tertiary;
   border: 1px solid $color-border;
   color: $color-text-primary;
   border-radius: $radius-md;
@@ -45,7 +45,7 @@
   @include gamepad-focus;
 
   &:hover {
-    background-color: lighten($color-bg-dark, 5%);
+    background-color: lighten($color-bg-tertiary, 5%);
   }
 
   &:focus-visible {

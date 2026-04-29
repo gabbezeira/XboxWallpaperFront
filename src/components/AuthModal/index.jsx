@@ -71,7 +71,7 @@ export default function AuthModal({ onClose }) {
   const handleMicrosoft = () => {
     setRedirecting(true);
     sessionStorage.setItem('oauth_redirect', 'true');
-    
+
     signInWithMicrosoft().catch((err) => {
       console.warn('Erro ao iniciar redirecionamento:', err);
       setRedirecting(false);
@@ -83,6 +83,7 @@ export default function AuthModal({ onClose }) {
     setTimeout(() => {
       setRedirecting(false);
       sessionStorage.removeItem('oauth_redirect');
+      setError('A conexão expirou. Por favor, verifique sua rede e tente novamente.');
     }, 10000);
   };
 

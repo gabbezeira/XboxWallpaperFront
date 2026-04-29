@@ -12,7 +12,8 @@ export default defineConfig({
         id: 'spartan-wallpaper-app',
         name: 'Spartan Wallpapers',
         short_name: 'Spartan',
-        description: 'A forma mais fácil de personalizar o fundo do seu Xbox. Wallpapers em 4K para toda a comunidade.',
+        description:
+          'A forma mais fácil de personalizar o fundo do seu Xbox. Wallpapers em 4K para toda a comunidade.',
         lang: 'pt-BR',
         dir: 'ltr',
         theme_color: '#00ab00',
@@ -24,27 +25,25 @@ export default defineConfig({
         iarc_rating_id: 'e',
         prefer_related_applications: false,
         related_applications: [],
-        scope_extensions: [
-          { origin: 'https://xboxwallpaper-734da.firebaseapp.com' }
-        ],
+        scope_extensions: [{ origin: 'https://xboxwallpaper-734da.firebaseapp.com' }],
         shortcuts: [
           {
             name: 'Explorar Wallpapers',
             short_name: 'Explorar',
             description: 'Veja a galeria completa de wallpapers',
             url: '/gallery',
-            icons: [{ src: '/icons/logo-192.png', sizes: '192x192' }]
+            icons: [{ src: '/icons/logo-192.png', sizes: '192x192' }],
           },
           {
             name: 'Meus Wallpapers',
             short_name: 'Meus',
             description: 'Veja os wallpapers que você enviou',
             url: '/my-wallpapers',
-            icons: [{ src: '/icons/logo-192.png', sizes: '192x192' }]
-          }
+            icons: [{ src: '/icons/logo-192.png', sizes: '192x192' }],
+          },
         ],
         launch_handler: {
-          client_mode: ['navigate-existing', 'auto']
+          client_mode: ['navigate-existing', 'auto'],
         },
         file_handlers: [],
         protocol_handlers: [],
@@ -54,36 +53,36 @@ export default defineConfig({
             sizes: '1920x1080',
             type: 'image/png',
             form_factor: 'wide',
-            label: 'Home Page'
+            label: 'Home Page',
           },
           {
             src: '/screenshots/desktop-2.png',
             sizes: '1920x1080',
             type: 'image/png',
             form_factor: 'wide',
-            label: 'Wallpapers Gallery'
+            label: 'Wallpapers Gallery',
           },
           {
             src: '/screenshots/mobile-1.png',
             sizes: '640x1386',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Mobile Home Page'
+            label: 'Mobile Home Page',
           },
           {
             src: '/screenshots/mobile-2.png',
             sizes: '640x1386',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Mobile Gallery Page'
+            label: 'Mobile Gallery Page',
           },
           {
             src: '/screenshots/mobile-3.png',
             sizes: '640x1386',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Mobile Wallpaper Detail'
-          }
+            label: 'Mobile Wallpaper Detail',
+          },
         ],
         icons: [
           {

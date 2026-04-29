@@ -137,9 +137,6 @@ export default function Layout({ children, onLoginClick }) {
               </div>
             )}
           </header>
-          <div className={styles.mobileFooter}>
-            <Link to="/terms" className={styles.mobileFooterLink}>Termos &amp; Privacidade</Link>
-          </div>
           <BottomNav onLoginClick={onLoginClick} />
         </>
       ) : (

@@ -5,15 +5,11 @@ import {
   signOut,
   signInWithRedirect,
   getRedirectResult,
-  GoogleAuthProvider,
   OAuthProvider
 } from 'firebase/auth'
 import { auth } from './firebase'
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
-
-const googleProvider = new GoogleAuthProvider()
-googleProvider.setCustomParameters({ prompt: 'select_account' })
 
 const microsoftProvider = new OAuthProvider('microsoft.com')
 microsoftProvider.setCustomParameters({ prompt: 'select_account' })
@@ -56,10 +52,6 @@ export const signUpWithEmail = async (email, password, displayName) => {
 
 export const logOut = async () => {
   await signOut(auth)
-}
-
-export const signInWithGoogle = () => {
-  return signInWithRedirect(auth, googleProvider)
 }
 
 export const signInWithMicrosoft = () => {

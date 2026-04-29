@@ -389,37 +389,12 @@ export default function useGamepad() {
   }, [navigateFocus, handleButtonAction, startRepeat, stopRepeat]);
 
   useEffect(() => {
-    const onConnect = () => {
-      if (!animFrameRef.current) {
-        animFrameRef.current = requestAnimationFrame(pollGamepad);
-      }
-    };
-
-    const onDisconnect = () => {
-      const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
-      const anyLeft = Array.from(gamepads).some((gp) => gp !== null);
-      if (!anyLeft && animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-        animFrameRef.current = null;
-        Object.keys(repeatTimers.current).forEach((key) => {
-          clearTimeout(repeatTimers.current[key]?.timeout);
-          clearInterval(repeatTimers.current[key]?.interval);
-        });
-        repeatTimers.current = {};
-      }
-    };
-
-    window.addEventListener('gamepadconnected', onConnect);
-    window.addEventListener('gamepaddisconnected', onDisconnect);
-
-    const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
-    if (Array.from(gamepads).some((gp) => gp !== null)) {
-      onConnect();
-    }
+    // Inicia o loop imediatamente. O navegador (Chrome/Edge/Xbox) bloqueia
+    // os dados do controle no carregamento inicial até que um botão seja apertado.
+    // Estando em polling contínuo, a detecção acontece em tempo real no primeiro clique.
+    animFrameRef.current = requestAnimationFrame(pollGamepad);
 
     return () => {
-      window.removeEventListener('gamepadconnected', onConnect);
-      window.removeEventListener('gamepaddisconnected', onDisconnect);
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
         animFrameRef.current = null;

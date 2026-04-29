@@ -9,12 +9,42 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/*.png'],
       manifest: {
+        id: 'xbox-wallpaper-app',
         name: 'Xbox Wallpaper',
         short_name: 'Xbox Wallpaper',
         description: 'Gerencie seus wallpapers do Xbox de forma simples',
-        theme_color: '#00ab00', //107c10
+        theme_color: '#00ab00',
         background_color: '#00ab00',
         display: 'standalone',
+        display_override: ['windows-control-overlay', 'standalone', 'minimal-ui'],
+        orientation: 'any',
+        categories: ['personalization', 'entertainment', 'games'],
+        iarc_rating_id: 'e',
+        prefer_related_applications: false,
+        related_applications: [],
+        screenshots: [
+          {
+            src: '/screenshots/desktop-1.png',
+            sizes: '1920x1080',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Home Page'
+          },
+          {
+            src: '/screenshots/desktop-2.png',
+            sizes: '1920x1080',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Wallpapers Gallery'
+          },
+          {
+            src: '/screenshots/desktop-3.png',
+            sizes: '1920x1080',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Wallpaper Details'
+          }
+        ],
         icons: [
           {
             src: '/icons/logo-44.png',

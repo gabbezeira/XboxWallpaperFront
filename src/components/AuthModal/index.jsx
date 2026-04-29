@@ -68,6 +68,7 @@ export default function AuthModal({ onClose }) {
 
   const handleMicrosoft = () => {
     setRedirecting(true)
+    sessionStorage.setItem('oauth_redirect', 'true')
     signInWithMicrosoft()
   }
 

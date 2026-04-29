@@ -16,7 +16,7 @@ export default defineConfig({
           'A forma mais fácil de personalizar o fundo do seu Xbox. Wallpapers em 4K para toda a comunidade.',
         lang: 'pt-BR',
         dir: 'ltr',
-        theme_color: '#00ab00',
+        theme_color: '#030303',
         background_color: '#00ab00',
         display: 'standalone',
         display_override: ['windows-control-overlay', 'standalone', 'minimal-ui'],

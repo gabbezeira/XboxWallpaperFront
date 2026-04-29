@@ -13,20 +13,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 
-// Inicialização ultra-robusta da persistência
-// No PC, o IndexedDB é mais estável que o LocalStorage para o Firebase
-const initAuth = async () => {
-  if (typeof window !== 'undefined') {
-    try {
-      await setPersistence(auth, indexedDBLocalPersistence)
-      console.log('%c[Firebase] Persistência IndexedDB ativada', 'color: #2ecc71')
-    } catch {
-      await setPersistence(auth, browserLocalPersistence)
-      console.log('%c[Firebase] Persistência LocalStorage ativada', 'color: #f1c40f')
-    }
+export const authReady = (async () => {
+  try {
+    await setPersistence(auth, indexedDBLocalPersistence)
+  } catch {
+    await setPersistence(auth, browserLocalPersistence)
   }
-}
-
-initAuth()
+})()
 
 export default app

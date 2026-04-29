@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../services/firebase'
+import { auth, authReady } from '../services/firebase'
 import { api } from '../services/api'
 import { handleAuthRedirectResult } from '../services/auth'
 
@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [authError, setAuthError] = useState(null)
 
   const fetchProfile = useCallback(async (firebaseUser) => {
     if (!firebaseUser || !isMountedRef.current) return
@@ -26,12 +27,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     isMountedRef.current = true
-    console.log('[Auth] Inicializando sistema...')
 
-    // 1. OUVINTE DE ESTADO (Eficiente e Grátis)
-    // Esse ouvinte só dispara quando o estado REALMENTE muda.
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (isMountedRef.current) {
+    let unsubscribe = () => {}
+
+    const init = async () => {
+      await authReady
+
+      unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        if (!isMountedRef.current) return
         setUser(firebaseUser)
         if (firebaseUser) {
           await fetchProfile(firebaseUser)
@@ -39,26 +42,23 @@ export function AuthProvider({ children }) {
           setProfile(null)
         }
         setLoading(false)
-      }
-    })
+      })
 
-    // 2. CAPTURA DE REDIRECT (Uma única vez ao carregar a página)
-    const checkRedirect = async () => {
-      // Só tentamos capturar o redirect se houver sinal de que viemos do Google na URL
-      if (window.location.href.includes('apiKey=')) {
-        try {
-          const resultUser = await handleAuthRedirectResult()
-          if (resultUser && isMountedRef.current) {
-            setUser(resultUser)
-            await fetchProfile(resultUser)
-          }
-        } catch (err) {
-          console.error('[Auth] Erro no redirect:', err)
+      try {
+        const resultUser = await handleAuthRedirectResult()
+        if (resultUser && isMountedRef.current) {
+          setUser(resultUser)
+          await fetchProfile(resultUser)
+        }
+      } catch (err) {
+        console.error('[Auth] Erro ao capturar resultado do redirect:', err)
+        if (isMountedRef.current) {
+          setAuthError('Erro ao completar o login. Tente novamente.')
         }
       }
     }
 
-    checkRedirect()
+    init()
 
     return () => {
       isMountedRef.current = false
@@ -74,8 +74,9 @@ export function AuthProvider({ children }) {
     user,
     profile,
     loading,
+    authError,
     refreshProfile
-  }), [user, profile, loading, refreshProfile])
+  }), [user, profile, loading, authError, refreshProfile])
 
   return (
     <AuthContext.Provider value={contextValue}>

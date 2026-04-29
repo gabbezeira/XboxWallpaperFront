@@ -14,6 +14,7 @@ import Favorites from './pages/Favorites';
 import WallpaperDetails from './pages/WallpaperDetails';
 import FullscreenViewer from './pages/FullscreenViewer';
 import Collection from './pages/Collection';
+import Terms from './pages/Terms';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/Admin/Login';
 import AdminRoute from './components/AdminRoute';
@@ -96,6 +97,7 @@ function AppRoutes() {
                 <Route path="/" element={<Home />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/collection/:tag" element={<Collection />} />
+                <Route path="/terms" element={<Terms />} />
                 <Route
                   path="/favorites"
                   element={

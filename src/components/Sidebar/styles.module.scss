@@ -214,3 +214,22 @@
     border-color: #fff;
   }
 }
+
+.sidebarFooter {
+  margin-top: $spacing-sm;
+  padding-top: $spacing-md;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+.footerLink {
+  font-size: 10px;
+  color: $color-text-muted;
+  text-decoration: none;
+  transition: color $transition-fast;
+  display: inline-block;
+
+  &:hover {
+    color: $color-primary;
+  }
+}

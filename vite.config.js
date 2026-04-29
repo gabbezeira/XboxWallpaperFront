@@ -13,6 +13,8 @@ export default defineConfig({
         name: 'Xbox Wallpaper',
         short_name: 'Xbox Wallpaper',
         description: 'Gerencie seus wallpapers do Xbox de forma simples',
+        lang: 'pt-BR',
+        dir: 'ltr',
         theme_color: '#00ab00',
         background_color: '#00ab00',
         display: 'standalone',
@@ -22,6 +24,30 @@ export default defineConfig({
         iarc_rating_id: 'e',
         prefer_related_applications: false,
         related_applications: [],
+        scope_extensions: [
+          { origin: 'https://xboxwallpaper-734da.firebaseapp.com' }
+        ],
+        shortcuts: [
+          {
+            name: 'Explorar Wallpapers',
+            short_name: 'Explorar',
+            description: 'Veja a galeria completa de wallpapers',
+            url: '/gallery',
+            icons: [{ src: '/icons/logo-192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Meus Wallpapers',
+            short_name: 'Meus',
+            description: 'Veja os wallpapers que você enviou',
+            url: '/my-wallpapers',
+            icons: [{ src: '/icons/logo-192.png', sizes: '192x192' }]
+          }
+        ],
+        launch_handler: {
+          client_mode: ['navigate-existing', 'auto']
+        },
+        file_handlers: [],
+        protocol_handlers: [],
         screenshots: [
           {
             src: '/screenshots/desktop-1.png',
@@ -38,11 +64,11 @@ export default defineConfig({
             label: 'Wallpapers Gallery'
           },
           {
-            src: '/screenshots/desktop-3.png',
-            sizes: '1920x1080',
+            src: '/screenshots/mobile-1.png',
+            sizes: '640x1386',
             type: 'image/png',
-            form_factor: 'wide',
-            label: 'Wallpaper Details'
+            form_factor: 'narrow',
+            label: 'Visualização Mobile'
           }
         ],
         icons: [

@@ -94,6 +94,11 @@ export default function Sidebar({ onLoginClick }) {
             Entrar
           </button>
         )}
+        <div className={styles.sidebarFooter}>
+          <Link to="/terms" className={styles.footerLink}>
+            Termos de Uso • Feito por @gabbezeira
+          </Link>
+        </div>
       </div>
     </aside>
   );

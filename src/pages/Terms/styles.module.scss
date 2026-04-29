@@ -1,0 +1,77 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container {
+  padding: $spacing-xl;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 80px);
+  background-color: $color-bg-secondary;
+  overflow-y: auto;
+
+  @include respond-to(md) {
+    padding: $spacing-2xl;
+  }
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  max-width: 800px;
+  width: 100%;
+  backdrop-filter: blur(10px);
+
+  @include respond-to(md) {
+    padding: $spacing-3xl;
+  }
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xl;
+  border-bottom: 2px solid rgba($color-primary, 0.3);
+  padding-bottom: $spacing-sm;
+}
+
+.section {
+  margin-bottom: $spacing-xl;
+
+  h2 {
+    font-size: $fs-subtitle;
+    color: $color-primary;
+    font-weight: $fw-semibold;
+    margin-bottom: $spacing-md;
+  }
+
+  p {
+    font-size: $fs-body;
+    line-height: 1.6;
+    color: $color-text-secondary;
+    margin-bottom: $spacing-md;
+
+    strong {
+      color: $color-text-primary;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.footer {
+  margin-top: $spacing-2xl;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: $spacing-md;
+  text-align: center;
+
+  p {
+    font-size: $fs-small;
+    color: $color-text-muted;
+  }
+}

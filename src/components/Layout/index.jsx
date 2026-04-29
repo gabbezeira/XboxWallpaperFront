@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, LogOut, User, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Search, LogOut, User, X, Info } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import Sidebar from '../Sidebar';
@@ -122,6 +122,13 @@ export default function Layout({ children, onLoginClick }) {
                     </button>
                   </>
                 )}
+                <Link
+                  to="/terms"
+                  className={styles.mobileActionBtn}
+                  aria-label="Termos de Uso"
+                >
+                  <Info size={18} />
+                </Link>
                 <button
                   className={styles.mobileActionBtn}
                   onClick={() => setMobileSearchOpen(true)}

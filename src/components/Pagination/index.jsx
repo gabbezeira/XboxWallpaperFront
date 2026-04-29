@@ -1,26 +1,26 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import styles from './styles.module.scss'
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import styles from './styles.module.scss';
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
-  if (totalPages <= 1) return null
+  if (totalPages <= 1) return null;
 
   // Gera array de páginas para exibir. Lógica simples para mostrar páginas próximas.
-  const pages = []
-  const maxVisiblePages = 5
-  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
-  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+  const pages = [];
+  const maxVisiblePages = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
   if (endPage - startPage + 1 < maxVisiblePages) {
-    startPage = Math.max(1, endPage - maxVisiblePages + 1)
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
   }
 
   for (let i = startPage; i <= endPage; i++) {
-    pages.push(i)
+    pages.push(i);
   }
 
   return (
     <div className={styles.pagination}>
-      <button 
+      <button
         className={styles.navBtn}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -31,12 +31,14 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
       {startPage > 1 && (
         <>
-          <button className={styles.pageBtn} onClick={() => onPageChange(1)}>1</button>
+          <button className={styles.pageBtn} onClick={() => onPageChange(1)}>
+            1
+          </button>
           {startPage > 2 && <span className={styles.ellipsis}>...</span>}
         </>
       )}
 
-      {pages.map(page => (
+      {pages.map((page) => (
         <button
           key={page}
           className={`${styles.pageBtn} ${currentPage === page ? styles.active : ''}`}
@@ -51,11 +53,13 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       {endPage < totalPages && (
         <>
           {endPage < totalPages - 1 && <span className={styles.ellipsis}>...</span>}
-          <button className={styles.pageBtn} onClick={() => onPageChange(totalPages)}>{totalPages}</button>
+          <button className={styles.pageBtn} onClick={() => onPageChange(totalPages)}>
+            {totalPages}
+          </button>
         </>
       )}
 
-      <button 
+      <button
         className={styles.navBtn}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -64,5 +68,5 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         <ChevronRight size={20} />
       </button>
     </div>
-  )
+  );
 }

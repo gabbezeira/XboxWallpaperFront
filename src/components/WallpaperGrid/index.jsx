@@ -1,6 +1,6 @@
-import { ImageOff } from 'lucide-react'
-import WallpaperCard from '../WallpaperCard'
-import styles from './styles.module.scss'
+import { ImageOff } from 'lucide-react';
+import WallpaperCard from '../WallpaperCard';
+import styles from './styles.module.scss';
 
 export default function WallpaperGrid({
   wallpapers,
@@ -8,9 +8,9 @@ export default function WallpaperGrid({
   onDelete,
   showDelete,
   emptyMessage,
-  maxColumns
+  maxColumns,
 }) {
-  const gridStyle = maxColumns ? { '--max-columns': maxColumns } : {}
+  const gridStyle = maxColumns ? { '--max-columns': maxColumns } : {};
 
   if (wallpapers.length === 0) {
     return (
@@ -20,12 +20,10 @@ export default function WallpaperGrid({
             <ImageOff size={48} strokeWidth={1.5} />
           </div>
           <h3 className={styles.emptyTitle}>Nenhum wallpaper</h3>
-          <p className={styles.emptyText}>
-            {emptyMessage || 'Nenhum wallpaper encontrado.'}
-          </p>
+          <p className={styles.emptyText}>{emptyMessage || 'Nenhum wallpaper encontrado.'}</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -40,5 +38,5 @@ export default function WallpaperGrid({
         />
       ))}
     </div>
-  )
+  );
 }

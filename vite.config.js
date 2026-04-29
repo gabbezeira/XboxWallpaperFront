@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   plugins: [
@@ -19,42 +19,42 @@ export default defineConfig({
           {
             src: '/icons/logo-44.png',
             sizes: '44x44',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
             src: '/icons/logo-50.png',
             sizes: '50x50',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
             src: '/icons/logo-150.png',
             sizes: '150x150',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
             src: '/icons/logo-192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any'
+            purpose: 'any',
           },
           {
             src: '/icons/logo-512-transparent.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any'
+            purpose: 'any',
           },
           {
             src: '/icons/logo-512-green.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'maskable'
+            purpose: 'maskable',
           },
           {
             src: '/icons/logo-1024.png',
             sizes: '1024x1024',
-            type: 'image/png'
-          }
-        ]
+            type: 'image/png',
+          },
+        ],
       },
       workbox: {
         navigateFallbackDenylist: [/^\/__/],
@@ -66,12 +66,12 @@ export default defineConfig({
               cacheName: 'images-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 30 * 24 * 60 * 60 // 30 dias
-              }
-            }
-          }
-        ]
-      }
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 dias
+              },
+            },
+          },
+        ],
+      },
     }),
   ],
   server: {
@@ -82,4 +82,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

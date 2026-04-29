@@ -1,126 +1,130 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import RowSlider from '../../components/RowSlider'
-import { api } from '../../services/api'
-import styles from './styles.module.scss'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import RowSlider from '../../components/RowSlider';
+import { api } from '../../services/api';
+import styles from './styles.module.scss';
 
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
-const HERO_CACHE_KEY = 'xboxwall_hero_slides_v2'
-const HERO_CACHE_TTL_MS = 8 * 60 * 1000
+const HERO_CACHE_KEY = 'xboxwall_hero_slides_v2';
+const HERO_CACHE_TTL_MS = 8 * 60 * 1000;
 
 function readHeroCache() {
   try {
-    const raw = sessionStorage.getItem(HERO_CACHE_KEY)
-    if (!raw) return null
-    const { at, data } = JSON.parse(raw)
-    if (!Array.isArray(data) || Date.now() - at > HERO_CACHE_TTL_MS) return null
-    return data
+    const raw = sessionStorage.getItem(HERO_CACHE_KEY);
+    if (!raw) return null;
+    const { at, data } = JSON.parse(raw);
+    if (!Array.isArray(data) || Date.now() - at > HERO_CACHE_TTL_MS) return null;
+    return data;
   } catch {
     /* sessionStorage indisponível ou JSON inválido */
-    return null
+    return null;
   }
 }
 
 function writeHeroCache(data) {
   try {
-    sessionStorage.setItem(HERO_CACHE_KEY, JSON.stringify({ at: Date.now(), data }))
+    sessionStorage.setItem(HERO_CACHE_KEY, JSON.stringify({ at: Date.now(), data }));
   } catch {
     /* quota / modo privado */
   }
 }
 
 function heroSlideImageUrl(banner) {
-  if (!banner?.imageUrl) return ''
-  if (banner.imageUrl.startsWith('http')) return banner.imageUrl
-  return `${API_URL}${banner.imageUrl}`
+  if (!banner?.imageUrl) return '';
+  if (banner.imageUrl.startsWith('http')) return banner.imageUrl;
+  return `${API_URL}${banner.imageUrl}`;
 }
 
 function shuffleArray(arr) {
-  const shuffled = [...arr]
+  const shuffled = [...arr];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-  return shuffled
+  return shuffled;
 }
 
 export default function Home() {
-  const navigate = useNavigate()
-  const [activeBanner, setActiveBanner] = useState(0)
-  const [heroSlides, setHeroSlides] = useState(() => readHeroCache() || [])
-  const [loadingHero, setLoadingHero] = useState(() => !readHeroCache()?.length)
-  const [recentWallpapers, setRecentWallpapers] = useState([])
-  const [popularWallpapers, setPopularWallpapers] = useState([])
-  const [loadingWallpapers, setLoadingWallpapers] = useState(true)
+  const navigate = useNavigate();
+  const [activeBanner, setActiveBanner] = useState(0);
+  const [heroSlides, setHeroSlides] = useState(() => readHeroCache() || []);
+  const [loadingHero, setLoadingHero] = useState(() => !readHeroCache()?.length);
+  const [recentWallpapers, setRecentWallpapers] = useState([]);
+  const [popularWallpapers, setPopularWallpapers] = useState([]);
+  const [loadingWallpapers, setLoadingWallpapers] = useState(true);
 
   const handleViewDetails = (wallpaper) => {
-    navigate(`/wallpaper/${wallpaper.id}`, { state: { wallpaper } })
-  }
+    navigate(`/wallpaper/${wallpaper.id}`, { state: { wallpaper } });
+  };
 
   useEffect(() => {
-    let isMounted = true
+    let isMounted = true;
     const fetchHero = async () => {
-      const cached = readHeroCache()
+      const cached = readHeroCache();
       if (cached?.length && isMounted) {
-        setHeroSlides(cached)
-        setLoadingHero(false)
+        setHeroSlides(cached);
+        setLoadingHero(false);
       }
       try {
-        const data = await api.heroSlides.list()
+        const data = await api.heroSlides.list();
         if (data.length > 0 && isMounted) {
-          const shuffled = shuffleArray(data)
-          setHeroSlides(shuffled)
-          writeHeroCache(shuffled)
+          const shuffled = shuffleArray(data);
+          setHeroSlides(shuffled);
+          writeHeroCache(shuffled);
         }
       } catch (error) {
-        if (isMounted) console.error('Erro ao buscar hero slides:', error)
+        if (isMounted) console.error('Erro ao buscar hero slides:', error);
       } finally {
-        if (isMounted) setLoadingHero(false)
+        if (isMounted) setLoadingHero(false);
       }
-    }
-    fetchHero()
-    return () => { isMounted = false }
-  }, [])
+    };
+    fetchHero();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
-    let isMounted = true
+    let isMounted = true;
     const fetchWallpapers = async () => {
       try {
         const [recentRes, popularRes] = await Promise.all([
           api.wallpapers.list({ limit: 10 }),
-          api.wallpapers.list({ limit: 10, sort: 'popular' })
-        ])
-        
+          api.wallpapers.list({ limit: 10, sort: 'popular' }),
+        ]);
+
         if (isMounted) {
-          if (recentRes.data) setRecentWallpapers(recentRes.data)
-          if (popularRes.data) setPopularWallpapers(popularRes.data)
+          if (recentRes.data) setRecentWallpapers(recentRes.data);
+          if (popularRes.data) setPopularWallpapers(popularRes.data);
         }
       } catch (error) {
-        if (isMounted) console.error('Erro ao buscar wallpapers:', error)
+        if (isMounted) console.error('Erro ao buscar wallpapers:', error);
       } finally {
-        if (isMounted) setLoadingWallpapers(false)
+        if (isMounted) setLoadingWallpapers(false);
       }
-    }
-    fetchWallpapers()
-    return () => { isMounted = false }
-  }, [])
+    };
+    fetchWallpapers();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
-    if (heroSlides.length <= 1) return
+    if (heroSlides.length <= 1) return;
     const interval = setInterval(() => {
-      setActiveBanner((prev) => (prev + 1) % heroSlides.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [heroSlides.length])
+      setActiveBanner((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroSlides.length]);
 
-  const currentBanner = heroSlides[activeBanner] || {}
+  const currentBanner = heroSlides[activeBanner] || {};
 
   return (
     <div className={styles.home}>
       <div className={styles.backgroundGlow}>
         {heroSlides.map((banner, index) => {
-          const imageUrl = heroSlideImageUrl(banner)
+          const imageUrl = heroSlideImageUrl(banner);
           return (
             <img
               key={`glow-${banner.id}`}
@@ -129,7 +133,7 @@ export default function Home() {
               className={`${styles.glowImage} ${index === activeBanner ? styles.active : ''}`}
               aria-hidden="true"
             />
-          )
+          );
         })}
       </div>
 
@@ -140,7 +144,7 @@ export default function Home() {
           ) : heroSlides.length > 0 ? (
             <>
               {heroSlides.map((banner, index) => {
-                const imageUrl = heroSlideImageUrl(banner)
+                const imageUrl = heroSlideImageUrl(banner);
                 return (
                   <div
                     key={banner.id}
@@ -149,7 +153,7 @@ export default function Home() {
                     <img src={imageUrl} alt={banner.title} className={styles.heroImage} />
                     <div className={styles.heroGradient} />
                   </div>
-                )
+                );
               })}
 
               <div className={styles.heroContent}>
@@ -221,5 +225,5 @@ export default function Home() {
         />
       </section>
     </div>
-  )
+  );
 }

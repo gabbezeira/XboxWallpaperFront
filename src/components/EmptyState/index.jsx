@@ -1,5 +1,5 @@
-import { PackageOpen } from 'lucide-react'
-import styles from './styles.module.scss'
+import { PackageOpen } from 'lucide-react';
+import styles from './styles.module.scss';
 
 export default function EmptyState({ title, message, icon: Icon = PackageOpen }) {
   return (
@@ -10,5 +10,5 @@ export default function EmptyState({ title, message, icon: Icon = PackageOpen })
       <h3 className={styles.title}>{title}</h3>
       {message && <p className={styles.message}>{message}</p>}
     </div>
-  )
+  );
 }

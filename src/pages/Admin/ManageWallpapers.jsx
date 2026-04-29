@@ -1,82 +1,102 @@
-import { useState, useEffect } from 'react'
-import { api } from '../../services/api'
-import { Trash2, Loader2, ChevronDown } from 'lucide-react'
-import Modal from '../../components/Modal'
-import styles from './styles.module.scss'
+import { useState, useEffect } from 'react';
+import { api } from '../../services/api';
+import { Trash2, Loader2, ChevronDown } from 'lucide-react';
+import Modal from '../../components/Modal';
+import styles from './styles.module.scss';
 
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
 export default function ManageWallpapers() {
-  const [wallpapers, setWallpapers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-  const [deletingId, setDeletingId] = useState(null)
-  const [tag, setTag] = useState('')
-  const [q, setQ] = useState('')
+  const [wallpapers, setWallpapers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
+  const [tag, setTag] = useState('');
+  const [q, setQ] = useState('');
 
-  const [confirmModal, setConfirmModal] = useState({ open: false, id: null })
-  const [alertModal, setAlertModal] = useState({ open: false, title: '', message: '', variant: 'success' })
+  const [confirmModal, setConfirmModal] = useState({ open: false, id: null });
+  const [alertModal, setAlertModal] = useState({
+    open: false,
+    title: '',
+    message: '',
+    variant: 'success',
+  });
 
   const fetchWallpapers = async (pageNum = 1, append = false, currentQ = q, currentTag = tag) => {
     try {
-      setLoading(true)
-      const res = await api.wallpapers.list({ page: pageNum, limit: 20, q: currentQ, tag: currentTag })
+      setLoading(true);
+      const res = await api.wallpapers.list({
+        page: pageNum,
+        limit: 20,
+        q: currentQ,
+        tag: currentTag,
+      });
 
       if (res.data) {
         if (append) {
-          setWallpapers(prev => [...prev, ...res.data])
+          setWallpapers((prev) => [...prev, ...res.data]);
         } else {
-          setWallpapers(res.data)
+          setWallpapers(res.data);
         }
-        setHasMore(res.data.length === 20)
+        setHasMore(res.data.length === 20);
       }
     } catch (error) {
-      console.error('Erro ao buscar wallpapers:', error)
+      console.error('Erro ao buscar wallpapers:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchWallpapers(1, false)
-  }, [])
+    fetchWallpapers(1, false);
+  }, []);
 
   const handleSearch = (e) => {
-    e.preventDefault()
-    setPage(1)
-    fetchWallpapers(1, false, q, tag)
-  }
+    e.preventDefault();
+    setPage(1);
+    fetchWallpapers(1, false, q, tag);
+  };
 
   const handleLoadMore = () => {
-    const nextPage = page + 1
-    setPage(nextPage)
-    fetchWallpapers(nextPage, true, q, tag)
-  }
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchWallpapers(nextPage, true, q, tag);
+  };
 
   const promptDelete = (id) => {
-    setConfirmModal({ open: true, id })
-  }
+    setConfirmModal({ open: true, id });
+  };
 
   const confirmDelete = async () => {
-    const id = confirmModal.id
-    setConfirmModal({ open: false, id: null })
-    setDeletingId(id)
+    const id = confirmModal.id;
+    setConfirmModal({ open: false, id: null });
+    setDeletingId(id);
 
     try {
-      await api.wallpapers.remove(id)
-      setWallpapers(prev => prev.filter(w => w.id !== id))
-      setAlertModal({ open: true, title: 'Excluído', message: 'Wallpaper removido com sucesso.', variant: 'success' })
+      await api.wallpapers.remove(id);
+      setWallpapers((prev) => prev.filter((w) => w.id !== id));
+      setAlertModal({
+        open: true,
+        title: 'Excluído',
+        message: 'Wallpaper removido com sucesso.',
+        variant: 'success',
+      });
     } catch {
-      setAlertModal({ open: true, title: 'Erro', message: 'Não foi possível excluir o wallpaper.', variant: 'danger' })
+      setAlertModal({
+        open: true,
+        title: 'Erro',
+        message: 'Não foi possível excluir o wallpaper.',
+        variant: 'danger',
+      });
     } finally {
-      setDeletingId(null)
+      setDeletingId(null);
     }
-  }
+  };
 
   const cancelDelete = () => {
-    setConfirmModal({ open: false, id: null })
-  }
+    setConfirmModal({ open: false, id: null });
+  };
 
   return (
     <div className={styles.manage}>
@@ -89,7 +109,7 @@ export default function ManageWallpapers() {
             type="text"
             placeholder="Buscar título ou jogo..."
             value={q}
-            onChange={e => setQ(e.target.value)}
+            onChange={(e) => setQ(e.target.value)}
             className={styles.listHeaderField}
             aria-label="Buscar título ou jogo"
           />
@@ -97,11 +117,13 @@ export default function ManageWallpapers() {
             type="text"
             placeholder="Filtrar por tag..."
             value={tag}
-            onChange={e => setTag(e.target.value)}
+            onChange={(e) => setTag(e.target.value)}
             className={styles.listHeaderField}
             aria-label="Filtrar por tag"
           />
-          <button type="submit" className={styles.listHeaderBtn}>Filtrar</button>
+          <button type="submit" className={styles.listHeaderBtn}>
+            Filtrar
+          </button>
         </form>
       </div>
 
@@ -114,11 +136,16 @@ export default function ManageWallpapers() {
           {wallpapers.map((wall) => {
             const thumbSrc = wall.thumbUrl?.startsWith('http')
               ? wall.thumbUrl
-              : `${API_URL}${wall.thumbUrl || wall.storageUrl}`
+              : `${API_URL}${wall.thumbUrl || wall.storageUrl}`;
 
             return (
               <div key={wall.id} className={styles.mediaItem}>
-                <img src={thumbSrc} alt={wall.title || 'Wallpaper'} loading="lazy" className={styles.mediaItemImg} />
+                <img
+                  src={thumbSrc}
+                  alt={wall.title || 'Wallpaper'}
+                  loading="lazy"
+                  className={styles.mediaItemImg}
+                />
                 <div className={styles.mediaItemOverlay}>
                   <button
                     type="button"
@@ -128,14 +155,15 @@ export default function ManageWallpapers() {
                     title="Excluir wallpaper"
                     aria-label="Excluir wallpaper"
                   >
-                    {deletingId === wall.id
-                      ? <Loader2 size={18} className={styles.spin} />
-                      : <Trash2 size={18} />
-                    }
+                    {deletingId === wall.id ? (
+                      <Loader2 size={18} className={styles.spin} />
+                    ) : (
+                      <Trash2 size={18} />
+                    )}
                   </button>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       )}
@@ -169,10 +197,10 @@ export default function ManageWallpapers() {
         isOpen={alertModal.open}
         title={alertModal.title}
         message={alertModal.message}
-        onConfirm={() => setAlertModal(prev => ({ ...prev, open: false }))}
+        onConfirm={() => setAlertModal((prev) => ({ ...prev, open: false }))}
         confirmText="OK"
         variant={alertModal.variant}
       />
     </div>
-  )
+  );
 }

@@ -1,56 +1,58 @@
-import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
-import { signInWithMicrosoft, signInWithEmail, signUpWithEmail } from '../../services/auth'
-import { useAuth } from '../../hooks/useAuth'
-import logo from '../../assets/logo.png'
-import styles from './styles.module.scss'
+import { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
+import { signInWithMicrosoft, signInWithEmail, signUpWithEmail } from '../../services/auth';
+import { useAuth } from '../../hooks/useAuth';
+import logo from '../../assets/logo.png';
+import styles from './styles.module.scss';
 
 export default function AuthModal({ onClose }) {
-  const { refreshProfile, authError } = useAuth()
-  const [mode, setMode] = useState('login')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [redirecting, setRedirecting] = useState(false)
+  const { refreshProfile, authError } = useAuth();
+  const [mode, setMode] = useState('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [])
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
-  const { user } = useAuth()
+  const { user } = useAuth();
   useEffect(() => {
     if (user) {
-      onClose()
+      onClose();
     }
-  }, [user, onClose])
+  }, [user, onClose]);
 
   useEffect(() => {
     if (authError) {
-      setError(authError)
+      setError(authError);
     }
-  }, [authError])
+  }, [authError]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
     try {
       if (mode === 'login') {
-        await signInWithEmail(email, password)
+        await signInWithEmail(email, password);
       } else {
         if (!name.trim()) {
-          setError('Digite seu nome')
-          setLoading(false)
-          return
+          setError('Digite seu nome');
+          setLoading(false);
+          return;
         }
-        await signUpWithEmail(email, password, name)
+        await signUpWithEmail(email, password, name);
       }
-      await refreshProfile()
-      onClose()
+      await refreshProfile();
+      onClose();
     } catch (err) {
       const messages = {
         'auth/user-not-found': 'Usuário não encontrado',
@@ -58,19 +60,19 @@ export default function AuthModal({ onClose }) {
         'auth/email-already-in-use': 'Este email já está em uso',
         'auth/weak-password': 'A senha deve ter pelo menos 6 caracteres',
         'auth/invalid-email': 'Email inválido',
-        'auth/invalid-credential': 'Email ou senha incorretos'
-      }
-      setError(messages[err.code] || 'Erro ao autenticar')
+        'auth/invalid-credential': 'Email ou senha incorretos',
+      };
+      setError(messages[err.code] || 'Erro ao autenticar');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleMicrosoft = () => {
-    setRedirecting(true)
-    sessionStorage.setItem('oauth_redirect', 'true')
-    signInWithMicrosoft()
-  }
+    setRedirecting(true);
+    sessionStorage.setItem('oauth_redirect', 'true');
+    signInWithMicrosoft();
+  };
 
   if (redirecting) {
     return (
@@ -82,7 +84,7 @@ export default function AuthModal({ onClose }) {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -110,7 +112,6 @@ export default function AuthModal({ onClose }) {
         </div>
 
         <div className={styles.providerButtons}>
-
           <button className={styles.btnMicrosoft} onClick={handleMicrosoft}>
             <svg width="20" height="20" viewBox="0 0 21 21" focusable="false">
               <rect x="1" y="1" width="9" height="9" fill="#f25022" />
@@ -173,7 +174,11 @@ export default function AuthModal({ onClose }) {
                 <span className={styles.btnSpinner} />
                 Carregando...
               </span>
-            ) : mode === 'login' ? 'Entrar' : 'Criar conta'}
+            ) : mode === 'login' ? (
+              'Entrar'
+            ) : (
+              'Criar conta'
+            )}
           </button>
         </form>
 
@@ -181,14 +186,24 @@ export default function AuthModal({ onClose }) {
           {mode === 'login' ? (
             <>
               Não tem conta?
-              <button onClick={() => { setMode('register'); setError(null) }}>
+              <button
+                onClick={() => {
+                  setMode('register');
+                  setError(null);
+                }}
+              >
                 Criar conta
               </button>
             </>
           ) : (
             <>
               Já tem conta?
-              <button onClick={() => { setMode('login'); setError(null) }}>
+              <button
+                onClick={() => {
+                  setMode('login');
+                  setError(null);
+                }}
+              >
                 Entrar
               </button>
             </>
@@ -196,5 +211,5 @@ export default function AuthModal({ onClose }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

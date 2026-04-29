@@ -1,77 +1,82 @@
-import { useState, useEffect } from 'react'
-import { api } from '../../services/api'
-import { Trash2, Loader2, Image as ImageIcon } from 'lucide-react'
-import Modal from '../../components/Modal'
-import styles from './styles.module.scss'
+import { useState, useEffect } from 'react';
+import { api } from '../../services/api';
+import { Trash2, Loader2, Image as ImageIcon } from 'lucide-react';
+import Modal from '../../components/Modal';
+import styles from './styles.module.scss';
 
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
 function slideImageSrc(slide) {
-  if (!slide?.imageUrl) return ''
-  if (slide.imageUrl.startsWith('http')) return slide.imageUrl
-  return `${API_URL}${slide.imageUrl.startsWith('/') ? '' : '/'}${slide.imageUrl}`
+  if (!slide?.imageUrl) return '';
+  if (slide.imageUrl.startsWith('http')) return slide.imageUrl;
+  return `${API_URL}${slide.imageUrl.startsWith('/') ? '' : '/'}${slide.imageUrl}`;
 }
 
 export default function ManageHeroSlides() {
-  const [slides, setSlides] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [deletingId, setDeletingId] = useState(null)
-  const [loadError, setLoadError] = useState('')
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
+  const [loadError, setLoadError] = useState('');
 
-  const [confirmModal, setConfirmModal] = useState({ open: false, id: null })
-  const [alertModal, setAlertModal] = useState({ open: false, title: '', message: '', variant: 'success' })
+  const [confirmModal, setConfirmModal] = useState({ open: false, id: null });
+  const [alertModal, setAlertModal] = useState({
+    open: false,
+    title: '',
+    message: '',
+    variant: 'success',
+  });
 
   const fetchSlides = async () => {
     try {
-      setLoadError('')
-      setLoading(true)
-      const data = await api.heroSlides.listManage()
-      setSlides(Array.isArray(data) ? data : [])
+      setLoadError('');
+      setLoading(true);
+      const data = await api.heroSlides.listManage();
+      setSlides(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error('Erro ao listar destaques:', err)
-      setLoadError('Não foi possível carregar os slides do hero.')
+      console.error('Erro ao listar destaques:', err);
+      setLoadError('Não foi possível carregar os slides do hero.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchSlides()
-  }, [])
+    fetchSlides();
+  }, []);
 
   const promptDelete = (id) => {
-    setConfirmModal({ open: true, id })
-  }
+    setConfirmModal({ open: true, id });
+  };
 
   const confirmDelete = async () => {
-    const id = confirmModal.id
-    setConfirmModal({ open: false, id: null })
-    setDeletingId(id)
+    const id = confirmModal.id;
+    setConfirmModal({ open: false, id: null });
+    setDeletingId(id);
 
     try {
-      await api.heroSlides.remove(id)
-      setSlides((prev) => prev.filter((s) => s.id !== id))
+      await api.heroSlides.remove(id);
+      setSlides((prev) => prev.filter((s) => s.id !== id));
       setAlertModal({
         open: true,
         title: 'Excluído',
         message: 'O slide foi removido. A home pode levar um instante para atualizar o cache.',
         variant: 'success',
-      })
+      });
     } catch {
       setAlertModal({
         open: true,
         title: 'Erro',
         message: 'Não foi possível excluir o slide.',
         variant: 'danger',
-      })
+      });
     } finally {
-      setDeletingId(null)
+      setDeletingId(null);
     }
-  }
+  };
 
   const cancelDelete = () => {
-    setConfirmModal({ open: false, id: null })
-  }
+    setConfirmModal({ open: false, id: null });
+  };
 
   return (
     <div className={styles.manage}>
@@ -79,8 +84,8 @@ export default function ManageHeroSlides() {
         <div className={styles.listHeaderText}>
           <h2 className={styles.listHeaderTitle}>Destaques (hero)</h2>
           <p className={styles.listHint}>
-            O que estiver listado aqui aparece no carrossel (do mais recente para o mais antigo). Para retirar um
-            destaque, exclua o slide.
+            O que estiver listado aqui aparece no carrossel (do mais recente para o mais antigo).
+            Para retirar um destaque, exclua o slide.
           </p>
         </div>
       </div>
@@ -88,18 +93,25 @@ export default function ManageHeroSlides() {
       {loadError && <p className={styles.errorBanner}>{loadError}</p>}
 
       {slides.length === 0 && !loading && !loadError && (
-        <p className={styles.listEmpty}>Nenhum slide cadastrado. Use a aba &quot;Publicar&quot; para enviar imagens.</p>
+        <p className={styles.listEmpty}>
+          Nenhum slide cadastrado. Use a aba &quot;Publicar&quot; para enviar imagens.
+        </p>
       )}
 
       {slides.length > 0 && (
         <div className={styles.heroGrid} role="list">
           {slides.map((slide) => {
-            const src = slideImageSrc(slide)
+            const src = slideImageSrc(slide);
             return (
               <article key={slide.id} className={styles.heroCard} role="listitem">
                 <div className={styles.heroCardThumb}>
                   {src ? (
-                    <img className={styles.heroCardImg} src={src} alt={slide.title || 'Slide'} loading="lazy" />
+                    <img
+                      className={styles.heroCardImg}
+                      src={src}
+                      alt={slide.title || 'Slide'}
+                      loading="lazy"
+                    />
                   ) : (
                     <div className={styles.heroCardEmpty} aria-hidden>
                       <ImageIcon size={40} />
@@ -136,7 +148,7 @@ export default function ManageHeroSlides() {
                   )}
                 </div>
               </article>
-            )
+            );
           })}
         </div>
       )}
@@ -167,5 +179,5 @@ export default function ManageHeroSlides() {
         variant={alertModal.variant}
       />
     </div>
-  )
+  );
 }

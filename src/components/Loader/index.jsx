@@ -1,4 +1,4 @@
-import styles from './styles.module.scss'
+import styles from './styles.module.scss';
 
 export default function Loader({ text }) {
   return (
@@ -6,5 +6,5 @@ export default function Loader({ text }) {
       <div className={styles.spinner} />
       {text && <span className={styles.text}>{text}</span>}
     </div>
-  )
+  );
 }

@@ -1,13 +1,12 @@
-import { NavLink } from 'react-router-dom'
-import { Home, Compass, UploadCloud, Heart, User } from 'lucide-react'
-import { useAuth } from '../../hooks/useAuth'
-import styles from './styles.module.scss'
+import { NavLink } from 'react-router-dom';
+import { Home, Compass, UploadCloud, Heart, User } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import styles from './styles.module.scss';
 
 export default function BottomNav({ onLoginClick }) {
-  const { user } = useAuth()
+  const { user } = useAuth();
 
-  const navClass = ({ isActive }) => 
-    `${styles.navItem} ${isActive ? styles.active : ''}`
+  const navClass = ({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`;
 
   return (
     <nav className={styles.bottomNav}>
@@ -15,7 +14,7 @@ export default function BottomNav({ onLoginClick }) {
         <Home size={20} />
         <span>Home</span>
       </NavLink>
-      
+
       <NavLink to="/gallery" className={navClass}>
         <Compass size={20} />
         <span>Explorar</span>
@@ -45,5 +44,5 @@ export default function BottomNav({ onLoginClick }) {
         </button>
       )}
     </nav>
-  )
+  );
 }

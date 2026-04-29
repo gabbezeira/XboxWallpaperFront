@@ -1,58 +1,58 @@
-import { useState, useEffect, useRef } from 'react'
-import { Search, LogOut, User, X } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../hooks/useAuth'
-import { logOut } from '../../services/auth'
-import Sidebar from '../Sidebar'
-import BottomNav from '../BottomNav'
-import styles from './styles.module.scss'
+import { useState, useEffect, useRef } from 'react';
+import { Search, LogOut, User, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { logOut } from '../../services/auth';
+import Sidebar from '../Sidebar';
+import BottomNav from '../BottomNav';
+import styles from './styles.module.scss';
 
-const MOBILE_MAX = 768
-const RESIZE_THROTTLE_MS = 120
+const MOBILE_MAX = 768;
+const RESIZE_THROTTLE_MS = 120;
 
-import logo from '../../assets/logo.png'
+import logo from '../../assets/logo.png';
 
 export default function Layout({ children, onLoginClick }) {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < MOBILE_MAX : false
-  )
-  const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
-  const resizeTimer = useRef(0)
-  const mobileSearchRef = useRef(null)
+    typeof window !== 'undefined' ? window.innerWidth < MOBILE_MAX : false,
+  );
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const resizeTimer = useRef(0);
+  const mobileSearchRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
-      if (resizeTimer.current) clearTimeout(resizeTimer.current)
+      if (resizeTimer.current) clearTimeout(resizeTimer.current);
       resizeTimer.current = window.setTimeout(() => {
-        resizeTimer.current = 0
-        setIsMobile(window.innerWidth < MOBILE_MAX)
-      }, RESIZE_THROTTLE_MS)
-    }
+        resizeTimer.current = 0;
+        setIsMobile(window.innerWidth < MOBILE_MAX);
+      }, RESIZE_THROTTLE_MS);
+    };
 
-    window.addEventListener('resize', handleResize, { passive: true })
+    window.addEventListener('resize', handleResize, { passive: true });
     return () => {
-      window.removeEventListener('resize', handleResize)
-      if (resizeTimer.current) clearTimeout(resizeTimer.current)
-    }
-  }, [])
+      window.removeEventListener('resize', handleResize);
+      if (resizeTimer.current) clearTimeout(resizeTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (mobileSearchOpen && mobileSearchRef.current) {
-      mobileSearchRef.current.focus()
+      mobileSearchRef.current.focus();
     }
-  }, [mobileSearchOpen])
+  }, [mobileSearchOpen]);
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/gallery?q=${encodeURIComponent(searchQuery.trim())}`)
-      setMobileSearchOpen(false)
-      setSearchQuery('')
+      navigate(`/gallery?q=${encodeURIComponent(searchQuery.trim())}`);
+      setMobileSearchOpen(false);
+      setSearchQuery('');
     }
-  }
+  };
 
   return (
     <div className={styles.layout}>
@@ -73,7 +73,10 @@ export default function Layout({ children, onLoginClick }) {
                 <button
                   type="button"
                   className={styles.mobileSearchClose}
-                  onClick={() => { setMobileSearchOpen(false); setSearchQuery('') }}
+                  onClick={() => {
+                    setMobileSearchOpen(false);
+                    setSearchQuery('');
+                  }}
                   aria-label="Fechar busca"
                 >
                   <X size={18} />
@@ -83,15 +86,20 @@ export default function Layout({ children, onLoginClick }) {
               <div className={styles.mobileUserSection}>
                 {user ? (
                   <>
-                    <div className={`${styles.mobileAvatar} ${!user?.photoURL ? styles.mobileAvatarFallback : ''}`}>
+                    <div
+                      className={`${styles.mobileAvatar} ${!user?.photoURL ? styles.mobileAvatarFallback : ''}`}
+                    >
                       {user?.photoURL ? (
-                        <img 
-                          src={user.photoURL} 
-                          alt="User" 
+                        <img
+                          src={user.photoURL}
+                          alt="User"
                           referrerPolicy="no-referrer"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
-                            e.currentTarget.insertAdjacentText('afterend', (user?.displayName || user?.email || 'U').charAt(0).toUpperCase());
+                            e.currentTarget.insertAdjacentText(
+                              'afterend',
+                              (user?.displayName || user?.email || 'U').charAt(0).toUpperCase(),
+                            );
                           }}
                         />
                       ) : (
@@ -99,7 +107,9 @@ export default function Layout({ children, onLoginClick }) {
                       )}
                     </div>
                     <div className={styles.mobileUserInfo}>
-                      <span className={styles.mobileUserName}>{user?.displayName || user?.email?.split('@')[0] || 'Usuário'}</span>
+                      <span className={styles.mobileUserName}>
+                        {user?.displayName || user?.email?.split('@')[0] || 'Usuário'}
+                      </span>
                     </div>
                   </>
                 ) : (
@@ -151,5 +161,5 @@ export default function Layout({ children, onLoginClick }) {
         {children}
       </main>
     </div>
-  )
+  );
 }

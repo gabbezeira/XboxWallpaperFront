@@ -1,18 +1,18 @@
-import { NavLink, Link } from 'react-router-dom'
-import { Home, Compass, UploadCloud, Heart, LogOut } from 'lucide-react'
-import { useAuth } from '../../hooks/useAuth'
-import { logOut } from '../../services/auth'
-import logo from '../../assets/logo.png'
-import styles from './styles.module.scss'
+import { NavLink, Link } from 'react-router-dom';
+import { Home, Compass, UploadCloud, Heart, LogOut } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { logOut } from '../../services/auth';
+import logo from '../../assets/logo.png';
+import styles from './styles.module.scss';
 
 export default function Sidebar({ onLoginClick }) {
-  const { user, profile } = useAuth()
+  const { user, profile } = useAuth();
 
-  const navClass = ({ isActive }) => 
-    `${styles.navItem} ${isActive ? styles.active : ''}`
+  const navClass = ({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`;
 
-  const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Usuário'
-  const photoURL = profile?.photoURL || user?.photoURL
+  const displayName =
+    profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Usuário';
+  const photoURL = profile?.photoURL || user?.photoURL;
 
   return (
     <aside className={styles.sidebar}>
@@ -31,7 +31,6 @@ export default function Sidebar({ onLoginClick }) {
           Explorar
         </NavLink>
 
-        
         {user ? (
           <NavLink to="/favorites" className={navClass}>
             <Heart size={20} />
@@ -63,14 +62,17 @@ export default function Sidebar({ onLoginClick }) {
             <div className={styles.userInfo}>
               <div className={`${styles.avatar} ${!photoURL ? styles.avatarWithColor : ''}`}>
                 {photoURL ? (
-                  <img 
-                    src={photoURL} 
-                    alt={displayName} 
-                    className={styles.avatarImg} 
+                  <img
+                    src={photoURL}
+                    alt={displayName}
+                    className={styles.avatarImg}
                     referrerPolicy="no-referrer"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
-                      e.currentTarget.insertAdjacentText('afterend', displayName.charAt(0).toUpperCase());
+                      e.currentTarget.insertAdjacentText(
+                        'afterend',
+                        displayName.charAt(0).toUpperCase(),
+                      );
                     }}
                   />
                 ) : (
@@ -94,5 +96,5 @@ export default function Sidebar({ onLoginClick }) {
         )}
       </div>
     </aside>
-  )
+  );
 }

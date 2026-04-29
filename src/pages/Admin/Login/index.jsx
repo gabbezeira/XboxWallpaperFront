@@ -1,20 +1,20 @@
-import { useState } from 'react'
-import { useNavigate, Navigate } from 'react-router-dom'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../../services/firebase'
-import { useAuth } from '../../../hooks/useAuth'
-import styles from './styles.module.scss'
-import logo from '../../../assets/logo.png'
+import { useState } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../services/firebase';
+import { useAuth } from '../../../hooks/useAuth';
+import styles from './styles.module.scss';
+import logo from '../../../assets/logo.png';
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
-  const { user, loading: authLoading } = useAuth()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
 
   if (authLoading) {
     return (
@@ -23,34 +23,34 @@ export default function AdminLogin() {
           <div className={styles.spinner} />
         </div>
       </div>
-    )
+    );
   }
 
   // Se já está logado como admin, vai direto
   if (user && user.email === ADMIN_EMAIL) {
-    return <Navigate to="/adminpanel" replace />
+    return <Navigate to="/adminpanel" replace />;
   }
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError('');
 
     if (email.toLowerCase() !== ADMIN_EMAIL) {
-      setError('Acesso negado. Credenciais inválidas.')
-      return
+      setError('Acesso negado. Credenciais inválidas.');
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password)
-      navigate('/adminpanel', { replace: true })
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/adminpanel', { replace: true });
     } catch (err) {
-      setError('Falha ao autenticar. Verifique seus dados.')
-      console.error(err)
+      setError('Falha ao autenticar. Verifique seus dados.');
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -62,13 +62,13 @@ export default function AdminLogin() {
 
         <form onSubmit={handleLogin} className={styles.form}>
           {error && <div className={styles.error}>{error}</div>}
-          
+
           <div className={styles.field}>
             <label>E-mail Corporativo</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
             />
@@ -76,10 +76,10 @@ export default function AdminLogin() {
 
           <div className={styles.field}>
             <label>Senha de Acesso</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
             />
@@ -91,5 +91,5 @@ export default function AdminLogin() {
         </form>
       </div>
     </div>
-  )
+  );
 }

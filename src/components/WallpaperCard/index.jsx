@@ -1,16 +1,16 @@
-import { useState, memo } from 'react'
-import { Trash2 } from 'lucide-react'
-import { formatFileSize } from '../../utils/format.js'
-import styles from './styles.module.scss'
+import { useState, memo } from 'react';
+import { Trash2 } from 'lucide-react';
+import { formatFileSize } from '../../utils/format.js';
+import styles from './styles.module.scss';
 
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
 const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete, showDelete }) {
-  const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState(false);
 
   const thumbSrc = wallpaper.thumbUrl?.startsWith('http')
     ? wallpaper.thumbUrl
-    : `${API_URL}${wallpaper.thumbUrl || wallpaper.storageUrl}`
+    : `${API_URL}${wallpaper.thumbUrl || wallpaper.storageUrl}`;
 
   return (
     <button type="button" className={styles.card} onClick={() => onView(wallpaper)}>
@@ -34,8 +34,8 @@ const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete,
           <div
             className={styles.btnDelete}
             onClick={(e) => {
-              e.stopPropagation()
-              onDelete(wallpaper)
+              e.stopPropagation();
+              onDelete(wallpaper);
             }}
             role="button"
             tabIndex={0}
@@ -46,7 +46,7 @@ const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete,
         )}
       </div>
     </button>
-  )
-})
+  );
+});
 
-export default WallpaperCard
+export default WallpaperCard;

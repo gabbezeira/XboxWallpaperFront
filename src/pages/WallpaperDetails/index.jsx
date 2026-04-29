@@ -1,32 +1,32 @@
-import { useState, useEffect, useMemo } from 'react'
-import { ArrowLeft, Heart, Monitor, HardDrive, Download } from 'lucide-react'
-import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
-import { useFavorites } from '../../hooks/useFavorites'
-import { useAuth } from '../../hooks/useAuth'
-import { api } from '../../services/api'
-import { formatFileSize } from '../../utils/format.js'
-import Loader from '../../components/Loader'
-import styles from './styles.module.scss'
+import { useState, useEffect, useMemo } from 'react';
+import { ArrowLeft, Heart, Monitor, HardDrive, Download } from 'lucide-react';
+import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom';
+import { useFavorites } from '../../hooks/useFavorites';
+import { useAuth } from '../../hooks/useAuth';
+import { api } from '../../services/api';
+import { formatFileSize } from '../../utils/format.js';
+import Loader from '../../components/Loader';
+import styles from './styles.module.scss';
 
-const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '')
+const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
 function formatResolution(width, height) {
-  if (!width || !height) return '—'
-  if (width >= 3840) return '4K'
-  if (width >= 2560) return '2K'
-  if (width >= 1920) return 'Full HD'
-  return `${width}×${height}`
+  if (!width || !height) return '—';
+  if (width >= 3840) return '4K';
+  if (width >= 2560) return '2K';
+  if (width >= 1920) return 'Full HD';
+  return `${width}×${height}`;
 }
 
-const COMMUNITY_LABEL = 'Xbox Community'
+const COMMUNITY_LABEL = 'Xbox Community';
 
 function getAuthorDisplay(wallpaper, authUser, profile) {
-  const isCommunity = wallpaper.userId === 'system'
+  const isCommunity = wallpaper.userId === 'system';
   if (isCommunity) {
-    return { label: COMMUNITY_LABEL, photo: null }
+    return { label: COMMUNITY_LABEL, photo: null };
   }
 
-  const isOwn = Boolean(authUser?.uid) && wallpaper.userId === authUser.uid
+  const isOwn = Boolean(authUser?.uid) && wallpaper.userId === authUser.uid;
 
   if (isOwn) {
     return {
@@ -36,138 +36,139 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
         authUser?.displayName ||
         authUser?.email?.split('@')[0] ||
         'Usuário',
-      photo:
-        wallpaper.authorPhoto ||
-        profile?.photoURL ||
-        authUser?.photoURL ||
-        null
-    }
+      photo: wallpaper.authorPhoto || profile?.photoURL || authUser?.photoURL || null,
+    };
   }
 
   return {
     label: wallpaper.authorName || COMMUNITY_LABEL,
-    photo: wallpaper.authorPhoto || null
-  }
+    photo: wallpaper.authorPhoto || null,
+  };
 }
 
 export default function WallpaperDetailsPage() {
-  const { id } = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { isFavorite, toggleFavorite } = useFavorites()
-  const { user: authUser, profile } = useAuth()
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const { user: authUser, profile } = useAuth();
 
   const [wallpaper, setWallpaper] = useState(() => {
-    const s = location.state?.wallpaper
-    return s?.id === id ? s : null
-  })
+    const s = location.state?.wallpaper;
+    return s?.id === id ? s : null;
+  });
   const [hydrating, setHydrating] = useState(() => {
-    const s = location.state?.wallpaper
-    return !(s?.id === id)
-  })
-  const [mediaToken, setMediaToken] = useState(null)
-  const [photoError, setPhotoError] = useState(false)
+    const s = location.state?.wallpaper;
+    return !(s?.id === id);
+  });
+  const [mediaToken, setMediaToken] = useState(null);
+  const [photoError, setPhotoError] = useState(false);
 
   useEffect(() => {
-    const seed = location.state?.wallpaper?.id === id ? location.state.wallpaper : null
+    const seed = location.state?.wallpaper?.id === id ? location.state.wallpaper : null;
     if (seed) {
-      setWallpaper(seed)
-      setHydrating(false)
-      setPhotoError(false)
+      setWallpaper(seed);
+      setHydrating(false);
+      setPhotoError(false);
     } else {
-      setHydrating(true)
-      setWallpaper(null)
-      setPhotoError(false)
+      setHydrating(true);
+      setWallpaper(null);
+      setPhotoError(false);
     }
 
-    if (!id) return undefined
+    if (!id) return undefined;
 
-    let cancelled = false
-    ;(async () => {
+    let cancelled = false;
+    (async () => {
       try {
-        const fresh = await api.wallpapers.getById(id)
-        if (cancelled) return
-        setWallpaper((prev) => ({ ...(seed || prev || {}), ...fresh }))
+        const fresh = await api.wallpapers.getById(id);
+        if (cancelled) return;
+        setWallpaper((prev) => ({ ...(seed || prev || {}), ...fresh }));
       } catch {
-        if (!cancelled && !seed) setWallpaper(null)
+        if (!cancelled && !seed) setWallpaper(null);
       } finally {
-        if (!cancelled) setHydrating(false)
+        if (!cancelled) setHydrating(false);
       }
-    })()
+    })();
 
     return () => {
-      cancelled = true
-    }
-  }, [id, location.key, location.state])
+      cancelled = true;
+    };
+  }, [id, location.key, location.state]);
 
   useEffect(() => {
     if (!authUser || !wallpaper?.id) {
-      setMediaToken(null)
-      return
+      setMediaToken(null);
+      return;
     }
-    let cancelled = false
+    let cancelled = false;
     authUser.getIdToken().then((t) => {
-      if (!cancelled) setMediaToken(t)
-    })
+      if (!cancelled) setMediaToken(t);
+    });
     return () => {
-      cancelled = true
-    }
-  }, [authUser, wallpaper?.id])
+      cancelled = true;
+    };
+  }, [authUser, wallpaper?.id]);
 
   /** Hero na página de detalhes: `preview=true` (backend gera WebP ~1600px / q84). Download e fullscreen continuam com o ficheiro completo. */
   const imageSrc = useMemo(() => {
-    if (!wallpaper?.storageUrl) return ''
-    const url = wallpaper.storageUrl
-    if (url.startsWith('http')) return url
-    const base = API_URL
-    const path = `${base}${url}`
+    if (!wallpaper?.storageUrl) return '';
+    const url = wallpaper.storageUrl;
+    if (url.startsWith('http')) return url;
+    const base = API_URL;
+    const path = `${base}${url}`;
     const needsToken =
       wallpaper.isPublic === false &&
       authUser?.uid &&
       wallpaper.userId === authUser?.uid &&
-      mediaToken
-    const sep = url.includes('?') ? '&' : '?'
-    const preview = `${path}${sep}preview=true`
+      mediaToken;
+    const sep = url.includes('?') ? '&' : '?';
+    const preview = `${path}${sep}preview=true`;
     if (needsToken) {
-      return `${preview}&token=${encodeURIComponent(mediaToken)}`
+      return `${preview}&token=${encodeURIComponent(mediaToken)}`;
     }
-    return preview
-  }, [wallpaper, authUser?.uid, mediaToken])
+    return preview;
+  }, [wallpaper, authUser?.uid, mediaToken]);
 
   if (hydrating && !wallpaper) {
     return (
       <div className={styles.page}>
         <Loader text="Carregando wallpaper..." />
       </div>
-    )
+    );
   }
 
   if (!wallpaper?.id) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/" replace />;
   }
 
-  const fav = isFavorite(wallpaper.id)
-  const { label: authorLabel, photo: authorPhoto } = getAuthorDisplay(wallpaper, authUser, profile)
+  const fav = isFavorite(wallpaper.id);
+  const { label: authorLabel, photo: authorPhoto } = getAuthorDisplay(wallpaper, authUser, profile);
 
-  const handleToggleFavorite = () => toggleFavorite(wallpaper)
+  const handleToggleFavorite = () => toggleFavorite(wallpaper);
 
   const handleSetWallpaper = () => {
-    navigate(`/wallpaper/${wallpaper.id}/fullscreen`, { state: { wallpaper } })
-  }
+    navigate(`/wallpaper/${wallpaper.id}/fullscreen`, { state: { wallpaper } });
+  };
 
   const handleDownload = async () => {
-    const downloadUrl = await api.wallpapers.downloadUrl(wallpaper.id)
-    const a = document.createElement('a')
-    a.href = downloadUrl
-    a.download = wallpaper.fileName || 'wallpaper.jpg'
-    a.click()
-  }
+    const downloadUrl = await api.wallpapers.downloadUrl(wallpaper.id);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = wallpaper.fileName || 'wallpaper.jpg';
+    a.click();
+  };
 
   return (
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.imageSection}>
-          <button type="button" className={styles.btnBack} onClick={() => navigate(-1)} aria-label="Voltar">
+          <button
+            type="button"
+            className={styles.btnBack}
+            onClick={() => navigate(-1)}
+            aria-label="Voltar"
+          >
             <ArrowLeft size={24} />
           </button>
           <button
@@ -201,10 +202,10 @@ export default function WallpaperDetailsPage() {
             <div className={styles.author}>
               <div className={styles.avatar}>
                 {authorPhoto && !photoError ? (
-                  <img 
-                    src={authorPhoto} 
-                    alt={authorLabel} 
-                    className={styles.avatarImg} 
+                  <img
+                    src={authorPhoto}
+                    alt={authorLabel}
+                    className={styles.avatarImg}
                     referrerPolicy="no-referrer"
                     onError={() => setPhotoError(true)}
                   />
@@ -244,5 +245,5 @@ export default function WallpaperDetailsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

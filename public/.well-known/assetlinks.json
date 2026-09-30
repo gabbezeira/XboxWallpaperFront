@@ -1,8 +1,14 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "app.spartanwallpapers.com",
-    "sha256_cert_fingerprints": ["97:55:7A:41:DF:F3:B5:B5:95:E7:94:D5:5E:ED:2D:08:EE:E7:C8:EB:28:55:FD:C9:60:9B:A1:10:3A:C1:27:5E"]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.spartanwallpapers.com",
+      "sha256_cert_fingerprints": [
+        "77:C5:3C:72:35:35:21:48:FA:75:28:27:2D:7E:03:5A:35:8C:6F:1E:FE:9F:8F:FE:BC:25:FC:07:F9:08:44:DA"
+      ]
+    }
   }
-}]
+]

@@ -117,8 +117,8 @@
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  padding: 6px 2px;
-  margin: -6px 0;
+  padding: 8px 10px;
+  margin: -8px -10px;
 
   &::-webkit-scrollbar {
     display: none;
@@ -201,8 +201,8 @@
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  padding: 10px 4px;
-  margin: -6px 0;
+  padding: 12px 10px;
+  margin: -12px -10px;
 
   &::-webkit-scrollbar {
     display: none;

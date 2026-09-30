@@ -7,7 +7,7 @@ async function getToken() {
   return user.getIdToken();
 }
 
-async function request(path, options = {}) {
+async function request(path, options = {}, retries = 3) {
   const token = await getToken();
   const headers = { ...options.headers };
 
@@ -23,6 +23,11 @@ async function request(path, options = {}) {
     ...options,
     headers,
   });
+
+  if (res.status === 429 && retries > 0) {
+    await new Promise((resolve) => setTimeout(resolve, 1500 * (4 - retries)));
+    return request(path, options, retries - 1);
+  }
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Erro desconhecido' }));

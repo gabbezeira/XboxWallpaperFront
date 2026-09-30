@@ -180,6 +180,9 @@ export default function OfficialPublish({ onPublishComplete }) {
     for (let i = 0; i < queue.length; i += CONCURRENCY) {
       const chunk = queue.slice(i, i + CONCURRENCY);
       await Promise.all(chunk.map((item) => processItem(item)));
+      if (i + CONCURRENCY < queue.length) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
     }
 
     setUploadingBatch(false);

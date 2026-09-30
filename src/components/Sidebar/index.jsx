@@ -1,18 +1,38 @@
+import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Home, Compass, UploadCloud, Heart, LogOut } from 'lucide-react';
+import { Home, Compass, UploadCloud, Heart, LogOut, Images, Layers, Copy, Check, BadgeCheck } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import horizontalLogo from '../../assets/horizontal-logo.png';
 import styles from './styles.module.scss';
 
+function getUserLevel(favoritesCount = 0) {
+  if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN ULTIMATE' };
+  if (favoritesCount >= 100) return { key: 'elite', label: 'ELITE' };
+  if (favoritesCount >= 50) return { key: 'veterano', label: 'VETERANO' };
+  if (favoritesCount >= 20) return { key: 'criador', label: 'CRIADOR' };
+  if (favoritesCount >= 5) return { key: 'explorador', label: 'EXPLORADOR' };
+  return { key: 'recruta', label: 'RECRUTA' };
+}
+
 export default function Sidebar({ onLoginClick }) {
   const { user, profile } = useAuth();
+  const [tagCopied, setTagCopied] = useState(false);
 
   const navClass = ({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`;
 
   const displayName =
     profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Usuário';
   const photoURL = profile?.photoURL || user?.photoURL;
+  const userLevel = getUserLevel(profile?.totalFavoritesReceived || 0);
+
+  const handleCopyTag = (e) => {
+    e.stopPropagation();
+    if (!profile?.userTag) return;
+    navigator.clipboard.writeText(profile.userTag);
+    setTagCopied(true);
+    setTimeout(() => setTagCopied(false), 2000);
+  };
 
   return (
     <aside className={styles.sidebar}>
@@ -43,15 +63,34 @@ export default function Sidebar({ onLoginClick }) {
         )}
 
         {user ? (
-          <NavLink to="/my-wallpapers" className={navClass}>
+          <NavLink to="/upload" className={navClass}>
             <UploadCloud size={20} />
-            Seus Wallpapers
+            Enviar
           </NavLink>
         ) : (
           <button className={styles.navItem} onClick={onLoginClick}>
             <UploadCloud size={20} />
-            Seus Wallpapers
+            Enviar
           </button>
+        )}
+
+        {user ? (
+          <NavLink to="/my-wallpapers" className={navClass}>
+            <Images size={20} />
+            Meus Wallpapers
+          </NavLink>
+        ) : (
+          <button className={styles.navItem} onClick={onLoginClick}>
+            <Images size={20} />
+            Meus Wallpapers
+          </button>
+        )}
+
+        {Boolean(user && (profile?.role === 'creator' || profile?.assignedCollectionId)) && (
+          <NavLink to="/my-collection" className={navClass}>
+            <Layers size={20} />
+            Minha Coleção
+          </NavLink>
         )}
       </nav>
 
@@ -79,8 +118,26 @@ export default function Sidebar({ onLoginClick }) {
                 )}
               </div>
               <div className={styles.userDetails}>
-                <div className={styles.userName}>{displayName}</div>
-                <div className={styles.badge}>ULTIMATE</div>
+                <div className={styles.userNameRow}>
+                  <span className={styles.userName}>{displayName}</span>
+                  {Boolean(profile?.isVerified) && (
+                    <BadgeCheck size={16} className={styles.verifiedBadge} aria-label="Verificado" />
+                  )}
+                </div>
+                {Boolean(profile?.userTag) && (
+                  <button
+                    type="button"
+                    className={styles.userTagBtn}
+                    onClick={handleCopyTag}
+                    title="Clique para copiar sua Tag"
+                  >
+                    <span className={styles.userTagText}>{profile.userTag}</span>
+                    {tagCopied ? <Check size={12} /> : <Copy size={12} />}
+                  </button>
+                )}
+                <div className={`${styles.badge} ${styles[userLevel.key]}`}>
+                  {userLevel.label}
+                </div>
               </div>
             </div>
             <button className={styles.btnLogout} onClick={logOut}>

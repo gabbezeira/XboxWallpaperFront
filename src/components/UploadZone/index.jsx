@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { UploadCloud, Ban, X } from 'lucide-react';
+import { UploadCloud, Ban, X, Lock, Globe, Layers } from 'lucide-react';
 import { useUpload } from '../../hooks/useUpload';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './styles.module.scss';
@@ -45,6 +45,8 @@ export default function UploadZone({ onUploadComplete }) {
   const [game, setGame] = useState('');
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
+  const [isPublic, setIsPublic] = useState(false);
+  const [addToCollection, setAddToCollection] = useState(false);
 
   const [showGameSuggestions, setShowGameSuggestions] = useState(false);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
@@ -75,12 +77,20 @@ export default function UploadZone({ onUploadComplete }) {
     if (!selectedFile) return;
 
     try {
-      await upload(selectedFile, { title: title || null, game: game || null, tags });
+      await upload(selectedFile, {
+        title: title || null,
+        game: game || null,
+        tags,
+        isPublic,
+        collectionId: addToCollection && profile?.assignedCollectionId ? profile.assignedCollectionId : null,
+      });
       setSelectedFile(null);
       setPreviewUrl(null);
       setTitle('');
       setGame('');
       setTags([]);
+      setIsPublic(false);
+      setAddToCollection(false);
       if (onUploadComplete) onUploadComplete();
     } catch (err) {
       setLocalError(err.message);
@@ -93,6 +103,8 @@ export default function UploadZone({ onUploadComplete }) {
     setTitle('');
     setGame('');
     setTags([]);
+    setIsPublic(false);
+    setAddToCollection(false);
     setLocalError(null);
   };
 
@@ -232,6 +244,48 @@ export default function UploadZone({ onUploadComplete }) {
                 </div>
               )}
             </div>
+
+            <div className={styles.visibilitySection}>
+              <div className={styles.visibilityOptions}>
+                <button
+                  type="button"
+                  className={`${styles.visibilityOption} ${!isPublic ? styles.visibilityActive : ''}`}
+                  onClick={() => setIsPublic(false)}
+                >
+                  <Lock size={16} />
+                  <div className={styles.visibilityText}>
+                    <span className={styles.visibilityTitle}>Privado</span>
+                    <span className={styles.visibilityDesc}>Apenas você vê no console</span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.visibilityOption} ${isPublic ? styles.visibilityActive : ''}`}
+                  onClick={() => setIsPublic(true)}
+                >
+                  <Globe size={16} />
+                  <div className={styles.visibilityText}>
+                    <span className={styles.visibilityTitle}>Público</span>
+                    <span className={styles.visibilityDesc}>Enviar para a comunidade</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {Boolean(profile?.assignedCollectionId) && (
+              <div className={styles.creatorCollectionSection}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={addToCollection}
+                    onChange={(e) => setAddToCollection(e.target.checked)}
+                    className={styles.checkboxInput}
+                  />
+                  <Layers size={16} />
+                  <span>Incluir na minha coleção oficial de parceiro</span>
+                </label>
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.formActions}>

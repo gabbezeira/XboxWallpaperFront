@@ -294,6 +294,92 @@
   }
 }
 
+.visibilitySection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-top: $spacing-xs;
+}
+
+.visibilityOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-sm;
+}
+
+.visibilityOption {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-md;
+  color: $color-text-secondary;
+  cursor: pointer;
+  text-align: left;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  @include gamepad-focus;
+}
+
+.visibilityActive {
+  background: rgba($color-primary, 0.15);
+  border-color: $color-primary;
+  color: $color-text-primary;
+
+  &:hover {
+    background: rgba($color-primary, 0.2);
+    border-color: $color-primary;
+  }
+}
+
+.visibilityText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.visibilityTitle {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.visibilityDesc {
+  font-size: $fs-small;
+  color: $color-text-muted;
+}
+
+.creatorCollectionSection {
+  margin-top: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  background: rgba($color-accent, 0.08);
+  border: 1px solid rgba($color-accent, 0.2);
+  border-radius: $radius-md;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+  font-size: $fs-body;
+  color: $color-text-primary;
+}
+
+.checkboxInput {
+  width: 16px;
+  height: 16px;
+  accent-color: $color-primary;
+  cursor: pointer;
+}
+
 .formActions {
   display: flex;
   flex-direction: column;

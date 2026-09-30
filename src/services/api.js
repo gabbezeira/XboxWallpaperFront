@@ -51,12 +51,14 @@ export const api = {
     },
     getById: (id) => request(`/api/wallpapers/${id}`),
     mine: () => request('/api/wallpapers/mine'),
-    upload: (file, { title, game, tags } = {}) => {
+    upload: (file, { title, game, tags, isPublic, collectionId } = {}) => {
       const formData = new FormData();
       formData.append('image', file);
       if (title) formData.append('title', title);
       if (game) formData.append('game', game);
       if (tags && tags.length) formData.append('tags', JSON.stringify(tags));
+      if (isPublic !== undefined) formData.append('isPublic', String(isPublic));
+      if (collectionId) formData.append('collectionId', collectionId);
       return request('/api/wallpapers/upload', { method: 'POST', body: formData });
     },
     remove: (id) => request(`/api/wallpapers/${id}`, { method: 'DELETE' }),
@@ -64,6 +66,57 @@ export const api = {
       const token = await getToken();
       return `${API_URL}/api/wallpapers/${id}/download${token ? `?token=${encodeURIComponent(token)}` : ''}`;
     },
+  },
+
+  collections: {
+    list: () => request('/api/collections'),
+    getBySlug: (slug) => request(`/api/collections/${slug}`),
+    mine: () => request('/api/collections/mine'),
+    removeWallpaperFromMine: (wallpaperId) =>
+      request(`/api/collections/mine/wallpapers/${wallpaperId}`, { method: 'DELETE' }),
+    create: (data) =>
+      request('/api/collections', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    update: (id, data) =>
+      request(`/api/collections/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+    remove: (id) => request(`/api/collections/${id}`, { method: 'DELETE' }),
+  },
+
+  admin: {
+    pendingWallpapers: () => request('/api/admin/moderation/pending'),
+    approveWallpaper: (id, { collectionId } = {}) =>
+      request(`/api/admin/moderation/${id}/approve`, {
+        method: 'PATCH',
+        body: JSON.stringify({ collectionId }),
+      }),
+    rejectWallpaper: (id, { reason } = {}) =>
+      request(`/api/admin/moderation/${id}/reject`, {
+        method: 'PATCH',
+        body: JSON.stringify({ reason }),
+      }),
+    listUsers: ({ q = '', limit = 50 } = {}) =>
+      request(`/api/admin/users?q=${encodeURIComponent(q)}&limit=${limit}`),
+    updateRole: (id, role) =>
+      request(`/api/admin/users/${id}/role`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role }),
+      }),
+    updateVerification: (id, isVerified) =>
+      request(`/api/admin/users/${id}/verify`, {
+        method: 'PATCH',
+        body: JSON.stringify({ isVerified }),
+      }),
+    assignCollection: (id, collectionId) =>
+      request(`/api/admin/users/${id}/collection`, {
+        method: 'PATCH',
+        body: JSON.stringify({ collectionId }),
+      }),
+    deleteUser: (id) => request(`/api/admin/users/${id}`, { method: 'DELETE' }),
   },
 
   favorites: {

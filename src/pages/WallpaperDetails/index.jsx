@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Heart, Monitor, HardDrive, Download } from 'lucide-react';
-import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom';
+import { ArrowLeft, Heart, Monitor, HardDrive, Download, BadgeCheck, Layers } from 'lucide-react';
+import { useLocation, useNavigate, Navigate, useParams, Link } from 'react-router-dom';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
@@ -18,16 +18,27 @@ function formatResolution(width, height) {
   return `${width}×${height}`;
 }
 
-const COMMUNITY_LABEL = 'Xbox Community';
+function getUserLevel(favoritesCount = 0) {
+  if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN ULTIMATE' };
+  if (favoritesCount >= 100) return { key: 'elite', label: 'ELITE' };
+  if (favoritesCount >= 50) return { key: 'veterano', label: 'VETERANO' };
+  if (favoritesCount >= 20) return { key: 'criador', label: 'CRIADOR' };
+  if (favoritesCount >= 5) return { key: 'explorador', label: 'EXPLORADOR' };
+  return { key: 'recruta', label: 'RECRUTA' };
+}
 
 function getAuthorDisplay(wallpaper, authUser, profile) {
-  const isCommunity = wallpaper.userId === 'system';
-  if (isCommunity) {
-    return { label: COMMUNITY_LABEL, photo: null };
+  const isSystem = wallpaper.userId === 'system' || !wallpaper.userId;
+  if (isSystem) {
+    return {
+      label: 'Spartan Wallpapers',
+      photo: null,
+      isVerified: true,
+      tier: { key: 'spartan', label: 'SPARTAN' },
+    };
   }
 
   const isOwn = Boolean(authUser?.uid) && wallpaper.userId === authUser.uid;
-
   if (isOwn) {
     return {
       label:
@@ -37,12 +48,16 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
         authUser?.email?.split('@')[0] ||
         'Usuário',
       photo: wallpaper.authorPhoto || profile?.photoURL || authUser?.photoURL || null,
+      isVerified: Boolean(wallpaper.isVerified ?? profile?.isVerified),
+      tier: getUserLevel(profile?.totalFavoritesReceived || 0),
     };
   }
 
   return {
-    label: wallpaper.authorName || COMMUNITY_LABEL,
+    label: wallpaper.authorName || 'Comunidade Xbox',
     photo: wallpaper.authorPhoto || null,
+    isVerified: Boolean(wallpaper.isVerified),
+    tier: getUserLevel(wallpaper.authorFavoritesReceived || 0),
   };
 }
 
@@ -110,7 +125,6 @@ export default function WallpaperDetailsPage() {
     };
   }, [authUser, wallpaper?.id]);
 
-  /** Hero na página de detalhes: `preview=true` (backend gera WebP ~1600px / q84). Download e fullscreen continuam com o ficheiro completo. */
   const imageSrc = useMemo(() => {
     if (!wallpaper?.storageUrl) return '';
     const url = wallpaper.storageUrl;
@@ -143,7 +157,7 @@ export default function WallpaperDetailsPage() {
   }
 
   const fav = isFavorite(wallpaper.id);
-  const { label: authorLabel, photo: authorPhoto } = getAuthorDisplay(wallpaper, authUser, profile);
+  const authorInfo = getAuthorDisplay(wallpaper, authUser, profile);
 
   const handleToggleFavorite = () => toggleFavorite(wallpaper);
 
@@ -201,10 +215,10 @@ export default function WallpaperDetailsPage() {
           <div className={styles.meta}>
             <div className={styles.author}>
               <div className={styles.avatar}>
-                {authorPhoto && !photoError ? (
+                {authorInfo.photo && !photoError ? (
                   <img
-                    src={authorPhoto}
-                    alt={authorLabel}
+                    src={authorInfo.photo}
+                    alt={authorInfo.label}
                     className={styles.avatarImg}
                     referrerPolicy="no-referrer"
                     onError={() => setPhotoError(true)}
@@ -215,8 +229,28 @@ export default function WallpaperDetailsPage() {
                   </svg>
                 )}
               </div>
-              Por {authorLabel}
+              <div className={styles.authorDetails}>
+                <div className={styles.authorNameRow}>
+                  <span>Por {authorInfo.label}</span>
+                  {authorInfo.isVerified && (
+                    <BadgeCheck size={16} className={styles.verifiedIcon} title="Criador Verificado" />
+                  )}
+                </div>
+                {authorInfo.tier && (
+                  <span className={`${styles.tierBadge} ${styles[authorInfo.tier.key]}`}>
+                    {authorInfo.tier.label}
+                  </span>
+                )}
+              </div>
             </div>
+
+            {wallpaper.collectionSlug && (
+              <Link to={`/c/${wallpaper.collectionSlug}`} className={styles.collectionLink}>
+                <Layers size={14} />
+                <span>Coleção: {wallpaper.collectionSlug}</span>
+              </Link>
+            )}
+
             <div className={styles.stats}>
               <div className={styles.stat}>
                 <Monitor size={14} />
@@ -237,7 +271,7 @@ export default function WallpaperDetailsPage() {
               <button type="button" className={styles.btnAddFav} onClick={handleToggleFavorite}>
                 {fav ? 'REMOVER DOS FAVORITOS' : 'ADICIONAR AOS FAVORITOS'}
               </button>
-              <button type="button" className={styles.btnExtra} onClick={handleDownload}>
+              <button type="button" className={styles.btnExtra} onClick={handleDownload} aria-label="Baixar wallpaper">
                 <Download size={20} />
               </button>
             </div>

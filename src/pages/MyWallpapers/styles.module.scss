@@ -49,14 +49,20 @@
   color: $color-text-secondary;
 }
 
-.uploadSection {
+.headerRight {
   display: flex;
-  flex-direction: column;
-  padding: 0 $spacing-xl;
+  align-items: center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
 
-  @include respond-to(md) {
-    padding: 0;
-  }
+.btnUpload {
+  @include btn-primary;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: $fs-body;
+  white-space: nowrap;
 }
 
 .overlayLoader {

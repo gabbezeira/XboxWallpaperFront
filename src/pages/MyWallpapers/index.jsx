@@ -4,10 +4,10 @@ import { useWallpapers } from '../../hooks/useWallpapers';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
-import UploadZone from '../../components/UploadZone';
 import QuotaBar from '../../components/QuotaBar';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
+import { UploadCloud } from 'lucide-react';
 import styles from './styles.module.scss';
 
 export default function MyWallpapers() {
@@ -37,7 +37,6 @@ export default function MyWallpapers() {
       setIsModalOpen(false);
       await api.wallpapers.remove(wallpaperToDelete.id);
 
-      // Sincroniza o perfil e os wallpapers localmente
       await refreshProfile();
       await refetch();
     } catch (err) {
@@ -65,16 +64,17 @@ export default function MyWallpapers() {
             <h1 className={styles.title}>Meus Wallpapers</h1>
             <p className={styles.subtitle}>Gerencie suas imagens para usar no Xbox</p>
           </div>
-          <QuotaBar />
-        </div>
-
-        <div className={styles.uploadSection}>
-          <UploadZone
-            onUploadComplete={async () => {
-              await refreshProfile();
-              await refetch();
-            }}
-          />
+          <div className={styles.headerRight}>
+            <button
+              type="button"
+              className={styles.btnUpload}
+              onClick={() => navigate('/upload')}
+            >
+              <UploadCloud size={18} />
+              <span>Enviar Wallpaper</span>
+            </button>
+            <QuotaBar />
+          </div>
         </div>
 
         {loading ? (
@@ -84,6 +84,7 @@ export default function MyWallpapers() {
             wallpapers={wallpapers}
             onDelete={promptDelete}
             showDelete={true}
+            showStatus={true}
             onView={handleViewDetails}
             maxColumns={6}
           />

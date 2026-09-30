@@ -179,26 +179,112 @@
 .author {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: $spacing-md;
   color: $color-text-secondary;
   font-size: $fs-body;
 
   .avatar {
-    width: 24px;
-    height: 24px;
+    width: 38px;
+    height: 38px;
     border-radius: $radius-full;
     background-color: $color-primary;
     color: #000;
     @include flex-center;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: $fw-bold;
     overflow: hidden;
+    flex-shrink: 0;
   }
 
   .avatarImg {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+}
+
+.authorDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.authorNameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.verifiedIcon {
+  color: #38bdf8;
+  flex-shrink: 0;
+}
+
+.tierBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 8px;
+  font-weight: $fw-bold;
+  border-radius: 2px;
+  width: fit-content;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  &.recruta {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: $color-text-secondary;
+  }
+
+  &.explorador {
+    background-color: rgba(#d97706, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(#d97706, 0.4);
+  }
+
+  &.criador {
+    background-color: rgba(#2563eb, 0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(#2563eb, 0.4);
+  }
+
+  &.veterano {
+    background-color: rgba(#7c3aed, 0.2);
+    color: #c084fc;
+    border: 1px solid rgba(#7c3aed, 0.4);
+  }
+
+  &.elite {
+    background-color: rgba(#eab308, 0.2);
+    color: #fde047;
+    border: 1px solid rgba(#eab308, 0.4);
+  }
+
+  &.spartan {
+    background-color: rgba($color-primary, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba($color-primary, 0.5);
+    box-shadow: 0 0 10px rgba($color-primary, 0.3);
+  }
+}
+
+.collectionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $fs-small;
+  color: $color-primary;
+  text-decoration: none;
+  background: rgba($color-primary, 0.08);
+  border: 1px solid rgba($color-primary, 0.2);
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  width: fit-content;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: rgba($color-primary, 0.16);
   }
 }
 

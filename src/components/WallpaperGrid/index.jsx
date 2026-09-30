@@ -7,6 +7,7 @@ export default function WallpaperGrid({
   onView,
   onDelete,
   showDelete,
+  showStatus,
   emptyMessage,
   maxColumns,
 }) {
@@ -33,6 +34,7 @@ export default function WallpaperGrid({
           onView={onView}
           onDelete={onDelete}
           showDelete={showDelete}
+          showStatus={showStatus}
         />
       ))}
     </div>

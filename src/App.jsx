@@ -13,6 +13,8 @@ import GlobalLoader from './components/GlobalLoader';
 
 const Gallery = lazy(() => import('./pages/Gallery'));
 const MyWallpapers = lazy(() => import('./pages/MyWallpapers'));
+const Upload = lazy(() => import('./pages/Upload'));
+const MyCollection = lazy(() => import('./pages/MyCollection'));
 const Favorites = lazy(() => import('./pages/Favorites'));
 const WallpaperDetails = lazy(() => import('./pages/WallpaperDetails'));
 const FullscreenViewer = lazy(() => import('./pages/FullscreenViewer'));
@@ -52,6 +54,7 @@ function AppRoutes() {
                   <Route path="/" element={<Home />} />
                   <Route path="/gallery" element={<Gallery />} />
                   <Route path="/collection/:tag" element={<Collection />} />
+                  <Route path="/c/:tag" element={<Collection />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route
                     path="/favorites"
@@ -66,6 +69,22 @@ function AppRoutes() {
                     element={
                       <ProtectedRoute>
                         <MyWallpapers />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/upload"
+                    element={
+                      <ProtectedRoute>
+                        <Upload />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/my-collection"
+                    element={
+                      <ProtectedRoute>
+                        <MyCollection />
                       </ProtectedRoute>
                     }
                   />

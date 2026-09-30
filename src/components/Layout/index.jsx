@@ -18,10 +18,16 @@ const HIDE_SEARCH_ROUTES = [
   '/levels',
 ];
 
+const HIDE_SEARCH_PREFIXES = ['/wallpaper/'];
+const IMMERSIVE_PREFIXES = ['/wallpaper/'];
+
 export default function Layout({ children, onLoginClick }) {
   const { user } = useAuth();
   const location = useLocation();
-  const shouldHideSearch = HIDE_SEARCH_ROUTES.includes(location.pathname);
+  const shouldHideSearch =
+    HIDE_SEARCH_ROUTES.includes(location.pathname) ||
+    HIDE_SEARCH_PREFIXES.some((p) => location.pathname.startsWith(p));
+  const isImmersive = IMMERSIVE_PREFIXES.some((p) => location.pathname.startsWith(p));
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' ? window.innerWidth < MOBILE_MAX : false,
   );
@@ -64,7 +70,7 @@ export default function Layout({ children, onLoginClick }) {
 
   return (
     <div className={styles.layout}>
-      {isMobile ? (
+      {!isImmersive && (isMobile ? (
         <>
           <header className={styles.mobileHeader}>
             {mobileSearchOpen ? (
@@ -151,9 +157,9 @@ export default function Layout({ children, onLoginClick }) {
         </>
       ) : (
         <Sidebar onLoginClick={onLoginClick} />
-      )}
+      ))}
 
-      <main className={styles.main}>
+      <main className={`${styles.main} ${isImmersive ? styles.immersive : ''}`}>
         {!isMobile && !shouldHideSearch && (
           <div className={styles.topBar}>
             <form className={styles.searchForm} onSubmit={handleSearchSubmit}>

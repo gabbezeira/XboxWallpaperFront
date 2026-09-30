@@ -1,4 +1,5 @@
 import { auth } from './firebase';
+import { getCached, setCache, invalidateCache } from './apiCache';
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
 async function getToken() {
@@ -45,19 +46,36 @@ export const api = {
   },
 
   wallpapers: {
-    list: ({ q = '', tag = '', page = 1, limit = 20, sort = '' } = {}) => {
+    list: async ({ q = '', tag = '', page = 1, limit = 20, sort = '' } = {}) => {
       const params = new URLSearchParams();
       if (q) params.append('q', q);
       if (tag) params.append('tag', tag);
       if (sort) params.append('sort', sort);
       params.append('page', page);
       params.append('limit', limit);
-      return request(`/api/wallpapers?${params.toString()}`);
+      const path = `/api/wallpapers?${params.toString()}`;
+      const cached = getCached('/api/wallpapers', { q, tag, sort, page, limit });
+      if (cached) return cached;
+      const data = await request(path);
+      setCache('/api/wallpapers', { q, tag, sort, page, limit }, data);
+      return data;
     },
-    tags: () => request('/api/wallpapers/tags'),
-    getById: (id) => request(`/api/wallpapers/${id}`),
+    tags: async () => {
+      const cached = getCached('/api/wallpapers/tags');
+      if (cached) return cached;
+      const data = await request('/api/wallpapers/tags');
+      setCache('/api/wallpapers/tags', null, data, 5 * 60 * 1000);
+      return data;
+    },
+    getById: async (id) => {
+      const cached = getCached(`/api/wallpapers/${id}`);
+      if (cached) return cached;
+      const data = await request(`/api/wallpapers/${id}`);
+      setCache(`/api/wallpapers/${id}`, null, data, 5 * 60 * 1000);
+      return data;
+    },
     mine: () => request('/api/wallpapers/mine'),
-    upload: (file, { title, game, tags, isPublic, collectionId } = {}) => {
+    upload: async (file, { title, game, tags, isPublic, collectionId } = {}) => {
       const formData = new FormData();
       formData.append('image', file);
       if (title) formData.append('title', title);
@@ -65,19 +83,31 @@ export const api = {
       if (tags && tags.length) formData.append('tags', JSON.stringify(tags));
       if (isPublic !== undefined) formData.append('isPublic', String(isPublic));
       if (collectionId) formData.append('collectionId', collectionId);
-      return request('/api/wallpapers/upload', { method: 'POST', body: formData });
+      const result = await request('/api/wallpapers/upload', { method: 'POST', body: formData });
+      invalidateCache('/api/wallpapers');
+      return result;
     },
-    updateVisibility: (id, isPublic) =>
-      request(`/api/wallpapers/${id}/visibility`, {
+    updateVisibility: async (id, isPublic) => {
+      const result = await request(`/api/wallpapers/${id}/visibility`, {
         method: 'PATCH',
         body: JSON.stringify({ isPublic }),
-      }),
-    remove: (id) => request(`/api/wallpapers/${id}`, { method: 'DELETE' }),
-    batchRemove: (ids) =>
-      request('/api/wallpapers/batch-delete', {
+      });
+      invalidateCache('/api/wallpapers');
+      return result;
+    },
+    remove: async (id) => {
+      const result = await request(`/api/wallpapers/${id}`, { method: 'DELETE' });
+      invalidateCache('/api/wallpapers');
+      return result;
+    },
+    batchRemove: async (ids) => {
+      const result = await request('/api/wallpapers/batch-delete', {
         method: 'POST',
         body: JSON.stringify({ ids }),
-      }),
+      });
+      invalidateCache('/api/wallpapers');
+      return result;
+    },
     downloadUrl: async (id) => {
       const token = await getToken();
       return `${API_URL}/api/wallpapers/${id}/download${token ? `?token=${encodeURIComponent(token)}` : ''}`;
@@ -153,8 +183,16 @@ export const api = {
 
   favorites: {
     list: () => request('/api/favorites'),
-    add: (wallpaperId) => request(`/api/favorites/${wallpaperId}`, { method: 'POST' }),
-    remove: (wallpaperId) => request(`/api/favorites/${wallpaperId}`, { method: 'DELETE' }),
+    add: async (wallpaperId) => {
+      const result = await request(`/api/favorites/${wallpaperId}`, { method: 'POST' });
+      invalidateCache('/api/wallpapers');
+      return result;
+    },
+    remove: async (wallpaperId) => {
+      const result = await request(`/api/favorites/${wallpaperId}`, { method: 'DELETE' });
+      invalidateCache('/api/wallpapers');
+      return result;
+    },
   },
 
   profile: {

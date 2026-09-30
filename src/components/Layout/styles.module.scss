@@ -39,6 +39,11 @@
   @include respond-to(4k) {
     padding: $spacing-3xl;
   }
+
+  &.immersive {
+    padding: 0;
+    gap: 0;
+  }
 }
 
 .topBar {

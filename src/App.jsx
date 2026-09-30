@@ -44,8 +44,6 @@ function AppRoutes() {
           />
 
           <Route path="/link" element={<LinkDevice />} />
-          <Route path="/wallpaper/:id" element={<WallpaperDetails />} />
-          <Route path="/wallpaper/:id/fullscreen" element={<FullscreenViewer />} />
 
           <Route
             path="*"
@@ -54,6 +52,8 @@ function AppRoutes() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/wallpaper/:id" element={<WallpaperDetails />} />
+                  <Route path="/wallpaper/:id/fullscreen" element={<FullscreenViewer />} />
                   <Route path="/collection/:tag" element={<Collection />} />
                   <Route path="/c/:tag" element={<Collection />} />
                   <Route path="/terms" element={<Terms />} />

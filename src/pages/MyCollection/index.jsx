@@ -139,7 +139,7 @@ export default function MyCollection() {
               onClick={() => navigate('/upload')}
             >
               <UploadCloud size={16} />
-              <span>Adicionar Wallpaper</span>
+              <span>Adicionar Wallpaper na Coleção</span>
             </button>
           </div>
         </div>

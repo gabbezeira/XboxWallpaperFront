@@ -284,7 +284,7 @@ export default function Levels() {
             <div className={styles.stepCard}>
               <div className={styles.stepNumber}>04</div>
               <div className={styles.stepIconBox}>
-                <Heart size={24} />
+                <Heart size={24} className={styles.stepHeartIcon} />
               </div>
               <h3 className={styles.stepTitle}>Conquiste Favoritos</h3>
               <p className={styles.stepDesc}>

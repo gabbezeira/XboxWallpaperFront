@@ -191,45 +191,45 @@
   padding: 2px 6px;
   font-size: 8px;
   font-weight: $fw-bold;
-  border-radius: 2px;
+  border-radius: 4px;
   width: fit-content;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 
   &.recruta {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: $color-text-secondary;
+    background-color: #27272a;
+    color: #a1a1aa;
+    border: 1px solid #3f3f46;
   }
 
   &.explorador {
-    background-color: rgba(#d97706, 0.2);
+    background-color: #361b02;
     color: #fbbf24;
-    border: 1px solid rgba(#d97706, 0.4);
+    border: 1px solid #854d0e;
   }
 
   &.criador {
-    background-color: rgba(#2563eb, 0.2);
+    background-color: #0c214d;
     color: #60a5fa;
-    border: 1px solid rgba(#2563eb, 0.4);
+    border: 1px solid #1d4ed8;
   }
 
   &.veterano {
-    background-color: rgba(#7c3aed, 0.2);
+    background-color: #261245;
     color: #c084fc;
-    border: 1px solid rgba(#7c3aed, 0.4);
+    border: 1px solid #6d28d9;
   }
 
   &.elite {
-    background-color: rgba(#eab308, 0.2);
+    background-color: #362703;
     color: #fde047;
-    border: 1px solid rgba(#eab308, 0.4);
+    border: 1px solid #a16207;
   }
 
   &.spartan {
-    background-color: rgba($color-primary, 0.2);
+    background-color: #072d12;
     color: #4ade80;
-    border: 1px solid rgba($color-primary, 0.5);
-    box-shadow: 0 0 10px rgba($color-primary, 0.3);
+    border: 1px solid #107c10;
   }
 
   @include respond-to(2xl) {

@@ -118,8 +118,18 @@ export default function Gallery() {
   }, [q]);
 
   const displayedChips = useMemo(() => {
-    return availableTags.slice(0, 30);
-  }, [availableTags]);
+    if (!activeTag) return availableTags.slice(0, 30);
+    const normalizedActive = activeTag.toLowerCase();
+    const activeIndex = availableTags.findIndex(
+      (t) => t.name.toLowerCase() === normalizedActive
+    );
+    if (activeIndex > -1) {
+      const activeItem = availableTags[activeIndex];
+      const otherTags = availableTags.filter((_, idx) => idx !== activeIndex);
+      return [activeItem, ...otherTags].slice(0, 30);
+    }
+    return [{ name: activeTag, count: '' }, ...availableTags].slice(0, 30);
+  }, [availableTags, activeTag]);
 
   const modalFilteredTags = useMemo(() => {
     if (!tagSearchQuery.trim()) return availableTags;
@@ -176,13 +186,6 @@ export default function Gallery() {
     } else {
       newParams.delete('q');
     }
-    newParams.set('page', '1');
-    setSearchParams(newParams);
-  };
-
-  const handleClearFilter = (filterKey) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete(filterKey);
     newParams.set('page', '1');
     setSearchParams(newParams);
   };
@@ -271,66 +274,6 @@ export default function Gallery() {
             })}
           </div>
 
-          {hasActiveFilters && (
-            <div className={styles.activeFiltersBar}>
-              <div className={styles.activeChipsList}>
-                {q && (
-                  <span className={styles.filterBadge}>
-                    <span>Busca: &quot;{q}&quot;</span>
-                    <button
-                      type="button"
-                      className={styles.filterBadgeRemove}
-                      onClick={() => handleClearFilter('q')}
-                      aria-label="Remover busca"
-                    >
-                      <X size={13} />
-                    </button>
-                  </span>
-                )}
-
-                {activeTag && (
-                  <span className={styles.filterBadge}>
-                    <span>Tag: {activeTag}</span>
-                    <button
-                      type="button"
-                      className={styles.filterBadgeRemove}
-                      onClick={() => handleClearFilter('tag')}
-                      aria-label="Remover tag"
-                    >
-                      <X size={13} />
-                    </button>
-                  </span>
-                )}
-
-                {currentSort === 'popular' && (
-                  <span className={styles.filterBadge}>
-                    <span>Ordem: Populares</span>
-                    <button
-                      type="button"
-                      className={styles.filterBadgeRemove}
-                      onClick={() => handleClearFilter('sort')}
-                      aria-label="Remover ordenação popular"
-                    >
-                      <X size={13} />
-                    </button>
-                  </span>
-                )}
-              </div>
-
-              <div className={styles.filterMeta}>
-                <span className={styles.resultsCount}>
-                  {totalItems} wallpaper{totalItems === 1 ? '' : 's'} encontrado{totalItems === 1 ? '' : 's'}
-                </span>
-                <button
-                  type="button"
-                  className={styles.btnClearFilters}
-                  onClick={handleClearAll}
-                >
-                  Limpar tudo
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         {loading ? (

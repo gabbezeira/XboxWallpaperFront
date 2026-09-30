@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   RefreshCw,
 } from 'lucide-react';
+import VerifiedBadge from '../../components/VerifiedBadge';
 import { formatFileSize } from '../../utils/format.js';
 import { auth } from '../../services/firebase';
 import Pagination from '../../components/Pagination';
@@ -117,6 +118,36 @@ export default function ModerationQueue({ onApprovedCountChange }) {
     }
   };
 
+  const handleToggleVerifyAuthor = async (userId, authorName, currentVerified) => {
+    if (!userId || userId === 'system') return;
+    const nextVal = !currentVerified;
+    const confirmMessage = nextVal
+      ? `Deseja conceder o selo de verificado para "${authorName || 'o autor'}"? Com o selo, todos os envios deste criador serão publicados automaticamente no catálogo público, sem precisar de aprovação manual.`
+      : `Deseja remover o selo de verificado de "${authorName || 'o autor'}"? Futuros wallpapers precisarão de aprovação manual.`;
+
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      setActionLoading(true);
+      await api.admin.updateUserVerification(userId, nextVal);
+      if (nextVal) {
+        const remaining = wallpapers.filter((w) => w.userId !== userId);
+        setWallpapers(remaining);
+        if (onApprovedCountChange) {
+          onApprovedCountChange(remaining.length);
+        }
+      } else {
+        setWallpapers((prev) =>
+          prev.map((w) => (w.userId === userId ? { ...w, isVerified: false } : w))
+        );
+      }
+    } catch (err) {
+      alert(`Erro ao atualizar verificação: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const promptReject = (wallpaper) => {
     setSelectedWallpaper(wallpaper);
     setSelectedReason(REJECTION_REASONS[0]);
@@ -207,9 +238,34 @@ export default function ModerationQueue({ onApprovedCountChange }) {
                 </h3>
 
                 <div className={styles.modMetaRow}>
-                  <span className={styles.modAuthor}>
-                    {w.authorName || 'Autor anônimo'}
-                  </span>
+                  <div className={styles.modAuthor}>
+                    <span>{w.authorName || 'Autor anônimo'}</span>
+                    {w.userId && w.userId !== 'system' && (
+                      <button
+                        type="button"
+                        onClick={() => handleToggleVerifyAuthor(w.userId, w.authorName, w.isVerified)}
+                        className={`${styles.verifyToggleBtn} ${w.isVerified ? styles.verifyActive : ''}`}
+                        title={
+                          w.isVerified
+                            ? 'Criador verificado (publicação automática ativa). Clique para revogar.'
+                            : 'Verificar criador (ativar publicações automáticas)'
+                        }
+                        disabled={actionLoading}
+                      >
+                        {w.isVerified ? (
+                          <>
+                            <VerifiedBadge size={13} />
+                            <span>Verificado</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShieldCheck size={13} />
+                            <span>Verificar</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                   {w.sizeBytes && (
                     <span title="Tamanho">
                       {formatFileSize(w.sizeBytes)}

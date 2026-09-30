@@ -98,7 +98,6 @@ function findBestCandidate(current, direction, candidates) {
 function scrollIntoViewIfNeeded(el) {
   const rect = el.getBoundingClientRect();
   const viewH = window.innerHeight;
-  const viewW = window.innerWidth;
 
   if (rect.top < 0 || rect.bottom > viewH) {
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -389,12 +388,19 @@ export default function useGamepad() {
   }, [navigateFocus, handleButtonAction, startRepeat, stopRepeat]);
 
   useEffect(() => {
-    // Inicia o loop imediatamente. O navegador (Chrome/Edge/Xbox) bloqueia
-    // os dados do controle no carregamento inicial até que um botão seja apertado.
-    // Estando em polling contínuo, a detecção acontece em tempo real no primeiro clique.
     animFrameRef.current = requestAnimationFrame(pollGamepad);
 
+    const handlePointerMove = (e) => {
+      const target = e.target?.closest?.(FOCUSABLE_SELECTOR);
+      if (target && target !== document.activeElement) {
+        target.focus({ preventScroll: true });
+      }
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+
     return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
         animFrameRef.current = null;

@@ -79,22 +79,23 @@ export default function AuthModal({ onClose }) {
     }
   };
 
-  const handleMicrosoft = () => {
-    setRedirecting(true);
-    sessionStorage.setItem('oauth_redirect', 'true');
+  const handleMicrosoft = async () => {
+    setLoading(true);
+    setError('');
 
-    signInWithMicrosoft().catch((err) => {
-      console.warn('Erro ao iniciar redirecionamento:', err);
-      setRedirecting(false);
-      sessionStorage.removeItem('oauth_redirect');
-      setError('Ocorreu um erro ao tentar acessar a Microsoft.');
-    });
-
-    setTimeout(() => {
-      setRedirecting(false);
-      sessionStorage.removeItem('oauth_redirect');
-      setError('A conexão expirou. Por favor, verifique sua rede e tente novamente.');
-    }, 10000);
+    try {
+      const user = await signInWithMicrosoft();
+      if (user) {
+        sessionStorage.removeItem('oauth_redirect');
+        onClose();
+      }
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        setError('Ocorreu um erro ao tentar acessar a Microsoft.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (redirecting) {

@@ -1,10 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import {
-  getAuth,
-  setPersistence,
-  browserLocalPersistence,
-  indexedDBLocalPersistence,
-} from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -17,13 +12,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-
-export const authReady = (async () => {
-  try {
-    await setPersistence(auth, indexedDBLocalPersistence);
-  } catch {
-    await setPersistence(auth, browserLocalPersistence);
-  }
-})();
+export const authReady = Promise.resolve();
 
 export default app;

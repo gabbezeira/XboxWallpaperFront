@@ -16,7 +16,7 @@ export default function GlobalLoader() {
       timeoutId = setTimeout(() => {
         setHasError(true);
         sessionStorage.removeItem('oauth_redirect');
-      }, 10000);
+      }, 30000);
     }
     return () => clearTimeout(timeoutId);
   }, [isRedirecting, hasError]);

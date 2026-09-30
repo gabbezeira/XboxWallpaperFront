@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
+  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   signInWithCustomToken,
@@ -60,8 +61,22 @@ export const logOut = async () => {
   sessionStorage.clear();
 };
 
-export const signInWithMicrosoft = () => {
-  return signInWithRedirect(auth, microsoftProvider);
+export const signInWithMicrosoft = async () => {
+  try {
+    const result = await signInWithPopup(auth, microsoftProvider);
+    await syncWithBackend(result.user);
+    return result.user;
+  } catch (err) {
+    if (
+      err.code === 'auth/popup-blocked' ||
+      err.code === 'auth/operation-not-supported-in-this-environment'
+    ) {
+      sessionStorage.setItem('oauth_redirect', 'true');
+      await signInWithRedirect(auth, microsoftProvider);
+      return null;
+    }
+    throw err;
+  }
 };
 
 export const loginWithCustomToken = async (customToken) => {

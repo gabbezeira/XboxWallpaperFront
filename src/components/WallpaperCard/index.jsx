@@ -1,5 +1,6 @@
 import { useState, memo } from 'react';
-import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, BadgeCheck, Globe } from 'lucide-react';
+import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, Globe } from 'lucide-react';
+import VerifiedBadge from '../VerifiedBadge';
 import { formatFileSize } from '../../utils/format.js';
 import styles from './styles.module.scss';
 
@@ -98,7 +99,7 @@ const WallpaperCard = memo(function WallpaperCard({
           {wallpaper.authorName && !showStatus && (
             <div className={styles.authorBadge}>
               <span className={styles.authorName}>{wallpaper.authorName}</span>
-              {wallpaper.isVerified && <BadgeCheck size={13} className={styles.verifiedIcon} />}
+              {wallpaper.isVerified && <VerifiedBadge size={13} className={styles.verifiedIcon} />}
             </div>
           )}
           {wallpaper.sizeBytes != null && wallpaper.sizeBytes > 0 && (

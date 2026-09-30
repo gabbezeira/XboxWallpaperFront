@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
-import Modal from '../../components/Modal';
 import Loader from '../../components/Loader';
-import { Check, X, Clock, Layers, User, Calendar, Tag, ShieldCheck, ImageOff } from 'lucide-react';
+import {
+  Check,
+  X,
+  Clock,
+  Layers,
+  Calendar,
+  ShieldCheck,
+  RefreshCw,
+  HardDrive,
+} from 'lucide-react';
+import { formatFileSize } from '../../utils/format.js';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -13,7 +22,16 @@ const REJECTION_REASONS = [
   'Imagem repetida ou duplicada',
   'Marca d\'água excessiva ou texto indesejado',
   'Formato incompatível com tela de TV (não é 16:9)',
+  'Outro',
 ];
+
+function formatResolution(width, height) {
+  if (!width || !height) return '';
+  if (width >= 3840) return '4K';
+  if (width >= 2560) return '2K';
+  if (width >= 1920) return '1080p';
+  return `${width}×${height}`;
+}
 
 export default function ModerationQueue({ onApprovedCountChange }) {
   const [wallpapers, setWallpapers] = useState([]);
@@ -21,7 +39,7 @@ export default function ModerationQueue({ onApprovedCountChange }) {
   const [loading, setLoading] = useState(true);
 
   const [selectedWallpaper, setSelectedWallpaper] = useState(null);
-  const [selectedCollection, setSelectedCollection] = useState('');
+  const [collectionAssignments, setCollectionAssignments] = useState({});
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [selectedReason, setSelectedReason] = useState(REJECTION_REASONS[0]);
   const [customReason, setCustomReason] = useState('');
@@ -36,7 +54,9 @@ export default function ModerationQueue({ onApprovedCountChange }) {
       ]);
       setWallpapers(pendingRes || []);
       setCollections(colRes || []);
-      if (onApprovedCountChange) onApprovedCountChange(pendingRes?.length || 0);
+      if (onApprovedCountChange) {
+        onApprovedCountChange(pendingRes?.length || 0);
+      }
     } catch (err) {
       console.error('fetchQueue error:', err);
     } finally {
@@ -48,12 +68,16 @@ export default function ModerationQueue({ onApprovedCountChange }) {
     fetchQueue();
   }, []);
 
-  const handleApprove = async (wallpaper, collectionId = null) => {
+  const handleApprove = async (wallpaper) => {
     try {
       setActionLoading(true);
-      await api.admin.approveWallpaper(wallpaper.id, { collectionId });
-      setWallpapers((prev) => prev.filter((w) => w.id !== wallpaper.id));
-      if (onApprovedCountChange) onApprovedCountChange((wallpapers.length - 1));
+      const chosenCollectionId = collectionAssignments[wallpaper.id] || null;
+      await api.admin.approveWallpaper(wallpaper.id, { collectionId: chosenCollectionId });
+      const updated = wallpapers.filter((w) => w.id !== wallpaper.id);
+      setWallpapers(updated);
+      if (onApprovedCountChange) {
+        onApprovedCountChange(updated.length);
+      }
     } catch (err) {
       alert(`Erro ao aprovar: ${err.message}`);
     } finally {
@@ -76,8 +100,11 @@ export default function ModerationQueue({ onApprovedCountChange }) {
       setActionLoading(true);
       setRejectModalOpen(false);
       await api.admin.rejectWallpaper(selectedWallpaper.id, { reason });
-      setWallpapers((prev) => prev.filter((w) => w.id !== selectedWallpaper.id));
-      if (onApprovedCountChange) onApprovedCountChange((wallpapers.length - 1));
+      const updated = wallpapers.filter((w) => w.id !== selectedWallpaper.id);
+      setWallpapers(updated);
+      if (onApprovedCountChange) {
+        onApprovedCountChange(updated.length);
+      }
     } catch (err) {
       alert(`Erro ao rejeitar: ${err.message}`);
     } finally {
@@ -92,115 +119,116 @@ export default function ModerationQueue({ onApprovedCountChange }) {
 
   if (wallpapers.length === 0) {
     return (
-      <div className={styles.emptyQueue}>
-        <div className={styles.emptyQueueIcon}>
-          <ShieldCheck size={48} />
-        </div>
-        <h2 className={styles.emptyQueueTitle}>Fila Limpa!</h2>
-        <p className={styles.emptyQueueText}>
-          Nenhum wallpaper pendente de aprovação no momento. Novos envios comunitários aparecerão aqui.
+      <div className={styles.emptyState}>
+        <ShieldCheck size={44} className={styles.emptyIcon} />
+        <h2 className={styles.emptyTitle}>Fila Limpa</h2>
+        <p className={styles.emptyText}>
+          Nenhum wallpaper pendente de aprovação no momento. Novos envios comunitários aparecerão aqui automaticamente.
         </p>
+        <button type="button" className={styles.btnSecondary} onClick={fetchQueue}>
+          <RefreshCw size={14} />
+          <span>Verificar novamente</span>
+        </button>
       </div>
     );
   }
 
   return (
-    <div className={styles.moderationSection}>
-      <div className={styles.moderationHeader}>
-        <div>
-          <h2 className={styles.sectionTitle}>Moderação Comunitária</h2>
+    <div className={styles.viewContainer}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleArea}>
+          <h2 className={styles.sectionTitle}>Fila de Moderação</h2>
           <p className={styles.sectionSubtitle}>
-            {wallpapers.length} {wallpapers.length === 1 ? 'wallpaper aguardando' : 'wallpapers aguardando'} aprovação para publicação pública.
+            {wallpapers.length} {wallpapers.length === 1 ? 'wallpaper pendente' : 'wallpapers pendentes'} para avaliação da comunidade.
           </p>
         </div>
-        <button type="button" className={styles.btnSecondary} onClick={fetchQueue}>
-          Atualizar Fila
-        </button>
+        <div className={styles.toolbarActions}>
+          <button type="button" className={styles.btnSecondary} onClick={fetchQueue}>
+            <RefreshCw size={14} />
+            <span>Atualizar</span>
+          </button>
+        </div>
       </div>
 
-      <div className={styles.queueGrid}>
+      <div className={styles.moderationGrid}>
         {wallpapers.map((w) => {
-          const thumbSrc = w.thumbUrl?.startsWith('http')
+          const thumbUrl = w.thumbUrl?.startsWith('http')
             ? w.thumbUrl
             : `${API_URL}${w.thumbUrl || w.storageUrl}`;
+          const resLabel = formatResolution(w.width, w.height);
 
           return (
             <div key={w.id} className={styles.moderationCard}>
-              <div className={styles.cardMedia}>
-                <img src={thumbSrc} alt={w.title || 'Preview'} className={styles.cardImage} />
-                <div className={styles.mediaPills}>
-                  {w.width && w.height && (
-                    <span className={styles.pill}>{w.width}×{w.height}</span>
-                  )}
-                  {w.game && (
-                    <span className={styles.pill}>{w.game}</span>
-                  )}
-                </div>
+              <div className={styles.modImageWrapper}>
+                <img src={thumbUrl} alt={w.title} className={styles.modImage} loading="lazy" />
+                {resLabel && <span className={styles.modResolutionBadge}>{resLabel}</span>}
               </div>
 
-              <div className={styles.cardBody}>
-                <h3 className={styles.cardTitle}>{w.title || 'Sem título'}</h3>
+              <div className={styles.modCardBody}>
+                <h3 className={styles.modTitle} title={w.title || 'Sem título'}>
+                  {w.title || 'Sem título'}
+                </h3>
 
-                <div className={styles.authorRow}>
-                  <div className={styles.authorAvatar}>
-                    {w.authorPhoto ? (
-                      <img src={w.authorPhoto} alt={w.authorName} className={styles.authorImg} />
-                    ) : (
-                      <User size={14} />
-                    )}
-                  </div>
-                  <span className={styles.authorName}>{w.authorName || 'Usuário'}</span>
+                <div className={styles.modMetaRow}>
+                  <span className={styles.modAuthor}>
+                    {w.authorName || 'Autor anônimo'}
+                  </span>
+                  {w.sizeBytes && (
+                    <span title="Tamanho">
+                      {formatFileSize(w.sizeBytes)}
+                    </span>
+                  )}
                 </div>
 
-                {w.tags && w.tags.length > 0 && (
-                  <div className={styles.tagList}>
-                    {w.tags.map((t) => (
-                      <span key={t} className={styles.tagItem}>
-                        #{t}
+                {Array.isArray(w.tags) && w.tags.length > 0 && (
+                  <div className={styles.modTagsList}>
+                    {w.tags.slice(0, 4).map((tag) => (
+                      <span key={tag} className={styles.modTagPill}>
+                        #{tag}
                       </span>
                     ))}
                   </div>
                 )}
+              </div>
 
-                {collections.length > 0 && (
-                  <div className={styles.collectionAssign}>
-                    <label className={styles.miniLabel}>
-                      <Layers size={12} />
-                      <span>Vincular à Coleção:</span>
-                    </label>
-                    <select
-                      className={styles.selectInput}
-                      value={selectedCollection}
-                      onChange={(e) => setSelectedCollection(e.target.value)}
-                    >
-                      <option value="">Nenhuma (Comunidade Geral)</option>
-                      {collections.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+              <div className={styles.modCardActions}>
+                <select
+                  value={collectionAssignments[w.id] || ''}
+                  onChange={(e) =>
+                    setCollectionAssignments((prev) => ({
+                      ...prev,
+                      [w.id]: e.target.value,
+                    }))
+                  }
+                  className={styles.modColSelect}
+                >
+                  <option value="">Sem coleção (apenas catálogo público)</option>
+                  {collections.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      Coleção: {c.name}
+                    </option>
+                  ))}
+                </select>
 
-                <div className={styles.cardActions}>
+                <div className={styles.modBtnRow}>
                   <button
                     type="button"
                     className={styles.btnApprove}
+                    onClick={() => handleApprove(w)}
                     disabled={actionLoading}
-                    onClick={() => handleApprove(w, selectedCollection || w.collectionId)}
                   >
-                    <Check size={16} />
+                    <Check size={14} />
                     <span>Aprovar</span>
                   </button>
+
                   <button
                     type="button"
                     className={styles.btnReject}
-                    disabled={actionLoading}
                     onClick={() => promptReject(w)}
+                    disabled={actionLoading}
                   >
-                    <X size={16} />
-                    <span>Rejeitar</span>
+                    <X size={14} />
+                    <span>Recusar</span>
                   </button>
                 </div>
               </div>
@@ -210,50 +238,60 @@ export default function ModerationQueue({ onApprovedCountChange }) {
       </div>
 
       {rejectModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.rejectModal}>
-            <h3 className={styles.modalTitle}>Rejeitar Wallpaper</h3>
-            <p className={styles.modalDesc}>
-              Selecione o motivo da rejeição. O usuário verá essa mensagem no seu painel.
-            </p>
-
-            <div className={styles.reasonList}>
-              {REJECTION_REASONS.map((reason) => (
-                <label key={reason} className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    name="reason"
-                    checked={selectedReason === reason}
-                    onChange={() => setSelectedReason(reason)}
-                  />
-                  <span>{reason}</span>
-                </label>
-              ))}
-              <label className={styles.radioOption}>
-                <input
-                  type="radio"
-                  name="reason"
-                  checked={selectedReason === 'Outro'}
-                  onChange={() => setSelectedReason('Outro')}
-                />
-                <span>Outro motivo personalizado</span>
-              </label>
-            </div>
-
-            {selectedReason === 'Outro' && (
-              <textarea
-                className={styles.reasonTextarea}
-                placeholder="Descreva o motivo da não aprovação..."
-                value={customReason}
-                onChange={(e) => setCustomReason(e.target.value)}
-                maxLength={200}
-              />
-            )}
-
-            <div className={styles.modalButtons}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setRejectModalOpen(false)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Recusar Wallpaper</h3>
               <button
                 type="button"
-                className={styles.btnGhost}
+                className={styles.btnIconSmall}
+                onClick={() => setRejectModalOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>Motivo da recusa</label>
+                <select
+                  value={selectedReason}
+                  onChange={(e) => setSelectedReason(e.target.value)}
+                  className={styles.fieldSelect}
+                >
+                  {REJECTION_REASONS.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedReason === 'Outro' && (
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Descreva o motivo</label>
+                  <input
+                    type="text"
+                    placeholder="Explique o motivo para o criador..."
+                    value={customReason}
+                    onChange={(e) => setCustomReason(e.target.value)}
+                    className={styles.fieldInput}
+                    autoFocus
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
                 onClick={() => setRejectModalOpen(false)}
               >
                 Cancelar
@@ -262,8 +300,9 @@ export default function ModerationQueue({ onApprovedCountChange }) {
                 type="button"
                 className={styles.btnDanger}
                 onClick={confirmReject}
+                disabled={actionLoading}
               >
-                Confirmar Rejeição
+                Confirmar Recusa
               </button>
             </div>
           </div>

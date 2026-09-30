@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Heart, Monitor, HardDrive, Download, BadgeCheck, Layers } from 'lucide-react';
+import { ArrowLeft, Heart, Monitor, HardDrive, Download, Layers } from 'lucide-react';
+import VerifiedBadge from '../../components/VerifiedBadge';
 import { useLocation, useNavigate, Navigate, useParams, Link } from 'react-router-dom';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useAuth } from '../../hooks/useAuth';
@@ -233,7 +234,7 @@ export default function WallpaperDetailsPage() {
                 <div className={styles.authorNameRow}>
                   <span>Por {authorInfo.label}</span>
                   {authorInfo.isVerified && (
-                    <BadgeCheck size={16} className={styles.verifiedIcon} title="Criador Verificado" />
+                    <VerifiedBadge size={16} className={styles.verifiedIcon} title="Criador Verificado" />
                   )}
                 </div>
                 {authorInfo.tier && (

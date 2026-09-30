@@ -1,0 +1,22 @@
+@use '../../styles/variables' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.star {
+  fill: #1d9bf0;
+  stroke: #1d9bf0;
+}
+
+.check {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

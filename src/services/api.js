@@ -49,6 +49,7 @@ export const api = {
       params.append('limit', limit);
       return request(`/api/wallpapers?${params.toString()}`);
     },
+    tags: () => request('/api/wallpapers/tags'),
     getById: (id) => request(`/api/wallpapers/${id}`),
     mine: () => request('/api/wallpapers/mine'),
     upload: (file, { title, game, tags, isPublic, collectionId } = {}) => {

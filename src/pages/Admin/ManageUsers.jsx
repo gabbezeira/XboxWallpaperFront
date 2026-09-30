@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
-import Modal from '../../components/Modal';
 import Loader from '../../components/Loader';
+import VerifiedBadge from '../../components/VerifiedBadge';
 import {
   Users,
   Search,
-  CheckCircle,
   Trash2,
   Copy,
   Check,
@@ -13,6 +12,7 @@ import {
   Image as ImageIcon,
   Layers,
   Calendar,
+  X,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 
@@ -81,7 +81,7 @@ export default function ManageUsers() {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      await api.admin.updateRole(userId, newRole);
+      await api.admin.updateUserRole(userId, newRole);
       setUsers((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
       );
@@ -90,15 +90,15 @@ export default function ManageUsers() {
     }
   };
 
-  const handleToggleVerified = async (userId, currentStatus) => {
-    const nextStatus = !currentStatus;
+  const handleToggleVerified = async (userId, currentVerified) => {
+    const nextVal = !currentVerified;
     try {
-      await api.admin.updateVerification(userId, nextStatus);
+      await api.admin.updateUserVerification(userId, nextVal);
       setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, isVerified: nextStatus } : u))
+        prev.map((u) => (u.id === userId ? { ...u, isVerified: nextVal } : u))
       );
     } catch (err) {
-      alert(`Erro ao alterar verificado: ${err.message}`);
+      alert(`Erro ao alterar verificação: ${err.message}`);
     }
   };
 
@@ -108,21 +108,19 @@ export default function ManageUsers() {
     setAssignModalOpen(true);
   };
 
-  const handleSaveAssignment = async (e) => {
-    e.preventDefault();
+  const handleSaveAssign = async () => {
     if (!userToAssign) return;
-    setAssigning(true);
     try {
-      await api.admin.assignCollection(userToAssign.id, selectedColId || null);
+      setAssigning(true);
+      await api.admin.assignUserCollection(userToAssign.id, selectedColId || null);
       setUsers((prev) =>
         prev.map((u) =>
           u.id === userToAssign.id ? { ...u, assignedCollectionId: selectedColId || null } : u
         )
       );
       setAssignModalOpen(false);
-      setUserToAssign(null);
     } catch (err) {
-      alert(`Erro ao associar coleção: ${err.message}`);
+      alert(`Erro ao vincular coleção: ${err.message}`);
     } finally {
       setAssigning(false);
     }
@@ -130,183 +128,191 @@ export default function ManageUsers() {
 
   const handleDeleteUser = async () => {
     if (!userToDelete) return;
-    setDeleting(true);
     try {
-      await api.admin.deleteUser(userToDelete.id);
+      setDeleting(true);
+      await api.admin.deleteUserAccount(userToDelete.id);
       setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
       setDeleteModalOpen(false);
       setUserToDelete(null);
     } catch (err) {
-      alert(`Erro ao excluir usuário: ${err.message}`);
+      alert(`Erro ao excluir conta: ${err.message}`);
     } finally {
       setDeleting(false);
     }
   };
 
+  if (loading) {
+    return <Loader text="Carregando usuários..." />;
+  }
+
   return (
-    <div className={styles.usersSection}>
-      <div className={styles.usersHeader}>
-        <div>
-          <h2 className={styles.sectionTitle}>Gestão de Usuários & Creators</h2>
+    <div className={styles.viewContainer}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleArea}>
+          <h2 className={styles.sectionTitle}>Gestão de Usuários & Criadores</h2>
           <p className={styles.sectionSubtitle}>
-            Localize usuários pela User Tag (#1234), veja data de cadastro, conceda cargos e selos.
+            Controle de cargos, atribuição de selo de criador verificado e vinculação de playlists.
           </p>
         </div>
-        <form onSubmit={handleSearchSubmit} className={styles.userSearchForm}>
-          <div className={styles.searchBox}>
+
+        <div className={styles.toolbarActions}>
+          <form onSubmit={handleSearchSubmit} className={styles.searchBox}>
             <Search size={16} className={styles.searchIcon} />
             <input
               type="text"
-              placeholder="Buscar por nome, email ou User Tag (#1234)..."
+              placeholder="Buscar por nome, e-mail ou #tag..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
             />
-          </div>
-          <button type="submit" className={styles.btnSecondary}>
-            Buscar
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
 
-      {loading ? (
-        <div className={styles.loadRow}>
-          <Loader />
-        </div>
-      ) : users.length === 0 ? (
-        <div className={styles.emptyQueue}>
-          <Users size={40} className={styles.emptyQueueIcon} />
-          <h3 className={styles.emptyQueueTitle}>Nenhum usuário encontrado</h3>
-          <p className={styles.emptyQueueText}>Tente refinar sua busca por nome ou #tag.</p>
+      {users.length === 0 ? (
+        <div className={styles.emptyState}>
+          <Users size={44} className={styles.emptyIcon} />
+          <h3 className={styles.emptyTitle}>Nenhum Usuário Encontrado</h3>
+          <p className={styles.emptyText}>
+            {searchQuery
+              ? `Nenhum usuário corresponde à busca "${searchQuery}".`
+              : 'Nenhum usuário cadastrado no sistema.'}
+          </p>
         </div>
       ) : (
         <>
-          <div className={styles.desktopUsersTable}>
-            <div className={styles.usersTableWrapper}>
-              <table className={styles.usersTable}>
-                <thead>
-                  <tr>
-                    <th>Usuário</th>
-                    <th>User Tag</th>
-                    <th>Data de Cadastro</th>
-                    <th>Cargo</th>
-                    <th>Selo</th>
-                    <th>Coleção Oficial</th>
-                    <th>Estatísticas</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((u) => {
-                    const assignedCol = collections.find((c) => c.id === u.assignedCollectionId);
-                    return (
-                      <tr key={u.id} className={styles.userRow}>
-                        <td>
-                          <div className={styles.userCell}>
-                            {u.photoURL ? (
-                              <img src={u.photoURL} alt="" className={styles.userTableAvatar} />
-                            ) : (
-                              <div className={styles.userTablePlaceholder}>
-                                {u.displayName?.charAt(0).toUpperCase() || 'U'}
-                              </div>
-                            )}
-                            <div className={styles.userNameBlock}>
-                              <span className={styles.userTableName}>
-                                {u.displayName || 'Sem Nome'}
-                              </span>
-                              <span className={styles.userTableEmail}>{u.email || 'Sem Email'}</span>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td>
-                          {u.userTag ? (
-                            <button
-                              type="button"
-                              onClick={() => handleCopyTag(u.userTag, u.id)}
-                              className={styles.tagCopyBtn}
-                              title="Clique para copiar"
-                            >
-                              <span>{u.userTag}</span>
-                              {copiedId === u.id ? <Check size={13} /> : <Copy size={13} />}
-                            </button>
+          <div className={`${styles.tableWrapper} ${styles.desktopTableOnly}`}>
+            <table className={styles.dataTable}>
+              <thead>
+                <tr>
+                  <th>Usuário</th>
+                  <th>Tag Única</th>
+                  <th>Cadastro</th>
+                  <th>Cargo</th>
+                  <th>Selo Verificado</th>
+                  <th>Playlist / Coleção</th>
+                  <th>Métricas</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => {
+                  const assignedCol = collections.find((c) => c.id === u.assignedCollectionId);
+                  return (
+                    <tr key={u.id}>
+                      <td>
+                        <div className={styles.userCell}>
+                          {u.photoURL ? (
+                            <img src={u.photoURL} alt="" className={styles.userAvatar} />
                           ) : (
-                            <span className={styles.dimmedText}>-</span>
+                            <div className={styles.userAvatarFallback}>
+                              {u.displayName?.charAt(0).toUpperCase() || 'U'}
+                            </div>
                           )}
-                        </td>
-
-                        <td>
-                          <div className={styles.dateCell}>
-                            <Calendar size={13} />
-                            <span>{formatDate(u.createdAt)}</span>
-                          </div>
-                        </td>
-
-                        <td>
-                          <select
-                            value={u.role || 'user'}
-                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                            className={styles.roleSelect}
-                          >
-                            <option value="user">User</option>
-                            <option value="creator">Creator</option>
-                            <option value="admin">Admin</option>
-                          </select>
-                        </td>
-
-                        <td>
-                          <button
-                            type="button"
-                            onClick={() => handleToggleVerified(u.id, u.isVerified)}
-                            className={`${styles.verifyBtn} ${u.isVerified ? styles.verifyBtnActive : ''}`}
-                            title={u.isVerified ? 'Remover Selo Verificado' : 'Conceder Selo Verificado'}
-                          >
-                            <CheckCircle size={15} />
-                            <span>{u.isVerified ? 'Verificado' : 'Não verificado'}</span>
-                          </button>
-                        </td>
-
-                        <td>
-                          <button
-                            type="button"
-                            onClick={() => handleOpenAssign(u)}
-                            className={styles.assignColBtn}
-                          >
-                            <Layers size={13} />
-                            <span>{assignedCol ? assignedCol.name : 'Vincular'}</span>
-                          </button>
-                        </td>
-
-                        <td>
-                          <div className={styles.userStatsCell}>
-                            <span title="Wallpapers / Cota" className={styles.statPill}>
-                              <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
+                          <div className={styles.userInfoCol}>
+                            <span className={styles.userNameText}>
+                              {u.displayName || 'Sem Nome'}
                             </span>
-                            <span title="Favoritos Recebidos" className={styles.statPill}>
-                              <Heart size={12} /> {u.totalFavoritesReceived || 0}
+                            <span className={styles.userEmailText}>
+                              {u.email || 'Sem Email'}
                             </span>
                           </div>
-                        </td>
+                        </div>
+                      </td>
 
-                        <td>
+                      <td>
+                        {u.userTag ? (
                           <button
                             type="button"
-                            onClick={() => {
-                              setUserToDelete(u);
-                              setDeleteModalOpen(true);
-                            }}
-                            className={styles.btnDangerSmall}
-                            title="Excluir Usuário"
+                            onClick={() => handleCopyTag(u.userTag, u.id)}
+                            className={styles.userTagChip}
+                            title="Copiar Tag"
                           >
-                            <Trash2 size={15} />
+                            <span>{u.userTag}</span>
+                            {copiedId === u.id ? <Check size={12} /> : <Copy size={12} />}
                           </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                        ) : (
+                          <span className={styles.kpiSub}>-</span>
+                        )}
+                      </td>
+
+                      <td>
+                        <div className={styles.statPill}>
+                          <Calendar size={12} />
+                          <span>{formatDate(u.createdAt)}</span>
+                        </div>
+                      </td>
+
+                      <td>
+                        <select
+                          value={u.role || 'user'}
+                          onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                          className={styles.roleSelect}
+                        >
+                          <option value="user">User</option>
+                          <option value="creator">Creator</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleVerified(u.id, u.isVerified)}
+                          className={`${styles.verifyToggleBtn} ${u.isVerified ? styles.verifyActive : ''}`}
+                          title={u.isVerified ? 'Remover Selo' : 'Conceder Selo'}
+                        >
+                          {u.isVerified ? (
+                            <>
+                              <VerifiedBadge size={14} />
+                              <span>Verificado</span>
+                            </>
+                          ) : (
+                            <span>Não verificado</span>
+                          )}
+                        </button>
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenAssign(u)}
+                          className={styles.assignColBtn}
+                        >
+                          <Layers size={13} />
+                          <span>{assignedCol ? assignedCol.name : 'Vincular'}</span>
+                        </button>
+                      </td>
+
+                      <td>
+                        <div className={styles.toolbarActions}>
+                          <span title="Wallpapers / Cota" className={styles.statPill}>
+                            <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
+                          </span>
+                          <span title="Favoritos Recebidos" className={styles.statPill}>
+                            <Heart size={12} /> {u.totalFavoritesReceived || 0}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserToDelete(u);
+                            setDeleteModalOpen(true);
+                          }}
+                          className={styles.btnDangerIconSmall}
+                          title="Excluir Usuário"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
 
           <div className={styles.mobileUsersGrid}>
@@ -317,51 +323,50 @@ export default function ManageUsers() {
                   <div className={styles.mobileUserCardHeader}>
                     <div className={styles.userCell}>
                       {u.photoURL ? (
-                        <img src={u.photoURL} alt="" className={styles.userTableAvatar} />
+                        <img src={u.photoURL} alt="" className={styles.userAvatar} />
                       ) : (
-                        <div className={styles.userTablePlaceholder}>
+                        <div className={styles.userAvatarFallback}>
                           {u.displayName?.charAt(0).toUpperCase() || 'U'}
                         </div>
                       )}
-                      <div className={styles.userNameBlock}>
-                        <span className={styles.userTableName}>
+                      <div className={styles.userInfoCol}>
+                        <span className={styles.userNameText}>
                           {u.displayName || 'Sem Nome'}
                         </span>
-                        <span className={styles.userTableEmail}>{u.email || 'Sem Email'}</span>
+                        <span className={styles.userEmailText}>{u.email || 'Sem Email'}</span>
                       </div>
                     </div>
+
                     <button
                       type="button"
                       onClick={() => {
                         setUserToDelete(u);
                         setDeleteModalOpen(true);
                       }}
-                      className={styles.btnDangerSmall}
+                      className={styles.btnDangerIconSmall}
                       title="Excluir Usuário"
                     >
                       <Trash2 size={16} />
                     </button>
                   </div>
 
-                  <div className={styles.mobileUserCardMeta}>
+                  <div className={styles.mobileUserCardBody}>
                     {u.userTag && (
                       <button
                         type="button"
                         onClick={() => handleCopyTag(u.userTag, u.id)}
-                        className={styles.tagCopyBtn}
-                        title="Clique para copiar"
+                        className={styles.userTagChip}
                       >
                         <span>{u.userTag}</span>
-                        {copiedId === u.id ? <Check size={13} /> : <Copy size={13} />}
+                        {copiedId === u.id ? <Check size={12} /> : <Copy size={12} />}
                       </button>
                     )}
-                    <div className={styles.mobileUserCardDate}>
-                      <Calendar size={13} />
-                      <span>Cadastro: {formatDate(u.createdAt)}</span>
-                    </div>
-                  </div>
 
-                  <div className={styles.mobileUserCardControls}>
+                    <div className={styles.statPill}>
+                      <Calendar size={12} />
+                      <span>{formatDate(u.createdAt)}</span>
+                    </div>
+
                     <select
                       value={u.role || 'user'}
                       onChange={(e) => handleRoleChange(u.id, e.target.value)}
@@ -375,11 +380,16 @@ export default function ManageUsers() {
                     <button
                       type="button"
                       onClick={() => handleToggleVerified(u.id, u.isVerified)}
-                      className={`${styles.verifyBtn} ${u.isVerified ? styles.verifyBtnActive : ''}`}
-                      title={u.isVerified ? 'Remover Selo Verificado' : 'Conceder Selo Verificado'}
+                      className={`${styles.verifyToggleBtn} ${u.isVerified ? styles.verifyActive : ''}`}
                     >
-                      <CheckCircle size={15} />
-                      <span>{u.isVerified ? 'Verificado' : 'Não verificado'}</span>
+                      {u.isVerified ? (
+                        <>
+                          <VerifiedBadge size={14} />
+                          <span>Verificado</span>
+                        </>
+                      ) : (
+                        <span>Não verificado</span>
+                      )}
                     </button>
 
                     <button
@@ -390,13 +400,11 @@ export default function ManageUsers() {
                       <Layers size={13} />
                       <span>{assignedCol ? assignedCol.name : 'Vincular'}</span>
                     </button>
-                  </div>
 
-                  <div className={styles.mobileUserCardStats}>
-                    <span title="Wallpapers / Cota" className={styles.statPill}>
+                    <span className={styles.statPill}>
                       <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
                     </span>
-                    <span title="Favoritos Recebidos" className={styles.statPill}>
+                    <span className={styles.statPill}>
                       <Heart size={12} /> {u.totalFavoritesReceived || 0}
                     </span>
                   </div>
@@ -407,60 +415,103 @@ export default function ManageUsers() {
         </>
       )}
 
-      {assignModalOpen && userToAssign && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.rejectModal}>
-            <h3 className={styles.modalTitle}>Vincular Coleção a {userToAssign.displayName}</h3>
-            <p className={styles.modalDesc}>
-              Ao vincular uma coleção a este usuário, ela funcionará como a Playlist oficial dele.
-            </p>
-            <form onSubmit={handleSaveAssignment}>
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>Selecionar Coleção:</label>
+      {assignModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setAssignModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Vincular Playlist de Criador</h3>
+              <button
+                type="button"
+                className={styles.btnIconSmall}
+                onClick={() => setAssignModalOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <p className={styles.emptyText}>
+                Vincule uma coleção oficial ao usuário <strong>{userToAssign?.displayName || userToAssign?.email}</strong>.
+              </p>
+
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>Selecionar Coleção</label>
                 <select
                   value={selectedColId}
                   onChange={(e) => setSelectedColId(e.target.value)}
-                  className={styles.selectInput}
+                  className={styles.fieldSelect}
                 >
-                  <option value="">-- Nenhuma (Desvincular) --</option>
+                  <option value="">Nenhuma (Desvincular)</option>
                   {collections.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.name} (/c/{c.slug})
+                      {c.name} ({c.slug})
                     </option>
                   ))}
                 </select>
               </div>
-              <div className={styles.modalButtons}>
-                <button
-                  type="button"
-                  onClick={() => setAssignModalOpen(false)}
-                  className={styles.btnGhost}
-                  disabled={assigning}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className={styles.btnPrimary}
-                  disabled={assigning}
-                >
-                  {assigning ? 'Salvando...' : 'Salvar Associação'}
-                </button>
-              </div>
-            </form>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setAssignModalOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                onClick={handleSaveAssign}
+                disabled={assigning}
+              >
+                {assigning ? 'Salvando...' : 'Salvar Vínculo'}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {deleteModalOpen && userToDelete && (
-        <Modal
-          isOpen={deleteModalOpen}
-          title="Confirmar Exclusão de Conta"
-          message={`Tem certeza que deseja excluir o usuário "${userToDelete.displayName}" (${userToDelete.email})? Todos os seus wallpapers e arquivos no Storage serão removidos permanentemente.`}
-          variant="danger"
-          onClose={() => setDeleteModalOpen(false)}
-          onConfirm={handleDeleteUser}
-        />
+      {deleteModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setDeleteModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Excluir Usuário</h3>
+              <button
+                type="button"
+                className={styles.btnIconSmall}
+                onClick={() => setDeleteModalOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <p className={styles.emptyText}>
+                Tem certeza que deseja excluir a conta de <strong>{userToDelete?.displayName || userToDelete?.email}</strong>?
+                Esta ação é irreversível e excluirá o perfil, permissões e autenticação.
+              </p>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setDeleteModalOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.btnDanger}
+                onClick={handleDeleteUser}
+                disabled={deleting}
+              >
+                {deleting ? 'Excluindo...' : 'Excluir Conta'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

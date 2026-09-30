@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
+import Loader from '../../components/Loader';
 import {
   Trash2,
-  Loader2,
   ChevronDown,
   Check,
   CheckSquare,
   Square,
   X,
+  Search,
+  Tag,
+  AlertTriangle,
 } from 'lucide-react';
-import Modal from '../../components/Modal';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -19,7 +21,6 @@ export default function ManageWallpapers() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [deletingId, setDeletingId] = useState(null);
   const [tag, setTag] = useState('');
   const [q, setQ] = useState('');
 
@@ -28,12 +29,7 @@ export default function ManageWallpapers() {
   const [deletingBatch, setDeletingBatch] = useState(false);
 
   const [confirmModal, setConfirmModal] = useState({ open: false, id: null });
-  const [alertModal, setAlertModal] = useState({
-    open: false,
-    title: '',
-    message: '',
-    variant: 'success',
-  });
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchWallpapers = async (pageNum = 1, append = false, currentQ = q, currentTag = tag) => {
     try {
@@ -77,7 +73,8 @@ export default function ManageWallpapers() {
     fetchWallpapers(nextPage, true, q, tag);
   };
 
-  const toggleSelect = (id) => {
+  const toggleSelect = (id, e) => {
+    if (e) e.stopPropagation();
     setSelectedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -98,11 +95,7 @@ export default function ManageWallpapers() {
     setSelectedIds(new Set());
   };
 
-  const promptDelete = (id) => {
-    setConfirmModal({ open: true, id });
-  };
-
-  const confirmDelete = async () => {
+  const confirmSingleDelete = async () => {
     const id = confirmModal.id;
     setConfirmModal({ open: false, id: null });
     setDeletingId(id);
@@ -115,34 +108,14 @@ export default function ManageWallpapers() {
         next.delete(id);
         return next;
       });
-      setAlertModal({
-        open: true,
-        title: 'Excluído',
-        message: 'Wallpaper removido com sucesso.',
-        variant: 'success',
-      });
-    } catch {
-      setAlertModal({
-        open: true,
-        title: 'Erro',
-        message: 'Não foi possível excluir o wallpaper.',
-        variant: 'danger',
-      });
+    } catch (err) {
+      alert(`Erro ao excluir: ${err.message}`);
     } finally {
       setDeletingId(null);
     }
   };
 
-  const cancelDelete = () => {
-    setConfirmModal({ open: false, id: null });
-  };
-
-  const promptDeleteBatch = () => {
-    if (selectedIds.size === 0) return;
-    setBatchModalOpen(true);
-  };
-
-  const confirmDeleteBatch = async () => {
+  const confirmBatchDelete = async () => {
     const idsToDelete = Array.from(selectedIds);
     setBatchModalOpen(false);
     setDeletingBatch(true);
@@ -152,125 +125,152 @@ export default function ManageWallpapers() {
       const deletedSet = new Set(res.deleted || idsToDelete);
       setWallpapers((prev) => prev.filter((w) => !deletedSet.has(w.id)));
       setSelectedIds(new Set());
-      setAlertModal({
-        open: true,
-        title: 'Excluídos com sucesso',
-        message: `${deletedSet.size} wallpaper(s) removido(s) do acervo.`,
-        variant: 'success',
-      });
-    } catch {
-      setAlertModal({
-        open: true,
-        title: 'Erro',
-        message: 'Não foi possível excluir os wallpapers selecionados.',
-        variant: 'danger',
-      });
+    } catch (err) {
+      alert(`Erro ao excluir wallpapers: ${err.message}`);
     } finally {
       setDeletingBatch(false);
     }
   };
 
   return (
-    <div className={styles.manage}>
-      <div className={styles.listHeader}>
-        <div className={styles.listHeaderText}>
-          <h2 className={styles.listHeaderTitle}>Wallpapers públicos</h2>
+    <div className={styles.viewContainer}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleArea}>
+          <h2 className={styles.sectionTitle}>Acervo Público de Wallpapers</h2>
+          <p className={styles.sectionSubtitle}>
+            Navegue pelo catálogo público e realize exclusões individuais ou em lote.
+          </p>
+        </div>
+
+        <div className={styles.toolbarActions}>
           {wallpapers.length > 0 && (
             <button
               type="button"
-              className={styles.btnSelectAllHeader}
+              className={styles.btnSecondary}
               onClick={toggleSelectAll}
             >
               {selectedIds.size === wallpapers.length ? (
                 <>
                   <CheckSquare size={15} />
-                  <span>Desmarcar todos ({wallpapers.length})</span>
+                  <span>Desmarcar Todos ({wallpapers.length})</span>
                 </>
               ) : (
                 <>
                   <Square size={15} />
-                  <span>Selecionar todos ({wallpapers.length})</span>
+                  <span>Selecionar Todos ({wallpapers.length})</span>
                 </>
               )}
             </button>
           )}
         </div>
-        <form onSubmit={handleSearch} className={styles.listHeaderForm}>
-          <input
-            type="text"
-            placeholder="Buscar título ou jogo..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            className={styles.listHeaderField}
-            aria-label="Buscar título ou jogo"
-          />
-          <input
-            type="text"
-            placeholder="Filtrar por tag..."
-            value={tag}
-            onChange={(e) => setTag(e.target.value)}
-            className={styles.listHeaderField}
-            aria-label="Filtrar por tag"
-          />
-          <button type="submit" className={styles.listHeaderBtn}>
-            Filtrar
-          </button>
-        </form>
       </div>
 
-      {wallpapers.length === 0 && !loading && (
-        <p className={styles.listEmpty}>Nenhum wallpaper encontrado.</p>
+      <form onSubmit={handleSearch} className={styles.toolbar}>
+        <div className={styles.searchBox}>
+          <Search size={16} className={styles.searchIcon} />
+          <input
+            type="text"
+            placeholder="Buscar por título ou jogo..."
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+
+        <div className={styles.toolbarActions}>
+          <div className={styles.searchBox}>
+            <Tag size={16} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Filtrar por tag..."
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
+
+          <button type="submit" className={styles.btnSecondary}>
+            Filtrar
+          </button>
+        </div>
+      </form>
+
+      {selectedIds.size > 0 && (
+        <div className={styles.batchActionBar}>
+          <span className={styles.batchActionText}>
+            <CheckSquare size={16} />
+            {selectedIds.size} {selectedIds.size === 1 ? 'wallpaper selecionado' : 'wallpapers selecionados'}
+          </span>
+
+          <div className={styles.batchActionButtons}>
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={clearSelection}
+              disabled={deletingBatch}
+            >
+              Desmarcar
+            </button>
+            <button
+              type="button"
+              className={styles.btnDanger}
+              onClick={() => setBatchModalOpen(true)}
+              disabled={deletingBatch}
+            >
+              <Trash2 size={15} />
+              <span>{deletingBatch ? 'Excluindo...' : `Excluir Selecionados (${selectedIds.size})`}</span>
+            </button>
+          </div>
+        </div>
       )}
 
-      {wallpapers.length > 0 && (
-        <div className={styles.mediaGrid}>
-          {wallpapers.map((wall) => {
-            const thumbSrc = wall.thumbUrl?.startsWith('http')
-              ? wall.thumbUrl
-              : `${API_URL}${wall.thumbUrl || wall.storageUrl}`;
-            const isSelected = selectedIds.has(wall.id);
+      {loading && wallpapers.length === 0 ? (
+        <Loader text="Carregando acervo..." />
+      ) : wallpapers.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>
+            Nenhum wallpaper encontrado para os filtros selecionados.
+          </p>
+        </div>
+      ) : (
+        <div className={styles.wallpapersGrid}>
+          {wallpapers.map((w) => {
+            const isSelected = selectedIds.has(w.id);
+            const thumbUrl = w.thumbUrl?.startsWith('http')
+              ? w.thumbUrl
+              : `${API_URL}${w.thumbUrl || w.storageUrl}`;
 
             return (
               <div
-                key={wall.id}
-                className={`${styles.mediaItem} ${isSelected ? styles.mediaItemSelected : ''}`}
-                onClick={() => toggleSelect(wall.id)}
+                key={w.id}
+                className={`${styles.wpCard} ${isSelected ? styles.wpCardSelected : ''}`}
+                onClick={(e) => toggleSelect(w.id, e)}
               >
-                <button
-                  type="button"
-                  className={`${styles.mediaItemCheckbox} ${isSelected ? styles.mediaItemCheckboxChecked : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSelect(wall.id);
-                  }}
-                  aria-label={isSelected ? 'Desmarcar' : 'Selecionar'}
-                >
-                  {isSelected && <Check size={14} />}
-                </button>
+                <div className={styles.wpImageWrapper}>
+                  <img src={thumbUrl} alt="" className={styles.wpImage} loading="lazy" />
+                  <div
+                    className={styles.wpSelectCheckbox}
+                    onClick={(e) => toggleSelect(w.id, e)}
+                    title={isSelected ? 'Desmarcar' : 'Selecionar'}
+                  >
+                    {isSelected ? <CheckSquare size={16} /> : <Square size={16} />}
+                  </div>
+                </div>
 
-                <img
-                  src={thumbSrc}
-                  alt={wall.title || 'Wallpaper'}
-                  loading="lazy"
-                  className={styles.mediaItemImg}
-                />
-                <div className={styles.mediaItemOverlay}>
+                <div className={styles.wpCardInfo}>
+                  <span className={styles.wpTitle} title={w.title || 'Sem título'}>
+                    {w.title || 'Sem título'}
+                  </span>
                   <button
                     type="button"
-                    className={styles.btnDanger}
+                    className={styles.wpDeleteBtn}
                     onClick={(e) => {
                       e.stopPropagation();
-                      promptDelete(wall.id);
+                      setConfirmModal({ open: true, id: w.id });
                     }}
-                    disabled={deletingId === wall.id || deletingBatch}
-                    title="Excluir wallpaper"
-                    aria-label="Excluir wallpaper"
+                    title="Excluir"
                   >
-                    {deletingId === wall.id ? (
-                      <Loader2 size={18} className={styles.spin} />
-                    ) : (
-                      <Trash2 size={18} />
-                    )}
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
@@ -279,90 +279,96 @@ export default function ManageWallpapers() {
         </div>
       )}
 
-      {selectedIds.size > 0 && (
-        <div className={styles.batchBar}>
-          <div className={styles.batchInfo}>
-            <CheckSquare size={18} />
-            <span>{selectedIds.size} selecionado(s)</span>
-          </div>
-          <div className={styles.batchActions}>
-            <button
-              type="button"
-              className={styles.btnGhost}
-              onClick={toggleSelectAll}
-            >
-              {selectedIds.size === wallpapers.length ? 'Desmarcar todos' : 'Selecionar todos'}
-            </button>
-            <button
-              type="button"
-              className={styles.btnGhost}
-              onClick={clearSelection}
-              aria-label="Limpar seleção"
-            >
-              <X size={16} />
-              <span>Limpar</span>
-            </button>
-            <button
-              type="button"
-              className={styles.btnDangerFull}
-              onClick={promptDeleteBatch}
-              disabled={deletingBatch}
-            >
-              {deletingBatch ? (
-                <Loader2 size={16} className={styles.spin} />
-              ) : (
-                <Trash2 size={16} />
-              )}
-              <span>Excluir selecionados ({selectedIds.size})</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {loading && (
-        <div className={styles.loadRow} aria-live="polite" aria-busy="true">
-          <Loader2 size={24} className={styles.spin} />
-        </div>
-      )}
-
-      {hasMore && !loading && wallpapers.length > 0 && (
-        <div className={styles.listFooter}>
-          <button type="button" className={styles.btnGhost} onClick={handleLoadMore}>
-            Carregar mais <ChevronDown size={16} aria-hidden />
+      {hasMore && !loading && (
+        <div className={styles.toolbarActions}>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={handleLoadMore}
+          >
+            <span>Carregar mais</span>
+            <ChevronDown size={14} />
           </button>
         </div>
       )}
 
-      <Modal
-        isOpen={confirmModal.open}
-        title="Excluir wallpaper"
-        message="Excluir permanentemente este wallpaper? Esta ação não pode ser desfeita."
-        onConfirm={confirmDelete}
-        onCancel={cancelDelete}
-        confirmText="Excluir"
-        cancelText="Cancelar"
-        variant="danger"
-      />
+      {confirmModal.open && (
+        <div className={styles.modalOverlay} onClick={() => setConfirmModal({ open: false, id: null })}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Excluir Wallpaper</h3>
+              <button
+                type="button"
+                className={styles.btnIconSmall}
+                onClick={() => setConfirmModal({ open: false, id: null })}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.emptyText}>
+                Tem certeza que deseja excluir este wallpaper do acervo público? Esta ação não pode ser desfeita.
+              </p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setConfirmModal({ open: false, id: null })}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.btnDanger}
+                onClick={confirmSingleDelete}
+                disabled={Boolean(deletingId)}
+              >
+                {deletingId ? 'Excluindo...' : 'Excluir'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <Modal
-        isOpen={batchModalOpen}
-        title="Excluir wallpapers selecionados"
-        message={`Tem certeza que deseja excluir permanentemente os ${selectedIds.size} wallpapers selecionados? Esta ação não pode ser desfeita.`}
-        onConfirm={confirmDeleteBatch}
-        onCancel={() => setBatchModalOpen(false)}
-        confirmText="Excluir Selecionados"
-        cancelText="Cancelar"
-        variant="danger"
-      />
-
-      <Modal
-        isOpen={alertModal.open}
-        title={alertModal.title}
-        message={alertModal.message}
-        onConfirm={() => setAlertModal((prev) => ({ ...prev, open: false }))}
-        confirmText="OK"
-        variant={alertModal.variant}
-      />
+      {batchModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setBatchModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Excluir Wallpapers em Lote</h3>
+              <button
+                type="button"
+                className={styles.btnIconSmall}
+                onClick={() => setBatchModalOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.emptyText}>
+                Você selecionou <strong>{selectedIds.size} wallpapers</strong> para exclusão definitiva. Deseja prosseguir?
+              </p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setBatchModalOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.btnDanger}
+                onClick={confirmBatchDelete}
+                disabled={deletingBatch}
+              >
+                {deletingBatch ? 'Excluindo lote...' : `Confirmar Exclusão (${selectedIds.size})`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

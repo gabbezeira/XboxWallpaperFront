@@ -8,6 +8,7 @@ import {
   Images,
   LogOut,
   Image as ImageIcon,
+  CheckCircle2,
 } from 'lucide-react';
 import { api } from '../../services/api';
 import ModerationQueue from './ModerationQueue';
@@ -21,119 +22,206 @@ import styles from './styles.module.scss';
 export default function Admin() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('moderation');
-  const [pendingCount, setPendingCount] = useState(0);
   const [catalogSubTab, setCatalogSubTab] = useState('wallpapers');
 
+  const [stats, setStats] = useState({
+    pending: 0,
+    totalWallpapers: 0,
+    collectionsCount: 0,
+    creatorsCount: 0,
+  });
+
+  const fetchOverallStats = async () => {
+    try {
+      const [pendingRes, galleryRes, colsRes, usersRes] = await Promise.allSettled([
+        api.admin.pendingWallpapers(),
+        api.wallpapers.list({ limit: 1 }),
+        api.collections.list(),
+        api.admin.listUsers({ limit: 100 }),
+      ]);
+
+      const pendingList = pendingRes.status === 'fulfilled' ? pendingRes.value : [];
+      const galleryData = galleryRes.status === 'fulfilled' ? galleryRes.value : {};
+      const colsList = colsRes.status === 'fulfilled' ? colsRes.value : [];
+      const usersList = usersRes.status === 'fulfilled' ? usersRes.value : [];
+
+      const verifiedCount = Array.isArray(usersList)
+        ? usersList.filter((u) => u.isVerified || u.role === 'creator').length
+        : 0;
+
+      setStats({
+        pending: pendingList?.length || 0,
+        totalWallpapers: galleryData?.totalItems || 0,
+        collectionsCount: colsList?.length || 0,
+        creatorsCount: verifiedCount,
+      });
+    } catch {}
+  };
+
   useEffect(() => {
-    api.admin.pendingWallpapers()
-      .then((data) => {
-        setPendingCount(data?.length || 0);
-      })
-      .catch(() => {});
+    fetchOverallStats();
   }, []);
 
+  const handlePendingCountUpdate = (newCount) => {
+    setStats((prev) => ({
+      ...prev,
+      pending: newCount,
+    }));
+  };
+
   return (
-    <div className={styles.app}>
-      <div className={styles.topNavWrapper}>
-        <header className={styles.header}>
-          <div className={styles.brand}>
-            <h1 className={styles.title}>Painel de Administração</h1>
-            <p className={styles.lead}>
-              Moderação comunitária, uploads em lote para coleções, controle de criadores e acervo.
-            </p>
+    <div className={styles.adminContainer}>
+      <header className={styles.topBar}>
+        <div className={styles.topBarInner}>
+          <div className={styles.brandGroup}>
+            <h1 className={styles.brandTitle}>Spartan Control</h1>
+            <span className={styles.systemBadge}>
+              <span className={styles.statusDot} />
+              Sistema Ativo
+            </span>
           </div>
-          <div className={styles.headerActions}>
-            <button type="button" onClick={() => navigate('/')} className={styles.btnGhost}>
-              <LogOut size={16} aria-hidden /> Sair do painel
+
+          <div className={styles.topBarActions}>
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className={styles.btnExit}
+            >
+              <LogOut size={15} />
+              <span>Voltar à plataforma</span>
             </button>
           </div>
-        </header>
+        </div>
 
-        <nav className={styles.tabs} aria-label="Seções do painel">
+        <nav className={styles.navBar} aria-label="Navegação do painel">
           <button
             type="button"
-            className={`${styles.btnTab} ${activeTab === 'moderation' ? styles.btnTabActive : ''}`}
+            className={`${styles.navTab} ${activeTab === 'moderation' ? styles.navTabActive : ''}`}
             onClick={() => setActiveTab('moderation')}
           >
-            <ShieldCheck size={16} aria-hidden />
+            <ShieldCheck size={16} />
             <span>Moderação</span>
-            {pendingCount > 0 && <span className={styles.tabBadge}>{pendingCount}</span>}
+            {stats.pending > 0 && (
+              <span className={styles.tabBadge}>{stats.pending}</span>
+            )}
           </button>
 
           <button
             type="button"
-            className={`${styles.btnTab} ${activeTab === 'publish' ? styles.btnTabActive : ''}`}
+            className={`${styles.navTab} ${activeTab === 'publish' ? styles.navTabActive : ''}`}
             onClick={() => setActiveTab('publish')}
           >
-            <UploadCloud size={16} aria-hidden />
+            <UploadCloud size={16} />
             <span>Publicar & Lote</span>
           </button>
 
           <button
             type="button"
-            className={`${styles.btnTab} ${activeTab === 'collections' ? styles.btnTabActive : ''}`}
+            className={`${styles.navTab} ${activeTab === 'collections' ? styles.navTabActive : ''}`}
             onClick={() => setActiveTab('collections')}
           >
-            <Layers size={16} aria-hidden />
+            <Layers size={16} />
             <span>Coleções</span>
           </button>
 
           <button
             type="button"
-            className={`${styles.btnTab} ${activeTab === 'users' ? styles.btnTabActive : ''}`}
+            className={`${styles.navTab} ${activeTab === 'users' ? styles.navTabActive : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            <Users size={16} aria-hidden />
-            <span>Usuários & Creators</span>
+            <Users size={16} />
+            <span>Usuários & Criadores</span>
           </button>
 
           <button
             type="button"
-            className={`${styles.btnTab} ${activeTab === 'catalog' ? styles.btnTabActive : ''}`}
+            className={`${styles.navTab} ${activeTab === 'catalog' ? styles.navTabActive : ''}`}
             onClick={() => setActiveTab('catalog')}
           >
-            <Images size={16} aria-hidden />
+            <Images size={16} />
             <span>Acervo Geral</span>
           </button>
         </nav>
-      </div>
+      </header>
 
-      <main className={styles.main}>
+      <main className={styles.mainContent}>
+        <section className={styles.kpiGrid}>
+          <div className={styles.kpiCard}>
+            <div className={styles.kpiHeader}>
+              <span className={styles.kpiLabel}>Fila de Moderação</span>
+              <ShieldCheck size={16} />
+            </div>
+            <div
+              className={`${styles.kpiValue} ${stats.pending > 0 ? styles.kpiValueHighlight : ''}`}
+            >
+              {stats.pending}
+            </div>
+            <span className={styles.kpiSub}>
+              {stats.pending === 0 ? 'Fila 100% revisada' : 'Aguardando aprovação'}
+            </span>
+          </div>
+
+          <div className={styles.kpiCard}>
+            <div className={styles.kpiHeader}>
+              <span className={styles.kpiLabel}>Acervo Público</span>
+              <Images size={16} />
+            </div>
+            <div className={styles.kpiValue}>{stats.totalWallpapers}</div>
+            <span className={styles.kpiSub}>Disponíveis na galeria</span>
+          </div>
+
+          <div className={styles.kpiCard}>
+            <div className={styles.kpiHeader}>
+              <span className={styles.kpiLabel}>Coleções Ativas</span>
+              <Layers size={16} />
+            </div>
+            <div className={styles.kpiValue}>{stats.collectionsCount}</div>
+            <span className={styles.kpiSub}>Playlists organizadas</span>
+          </div>
+
+          <div className={styles.kpiCard}>
+            <div className={styles.kpiHeader}>
+              <span className={styles.kpiLabel}>Criadores Verificados</span>
+              <CheckCircle2 size={16} />
+            </div>
+            <div className={styles.kpiValue}>{stats.creatorsCount}</div>
+            <span className={styles.kpiSub}>Comunidade ativa</span>
+          </div>
+        </section>
+
         {activeTab === 'moderation' && (
-          <ModerationQueue onApprovedCountChange={(count) => setPendingCount(count)} />
+          <ModerationQueue onApprovedCountChange={handlePendingCountUpdate} />
         )}
 
         {activeTab === 'publish' && (
-          <OfficialPublish onPublishComplete={() => {}} />
+          <OfficialPublish onPublishComplete={fetchOverallStats} />
         )}
 
-        {activeTab === 'collections' && (
-          <ManageCollections />
-        )}
+        {activeTab === 'collections' && <ManageCollections />}
 
-        {activeTab === 'users' && (
-          <ManageUsers />
-        )}
+        {activeTab === 'users' && <ManageUsers />}
 
         {activeTab === 'catalog' && (
-          <div className={styles.catalogContainer}>
-            <div className={styles.subTabs}>
-              <button
-                type="button"
-                className={`${styles.btnSubTab} ${catalogSubTab === 'wallpapers' ? styles.btnSubTabActive : ''}`}
-                onClick={() => setCatalogSubTab('wallpapers')}
-              >
-                <Images size={15} />
-                <span>Wallpapers Cadastrados</span>
-              </button>
-              <button
-                type="button"
-                className={`${styles.btnSubTab} ${catalogSubTab === 'hero' ? styles.btnSubTabActive : ''}`}
-                onClick={() => setCatalogSubTab('hero')}
-              >
-                <ImageIcon size={15} />
-                <span>Hero Slides (Destaques)</span>
-              </button>
+          <div className={styles.viewContainer}>
+            <div className={styles.toolbar}>
+              <div className={styles.subSegment}>
+                <button
+                  type="button"
+                  className={`${styles.subSegmentBtn} ${catalogSubTab === 'wallpapers' ? styles.subSegmentActive : ''}`}
+                  onClick={() => setCatalogSubTab('wallpapers')}
+                >
+                  <Images size={14} />
+                  <span>Wallpapers ({stats.totalWallpapers})</span>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.subSegmentBtn} ${catalogSubTab === 'hero' ? styles.subSegmentActive : ''}`}
+                  onClick={() => setCatalogSubTab('hero')}
+                >
+                  <ImageIcon size={14} />
+                  <span>Hero Slides da Home</span>
+                </button>
+              </div>
             </div>
 
             {catalogSubTab === 'wallpapers' && <ManageWallpapers />}

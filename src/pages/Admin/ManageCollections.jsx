@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
-import Modal from '../../components/Modal';
 import Loader from '../../components/Loader';
-import { Layers, Plus, Edit2, Trash2, ExternalLink, Image, Search, User, Star } from 'lucide-react';
+import {
+  Layers,
+  Plus,
+  Edit2,
+  Trash2,
+  ExternalLink,
+  Search,
+  Star,
+  X,
+} from 'lucide-react';
 import styles from './styles.module.scss';
 
 function generateSlug(text) {
@@ -100,28 +108,14 @@ export default function ManageCollections() {
 
     try {
       if (editingId) {
-        await api.collections.update(editingId, {
-          name: formData.name.trim(),
-          slug: formData.slug.trim(),
-          description: formData.description.trim(),
-          bannerUrl: formData.bannerUrl.trim(),
-          creatorUid: formData.creatorUid.trim() || null,
-          featuredInHero: formData.featuredInHero,
-        });
+        await api.collections.update(editingId, formData);
       } else {
-        await api.collections.create({
-          name: formData.name.trim(),
-          slug: formData.slug.trim(),
-          description: formData.description.trim(),
-          bannerUrl: formData.bannerUrl.trim(),
-          creatorUid: formData.creatorUid.trim() || null,
-          featuredInHero: formData.featuredInHero,
-        });
+        await api.collections.create(formData);
       }
       setModalOpen(false);
-      await fetchCollections();
+      fetchCollections();
     } catch (err) {
-      setFormError(err.message || 'Erro ao salvar coleção');
+      setFormError(err.message || 'Erro ao salvar coleção.');
     } finally {
       setSaving(false);
     }
@@ -134,7 +128,7 @@ export default function ManageCollections() {
       await api.collections.remove(collectionToDelete.id);
       setDeleteConfirmOpen(false);
       setCollectionToDelete(null);
-      await fetchCollections();
+      fetchCollections();
     } catch (err) {
       alert(`Erro ao excluir: ${err.message}`);
     } finally {
@@ -142,24 +136,30 @@ export default function ManageCollections() {
     }
   };
 
-  const filtered = collections.filter((c) => {
+  const filteredCollections = collections.filter((col) => {
     const q = searchQuery.toLowerCase();
-    const nameMatch = c.name && c.name.toLowerCase().includes(q);
-    const slugMatch = c.slug && c.slug.toLowerCase().includes(q);
-    const descMatch = c.description && c.description.toLowerCase().includes(q);
-    return nameMatch || slugMatch || descMatch;
+    return (
+      (col.name || '').toLowerCase().includes(q) ||
+      (col.slug || '').toLowerCase().includes(q) ||
+      (col.description || '').toLowerCase().includes(q)
+    );
   });
 
+  if (loading) {
+    return <Loader text="Carregando coleções..." />;
+  }
+
   return (
-    <div className={styles.collectionsSection}>
-      <div className={styles.collectionsHeader}>
-        <div>
+    <div className={styles.viewContainer}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleArea}>
           <h2 className={styles.sectionTitle}>Gestão de Coleções</h2>
           <p className={styles.sectionSubtitle}>
-            Crie, edite e vincule coleções oficiais a criadores de conteúdo e ao Hero Slide.
+            Organize os wallpapers oficiais por jogos, franquias e playlists de criadores.
           </p>
         </div>
-        <div className={styles.headerRightActions}>
+
+        <div className={styles.toolbarActions}>
           <div className={styles.searchBox}>
             <Search size={16} className={styles.searchIcon} />
             <input
@@ -170,84 +170,87 @@ export default function ManageCollections() {
               className={styles.searchInput}
             />
           </div>
-          <button type="button" onClick={handleOpenCreate} className={styles.btnPrimary}>
-            <Plus size={16} /> Nova Coleção
+
+          <button
+            type="button"
+            className={styles.btnPrimary}
+            onClick={handleOpenCreate}
+          >
+            <Plus size={16} />
+            <span>Nova Coleção</span>
           </button>
         </div>
       </div>
 
-      {loading ? (
-        <div className={styles.loadRow}>
-          <Loader />
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className={styles.emptyQueue}>
-          <Layers size={40} className={styles.emptyQueueIcon} />
-          <h3 className={styles.emptyQueueTitle}>Nenhuma coleção encontrada</h3>
-          <p className={styles.emptyQueueText}>
-            {searchQuery ? 'Nenhum resultado para os termos buscados.' : 'Comece criando a primeira coleção acima.'}
+      {filteredCollections.length === 0 ? (
+        <div className={styles.emptyState}>
+          <Layers size={44} className={styles.emptyIcon} />
+          <h3 className={styles.emptyTitle}>Nenhuma Coleção Encontrada</h3>
+          <p className={styles.emptyText}>
+            {searchQuery
+              ? 'Nenhuma coleção corresponde aos termos pesquisados.'
+              : 'Nenhuma coleção criada ainda. Comece criando a primeira coleção acima.'}
           </p>
         </div>
       ) : (
         <div className={styles.collectionsGrid}>
-          {filtered.map((col) => (
+          {filteredCollections.map((col) => (
             <div key={col.id} className={styles.collectionCard}>
-              <div className={styles.colBannerBox}>
+              <div className={styles.collectionBannerWrapper}>
                 {col.bannerUrl ? (
-                  <img src={col.bannerUrl} alt={col.name} className={styles.colBannerImg} />
+                  <img src={col.bannerUrl} alt="" className={styles.collectionBanner} />
                 ) : (
-                  <div className={styles.colBannerPlaceholder}>
-                    <Image size={32} />
+                  <div className={styles.collectionBannerPlaceholder}>
+                    <Layers size={32} />
                   </div>
                 )}
                 {col.featuredInHero && (
-                  <span className={styles.heroPill}>
-                    <Star size={12} /> Destaque Hero
+                  <span className={styles.heroFeaturedPill}>
+                    <Star size={11} />
+                    <span>Destaque Hero</span>
                   </span>
                 )}
               </div>
-              <div className={styles.colBody}>
-                <div className={styles.colInfo}>
-                  <h3 className={styles.colTitle}>{col.name}</h3>
-                  <span className={styles.colSlug}>/c/{col.slug}</span>
-                  {col.description && <p className={styles.colDesc}>{col.description}</p>}
-                </div>
-                {col.creatorUid && (
-                  <div className={styles.colCreatorTag}>
-                    <User size={13} />
-                    <span>UID: {col.creatorUid}</span>
-                  </div>
+
+              <div className={styles.collectionCardBody}>
+                <h3 className={styles.collectionName}>{col.name}</h3>
+                <span className={styles.collectionSlug}>/{col.slug}</span>
+                {col.description && (
+                  <p className={styles.collectionDesc}>{col.description}</p>
                 )}
-                <div className={styles.colCardActions}>
-                  <a
-                    href={`/c/${col.slug}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.colActionBtn}
-                    title="Ver Coleção Pública"
-                  >
-                    <ExternalLink size={16} />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenEdit(col)}
-                    className={styles.colActionBtn}
-                    title="Editar"
-                  >
-                    <Edit2 size={16} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCollectionToDelete(col);
-                      setDeleteConfirmOpen(true);
-                    }}
-                    className={styles.colActionDanger}
-                    title="Excluir"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
+              </div>
+
+              <div className={styles.collectionCardFooter}>
+                <a
+                  href={`/collection/${col.slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.btnIconSmall}
+                  title="Ver coleção no site"
+                >
+                  <ExternalLink size={15} />
+                </a>
+
+                <button
+                  type="button"
+                  className={styles.btnIconSmall}
+                  onClick={() => handleOpenEdit(col)}
+                  title="Editar coleção"
+                >
+                  <Edit2 size={15} />
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.btnDangerIconSmall}
+                  onClick={() => {
+                    setCollectionToDelete(col);
+                    setDeleteConfirmOpen(true);
+                  }}
+                  title="Excluir coleção"
+                >
+                  <Trash2 size={15} />
+                </button>
               </div>
             </div>
           ))}
@@ -255,85 +258,100 @@ export default function ManageCollections() {
       )}
 
       {modalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.collectionModal}>
-            <h3 className={styles.modalTitle}>
-              {editingId ? 'Editar Coleção' : 'Criar Nova Coleção'}
-            </h3>
-            {formError && <div className={styles.errorBanner}>{formError}</div>}
-            <form onSubmit={handleSave} className={styles.collectionForm}>
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>Nome da Coleção *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ex: Cyberpunk 2077 Essentials"
-                  value={formData.name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  className={styles.fieldInput}
-                />
+        <div className={styles.modalOverlay} onClick={() => setModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>
+                {editingId ? 'Editar Coleção' : 'Nova Coleção'}
+              </h3>
+              <button
+                type="button"
+                className={styles.btnIconSmall}
+                onClick={() => setModalOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSave}>
+              <div className={styles.modalBody}>
+                {formError && (
+                  <div className={styles.batchActionText}>
+                    <span>{formError}</span>
+                  </div>
+                )}
+
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Nome da Coleção</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    placeholder="Ex: Halo Infinite Collection"
+                    className={styles.fieldInput}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Slug (URL amigável)</label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) =>
+                      setFormData({ ...formData, slug: generateSlug(e.target.value) })
+                    }
+                    placeholder="Ex: halo-infinite"
+                    className={styles.fieldInput}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Descrição</label>
+                  <input
+                    type="text"
+                    value={formData.description}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
+                    placeholder="Descrição para a comunidade..."
+                    className={styles.fieldInput}
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>URL do Banner (16:9)</label>
+                  <input
+                    type="url"
+                    value={formData.bannerUrl}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bannerUrl: e.target.value })
+                    }
+                    placeholder="https://..."
+                    className={styles.fieldInput}
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Creator UID (opcional)</label>
+                  <input
+                    type="text"
+                    value={formData.creatorUid}
+                    onChange={(e) =>
+                      setFormData({ ...formData, creatorUid: e.target.value })
+                    }
+                    placeholder="UID do usuário criador da playlist..."
+                    className={styles.fieldInput}
+                  />
+                </div>
               </div>
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>Identificador (Slug) *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="ex: cyberpunk-2077"
-                  value={formData.slug}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
-                  className={styles.fieldInput}
-                />
-              </div>
-
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>Descrição</label>
-                <textarea
-                  placeholder="Breve resumo da coleção para os visitantes..."
-                  value={formData.description}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                  className={styles.textareaInput}
-                />
-              </div>
-
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>URL do Banner (16:9)</label>
-                <input
-                  type="url"
-                  placeholder="https://..."
-                  value={formData.bannerUrl}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, bannerUrl: e.target.value }))}
-                  className={styles.fieldInput}
-                />
-              </div>
-
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>UID do Criador Associado (Opcional)</label>
-                <input
-                  type="text"
-                  placeholder="ID do usuário para transformá-lo em Playlist"
-                  value={formData.creatorUid}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, creatorUid: e.target.value }))}
-                  className={styles.fieldInput}
-                />
-              </div>
-
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={formData.featuredInHero}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, featuredInHero: e.target.checked }))}
-                  className={styles.checkboxInput}
-                />
-                <span>Destacar coleção na página principal / Hero</span>
-              </label>
-
-              <div className={styles.modalButtons}>
+              <div className={styles.modalFooter}>
                 <button
                   type="button"
+                  className={styles.btnSecondary}
                   onClick={() => setModalOpen(false)}
-                  className={styles.btnGhost}
-                  disabled={saving}
                 >
                   Cancelar
                 </button>
@@ -350,15 +368,45 @@ export default function ManageCollections() {
         </div>
       )}
 
-      {deleteConfirmOpen && collectionToDelete && (
-        <Modal
-          isOpen={deleteConfirmOpen}
-          title="Confirmar Exclusão"
-          message={`Tem certeza que deseja excluir a coleção "${collectionToDelete.name}"? Os wallpapers continuarão no acervo geral, mas perderão o vínculo com esta coleção.`}
-          variant="danger"
-          onClose={() => setDeleteConfirmOpen(false)}
-          onConfirm={handleDelete}
-        />
+      {deleteConfirmOpen && (
+        <div className={styles.modalOverlay} onClick={() => setDeleteConfirmOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Excluir Coleção</h3>
+              <button
+                type="button"
+                className={styles.btnIconSmall}
+                onClick={() => setDeleteConfirmOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <p className={styles.emptyText}>
+                Tem certeza que deseja excluir a coleção &quot;{collectionToDelete?.name}&quot;? Os wallpapers vinculados a ela não serão apagados do acervo, apenas desvinculados da coleção.
+              </p>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setDeleteConfirmOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.btnDanger}
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Excluindo...' : 'Excluir Coleção'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

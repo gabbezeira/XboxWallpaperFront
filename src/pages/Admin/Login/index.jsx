@@ -56,15 +56,15 @@ export default function AdminLogin() {
     <div className={styles.container}>
       <div className={styles.box}>
         <div className={styles.brand}>
-          <img src={logo} alt="Xbox Community Admin" className={styles.logo} />
-          <h1>Xbox Community Admin</h1>
+          <img src={logo} alt="Spartan Wallpapers Admin" className={styles.logo} />
+          <h1>Entrar</h1>
         </div>
 
         <form onSubmit={handleLogin} className={styles.form}>
           {error && <div className={styles.error}>{error}</div>}
 
           <div className={styles.field}>
-            <label>E-mail Corporativo</label>
+            <label>E-mail</label>
             <input
               type="email"
               value={email}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
-import { Trash2, Loader2, Image as ImageIcon } from 'lucide-react';
-import Modal from '../../components/Modal';
+import Loader from '../../components/Loader';
+import { Trash2, Image as ImageIcon, X } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -19,12 +19,6 @@ export default function ManageHeroSlides() {
   const [loadError, setLoadError] = useState('');
 
   const [confirmModal, setConfirmModal] = useState({ open: false, id: null });
-  const [alertModal, setAlertModal] = useState({
-    open: false,
-    title: '',
-    message: '',
-    variant: 'success',
-  });
 
   const fetchSlides = async () => {
     try {
@@ -44,10 +38,6 @@ export default function ManageHeroSlides() {
     fetchSlides();
   }, []);
 
-  const promptDelete = (id) => {
-    setConfirmModal({ open: true, id });
-  };
-
   const confirmDelete = async () => {
     const id = confirmModal.id;
     setConfirmModal({ open: false, id: null });
@@ -56,128 +46,114 @@ export default function ManageHeroSlides() {
     try {
       await api.heroSlides.remove(id);
       setSlides((prev) => prev.filter((s) => s.id !== id));
-      setAlertModal({
-        open: true,
-        title: 'Excluído',
-        message: 'O slide foi removido. A home pode levar um instante para atualizar o cache.',
-        variant: 'success',
-      });
     } catch {
-      setAlertModal({
-        open: true,
-        title: 'Erro',
-        message: 'Não foi possível excluir o slide.',
-        variant: 'danger',
-      });
+      alert('Não foi possível excluir o slide.');
     } finally {
       setDeletingId(null);
     }
   };
 
-  const cancelDelete = () => {
-    setConfirmModal({ open: false, id: null });
-  };
+  if (loading) {
+    return <Loader text="Carregando destaques do hero..." />;
+  }
 
   return (
-    <div className={styles.manage}>
-      <div className={styles.listHeader}>
-        <div className={styles.listHeaderText}>
-          <h2 className={styles.listHeaderTitle}>Destaques (hero)</h2>
-          <p className={styles.listHint}>
-            O que estiver listado aqui aparece no carrossel (do mais recente para o mais antigo).
-            Para retirar um destaque, exclua o slide.
+    <div className={styles.viewContainer}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleArea}>
+          <h2 className={styles.sectionTitle}>Hero Slides em Destaque</h2>
+          <p className={styles.sectionSubtitle}>
+            Estes slides aparecem no carrossel dinâmico no topo da página inicial (Home).
           </p>
         </div>
       </div>
 
-      {loadError && <p className={styles.errorBanner}>{loadError}</p>}
-
-      {slides.length === 0 && !loading && !loadError && (
-        <p className={styles.listEmpty}>
-          Nenhum slide cadastrado. Use a aba &quot;Publicar&quot; para enviar imagens.
-        </p>
+      {loadError && (
+        <div className={styles.batchActionText}>
+          <span>{loadError}</span>
+        </div>
       )}
 
-      {slides.length > 0 && (
-        <div className={styles.heroGrid} role="list">
-          {slides.map((slide) => {
-            const src = slideImageSrc(slide);
+      {slides.length === 0 && !loadError ? (
+        <div className={styles.emptyState}>
+          <ImageIcon size={44} className={styles.emptyIcon} />
+          <h3 className={styles.emptyTitle}>Nenhum Slide Cadastrado</h3>
+          <p className={styles.emptyText}>
+            Use a aba &quot;Publicar & Lote&quot; &gt; &quot;Hero Slide&quot; para enviar novos destaques para a página inicial.
+          </p>
+        </div>
+      ) : (
+        <div className={styles.heroSlidesGrid}>
+          {slides.map((s) => {
+            const src = slideImageSrc(s);
             return (
-              <article key={slide.id} className={styles.heroCard} role="listitem">
-                <div className={styles.heroCardThumb}>
-                  {src ? (
-                    <img
-                      className={styles.heroCardImg}
-                      src={src}
-                      alt={slide.title || 'Slide'}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className={styles.heroCardEmpty} aria-hidden>
-                      <ImageIcon size={40} />
-                    </div>
-                  )}
-                  <div className={styles.heroCardOverlay} aria-hidden={false}>
-                    <button
-                      type="button"
-                      className={styles.btnDanger}
-                      onClick={() => promptDelete(slide.id)}
-                      disabled={deletingId === slide.id}
-                      title="Excluir slide"
-                      aria-label="Excluir slide"
-                    >
-                      {deletingId === slide.id ? (
-                        <Loader2 size={18} className={styles.spin} />
-                      ) : (
-                        <Trash2 size={18} />
-                      )}
-                    </button>
+              <div key={s.id} className={styles.heroSlideCard}>
+                <img src={src} alt="" className={styles.heroSlideBanner} />
+                <div className={styles.heroSlideBody}>
+                  <div className={styles.heroSlideDetails}>
+                    <h3 className={styles.heroSlideTitle}>{s.title || 'Sem título'}</h3>
+                    {s.subtitle && (
+                      <p className={styles.heroSlideSubtitle}>{s.subtitle}</p>
+                    )}
+                    {s.targetTag && (
+                      <span className={styles.kpiSub}>Tag: #{s.targetTag}</span>
+                    )}
                   </div>
+
+                  <button
+                    type="button"
+                    className={styles.btnDangerIconSmall}
+                    onClick={() => setConfirmModal({ open: true, id: s.id })}
+                    disabled={deletingId === s.id}
+                    title="Excluir Slide"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
-                <div className={styles.heroCardFoot}>
-                  <h3 className={`${styles.heroCardTitle} ${styles.heroCardMetaPre}`}>
-                    {slide.title || 'Sem título'}
-                  </h3>
-                  {Boolean(slide.subtitle) && (
-                    <p className={`${styles.heroCardMeta} ${styles.heroCardMetaPre}`}>
-                      {slide.subtitle}
-                    </p>
-                  )}
-                  {Boolean(slide.targetTag) && (
-                    <p className={styles.heroCardMeta}>Coleção: {slide.targetTag}</p>
-                  )}
-                </div>
-              </article>
+              </div>
             );
           })}
         </div>
       )}
 
-      {loading && (
-        <div className={styles.loadRow} aria-live="polite" aria-busy="true">
-          <Loader2 size={24} className={styles.spin} />
+      {confirmModal.open && (
+        <div className={styles.modalOverlay} onClick={() => setConfirmModal({ open: false, id: null })}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Excluir Hero Slide</h3>
+              <button
+                type="button"
+                className={styles.btnIconSmall}
+                onClick={() => setConfirmModal({ open: false, id: null })}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.emptyText}>
+                Tem certeza que deseja remover este slide do carrossel principal?
+              </p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setConfirmModal({ open: false, id: null })}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.btnDanger}
+                onClick={confirmDelete}
+                disabled={Boolean(deletingId)}
+              >
+                {deletingId ? 'Excluindo...' : 'Excluir Slide'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
-
-      <Modal
-        isOpen={confirmModal.open}
-        title="Excluir destaque"
-        message="Excluir este slide do carrossel? A imagem será removida do armazenamento e a home deixará de exibi-la."
-        onConfirm={confirmDelete}
-        onCancel={cancelDelete}
-        confirmText="Excluir"
-        cancelText="Cancelar"
-        variant="danger"
-      />
-
-      <Modal
-        isOpen={alertModal.open}
-        title={alertModal.title}
-        message={alertModal.message}
-        onConfirm={() => setAlertModal((prev) => ({ ...prev, open: false }))}
-        confirmText="OK"
-        variant={alertModal.variant}
-      />
     </div>
   );
 }

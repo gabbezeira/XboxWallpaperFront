@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Home, Compass, UploadCloud, Heart, LogOut, Images, Layers, Copy, Check, BadgeCheck } from 'lucide-react';
+import { Home, Compass, UploadCloud, Heart, LogOut, Images, Layers, Copy, Check } from 'lucide-react';
+import VerifiedBadge from '../VerifiedBadge';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import horizontalLogo from '../../assets/horizontal-logo.png';
@@ -121,7 +122,7 @@ export default function Sidebar({ onLoginClick }) {
                 <div className={styles.userNameRow}>
                   <span className={styles.userName}>{displayName}</span>
                   {Boolean(profile?.isVerified) && (
-                    <BadgeCheck size={16} className={styles.verifiedBadge} aria-label="Verificado" />
+                    <VerifiedBadge size={16} className={styles.verifiedBadge} />
                   )}
                 </div>
                 {Boolean(profile?.userTag) && (

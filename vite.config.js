@@ -129,13 +129,55 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/__/],
         runtimeCaching: [
           {
+            urlPattern: /\/api\/wallpapers\/.*\/view/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'wallpapers-images-cache',
+              expiration: {
+                maxEntries: 150,
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /\/api\/hero-slides\/.*\/view/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'hero-images-cache',
+              expiration: {
+                maxEntries: 30,
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /\/api\/(?:wallpapers|hero-slides|collections)(?:\?.*)?$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'api-catalog-cache',
+              expiration: {
+                maxEntries: 40,
+                maxAgeSeconds: 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
             urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|webp)/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'images-cache',
+              cacheName: 'static-assets-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 dias
+                maxAgeSeconds: 30 * 24 * 60 * 60,
               },
             },
           },

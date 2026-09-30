@@ -6,16 +6,30 @@ import {
   Users,
   Search,
   CheckCircle,
-  Shield,
-  Palette,
   Trash2,
   Copy,
   Check,
   Heart,
   Image as ImageIcon,
   Layers,
+  Calendar,
 } from 'lucide-react';
 import styles from './styles.module.scss';
+
+const formatDate = (dateVal) => {
+  if (!dateVal) return '-';
+  try {
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return '-';
+    return d.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  } catch {
+    return '-';
+  }
+};
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -135,7 +149,7 @@ export default function ManageUsers() {
         <div>
           <h2 className={styles.sectionTitle}>Gestão de Usuários & Creators</h2>
           <p className={styles.sectionSubtitle}>
-            Localize usuários pela User Tag (#1234), conceda cargos, selos de verificação e associe coleções.
+            Localize usuários pela User Tag (#1234), veja data de cadastro, conceda cargos e selos.
           </p>
         </div>
         <form onSubmit={handleSearchSubmit} className={styles.userSearchForm}>
@@ -166,123 +180,231 @@ export default function ManageUsers() {
           <p className={styles.emptyQueueText}>Tente refinar sua busca por nome ou #tag.</p>
         </div>
       ) : (
-        <div className={styles.usersTableWrapper}>
-          <table className={styles.usersTable}>
-            <thead>
-              <tr>
-                <th>Usuário</th>
-                <th>User Tag</th>
-                <th>Cargo</th>
-                <th>Selo</th>
-                <th>Coleção Oficial</th>
-                <th>Estatísticas</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => {
-                const assignedCol = collections.find((c) => c.id === u.assignedCollectionId);
-                return (
-                  <tr key={u.id} className={styles.userRow}>
-                    <td>
-                      <div className={styles.userCell}>
-                        {u.photoURL ? (
-                          <img src={u.photoURL} alt="" className={styles.userTableAvatar} />
-                        ) : (
-                          <div className={styles.userTablePlaceholder}>
-                            {u.displayName?.charAt(0).toUpperCase() || 'U'}
-                          </div>
-                        )}
-                        <div className={styles.userNameBlock}>
-                          <span className={styles.userTableName}>
-                            {u.displayName || 'Sem Nome'}
-                          </span>
-                          <span className={styles.userTableEmail}>{u.email || 'Sem Email'}</span>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td>
-                      {u.userTag ? (
-                        <button
-                          type="button"
-                          onClick={() => handleCopyTag(u.userTag, u.id)}
-                          className={styles.tagCopyBtn}
-                          title="Clique para copiar"
-                        >
-                          <span>{u.userTag}</span>
-                          {copiedId === u.id ? <Check size={13} /> : <Copy size={13} />}
-                        </button>
-                      ) : (
-                        <span className={styles.dimmedText}>-</span>
-                      )}
-                    </td>
-
-                    <td>
-                      <select
-                        value={u.role || 'user'}
-                        onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                        className={styles.roleSelect}
-                      >
-                        <option value="user">User</option>
-                        <option value="creator">Creator</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </td>
-
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleVerified(u.id, u.isVerified)}
-                        className={`${styles.verifyBtn} ${u.isVerified ? styles.verifyBtnActive : ''}`}
-                        title={u.isVerified ? 'Remover Selo Verificado' : 'Conceder Selo Verificado'}
-                      >
-                        <CheckCircle size={15} />
-                        <span>{u.isVerified ? 'Verificado' : 'Não verificado'}</span>
-                      </button>
-                    </td>
-
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenAssign(u)}
-                        className={styles.assignColBtn}
-                      >
-                        <Layers size={13} />
-                        <span>{assignedCol ? assignedCol.name : 'Vincular'}</span>
-                      </button>
-                    </td>
-
-                    <td>
-                      <div className={styles.userStatsCell}>
-                        <span title="Wallpapers / Cota" className={styles.statPill}>
-                          <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
-                        </span>
-                        <span title="Favoritos Recebidos" className={styles.statPill}>
-                          <Heart size={12} /> {u.totalFavoritesReceived || 0}
-                        </span>
-                      </div>
-                    </td>
-
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setUserToDelete(u);
-                          setDeleteModalOpen(true);
-                        }}
-                        className={styles.btnDangerSmall}
-                        title="Excluir Usuário"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </td>
+        <>
+          <div className={styles.desktopUsersTable}>
+            <div className={styles.usersTableWrapper}>
+              <table className={styles.usersTable}>
+                <thead>
+                  <tr>
+                    <th>Usuário</th>
+                    <th>User Tag</th>
+                    <th>Data de Cadastro</th>
+                    <th>Cargo</th>
+                    <th>Selo</th>
+                    <th>Coleção Oficial</th>
+                    <th>Estatísticas</th>
+                    <th>Ações</th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {users.map((u) => {
+                    const assignedCol = collections.find((c) => c.id === u.assignedCollectionId);
+                    return (
+                      <tr key={u.id} className={styles.userRow}>
+                        <td>
+                          <div className={styles.userCell}>
+                            {u.photoURL ? (
+                              <img src={u.photoURL} alt="" className={styles.userTableAvatar} />
+                            ) : (
+                              <div className={styles.userTablePlaceholder}>
+                                {u.displayName?.charAt(0).toUpperCase() || 'U'}
+                              </div>
+                            )}
+                            <div className={styles.userNameBlock}>
+                              <span className={styles.userTableName}>
+                                {u.displayName || 'Sem Nome'}
+                              </span>
+                              <span className={styles.userTableEmail}>{u.email || 'Sem Email'}</span>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td>
+                          {u.userTag ? (
+                            <button
+                              type="button"
+                              onClick={() => handleCopyTag(u.userTag, u.id)}
+                              className={styles.tagCopyBtn}
+                              title="Clique para copiar"
+                            >
+                              <span>{u.userTag}</span>
+                              {copiedId === u.id ? <Check size={13} /> : <Copy size={13} />}
+                            </button>
+                          ) : (
+                            <span className={styles.dimmedText}>-</span>
+                          )}
+                        </td>
+
+                        <td>
+                          <div className={styles.dateCell}>
+                            <Calendar size={13} />
+                            <span>{formatDate(u.createdAt)}</span>
+                          </div>
+                        </td>
+
+                        <td>
+                          <select
+                            value={u.role || 'user'}
+                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                            className={styles.roleSelect}
+                          >
+                            <option value="user">User</option>
+                            <option value="creator">Creator</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        </td>
+
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleVerified(u.id, u.isVerified)}
+                            className={`${styles.verifyBtn} ${u.isVerified ? styles.verifyBtnActive : ''}`}
+                            title={u.isVerified ? 'Remover Selo Verificado' : 'Conceder Selo Verificado'}
+                          >
+                            <CheckCircle size={15} />
+                            <span>{u.isVerified ? 'Verificado' : 'Não verificado'}</span>
+                          </button>
+                        </td>
+
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenAssign(u)}
+                            className={styles.assignColBtn}
+                          >
+                            <Layers size={13} />
+                            <span>{assignedCol ? assignedCol.name : 'Vincular'}</span>
+                          </button>
+                        </td>
+
+                        <td>
+                          <div className={styles.userStatsCell}>
+                            <span title="Wallpapers / Cota" className={styles.statPill}>
+                              <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
+                            </span>
+                            <span title="Favoritos Recebidos" className={styles.statPill}>
+                              <Heart size={12} /> {u.totalFavoritesReceived || 0}
+                            </span>
+                          </div>
+                        </td>
+
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUserToDelete(u);
+                              setDeleteModalOpen(true);
+                            }}
+                            className={styles.btnDangerSmall}
+                            title="Excluir Usuário"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className={styles.mobileUsersGrid}>
+            {users.map((u) => {
+              const assignedCol = collections.find((c) => c.id === u.assignedCollectionId);
+              return (
+                <div key={u.id} className={styles.mobileUserCard}>
+                  <div className={styles.mobileUserCardHeader}>
+                    <div className={styles.userCell}>
+                      {u.photoURL ? (
+                        <img src={u.photoURL} alt="" className={styles.userTableAvatar} />
+                      ) : (
+                        <div className={styles.userTablePlaceholder}>
+                          {u.displayName?.charAt(0).toUpperCase() || 'U'}
+                        </div>
+                      )}
+                      <div className={styles.userNameBlock}>
+                        <span className={styles.userTableName}>
+                          {u.displayName || 'Sem Nome'}
+                        </span>
+                        <span className={styles.userTableEmail}>{u.email || 'Sem Email'}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserToDelete(u);
+                        setDeleteModalOpen(true);
+                      }}
+                      className={styles.btnDangerSmall}
+                      title="Excluir Usuário"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+
+                  <div className={styles.mobileUserCardMeta}>
+                    {u.userTag && (
+                      <button
+                        type="button"
+                        onClick={() => handleCopyTag(u.userTag, u.id)}
+                        className={styles.tagCopyBtn}
+                        title="Clique para copiar"
+                      >
+                        <span>{u.userTag}</span>
+                        {copiedId === u.id ? <Check size={13} /> : <Copy size={13} />}
+                      </button>
+                    )}
+                    <div className={styles.mobileUserCardDate}>
+                      <Calendar size={13} />
+                      <span>Cadastro: {formatDate(u.createdAt)}</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.mobileUserCardControls}>
+                    <select
+                      value={u.role || 'user'}
+                      onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                      className={styles.roleSelect}
+                    >
+                      <option value="user">User</option>
+                      <option value="creator">Creator</option>
+                      <option value="admin">Admin</option>
+                    </select>
+
+                    <button
+                      type="button"
+                      onClick={() => handleToggleVerified(u.id, u.isVerified)}
+                      className={`${styles.verifyBtn} ${u.isVerified ? styles.verifyBtnActive : ''}`}
+                      title={u.isVerified ? 'Remover Selo Verificado' : 'Conceder Selo Verificado'}
+                    >
+                      <CheckCircle size={15} />
+                      <span>{u.isVerified ? 'Verificado' : 'Não verificado'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenAssign(u)}
+                      className={styles.assignColBtn}
+                    >
+                      <Layers size={13} />
+                      <span>{assignedCol ? assignedCol.name : 'Vincular'}</span>
+                    </button>
+                  </div>
+
+                  <div className={styles.mobileUserCardStats}>
+                    <span title="Wallpapers / Cota" className={styles.statPill}>
+                      <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
+                    </span>
+                    <span title="Favoritos Recebidos" className={styles.statPill}>
+                      <Heart size={12} /> {u.totalFavoritesReceived || 0}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       {assignModalOpen && userToAssign && (

@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
-import { Trash2, Loader2, ChevronDown } from 'lucide-react';
+import {
+  Trash2,
+  Loader2,
+  ChevronDown,
+  Check,
+  CheckSquare,
+  Square,
+  X,
+} from 'lucide-react';
 import Modal from '../../components/Modal';
 import styles from './styles.module.scss';
 
@@ -14,6 +22,10 @@ export default function ManageWallpapers() {
   const [deletingId, setDeletingId] = useState(null);
   const [tag, setTag] = useState('');
   const [q, setQ] = useState('');
+
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [batchModalOpen, setBatchModalOpen] = useState(false);
+  const [deletingBatch, setDeletingBatch] = useState(false);
 
   const [confirmModal, setConfirmModal] = useState({ open: false, id: null });
   const [alertModal, setAlertModal] = useState({
@@ -38,6 +50,7 @@ export default function ManageWallpapers() {
           setWallpapers((prev) => [...prev, ...res.data]);
         } else {
           setWallpapers(res.data);
+          setSelectedIds(new Set());
         }
         setHasMore(res.data.length === 20);
       }
@@ -64,6 +77,27 @@ export default function ManageWallpapers() {
     fetchWallpapers(nextPage, true, q, tag);
   };
 
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === wallpapers.length && wallpapers.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(wallpapers.map((w) => w.id)));
+    }
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+  };
+
   const promptDelete = (id) => {
     setConfirmModal({ open: true, id });
   };
@@ -76,6 +110,11 @@ export default function ManageWallpapers() {
     try {
       await api.wallpapers.remove(id);
       setWallpapers((prev) => prev.filter((w) => w.id !== id));
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
       setAlertModal({
         open: true,
         title: 'Excluído',
@@ -98,11 +137,63 @@ export default function ManageWallpapers() {
     setConfirmModal({ open: false, id: null });
   };
 
+  const promptDeleteBatch = () => {
+    if (selectedIds.size === 0) return;
+    setBatchModalOpen(true);
+  };
+
+  const confirmDeleteBatch = async () => {
+    const idsToDelete = Array.from(selectedIds);
+    setBatchModalOpen(false);
+    setDeletingBatch(true);
+
+    try {
+      const res = await api.wallpapers.batchRemove(idsToDelete);
+      const deletedSet = new Set(res.deleted || idsToDelete);
+      setWallpapers((prev) => prev.filter((w) => !deletedSet.has(w.id)));
+      setSelectedIds(new Set());
+      setAlertModal({
+        open: true,
+        title: 'Excluídos com sucesso',
+        message: `${deletedSet.size} wallpaper(s) removido(s) do acervo.`,
+        variant: 'success',
+      });
+    } catch {
+      setAlertModal({
+        open: true,
+        title: 'Erro',
+        message: 'Não foi possível excluir os wallpapers selecionados.',
+        variant: 'danger',
+      });
+    } finally {
+      setDeletingBatch(false);
+    }
+  };
+
   return (
     <div className={styles.manage}>
       <div className={styles.listHeader}>
         <div className={styles.listHeaderText}>
           <h2 className={styles.listHeaderTitle}>Wallpapers públicos</h2>
+          {wallpapers.length > 0 && (
+            <button
+              type="button"
+              className={styles.btnSelectAllHeader}
+              onClick={toggleSelectAll}
+            >
+              {selectedIds.size === wallpapers.length ? (
+                <>
+                  <CheckSquare size={15} />
+                  <span>Desmarcar todos ({wallpapers.length})</span>
+                </>
+              ) : (
+                <>
+                  <Square size={15} />
+                  <span>Selecionar todos ({wallpapers.length})</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
         <form onSubmit={handleSearch} className={styles.listHeaderForm}>
           <input
@@ -137,9 +228,26 @@ export default function ManageWallpapers() {
             const thumbSrc = wall.thumbUrl?.startsWith('http')
               ? wall.thumbUrl
               : `${API_URL}${wall.thumbUrl || wall.storageUrl}`;
+            const isSelected = selectedIds.has(wall.id);
 
             return (
-              <div key={wall.id} className={styles.mediaItem}>
+              <div
+                key={wall.id}
+                className={`${styles.mediaItem} ${isSelected ? styles.mediaItemSelected : ''}`}
+                onClick={() => toggleSelect(wall.id)}
+              >
+                <button
+                  type="button"
+                  className={`${styles.mediaItemCheckbox} ${isSelected ? styles.mediaItemCheckboxChecked : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleSelect(wall.id);
+                  }}
+                  aria-label={isSelected ? 'Desmarcar' : 'Selecionar'}
+                >
+                  {isSelected && <Check size={14} />}
+                </button>
+
                 <img
                   src={thumbSrc}
                   alt={wall.title || 'Wallpaper'}
@@ -150,8 +258,11 @@ export default function ManageWallpapers() {
                   <button
                     type="button"
                     className={styles.btnDanger}
-                    onClick={() => promptDelete(wall.id)}
-                    disabled={deletingId === wall.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      promptDelete(wall.id);
+                    }}
+                    disabled={deletingId === wall.id || deletingBatch}
                     title="Excluir wallpaper"
                     aria-label="Excluir wallpaper"
                   >
@@ -165,6 +276,46 @@ export default function ManageWallpapers() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {selectedIds.size > 0 && (
+        <div className={styles.batchBar}>
+          <div className={styles.batchInfo}>
+            <CheckSquare size={18} />
+            <span>{selectedIds.size} selecionado(s)</span>
+          </div>
+          <div className={styles.batchActions}>
+            <button
+              type="button"
+              className={styles.btnGhost}
+              onClick={toggleSelectAll}
+            >
+              {selectedIds.size === wallpapers.length ? 'Desmarcar todos' : 'Selecionar todos'}
+            </button>
+            <button
+              type="button"
+              className={styles.btnGhost}
+              onClick={clearSelection}
+              aria-label="Limpar seleção"
+            >
+              <X size={16} />
+              <span>Limpar</span>
+            </button>
+            <button
+              type="button"
+              className={styles.btnDangerFull}
+              onClick={promptDeleteBatch}
+              disabled={deletingBatch}
+            >
+              {deletingBatch ? (
+                <Loader2 size={16} className={styles.spin} />
+              ) : (
+                <Trash2 size={16} />
+              )}
+              <span>Excluir selecionados ({selectedIds.size})</span>
+            </button>
+          </div>
         </div>
       )}
 
@@ -189,6 +340,17 @@ export default function ManageWallpapers() {
         onConfirm={confirmDelete}
         onCancel={cancelDelete}
         confirmText="Excluir"
+        cancelText="Cancelar"
+        variant="danger"
+      />
+
+      <Modal
+        isOpen={batchModalOpen}
+        title="Excluir wallpapers selecionados"
+        message={`Tem certeza que deseja excluir permanentemente os ${selectedIds.size} wallpapers selecionados? Esta ação não pode ser desfeita.`}
+        onConfirm={confirmDeleteBatch}
+        onCancel={() => setBatchModalOpen(false)}
+        confirmText="Excluir Selecionados"
         cancelText="Cancelar"
         variant="danger"
       />

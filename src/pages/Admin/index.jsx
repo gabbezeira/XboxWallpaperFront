@@ -34,67 +34,69 @@ export default function Admin() {
 
   return (
     <div className={styles.app}>
-      <header className={styles.header}>
-        <div className={styles.brand}>
-          <h1 className={styles.title}>Painel de Administração</h1>
-          <p className={styles.lead}>
-            Moderação comunitária, uploads em lote para coleções, controle de criadores e acervo.
-          </p>
-        </div>
-        <div className={styles.headerActions}>
-          <button type="button" onClick={() => navigate('/')} className={styles.btnGhost}>
-            <LogOut size={16} aria-hidden /> Sair do painel
+      <div className={styles.topNavWrapper}>
+        <header className={styles.header}>
+          <div className={styles.brand}>
+            <h1 className={styles.title}>Painel de Administração</h1>
+            <p className={styles.lead}>
+              Moderação comunitária, uploads em lote para coleções, controle de criadores e acervo.
+            </p>
+          </div>
+          <div className={styles.headerActions}>
+            <button type="button" onClick={() => navigate('/')} className={styles.btnGhost}>
+              <LogOut size={16} aria-hidden /> Sair do painel
+            </button>
+          </div>
+        </header>
+
+        <nav className={styles.tabs} aria-label="Seções do painel">
+          <button
+            type="button"
+            className={`${styles.btnTab} ${activeTab === 'moderation' ? styles.btnTabActive : ''}`}
+            onClick={() => setActiveTab('moderation')}
+          >
+            <ShieldCheck size={16} aria-hidden />
+            <span>Moderação</span>
+            {pendingCount > 0 && <span className={styles.tabBadge}>{pendingCount}</span>}
           </button>
-        </div>
-      </header>
 
-      <nav className={styles.tabs} aria-label="Seções do painel">
-        <button
-          type="button"
-          className={`${styles.btnTab} ${activeTab === 'moderation' ? styles.btnTabActive : ''}`}
-          onClick={() => setActiveTab('moderation')}
-        >
-          <ShieldCheck size={16} aria-hidden />
-          <span>Moderação</span>
-          {pendingCount > 0 && <span className={styles.tabBadge}>{pendingCount}</span>}
-        </button>
+          <button
+            type="button"
+            className={`${styles.btnTab} ${activeTab === 'publish' ? styles.btnTabActive : ''}`}
+            onClick={() => setActiveTab('publish')}
+          >
+            <UploadCloud size={16} aria-hidden />
+            <span>Publicar & Lote</span>
+          </button>
 
-        <button
-          type="button"
-          className={`${styles.btnTab} ${activeTab === 'publish' ? styles.btnTabActive : ''}`}
-          onClick={() => setActiveTab('publish')}
-        >
-          <UploadCloud size={16} aria-hidden />
-          <span>Publicar & Lote</span>
-        </button>
+          <button
+            type="button"
+            className={`${styles.btnTab} ${activeTab === 'collections' ? styles.btnTabActive : ''}`}
+            onClick={() => setActiveTab('collections')}
+          >
+            <Layers size={16} aria-hidden />
+            <span>Coleções</span>
+          </button>
 
-        <button
-          type="button"
-          className={`${styles.btnTab} ${activeTab === 'collections' ? styles.btnTabActive : ''}`}
-          onClick={() => setActiveTab('collections')}
-        >
-          <Layers size={16} aria-hidden />
-          <span>Coleções</span>
-        </button>
+          <button
+            type="button"
+            className={`${styles.btnTab} ${activeTab === 'users' ? styles.btnTabActive : ''}`}
+            onClick={() => setActiveTab('users')}
+          >
+            <Users size={16} aria-hidden />
+            <span>Usuários & Creators</span>
+          </button>
 
-        <button
-          type="button"
-          className={`${styles.btnTab} ${activeTab === 'users' ? styles.btnTabActive : ''}`}
-          onClick={() => setActiveTab('users')}
-        >
-          <Users size={16} aria-hidden />
-          <span>Usuários & Creators</span>
-        </button>
-
-        <button
-          type="button"
-          className={`${styles.btnTab} ${activeTab === 'catalog' ? styles.btnTabActive : ''}`}
-          onClick={() => setActiveTab('catalog')}
-        >
-          <Images size={16} aria-hidden />
-          <span>Acervo Geral</span>
-        </button>
-      </nav>
+          <button
+            type="button"
+            className={`${styles.btnTab} ${activeTab === 'catalog' ? styles.btnTabActive : ''}`}
+            onClick={() => setActiveTab('catalog')}
+          >
+            <Images size={16} aria-hidden />
+            <span>Acervo Geral</span>
+          </button>
+        </nav>
+      </div>
 
       <main className={styles.main}>
         {activeTab === 'moderation' && (

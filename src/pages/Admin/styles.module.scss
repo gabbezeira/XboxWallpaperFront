@@ -2,40 +2,49 @@
 @use '../../styles/mixins' as *;
 
 .app {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   background: $color-bg-main;
   color: $color-text-primary;
   font-family: $font-primary;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.topNavWrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 14, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-  gap: $spacing-lg;
-  padding: calc(env(safe-area-inset-top) + $spacing-xl) $spacing-lg $spacing-lg;
-  border-bottom: 1px solid $color-border;
+  gap: $spacing-md;
+  padding: calc(env(safe-area-inset-top) + $spacing-lg) $spacing-xl $spacing-md;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 
   @include respond-to(md) {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: $spacing-2xl $spacing-2xl $spacing-lg;
+    padding: $spacing-xl $spacing-2xl $spacing-md;
   }
 }
 
 .brand {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-xs;
   min-width: 0;
 }
 
@@ -49,9 +58,9 @@
 
 .lead {
   font-size: $fs-body;
-  line-height: 1.5;
+  line-height: 1.4;
   color: $color-text-secondary;
-  max-width: 40rem;
+  max-width: 44rem;
 }
 
 .headerActions {
@@ -64,14 +73,21 @@
 
 .tabs {
   display: flex;
-  flex-shrink: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   align-items: flex-end;
   gap: $spacing-xs;
-  padding: 0 $spacing-lg;
-  border-bottom: 1px solid $color-border;
+  padding: 0 $spacing-xl;
+  max-width: 1440px;
+  margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
 
   @include respond-to(md) {
     padding: 0 $spacing-2xl;
@@ -80,15 +96,12 @@
 
 .main {
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: $spacing-2xl $spacing-lg $spacing-3xl;
+  padding: $spacing-xl $spacing-lg $spacing-3xl;
   width: 100%;
-  max-width: 1200px;
-  align-self: center;
+  max-width: 1440px;
+  margin: 0 auto;
   box-sizing: border-box;
 
   @include respond-to(md) {
@@ -1271,6 +1284,90 @@
   }
 }
 
+.dateCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $fs-small;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.desktopUsersTable {
+  width: 100%;
+
+  @media (max-width: 959px) {
+    display: none;
+  }
+}
+
+.mobileUsersGrid {
+  display: none;
+  width: 100%;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  @media (max-width: 959px) {
+    display: flex;
+  }
+}
+
+.mobileUserCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+}
+
+.mobileUserCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.mobileUserCardMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.mobileUserCardDate {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: $color-text-muted;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px 8px;
+  border-radius: $radius-full;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobileUserCardControls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.mobileUserCardStats {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding-top: $spacing-xs;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .loadRow {
   @include flex-center;
   flex-direction: column;
@@ -1322,6 +1419,142 @@
       opacity: 1;
       pointer-events: auto;
     }
+  }
+
+  &.mediaItemSelected {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px $color-primary;
+
+    .mediaItemOverlay {
+      background: rgba($color-primary, 0.15);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.mediaItemCheckbox {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  width: 26px;
+  height: 26px;
+  border-radius: $radius-sm;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all $transition-fast;
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    border-color: #fff;
+    transform: scale(1.08);
+  }
+
+  &.mediaItemCheckboxChecked {
+    background: $color-primary;
+    border-color: $color-primary;
+  }
+}
+
+.btnSelectAllHeader {
+  @include btn-ghost;
+  font-size: $fs-small;
+  padding: 4px 10px;
+  gap: 6px;
+  border-radius: $radius-full;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-text-primary;
+    border-color: $color-primary;
+    background: rgba($color-primary, 0.1);
+  }
+}
+
+.batchBar {
+  position: sticky;
+  bottom: $spacing-xl;
+  z-index: 90;
+  margin-top: $spacing-xl;
+  padding: $spacing-sm $spacing-xl;
+  background: rgba(14, 14, 20, 0.95);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: $radius-full;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  max-width: 680px;
+  width: 100%;
+  align-self: center;
+  box-sizing: border-box;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: $radius-lg;
+    bottom: $spacing-md;
+    padding: $spacing-md;
+  }
+}
+
+.batchInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.batchActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+
+  @media (max-width: 640px) {
+    justify-content: flex-end;
+  }
+}
+
+.btnDangerFull {
+  @include btn-base;
+  background: $color-danger;
+  color: #fff;
+  border-radius: $radius-full;
+  padding: $spacing-xs $spacing-lg;
+  font-weight: $fw-semibold;
+  font-size: $fs-small;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  cursor: pointer;
+  border: none;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.88);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($color-danger, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 

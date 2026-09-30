@@ -67,6 +67,11 @@ export const api = {
         body: JSON.stringify({ isPublic }),
       }),
     remove: (id) => request(`/api/wallpapers/${id}`, { method: 'DELETE' }),
+    batchRemove: (ids) =>
+      request('/api/wallpapers/batch-delete', {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }),
     downloadUrl: async (id) => {
       const token = await getToken();
       return `${API_URL}/api/wallpapers/${id}/download${token ? `?token=${encodeURIComponent(token)}` : ''}`;

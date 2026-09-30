@@ -10,11 +10,9 @@ export default function WallpaperGrid({
   emptyMessage,
   maxColumns,
 }) {
-  const gridStyle = maxColumns ? { '--max-columns': maxColumns } : {};
-
   if (wallpapers.length === 0) {
     return (
-      <div className={styles.grid} style={gridStyle}>
+      <div className={styles.grid} data-max-columns={maxColumns || 6}>
         <div className={styles.empty}>
           <div className={styles.emptyIcon}>
             <ImageOff size={48} strokeWidth={1.5} />
@@ -27,7 +25,7 @@ export default function WallpaperGrid({
   }
 
   return (
-    <div className={styles.grid} style={gridStyle}>
+    <div className={styles.grid} data-max-columns={maxColumns || 6}>
       {wallpapers.map((wallpaper, index) => (
         <WallpaperCard
           key={wallpaper.id || index}

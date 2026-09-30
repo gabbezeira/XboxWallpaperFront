@@ -9,17 +9,20 @@ export default function QuotaBar() {
   const { imageCount = 0, maxImages = 6 } = profile;
   const percentage = (imageCount / maxImages) * 100;
 
-  let fillClass = styles.fill;
-  if (percentage >= 90) fillClass += ` ${styles.fillDanger}`;
-  else if (percentage >= 70) fillClass += ` ${styles.fillWarning}`;
+  let state = 'normal';
+  if (percentage >= 90) state = 'danger';
+  else if (percentage >= 70) state = 'warning';
 
   return (
     <div className={styles.bar}>
       <div className={styles.info}>
         <span className={styles.label}>Wallpapers enviados</span>
-        <div className={styles.track}>
-          <div className={fillClass} style={{ '--progress': `${percentage}%` }} />
-        </div>
+        <progress
+          className={styles.progress}
+          value={imageCount}
+          max={maxImages}
+          data-state={state}
+        />
       </div>
       <div className={styles.count}>
         {imageCount}

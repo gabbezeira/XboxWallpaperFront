@@ -26,12 +26,24 @@
   }
 
   @include respond-to(3xl) {
-    grid-template-columns: repeat(min(6, var(--max-columns, 6)), 1fr);
+    grid-template-columns: repeat(6, 1fr);
   }
 
   @include respond-to(4k) {
-    grid-template-columns: repeat(min(7, var(--max-columns, 7)), 1fr);
+    grid-template-columns: repeat(7, 1fr);
     gap: $spacing-xl;
+  }
+
+  &[data-max-columns="3"] {
+    @include respond-to(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &[data-max-columns="4"] {
+    @include respond-to(xl) {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 }
 

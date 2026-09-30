@@ -79,6 +79,7 @@ export default function WallpaperDetailsPage() {
   });
   const [mediaToken, setMediaToken] = useState(null);
   const [photoError, setPhotoError] = useState(false);
+  const [previewLoaded, setPreviewLoaded] = useState(false);
 
   useEffect(() => {
     const seed = location.state?.wallpaper?.id === id ? location.state.wallpaper : null;
@@ -156,6 +157,32 @@ export default function WallpaperDetailsPage() {
     return url;
   }, [wallpaper, authUser?.uid, mediaToken]);
 
+  const thumbSrc = useMemo(() => {
+    let raw = wallpaper?.thumbUrl || '';
+    if (!raw) return '';
+    const isHttp = raw.startsWith('http');
+    const base = API_URL;
+    let url = isHttp ? raw : `${base}${raw}`;
+
+    const needsToken =
+      wallpaper.isPublic === false &&
+      authUser?.uid &&
+      wallpaper.userId === authUser?.uid &&
+      mediaToken &&
+      !url.includes('token=');
+
+    if (needsToken) {
+      const sep = url.includes('?') ? '&' : '?';
+      url = `${url}${sep}token=${encodeURIComponent(mediaToken)}`;
+    }
+
+    return url;
+  }, [wallpaper, authUser?.uid, mediaToken]);
+
+  useEffect(() => {
+    setPreviewLoaded(false);
+  }, [imageSrc]);
+
   if (hydrating && !wallpaper) {
     return (
       <div className={styles.page}>
@@ -204,7 +231,22 @@ export default function WallpaperDetailsPage() {
             aria-label="Ver em tela cheia"
             tabIndex="-1"
           >
-            <img src={imageSrc} alt={wallpaper.title || 'Wallpaper'} className={styles.image} />
+            <div className={styles.imageWrapper}>
+              {thumbSrc && (
+                <img
+                  src={thumbSrc}
+                  alt=""
+                  className={`${styles.thumbPlaceholder} ${previewLoaded ? styles.thumbHidden : ''}`}
+                  aria-hidden="true"
+                />
+              )}
+              <img
+                src={imageSrc}
+                alt={wallpaper.title || 'Wallpaper'}
+                className={`${styles.image} ${previewLoaded ? styles.loaded : ''}`}
+                onLoad={() => setPreviewLoaded(true)}
+              />
+            </div>
           </button>
           <div className={styles.gradient} />
         </div>

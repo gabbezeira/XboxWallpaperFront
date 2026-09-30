@@ -23,26 +23,25 @@
   left: $spacing-xl;
   width: 48px;
   height: 48px;
-  border-radius: 50%;
-  background-color: rgba(#000, 0.5);
-  backdrop-filter: blur(4px);
+  border-radius: $radius-full;
+  background-color: rgba(#000, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #fff;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
-  transition: background-color $transition-fast;
+  z-index: 20;
+  transition: background-color $transition-fast, transform $transition-fast, border-color $transition-fast;
   @include gamepad-focus;
 
+  &:hover,
   &:focus-visible {
-    transform: none;
-    outline-color: #fff;
-  }
-
-  &:hover {
-    background-color: rgba(#000, 0.8);
+    background-color: rgba(#000, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.08);
   }
 
   @include respond-to(2xl) {

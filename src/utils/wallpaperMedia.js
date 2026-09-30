@@ -11,10 +11,14 @@ export function attachAuthenticatedMediaUrls(wallpapers, token) {
       ? `${baseUrl}${w.storageUrl}${w.storageUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}`
       : w.storageUrl;
 
+    const previewUrl = w.previewUrl?.startsWith('/')
+      ? `${baseUrl}${w.previewUrl}${w.previewUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}`
+      : w.previewUrl;
+
     const thumbUrl = w.thumbUrl?.startsWith('/')
       ? `${baseUrl}${w.thumbUrl}${w.thumbUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}`
       : w.thumbUrl || storageUrl;
 
-    return { ...w, storageUrl, thumbUrl };
+    return { ...w, storageUrl, previewUrl, thumbUrl };
   });
 }

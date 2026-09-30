@@ -127,22 +127,33 @@ export default function WallpaperDetailsPage() {
   }, [authUser, wallpaper?.id]);
 
   const imageSrc = useMemo(() => {
-    const rawUrl = wallpaper?.thumbUrl || wallpaper?.storageUrl;
-    if (!rawUrl) return '';
-    if (rawUrl.startsWith('http')) return rawUrl;
+    let raw = wallpaper?.previewUrl || wallpaper?.storageUrl || wallpaper?.thumbUrl || '';
+    if (!raw) return '';
+
+    if (raw.includes('thumb=true')) {
+      raw = raw.replace('thumb=true', 'preview=true');
+    } else if (!raw.includes('preview=true') && (raw.includes('/api/wallpapers/') || raw.startsWith('/'))) {
+      const sep = raw.includes('?') ? '&' : '?';
+      raw = `${raw}${sep}preview=true`;
+    }
+
+    const isHttp = raw.startsWith('http');
     const base = API_URL;
-    const path = `${base}${rawUrl}`;
+    let url = isHttp ? raw : `${base}${raw}`;
+
     const needsToken =
       wallpaper.isPublic === false &&
       authUser?.uid &&
       wallpaper.userId === authUser?.uid &&
-      mediaToken;
-    const sep = rawUrl.includes('?') ? '&' : '?';
-    const target = rawUrl.includes('thumb=true') ? path : `${path}${sep}thumb=true`;
+      mediaToken &&
+      !url.includes('token=');
+
     if (needsToken) {
-      return `${target}&token=${encodeURIComponent(mediaToken)}`;
+      const sep = url.includes('?') ? '&' : '?';
+      url = `${url}${sep}token=${encodeURIComponent(mediaToken)}`;
     }
-    return target;
+
+    return url;
   }, [wallpaper, authUser?.uid, mediaToken]);
 
   if (hydrating && !wallpaper) {

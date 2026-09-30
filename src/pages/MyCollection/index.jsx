@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
+import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
-import { Layers, Share2, UploadCloud, ArrowLeft, Check, Sparkles } from 'lucide-react';
+import { Layers, Share2, UploadCloud, ArrowLeft, Check } from 'lucide-react';
 import styles from './styles.module.scss';
+
+const ITEMS_PER_PAGE = 24;
 
 export default function MyCollection() {
   const navigate = useNavigate();
@@ -14,6 +17,7 @@ export default function MyCollection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [copied, setCopied] = useState(false);
   const [wallpaperToDelete, setWallpaperToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,10 +73,21 @@ export default function MyCollection() {
     }
   };
 
+  const totalPages = useMemo(() => Math.ceil(wallpapers.length / ITEMS_PER_PAGE), [wallpapers.length]);
+  const paginatedWallpapers = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return wallpapers.slice(start, start + ITEMS_PER_PAGE);
+  }, [wallpapers, currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (loading) {
     return (
       <div className={styles.page}>
-        <Loader text="Carregando sua coleção oficial..." />
+        <Loader text="Carregando sua coleção..." />
       </div>
     );
   }
@@ -115,10 +130,6 @@ export default function MyCollection() {
             <ArrowLeft size={20} />
           </button>
           <div className={styles.headerInfo}>
-            <div className={styles.creatorBadge}>
-              <Sparkles size={14} />
-              <span>Sua Coleção Oficial</span>
-            </div>
             <h1 className={styles.title}>{collection.name}</h1>
             {collection.description && (
               <p className={styles.subtitle}>{collection.description}</p>
@@ -153,7 +164,7 @@ export default function MyCollection() {
 
         <div className={styles.gridSection}>
           <WallpaperGrid
-            wallpapers={wallpapers}
+            wallpapers={paginatedWallpapers}
             onView={handleViewDetails}
             onDelete={promptDelete}
             showDelete={true}
@@ -161,13 +172,18 @@ export default function MyCollection() {
             emptyMessage="Nenhum wallpaper adicionado a esta coleção ainda. Clique em 'Adicionar Wallpaper' para começar!"
             maxColumns={6}
           />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       </div>
 
       <Modal
         isOpen={isModalOpen}
         title="Remover da Coleção"
-        message="Deseja desvincular este wallpaper da sua coleção oficial? A imagem continuará no seu acervo pessoal."
+        message="Deseja desvincular este wallpaper da sua coleção? A imagem continuará no seu acervo pessoal."
         onConfirm={confirmDelete}
         onCancel={() => {
           setIsModalOpen(false);

@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
+import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import { ArrowLeft, User, Layers } from 'lucide-react';
 import styles from './styles.module.scss';
+
+const ITEMS_PER_PAGE = 24;
 
 export default function Collection() {
   const { tag } = useParams();
@@ -12,6 +15,7 @@ export default function Collection() {
   const [collection, setCollection] = useState(null);
   const [wallpapers, setWallpapers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     let isMounted = true;
@@ -55,6 +59,17 @@ export default function Collection() {
     navigate(`/wallpaper/${wallpaper.id}`, { state: { wallpaper } });
   };
 
+  const totalPages = useMemo(() => Math.ceil(wallpapers.length / ITEMS_PER_PAGE), [wallpapers.length]);
+  const paginatedWallpapers = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return wallpapers.slice(start, start + ITEMS_PER_PAGE);
+  }, [wallpapers, currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className={styles.page}>
       {collection?.bannerUrl && (
@@ -88,7 +103,14 @@ export default function Collection() {
       {loading ? (
         <Loader text={`Carregando coleção ${collection?.name || tag}...`} />
       ) : wallpapers.length > 0 ? (
-        <WallpaperGrid wallpapers={wallpapers} onView={handleViewDetails} />
+        <div className={styles.gridSection}>
+          <WallpaperGrid wallpapers={paginatedWallpapers} onView={handleViewDetails} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
       ) : (
         <div className={styles.empty}>
           <Layers size={36} className={styles.emptyIcon} />

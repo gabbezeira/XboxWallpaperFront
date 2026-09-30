@@ -1,5 +1,5 @@
-import { useState, memo } from 'react';
-import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, Globe } from 'lucide-react';
+import { useState, useRef, useEffect, memo } from 'react';
+import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, Globe, ChevronDown, Check } from 'lucide-react';
 import VerifiedBadge from '../VerifiedBadge';
 import { formatFileSize } from '../../utils/format.js';
 import styles from './styles.module.scss';
@@ -15,6 +15,28 @@ const WallpaperCard = memo(function WallpaperCard({
   onToggleVisibility,
 }) {
   const [loaded, setLoaded] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [dropdownOpen]);
 
   const thumbSrc = wallpaper.thumbUrl?.startsWith('http')
     ? wallpaper.thumbUrl
@@ -40,7 +62,89 @@ const WallpaperCard = memo(function WallpaperCard({
         onError={() => setLoaded(true)}
       />
 
-      {showStatus && (
+      {showStatus && onToggleVisibility ? (
+        <div
+          ref={dropdownRef}
+          className={styles.visibilityDropdownContainer}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            className={`${styles.visibilityDropdownTrigger} ${wallpaper.isPublic ? styles.triggerPublic : styles.triggerPrivate}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setDropdownOpen((prev) => !prev);
+            }}
+            aria-expanded={dropdownOpen}
+            aria-label="Opções de visibilidade"
+          >
+            {wallpaper.isPublic ? (
+              <>
+                <Globe size={12} className={styles.statusIcon} />
+                <span>Público</span>
+              </>
+            ) : currentStatus === 'pending' ? (
+              <>
+                <Clock size={12} className={styles.statusIcon} />
+                <span>Em Análise</span>
+              </>
+            ) : currentStatus === 'rejected' ? (
+              <>
+                <AlertCircle size={12} className={styles.statusIcon} />
+                <span>Recusado</span>
+              </>
+            ) : (
+              <>
+                <Lock size={12} className={styles.statusIcon} />
+                <span>Privado</span>
+              </>
+            )}
+            <ChevronDown
+              size={12}
+              className={`${styles.dropdownCaret} ${dropdownOpen ? styles.caretOpen : ''}`}
+            />
+          </button>
+
+          {dropdownOpen && (
+            <div
+              className={styles.visibilityDropdownMenu}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                className={`${styles.dropdownItem} ${!wallpaper.isPublic ? styles.active : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDropdownOpen(false);
+                  if (wallpaper.isPublic) {
+                    onToggleVisibility(wallpaper, false);
+                  }
+                }}
+              >
+                <Lock size={13} />
+                <span>Privado</span>
+                {!wallpaper.isPublic && <Check size={13} className={styles.itemCheck} />}
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.dropdownItem} ${wallpaper.isPublic ? styles.active : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDropdownOpen(false);
+                  if (!wallpaper.isPublic) {
+                    onToggleVisibility(wallpaper, true);
+                  }
+                }}
+              >
+                <Globe size={13} />
+                <span>Público</span>
+                {wallpaper.isPublic && <Check size={13} className={styles.itemCheck} />}
+              </button>
+            </div>
+          )}
+        </div>
+      ) : showStatus ? (
         <div className={`${styles.statusBadge} ${styles[currentStatus] || styles.private}`}>
           {currentStatus === 'approved' && (
             <>
@@ -67,32 +171,7 @@ const WallpaperCard = memo(function WallpaperCard({
             </>
           )}
         </div>
-      )}
-
-      {showStatus && onToggleVisibility && (
-        <button
-          type="button"
-          className={styles.visibilityBadgeBtn}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleVisibility(wallpaper);
-          }}
-          title={wallpaper.isPublic ? 'Tornar privado' : 'Tornar público'}
-          aria-label="Mudar visibilidade"
-        >
-          {wallpaper.isPublic ? (
-            <>
-              <Lock size={12} />
-              <span>Privar</span>
-            </>
-          ) : (
-            <>
-              <Globe size={12} />
-              <span>Publicar</span>
-            </>
-          )}
-        </button>
-      )}
+      ) : null}
 
       <div className={styles.overlay}>
         <div className={styles.info}>
@@ -108,21 +187,6 @@ const WallpaperCard = memo(function WallpaperCard({
         </div>
 
         <div className={styles.actions}>
-          {onToggleVisibility && (
-            <button
-              type="button"
-              className={styles.btnAction}
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleVisibility(wallpaper);
-              }}
-              title={wallpaper.isPublic ? 'Tornar privado' : 'Tornar público'}
-              aria-label="Mudar visibilidade"
-            >
-              {wallpaper.isPublic ? <Lock size={16} /> : <Globe size={16} />}
-            </button>
-          )}
-
           {showDelete && onDelete && (
             <button
               type="button"

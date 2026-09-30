@@ -35,13 +35,15 @@ export default function MyWallpapers() {
     setIsModalOpen(true);
   };
 
-  const promptToggleVisibility = (wallpaper) => {
+  const promptToggleVisibility = (wallpaper, explicitNextPublic) => {
     const isCurrentlyPublic =
       wallpaper.isPublic || wallpaper.status === 'approved' || wallpaper.status === 'pending';
+    const nextIsPublic = explicitNextPublic !== undefined ? explicitNextPublic : !isCurrentlyPublic;
+    if (nextIsPublic === isCurrentlyPublic) return;
     setVisibilityModal({
       open: true,
       wallpaper,
-      nextIsPublic: !isCurrentlyPublic,
+      nextIsPublic,
     });
   };
 

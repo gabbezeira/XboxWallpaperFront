@@ -113,21 +113,21 @@ export const api = {
     listUsers: ({ q = '', limit = 50 } = {}) =>
       request(`/api/admin/users?q=${encodeURIComponent(q)}&limit=${limit}`),
     updateRole: (id, role) =>
-      request(`/api/admin/users/${id}/role`, {
+      request(`/api/admin/users/${encodeURIComponent(id)}/role`, {
         method: 'PATCH',
         body: JSON.stringify({ role }),
       }),
     updateVerification: (id, isVerified) =>
-      request(`/api/admin/users/${id}/verify`, {
+      request(`/api/admin/users/${encodeURIComponent(id)}/verify`, {
         method: 'PATCH',
         body: JSON.stringify({ isVerified }),
       }),
     assignCollection: (id, collectionId) =>
-      request(`/api/admin/users/${id}/collection`, {
+      request(`/api/admin/users/${encodeURIComponent(id)}/collection`, {
         method: 'PATCH',
         body: JSON.stringify({ collectionId }),
       }),
-    deleteUser: (id) => request(`/api/admin/users/${id}`, { method: 'DELETE' }),
+    deleteUser: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   },
 
   favorites: {

@@ -76,11 +76,7 @@ export default function Admin() {
       <header className={styles.topBar}>
         <div className={styles.topBarInner}>
           <div className={styles.brandGroup}>
-            <h1 className={styles.brandTitle}>Spartan Control</h1>
-            <span className={styles.systemBadge}>
-              <span className={styles.statusDot} />
-              Sistema Ativo
-            </span>
+            <h1 className={styles.brandTitle}>Painel de controle</h1>
           </div>
 
           <div className={styles.topBarActions}>

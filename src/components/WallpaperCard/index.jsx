@@ -184,15 +184,15 @@ const WallpaperCard = memo(function WallpaperCard({
           {wallpaper.sizeBytes != null && wallpaper.sizeBytes > 0 && (
             <span className={styles.size}>{formatFileSize(wallpaper.sizeBytes)}</span>
           )}
+        </div>
+
+        <div className={styles.actions}>
           {!showStatus && (
             <div className={styles.cardFavBadge}>
               <Heart size={12} className={styles.cardFavIcon} />
               <span>{wallpaper.favoriteCount || 0}</span>
             </div>
           )}
-        </div>
-
-        <div className={styles.actions}>
           {showDelete && onDelete && (
             <button
               type="button"

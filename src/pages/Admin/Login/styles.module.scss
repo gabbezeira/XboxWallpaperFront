@@ -8,8 +8,6 @@
   background-color: $color-bg-main;
   @include flex-center;
   padding: $spacing-xl;
-  background-image: radial-gradient(circle at top right, rgba($color-primary, 0.15), transparent 50%),
-                    radial-gradient(circle at bottom left, rgba($color-primary, 0.05), transparent 50%);
   overflow-y: auto;
 }
 

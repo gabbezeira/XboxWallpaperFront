@@ -8,6 +8,7 @@ export default function WallpaperGrid({
   onDelete,
   showDelete,
   showStatus,
+  onToggleVisibility,
   emptyMessage,
   maxColumns,
 }) {
@@ -35,6 +36,7 @@ export default function WallpaperGrid({
           onDelete={onDelete}
           showDelete={showDelete}
           showStatus={showStatus}
+          onToggleVisibility={onToggleVisibility}
         />
       ))}
     </div>

@@ -1,11 +1,18 @@
 import { useState, memo } from 'react';
-import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, BadgeCheck } from 'lucide-react';
+import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, BadgeCheck, Globe } from 'lucide-react';
 import { formatFileSize } from '../../utils/format.js';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
-const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete, showDelete, showStatus }) {
+const WallpaperCard = memo(function WallpaperCard({
+  wallpaper,
+  onView,
+  onDelete,
+  showDelete,
+  showStatus,
+  onToggleVisibility,
+}) {
   const [loaded, setLoaded] = useState(false);
 
   const thumbSrc = wallpaper.thumbUrl?.startsWith('http')
@@ -61,6 +68,31 @@ const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete,
         </div>
       )}
 
+      {showStatus && onToggleVisibility && (
+        <button
+          type="button"
+          className={styles.visibilityBadgeBtn}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleVisibility(wallpaper);
+          }}
+          title={wallpaper.isPublic ? 'Tornar privado' : 'Tornar público'}
+          aria-label="Mudar visibilidade"
+        >
+          {wallpaper.isPublic ? (
+            <>
+              <Lock size={12} />
+              <span>Privar</span>
+            </>
+          ) : (
+            <>
+              <Globe size={12} />
+              <span>Publicar</span>
+            </>
+          )}
+        </button>
+      )}
+
       <div className={styles.overlay}>
         <div className={styles.info}>
           {wallpaper.authorName && !showStatus && (
@@ -74,19 +106,36 @@ const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete,
           )}
         </div>
 
-        {showDelete && onDelete && (
-          <button
-            type="button"
-            className={styles.btnDelete}
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(wallpaper);
-            }}
-            aria-label="Excluir wallpaper"
-          >
-            <Trash2 size={16} />
-          </button>
-        )}
+        <div className={styles.actions}>
+          {onToggleVisibility && (
+            <button
+              type="button"
+              className={styles.btnAction}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleVisibility(wallpaper);
+              }}
+              title={wallpaper.isPublic ? 'Tornar privado' : 'Tornar público'}
+              aria-label="Mudar visibilidade"
+            >
+              {wallpaper.isPublic ? <Lock size={16} /> : <Globe size={16} />}
+            </button>
+          )}
+
+          {showDelete && onDelete && (
+            <button
+              type="button"
+              className={styles.btnDelete}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(wallpaper);
+              }}
+              aria-label="Excluir wallpaper"
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

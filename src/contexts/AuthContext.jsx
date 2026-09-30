@@ -18,7 +18,10 @@ export function AuthProvider({ children }) {
     try {
       const data = await api.profile.get();
       if (isMountedRef.current) {
-        setProfile(data);
+        setProfile({
+          ...data,
+          maxImages: Math.max(10, data?.maxImages || 10),
+        });
       }
     } catch (error) {
       console.warn('[Auth] Erro ao buscar perfil:', error);

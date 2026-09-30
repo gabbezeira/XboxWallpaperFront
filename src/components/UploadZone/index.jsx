@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
-import { UploadCloud, Ban, X, Lock, Globe, Layers } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { UploadCloud, Ban, X, Lock, Globe, Layers, Plus } from 'lucide-react';
 import { useUpload } from '../../hooks/useUpload';
 import { useAuth } from '../../hooks/useAuth';
+import { api } from '../../services/api';
 import styles from './styles.module.scss';
 
 const SUGGESTED_GAMES = [
@@ -19,12 +20,17 @@ const SUGGESTED_GAMES = [
   'Hellblade II',
 ];
 
-const SUGGESTED_TAGS = [
+const DEFAULT_EXISTING_TAGS = [
   'Halo',
   'Forza',
   'Gears',
   'Minecraft',
   'Starfield',
+  'Sea of Thieves',
+  'Cyberpunk 2077',
+  'Elden Ring',
+  'Hi-Fi RUSH',
+  'Hellblade II',
   'Dark',
   'Abstract',
   'Nature',
@@ -32,6 +38,11 @@ const SUGGESTED_TAGS = [
   'Retro',
   'Neon',
   'Space',
+  'Sci-Fi',
+  'Landscape',
+  'Anime',
+  '4K',
+  'OLED',
 ];
 
 export default function UploadZone({ onUploadComplete }) {
@@ -47,12 +58,33 @@ export default function UploadZone({ onUploadComplete }) {
   const [tagInput, setTagInput] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [addToCollection, setAddToCollection] = useState(false);
+  const [existingTags, setExistingTags] = useState(DEFAULT_EXISTING_TAGS);
 
   const [showGameSuggestions, setShowGameSuggestions] = useState(false);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const inputRef = useRef(null);
 
-  const isQuotaFull = profile && profile.imageCount >= profile.maxImages;
+  const userMaxImages = Math.max(10, profile?.maxImages || 10);
+  const isQuotaFull = profile && (profile.imageCount || 0) >= userMaxImages;
+
+  useEffect(() => {
+    let isMounted = true;
+    api.collections
+      .list()
+      .then((colls) => {
+        if (!isMounted || !Array.isArray(colls)) return;
+        const tagSet = new Set(DEFAULT_EXISTING_TAGS);
+        colls.forEach((c) => {
+          if (c.title) tagSet.add(c.title);
+          if (c.slug) tagSet.add(c.slug);
+        });
+        setExistingTags(Array.from(tagSet));
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSelectFile = (file) => {
     setLocalError(null);
@@ -112,6 +144,7 @@ export default function UploadZone({ onUploadComplete }) {
     const cleaned = tag.trim();
     if (cleaned && !tags.includes(cleaned) && tags.length < 5) {
       setTags((prev) => [...prev, cleaned]);
+      setExistingTags((prev) => (prev.includes(cleaned) ? prev : [...prev, cleaned]));
     }
     setTagInput('');
     setShowTagSuggestions(false);
@@ -144,9 +177,14 @@ export default function UploadZone({ onUploadComplete }) {
   };
 
   const filteredGames = SUGGESTED_GAMES.filter((g) => g.toLowerCase().includes(game.toLowerCase()));
-  const filteredTags = SUGGESTED_TAGS.filter(
-    (t) => t.toLowerCase().includes(tagInput.toLowerCase()) && !tags.includes(t),
+  const trimmedTag = tagInput.trim();
+  const filteredTags = existingTags.filter(
+    (t) => t.toLowerCase().includes(trimmedTag.toLowerCase()) && !tags.includes(t),
   );
+  const exactMatchExists = existingTags.some(
+    (t) => t.toLowerCase() === trimmedTag.toLowerCase(),
+  );
+  const canCreateTag = trimmedTag.length > 0 && !exactMatchExists && !tags.includes(trimmedTag);
 
   if (uploading) {
     return (
@@ -211,23 +249,44 @@ export default function UploadZone({ onUploadComplete }) {
                     setTagInput(e.target.value);
                     setShowTagSuggestions(true);
                   }}
-                  onFocus={() => setShowTagSuggestions(true)}
+                  onFocus={() => {
+                    if (tagInput.trim().length > 0) {
+                      setShowTagSuggestions(true);
+                    }
+                  }}
                   onBlur={() => setTimeout(() => setShowTagSuggestions(false), 200)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      addTag(tagInput);
+                      if (tagInput.trim()) {
+                        addTag(tagInput.trim());
+                      }
                     }
                   }}
                   className={styles.fieldInput}
                 />
-                {showTagSuggestions && filteredTags.length > 0 && (
+                {showTagSuggestions && trimmedTag.length > 0 && (filteredTags.length > 0 || canCreateTag) && (
                   <div className={styles.dropdownList}>
                     {filteredTags.map((t) => (
-                      <button key={t} className={styles.dropdownItem} onClick={() => addTag(t)}>
+                      <button
+                        key={t}
+                        type="button"
+                        className={styles.dropdownItem}
+                        onClick={() => addTag(t)}
+                      >
                         {t}
                       </button>
                     ))}
+                    {canCreateTag && (
+                      <button
+                        type="button"
+                        className={`${styles.dropdownItem} ${styles.dropdownCreateItem}`}
+                        onClick={() => addTag(trimmedTag)}
+                      >
+                        <Plus size={14} />
+                        <span>Criar tag &quot;{trimmedTag}&quot;</span>
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -324,7 +383,7 @@ export default function UploadZone({ onUploadComplete }) {
         </div>
         <div className={styles.subtitle}>
           {isQuotaFull
-            ? `Você já tem ${profile.maxImages} imagens. Delete alguma para enviar novas.`
+            ? `Você já tem ${userMaxImages} imagens. Delete alguma para enviar novas.`
             : 'Sua imagem será processada para garantir a melhor qualidade (máx 20MB)'}
         </div>
         <div className={styles.formats}>

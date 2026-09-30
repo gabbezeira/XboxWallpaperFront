@@ -135,7 +135,7 @@ export default function ManageUsers() {
         <div>
           <h2 className={styles.sectionTitle}>Gestão de Usuários & Creators</h2>
           <p className={styles.sectionSubtitle}>
-            Localize usuários pela Tag Discord (#1234), conceda cargos, selos de verificação e associe coleções.
+            Localize usuários pela User Tag (#1234), conceda cargos, selos de verificação e associe coleções.
           </p>
         </div>
         <form onSubmit={handleSearchSubmit} className={styles.userSearchForm}>
@@ -143,7 +143,7 @@ export default function ManageUsers() {
             <Search size={16} className={styles.searchIcon} />
             <input
               type="text"
-              placeholder="Buscar por nome, email ou Tag (#1234)..."
+              placeholder="Buscar por nome, email ou User Tag (#1234)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
@@ -171,7 +171,7 @@ export default function ManageUsers() {
             <thead>
               <tr>
                 <th>Usuário</th>
-                <th>Tag Discord</th>
+                <th>User Tag</th>
                 <th>Cargo</th>
                 <th>Selo</th>
                 <th>Coleção Oficial</th>

@@ -123,6 +123,21 @@
   z-index: 20;
 }
 
+.btnAction {
+  @include btn-ghost;
+  padding: $spacing-xs;
+  background-color: rgba($color-bg-secondary, 0.85);
+  color: $color-text-primary;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  @include gamepad-focus;
+
+  &:hover,
+  &:focus-visible {
+    background-color: rgba($color-primary, 0.3) !important;
+    color: #ffffff !important;
+    border-color: $color-primary;
+  }
+}
 
 .btnDelete {
   @include btn-ghost;
@@ -147,34 +162,70 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: $radius-full;
-  font-size: 0.75rem;
-  font-weight: $fw-semibold;
-  backdrop-filter: blur(8px);
+  font-size: 0.72rem;
+  font-weight: $fw-bold;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 
   &.approved {
-    background: rgba($color-primary, 0.35);
-    border: 1px solid rgba($color-primary, 0.6);
-    color: #a7f3d0;
+    background: rgba(4, 45, 30, 0.92);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #34d399;
   }
 
   &.pending {
-    background: rgba(#f59e0b, 0.35);
-    border: 1px solid rgba(#f59e0b, 0.6);
-    color: #fde68a;
+    background: rgba(45, 25, 0, 0.92);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    color: #fbbf24;
   }
 
   &.rejected {
-    background: rgba($color-danger, 0.35);
-    border: 1px solid rgba($color-danger, 0.6);
-    color: #fca5a5;
+    background: rgba(45, 8, 8, 0.92);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    color: #f87171;
   }
 
   &.private {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: $color-text-secondary;
+    background: rgba(15, 17, 23, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #94a3b8;
+  }
+}
+
+.visibilityBadgeBtn {
+  position: absolute;
+  top: $spacing-sm;
+  right: $spacing-sm;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: $radius-full;
+  font-size: 0.72rem;
+  font-weight: $fw-semibold;
+  background: rgba(10, 10, 15, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f1f5f9;
+  cursor: pointer;
+  transition: all $transition-fast;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  @include gamepad-focus;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: $color-primary;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 

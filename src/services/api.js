@@ -61,6 +61,11 @@ export const api = {
       if (collectionId) formData.append('collectionId', collectionId);
       return request('/api/wallpapers/upload', { method: 'POST', body: formData });
     },
+    updateVisibility: (id, isPublic) =>
+      request(`/api/wallpapers/${id}/visibility`, {
+        method: 'PATCH',
+        body: JSON.stringify({ isPublic }),
+      }),
     remove: (id) => request(`/api/wallpapers/${id}`, { method: 'DELETE' }),
     downloadUrl: async (id) => {
       const token = await getToken();

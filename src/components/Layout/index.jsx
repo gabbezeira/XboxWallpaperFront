@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, LogOut, User, X } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import Sidebar from '../Sidebar';
@@ -9,11 +9,14 @@ import styles from './styles.module.scss';
 
 const MOBILE_MAX = 768;
 const RESIZE_THROTTLE_MS = 120;
+const HIDE_SEARCH_ROUTES = ['/upload', '/my-wallpapers', '/favorites', '/my-collection'];
 
 import logo from '../../assets/logosvg.svg';
 
 export default function Layout({ children, onLoginClick }) {
   const { user } = useAuth();
+  const location = useLocation();
+  const shouldHideSearch = HIDE_SEARCH_ROUTES.includes(location.pathname);
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' ? window.innerWidth < MOBILE_MAX : false,
   );
@@ -122,13 +125,15 @@ export default function Layout({ children, onLoginClick }) {
                     </button>
                   </>
                 )}
-                <button
-                  className={styles.mobileActionBtn}
-                  onClick={() => setMobileSearchOpen(true)}
-                  aria-label="Buscar"
-                >
-                  <Search size={18} />
-                </button>
+                {!shouldHideSearch && (
+                  <button
+                    className={styles.mobileActionBtn}
+                    onClick={() => setMobileSearchOpen(true)}
+                    aria-label="Buscar"
+                  >
+                    <Search size={18} />
+                  </button>
+                )}
                 {user && (
                   <button className={styles.mobileActionBtn} onClick={logOut} aria-label="Sair">
                     <LogOut size={18} />
@@ -144,7 +149,7 @@ export default function Layout({ children, onLoginClick }) {
       )}
 
       <main className={styles.main}>
-        {!isMobile && (
+        {!isMobile && !shouldHideSearch && (
           <div className={styles.topBar}>
             <form className={styles.searchForm} onSubmit={handleSearchSubmit}>
               <Search size={20} className={styles.searchIcon} />

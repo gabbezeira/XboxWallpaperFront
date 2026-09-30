@@ -163,7 +163,7 @@
     backdrop-filter: blur(8px);
     border-radius: $radius-full;
     color: $color-text-primary;
-    z-index: 10;
+    z-index: 20;
     cursor: pointer;
     border: 1px solid rgba($color-text-primary, 0.1);
     @include gamepad-focus;

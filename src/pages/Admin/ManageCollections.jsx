@@ -384,7 +384,7 @@ export default function ManageCollections() {
 
             <div className={styles.modalBody}>
               <p className={styles.emptyText}>
-                Tem certeza que deseja excluir a coleção &quot;{collectionToDelete?.name}&quot;? Os wallpapers vinculados a ela não serão apagados do acervo, apenas desvinculados da coleção.
+                Tem certeza que deseja excluir a coleção &quot;{collectionToDelete?.name}&quot;? Todos os wallpapers associados a ela também serão excluídos definitivamente do acervo e do armazenamento.
               </p>
             </div>
 

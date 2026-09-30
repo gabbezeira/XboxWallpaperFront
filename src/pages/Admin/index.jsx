@@ -174,7 +174,7 @@ export default function Admin() {
               <Layers size={16} />
             </div>
             <div className={styles.kpiValue}>{stats.collectionsCount}</div>
-            <span className={styles.kpiSub}>Playlists organizadas</span>
+            <span className={styles.kpiSub}>Coleções Organizadas</span>
           </div>
 
           <div className={styles.kpiCard}>

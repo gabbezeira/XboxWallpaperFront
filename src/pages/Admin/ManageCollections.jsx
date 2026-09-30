@@ -155,7 +155,7 @@ export default function ManageCollections() {
         <div className={styles.sectionTitleArea}>
           <h2 className={styles.sectionTitle}>Gestão de Coleções</h2>
           <p className={styles.sectionSubtitle}>
-            Organize os wallpapers oficiais por jogos, franquias e playlists de criadores.
+            Organize os wallpapers oficiais por jogos, franquias e coleções de criadores.
           </p>
         </div>
 
@@ -341,7 +341,7 @@ export default function ManageCollections() {
                     onChange={(e) =>
                       setFormData({ ...formData, creatorUid: e.target.value })
                     }
-                    placeholder="UID do usuário criador da playlist..."
+                    placeholder="UID do usuário criador da coleção..."
                     className={styles.fieldInput}
                   />
                 </div>

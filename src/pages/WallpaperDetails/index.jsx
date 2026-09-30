@@ -253,6 +253,10 @@ export default function WallpaperDetailsPage() {
             )}
 
             <div className={styles.stats}>
+              <div className={styles.statFav} title="Total de favoritos">
+                <Heart size={14} className={styles.statFavIcon} />
+                <span>{wallpaper.favoriteCount || 0}</span>
+              </div>
               <div className={styles.stat}>
                 <Monitor size={14} />
                 {formatResolution(wallpaper.width, wallpaper.height)}

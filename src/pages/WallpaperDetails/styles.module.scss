@@ -300,6 +300,19 @@
     align-items: center;
     gap: 4px;
   }
+
+  .statFav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: $fw-bold;
+    color: #ffffff;
+  }
+
+  .statFavIcon {
+    color: #ef4444; /* red heart */
+    fill: #ef4444;
+  }
 }
 
 .actions {

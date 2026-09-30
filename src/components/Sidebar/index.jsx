@@ -136,8 +136,14 @@ export default function Sidebar({ onLoginClick }) {
                     {tagCopied ? <Check size={12} /> : <Copy size={12} />}
                   </button>
                 )}
-                <div className={`${styles.badge} ${styles[userLevel.key]}`}>
-                  {userLevel.label}
+                <div className={styles.profileStatsRow}>
+                  <div className={`${styles.badge} ${styles[userLevel.key]}`}>
+                    {userLevel.label}
+                  </div>
+                  <div className={styles.profileFavBadge} title="Total de Favoritos Recebidos">
+                    <Heart size={10} />
+                    <span>{profile?.totalFavoritesReceived || 0}</span>
+                  </div>
                 </div>
               </div>
             </div>

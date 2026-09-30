@@ -319,3 +319,21 @@
     transform: translateY(0);
   }
 }
+
+.cardFavBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: $fw-bold;
+  color: #ffffff;
+  pointer-events: none;
+  
+  .cardFavIcon {
+    color: #ef4444; /* red heart */
+    fill: #ef4444;
+  }
+}

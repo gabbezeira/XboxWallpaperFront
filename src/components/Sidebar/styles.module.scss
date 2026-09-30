@@ -243,6 +243,31 @@
   }
 }
 
+.profileStatsRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.profileFavBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: $fw-bold;
+  color: #ffffff;
+  
+  svg {
+    color: #ef4444; /* red heart */
+    fill: #ef4444;
+  }
+}
+
 .btnLogin {
   @include btn-primary;
   width: 100%;

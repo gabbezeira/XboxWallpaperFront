@@ -151,7 +151,7 @@ export default function ManageUsers() {
         <div className={styles.sectionTitleArea}>
           <h2 className={styles.sectionTitle}>Gestão de Usuários & Criadores</h2>
           <p className={styles.sectionSubtitle}>
-            Controle de cargos, atribuição de selo de criador verificado e vinculação de playlists.
+            Controle de cargos, atribuição de selo de criador verificado e vinculação de coleções.
           </p>
         </div>
 
@@ -190,7 +190,7 @@ export default function ManageUsers() {
                   <th>Cadastro</th>
                   <th>Cargo</th>
                   <th>Selo Verificado</th>
-                  <th>Playlist / Coleção</th>
+                  <th>Coleção</th>
                   <th>Métricas</th>
                   <th>Ações</th>
                 </tr>
@@ -419,7 +419,7 @@ export default function ManageUsers() {
         <div className={styles.modalOverlay} onClick={() => setAssignModalOpen(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Vincular Playlist de Criador</h3>
+              <h3 className={styles.modalTitle}>Vincular Coleção de Criador</h3>
               <button
                 type="button"
                 className={styles.btnIconSmall}

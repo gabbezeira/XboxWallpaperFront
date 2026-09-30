@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, memo } from 'react';
-import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, Globe, ChevronDown, Check } from 'lucide-react';
+import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, Globe, ChevronDown, Check, Heart } from 'lucide-react';
 import VerifiedBadge from '../VerifiedBadge';
 import { formatFileSize } from '../../utils/format.js';
 import styles from './styles.module.scss';
@@ -183,6 +183,12 @@ const WallpaperCard = memo(function WallpaperCard({
           )}
           {wallpaper.sizeBytes != null && wallpaper.sizeBytes > 0 && (
             <span className={styles.size}>{formatFileSize(wallpaper.sizeBytes)}</span>
+          )}
+          {!showStatus && (
+            <div className={styles.cardFavBadge}>
+              <Heart size={12} className={styles.cardFavIcon} />
+              <span>{wallpaper.favoriteCount || 0}</span>
+            </div>
           )}
         </div>
 

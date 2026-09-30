@@ -87,7 +87,7 @@ export default function MyCollection() {
             </div>
             <h2 className={styles.emptyTitle}>Coleção não atribuída</h2>
             <p className={styles.emptyText}>
-              Você ainda não possui uma coleção oficial vinculada à sua conta de Criador. Entre em contato com a administração informando sua Tag para configurar sua playlist oficial.
+              Você ainda não possui uma coleção oficial vinculada à sua conta de Criador. Entre em contato com a administração informando sua Tag para configurar sua Coleção oficial.
             </p>
             <button
               type="button"
@@ -117,7 +117,7 @@ export default function MyCollection() {
           <div className={styles.headerInfo}>
             <div className={styles.creatorBadge}>
               <Sparkles size={14} />
-              <span>Sua Playlist Oficial</span>
+              <span>Sua Coleção Oficial</span>
             </div>
             <h1 className={styles.title}>{collection.name}</h1>
             {collection.description && (
@@ -131,7 +131,7 @@ export default function MyCollection() {
               onClick={handleShare}
             >
               {copied ? <Check size={16} /> : <Share2 size={16} />}
-              <span>{copied ? 'Link Copiado!' : 'Compartilhar Playlist'}</span>
+              <span>{copied ? 'Link Copiado!' : 'Compartilhar Coleção'}</span>
             </button>
             <button
               type="button"

@@ -234,9 +234,10 @@ export default function ManageWallpapers() {
         <div className={styles.wallpapersGrid}>
           {wallpapers.map((w) => {
             const isSelected = selectedIds.has(w.id);
-            const thumbUrl = w.thumbUrl?.startsWith('http')
-              ? w.thumbUrl
-              : `${API_URL}${w.thumbUrl || w.storageUrl}`;
+            const raw = w.thumbUrl || w.storageUrl || '';
+            const thumbUrl = raw.startsWith('http')
+              ? raw
+              : `${API_URL}${raw.includes('thumb=true') ? raw : `${raw}${raw.includes('?') ? '&' : '?'}thumb=true`}`;
 
             return (
               <div

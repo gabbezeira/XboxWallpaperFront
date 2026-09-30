@@ -127,22 +127,22 @@ export default function WallpaperDetailsPage() {
   }, [authUser, wallpaper?.id]);
 
   const imageSrc = useMemo(() => {
-    if (!wallpaper?.storageUrl) return '';
-    const url = wallpaper.storageUrl;
-    if (url.startsWith('http')) return url;
+    const rawUrl = wallpaper?.thumbUrl || wallpaper?.storageUrl;
+    if (!rawUrl) return '';
+    if (rawUrl.startsWith('http')) return rawUrl;
     const base = API_URL;
-    const path = `${base}${url}`;
+    const path = `${base}${rawUrl}`;
     const needsToken =
       wallpaper.isPublic === false &&
       authUser?.uid &&
       wallpaper.userId === authUser?.uid &&
       mediaToken;
-    const sep = url.includes('?') ? '&' : '?';
-    const preview = `${path}${sep}preview=true`;
+    const sep = rawUrl.includes('?') ? '&' : '?';
+    const target = rawUrl.includes('thumb=true') ? path : `${path}${sep}thumb=true`;
     if (needsToken) {
-      return `${preview}&token=${encodeURIComponent(mediaToken)}`;
+      return `${target}&token=${encodeURIComponent(mediaToken)}`;
     }
-    return preview;
+    return target;
   }, [wallpaper, authUser?.uid, mediaToken]);
 
   if (hydrating && !wallpaper) {

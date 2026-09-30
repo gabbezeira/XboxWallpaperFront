@@ -148,9 +148,10 @@ export default function ModerationQueue({ onApprovedCountChange }) {
 
       <div className={styles.moderationGrid}>
         {wallpapers.map((w) => {
-          const thumbUrl = w.thumbUrl?.startsWith('http')
-            ? w.thumbUrl
-            : `${API_URL}${w.thumbUrl || w.storageUrl}`;
+          const raw = w.thumbUrl || w.storageUrl || '';
+          const thumbUrl = raw.startsWith('http')
+            ? raw
+            : `${API_URL}${raw.includes('thumb=true') ? raw : `${raw}${raw.includes('?') ? '&' : '?'}thumb=true`}`;
           const resLabel = formatResolution(w.width, w.height);
 
           return (

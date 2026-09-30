@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RowSlider from '../../components/RowSlider';
 import { api } from '../../services/api';
+import { getCached } from '../../services/apiCache';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -17,7 +18,6 @@ function readHeroCache() {
     if (!Array.isArray(data) || Date.now() - at > HERO_CACHE_TTL_MS) return null;
     return data;
   } catch {
-    /* sessionStorage indisponível ou JSON inválido */
     return null;
   }
 }
@@ -26,7 +26,6 @@ function writeHeroCache(data) {
   try {
     sessionStorage.setItem(HERO_CACHE_KEY, JSON.stringify({ at: Date.now(), data }));
   } catch {
-    /* quota / modo privado */
   }
 }
 
@@ -45,14 +44,23 @@ function shuffleArray(arr) {
   return shuffled;
 }
 
+function getInitialWallpapers(sort) {
+  const params = { q: '', tag: '', sort, page: 1, limit: 10 };
+  const cached = getCached('/api/wallpapers', params);
+  return cached?.data || [];
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const [activeBanner, setActiveBanner] = useState(0);
   const [heroSlides, setHeroSlides] = useState(() => readHeroCache() || []);
   const [loadingHero, setLoadingHero] = useState(() => !readHeroCache()?.length);
-  const [recentWallpapers, setRecentWallpapers] = useState([]);
-  const [popularWallpapers, setPopularWallpapers] = useState([]);
-  const [loadingWallpapers, setLoadingWallpapers] = useState(true);
+
+  const [recentWallpapers, setRecentWallpapers] = useState(() => getInitialWallpapers(''));
+  const [popularWallpapers, setPopularWallpapers] = useState(() => getInitialWallpapers('popular'));
+  const [loadingWallpapers, setLoadingWallpapers] = useState(
+    () => getInitialWallpapers('').length === 0
+  );
 
   const handleViewDetails = (wallpaper) => {
     navigate(`/wallpaper/${wallpaper.id}`, { state: { wallpaper } });

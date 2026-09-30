@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../../services/api';
+import { getCached } from '../../services/apiCache';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
@@ -14,6 +15,13 @@ import {
 } from 'lucide-react';
 import styles from './styles.module.scss';
 
+function getGalleryCached(q, activeTag, currentSort, page) {
+  const sort = currentSort === 'popular' ? 'popular' : '';
+  const tag = activeTag !== 'Tudo' ? activeTag : '';
+  const cached = getCached('/api/wallpapers', { q, tag, sort, page, limit: 12 });
+  return cached;
+}
+
 export default function Gallery() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,11 +30,14 @@ export default function Gallery() {
   const currentSort = searchParams.get('sort') || 'recent';
   const page = parseInt(searchParams.get('page'), 10) || 1;
 
-  const [availableTags, setAvailableTags] = useState([]);
-  const [wallpapers, setWallpapers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
+  const initialCache = getGalleryCached(q, activeTag, currentSort, page);
+  const cachedTags = getCached('/api/wallpapers/tags');
+
+  const [availableTags, setAvailableTags] = useState(() => cachedTags?.tags || []);
+  const [wallpapers, setWallpapers] = useState(() => initialCache?.data || []);
+  const [loading, setLoading] = useState(() => !initialCache?.data?.length);
+  const [totalPages, setTotalPages] = useState(() => initialCache?.totalPages || 1);
+  const [totalItems, setTotalItems] = useState(() => initialCache?.totalItems || 0);
 
   const [localSearch, setLocalSearch] = useState(q);
   const [tagModalOpen, setTagModalOpen] = useState(false);

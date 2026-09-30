@@ -117,7 +117,17 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ role }),
       }),
+    updateUserRole: (id, role) =>
+      request(`/api/admin/users/${encodeURIComponent(id)}/role`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role }),
+      }),
     updateVerification: (id, isVerified) =>
+      request(`/api/admin/users/${encodeURIComponent(id)}/verify`, {
+        method: 'PATCH',
+        body: JSON.stringify({ isVerified }),
+      }),
+    updateUserVerification: (id, isVerified) =>
       request(`/api/admin/users/${encodeURIComponent(id)}/verify`, {
         method: 'PATCH',
         body: JSON.stringify({ isVerified }),
@@ -127,7 +137,13 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ collectionId }),
       }),
+    assignUserCollection: (id, collectionId) =>
+      request(`/api/admin/users/${encodeURIComponent(id)}/collection`, {
+        method: 'PATCH',
+        body: JSON.stringify({ collectionId }),
+      }),
     deleteUser: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+    deleteUserAccount: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   },
 
   favorites: {

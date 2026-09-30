@@ -13,7 +13,25 @@
   width: 100%;
   padding: 0;
   text-align: left;
-  @include gamepad-focus;
+  transition: all $transition-base;
+  outline: none;
+
+  &:focus-visible,
+  &.force-focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+    z-index: 10;
+
+    @include respond-to(2xl) {
+      outline-width: 3px;
+      outline-offset: 4px;
+    }
+
+    @include respond-to(4k) {
+      outline-width: 4px;
+      outline-offset: 6px;
+    }
+  }
 
   &:hover,
   &:focus-visible {

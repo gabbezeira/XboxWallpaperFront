@@ -106,6 +106,8 @@
 .item {
   flex: 0 0 calc(80vw - 32px);
   scroll-snap-align: start;
+  overflow: hidden;
+  border-radius: $radius-lg;
 
   @include respond-to(md) {
     flex: 0 0 calc(33.333% - $spacing-md);

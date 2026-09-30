@@ -282,6 +282,7 @@ export default function useGamepad() {
   const pollGamepad = useCallback(() => {
     const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
     let anyConnected = false;
+    let anyInput = false;
 
     for (let i = 0; i < gamepads.length; i++) {
       const gp = gamepads[i];
@@ -310,6 +311,16 @@ export default function useGamepad() {
       const prevDpadDown = prev[DPAD_DOWN] || prevButtons.current[`${i}_axisDown`];
       const prevDpadLeft = prev[DPAD_LEFT] || prevButtons.current[`${i}_axisLeft`];
       const prevDpadRight = prev[DPAD_RIGHT] || prevButtons.current[`${i}_axisRight`];
+
+      const hasButtonPress = Object.keys(curr).some((b) => curr[b] && !prev[b]);
+      const hasDpad = dpadUp || dpadDown || dpadLeft || dpadRight;
+      const rsX = axes.length > 2 ? axes[2] : 0;
+      const rsY = axes.length > 3 ? axes[3] : 0;
+      const hasStick = Math.abs(axes[0]) > AXIS_THRESHOLD || Math.abs(axes[1]) > AXIS_THRESHOLD || Math.abs(rsX) > RIGHT_STICK_DEAD_ZONE || Math.abs(rsY) > RIGHT_STICK_DEAD_ZONE;
+
+      if (hasButtonPress || hasDpad || hasStick) {
+        anyInput = true;
+      }
 
       if (dpadUp && !prevDpadUp) {
         startRepeat(`${i}_up`, () => navigateFocus('up'));
@@ -351,9 +362,6 @@ export default function useGamepad() {
         handleButtonAction(BUTTON_RB);
       }
 
-      const rsX = axes.length > 2 ? axes[2] : 0;
-      const rsY = axes.length > 3 ? axes[3] : 0;
-
       if (Math.abs(rsY) > RIGHT_STICK_DEAD_ZONE) {
         if (!activeScrollTargetRef.current.v) {
           activeScrollTargetRef.current.v = findVerticalScrollTarget();
@@ -384,6 +392,11 @@ export default function useGamepad() {
     }
 
     connectedRef.current = anyConnected;
+
+    if (anyInput && !document.body.classList.contains('gamepad-mode')) {
+      document.body.classList.add('gamepad-mode');
+    }
+
     animFrameRef.current = requestAnimationFrame(pollGamepad);
   }, [navigateFocus, handleButtonAction, startRepeat, stopRepeat]);
 
@@ -391,6 +404,10 @@ export default function useGamepad() {
     animFrameRef.current = requestAnimationFrame(pollGamepad);
 
     const handlePointerMove = (e) => {
+      if (document.body.classList.contains('gamepad-mode')) {
+        document.body.classList.remove('gamepad-mode');
+      }
+
       const activeTag = document.activeElement?.tagName;
       if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
       const target = e.target?.closest?.(FOCUSABLE_SELECTOR);
@@ -403,6 +420,7 @@ export default function useGamepad() {
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
+      document.body.classList.remove('gamepad-mode');
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
         animFrameRef.current = null;

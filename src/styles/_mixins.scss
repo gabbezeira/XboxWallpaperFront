@@ -39,8 +39,8 @@
   transition: all $transition-base;
   outline: none;
 
-  &:focus-visible,
-  &.force-focus {
+  .gamepad-mode &:focus-visible,
+  .gamepad-mode &.force-focus {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
     transform: scale(1.05);

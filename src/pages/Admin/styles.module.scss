@@ -104,7 +104,9 @@
 .navBar {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 $spacing-lg;
+  padding: 6px $spacing-lg;
+  margin-top: -6px;
+  margin-bottom: -6px;
   display: flex;
   gap: 2px;
   overflow-x: auto;
@@ -116,7 +118,7 @@
   }
 
   @include respond-to(md) {
-    padding: 0 $spacing-2xl;
+    padding: 6px $spacing-2xl;
   }
 }
 

@@ -10,8 +10,25 @@ export function AuthProvider({ children }) {
   const isMountedRef = useRef(true);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
+
+  const checkAdminClaim = useCallback(async (firebaseUser, forceRefresh = false) => {
+    if (!firebaseUser) {
+      if (isMountedRef.current) setIsAdmin(false);
+      return false;
+    }
+    try {
+      const tokenResult = await firebaseUser.getIdTokenResult(forceRefresh);
+      const adminStatus = Boolean(tokenResult.claims.admin);
+      if (isMountedRef.current) setIsAdmin(adminStatus);
+      return adminStatus;
+    } catch {
+      if (isMountedRef.current) setIsAdmin(false);
+      return false;
+    }
+  }, []);
 
   const fetchProfile = useCallback(async (firebaseUser) => {
     if (!firebaseUser || !isMountedRef.current) return;
@@ -40,7 +57,10 @@ export function AuthProvider({ children }) {
         const resultUser = await handleAuthRedirectResult();
         if (resultUser && isMountedRef.current) {
           setUser(resultUser);
-          await fetchProfile(resultUser);
+          await Promise.all([
+            fetchProfile(resultUser),
+            checkAdminClaim(resultUser),
+          ]);
         }
       } catch (err) {
         console.error('[Auth] Erro ao capturar resultado do redirect:', err);
@@ -53,9 +73,13 @@ export function AuthProvider({ children }) {
         if (!isMountedRef.current) return;
         setUser(firebaseUser);
         if (firebaseUser) {
-          await fetchProfile(firebaseUser);
+          await Promise.all([
+            fetchProfile(firebaseUser),
+            checkAdminClaim(firebaseUser),
+          ]);
         } else {
           setProfile(null);
+          setIsAdmin(false);
         }
         setLoading(false);
       });
@@ -67,21 +91,27 @@ export function AuthProvider({ children }) {
       isMountedRef.current = false;
       unsubscribe();
     };
-  }, [fetchProfile]);
+  }, [fetchProfile, checkAdminClaim]);
 
   const refreshProfile = useCallback(async () => {
     if (user) await fetchProfile(user);
   }, [user, fetchProfile]);
 
+  const refreshAdminStatus = useCallback(async () => {
+    if (user) await checkAdminClaim(user, true);
+  }, [user, checkAdminClaim]);
+
   const contextValue = useMemo(
     () => ({
       user,
       profile,
+      isAdmin,
       loading,
       authError,
       refreshProfile,
+      refreshAdminStatus,
     }),
-    [user, profile, loading, authError, refreshProfile],
+    [user, profile, isAdmin, loading, authError, refreshProfile, refreshAdminStatus],
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

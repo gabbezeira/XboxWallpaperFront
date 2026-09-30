@@ -6,15 +6,13 @@ import { useAuth } from '../../../hooks/useAuth';
 import styles from './styles.module.scss';
 import logo from '../../../assets/logosvg.svg';
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
-
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, isAdmin, refreshAdminStatus, loading: authLoading } = useAuth();
 
   if (authLoading) {
     return (
@@ -26,22 +24,29 @@ export default function AdminLogin() {
     );
   }
 
-  if (user && user.email === ADMIN_EMAIL) {
+  if (user && isAdmin) {
     return <Navigate to="/adminpanel" replace />;
   }
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (email.toLowerCase() !== ADMIN_EMAIL) {
-      setError('Acesso negado. Credenciais inválidas.');
-      return;
-    }
-
     setLoading(true);
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const tokenResult = await userCredential.user.getIdTokenResult(true);
+
+      if (!tokenResult.claims.admin) {
+        await auth.signOut();
+        setError('Acesso negado. Esta conta não possui privilégios de administrador.');
+        return;
+      }
+
+      if (refreshAdminStatus) {
+        await refreshAdminStatus();
+      }
+
       navigate('/adminpanel', { replace: true });
     } catch (err) {
       setError('Falha ao autenticar. Verifique seus dados.');

@@ -7,7 +7,7 @@ export default function QuotaBar() {
   if (!profile) return null;
 
   const imageCount = profile.imageCount || 0;
-  const maxImages = Math.max(10, profile.maxImages || 10);
+  const maxImages = profile.maxImages || 8;
   const percentage = (imageCount / maxImages) * 100;
 
   let state = 'normal';

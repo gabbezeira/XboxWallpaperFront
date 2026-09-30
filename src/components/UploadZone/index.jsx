@@ -20,7 +20,7 @@ export default function UploadZone({ onUploadComplete }) {
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const inputRef = useRef(null);
 
-  const userMaxImages = Math.max(10, profile?.maxImages || 10);
+  const userMaxImages = profile?.maxImages || 8;
   const isQuotaFull = profile && (profile.imageCount || 0) >= userMaxImages;
 
   const handleSelectFile = (file) => {

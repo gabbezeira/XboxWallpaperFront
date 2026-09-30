@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
       if (isMountedRef.current) {
         setProfile({
           ...data,
-          maxImages: Math.max(10, data?.maxImages || 10),
+          maxImages: data?.maxImages || 8,
         });
       }
     } catch (error) {

@@ -287,7 +287,7 @@ export default function ManageUsers() {
                       <td>
                         <div className={styles.toolbarActions}>
                           <span title="Wallpapers / Cota" className={styles.statPill}>
-                            <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
+                            <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 8}
                           </span>
                           <span title="Favoritos Recebidos" className={styles.statPill}>
                             <Heart size={12} /> {u.totalFavoritesReceived || 0}
@@ -402,7 +402,7 @@ export default function ManageUsers() {
                     </button>
 
                     <span className={styles.statPill}>
-                      <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 10}
+                      <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 8}
                     </span>
                     <span className={styles.statPill}>
                       <Heart size={12} /> {u.totalFavoritesReceived || 0}

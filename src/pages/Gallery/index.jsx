@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
@@ -8,81 +9,10 @@ import {
   Search,
   X,
   SlidersHorizontal,
-  Flame,
-  Clock,
   Tag,
   ImageOff,
 } from 'lucide-react';
 import styles from './styles.module.scss';
-
-const TAXONOMY_GROUPS = [
-  { id: 'all', label: 'Todos' },
-  { id: 'games', label: '🎮 Jogos' },
-  { id: 'styles', label: '🎨 Estilos de Arte' },
-  { id: 'themes', label: '🌌 Temas & Paisagens' },
-  { id: 'popular', label: '🔥 Em Alta' },
-];
-
-const KNOWN_GAME_KEYWORDS = [
-  'halo',
-  'forza',
-  'gears',
-  'minecraft',
-  'starfield',
-  'sea of thieves',
-  'cyberpunk',
-  'elden ring',
-  'grounded',
-  'redfall',
-  'hi-fi rush',
-  'hellblade',
-  'doom',
-  'fallout',
-  'skyrim',
-  'witcher',
-  'gta',
-  'assassin',
-  'cod',
-  'battlefield',
-  'fifa',
-  'apex',
-];
-
-const KNOWN_STYLE_KEYWORDS = [
-  'minimal',
-  'dark',
-  'oled',
-  'abstract',
-  'neon',
-  'retro',
-  'cyberpunk',
-  'anime',
-  '3d',
-  'vector',
-  'pixel',
-  'vaporwave',
-  'glitch',
-  'synthwave',
-  'art',
-  '4k',
-];
-
-const KNOWN_THEME_KEYWORDS = [
-  'nature',
-  'space',
-  'landscape',
-  'galaxy',
-  'sci-fi',
-  'fantasy',
-  'cars',
-  'city',
-  'mountains',
-  'ocean',
-  'sunset',
-  'night',
-  'forest',
-  'sky',
-];
 
 export default function Gallery() {
   const navigate = useNavigate();
@@ -92,9 +22,7 @@ export default function Gallery() {
   const currentSort = searchParams.get('sort') || 'recent';
   const page = parseInt(searchParams.get('page'), 10) || 1;
 
-  const [activeGroup, setActiveGroup] = useState('all');
   const [availableTags, setAvailableTags] = useState([]);
-  const [availableGames, setAvailableGames] = useState([]);
   const [wallpapers, setWallpapers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
@@ -105,13 +33,46 @@ export default function Gallery() {
   const [tagSearchQuery, setTagSearchQuery] = useState('');
 
   useEffect(() => {
+    if (tagModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [tagModalOpen]);
+
+  useEffect(() => {
+    if (!tagModalOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setTagModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [tagModalOpen]);
+
+  const handleOpenModal = () => {
+    setTagSearchQuery('');
+    setTagModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setTagSearchQuery('');
+    setTagModalOpen(false);
+  };
+
+  useEffect(() => {
     let isMounted = true;
     api.wallpapers
       .tags()
       .then((res) => {
         if (!isMounted || !res) return;
         setAvailableTags(res.tags || []);
-        setAvailableGames(res.games || []);
       })
       .catch(() => {});
 
@@ -157,41 +118,8 @@ export default function Gallery() {
   }, [q]);
 
   const displayedChips = useMemo(() => {
-    if (!availableTags.length) return [];
-
-    if (activeGroup === 'games') {
-      const gameMatches = availableTags.filter((t) => {
-        const lower = t.name.toLowerCase();
-        return (
-          KNOWN_GAME_KEYWORDS.some((k) => lower.includes(k)) ||
-          availableGames.some((g) => g.name.toLowerCase().includes(lower))
-        );
-      });
-      return gameMatches.slice(0, 14);
-    }
-
-    if (activeGroup === 'styles') {
-      const styleMatches = availableTags.filter((t) => {
-        const lower = t.name.toLowerCase();
-        return KNOWN_STYLE_KEYWORDS.some((k) => lower.includes(k));
-      });
-      return styleMatches.slice(0, 14);
-    }
-
-    if (activeGroup === 'themes') {
-      const themeMatches = availableTags.filter((t) => {
-        const lower = t.name.toLowerCase();
-        return KNOWN_THEME_KEYWORDS.some((k) => lower.includes(k));
-      });
-      return themeMatches.slice(0, 14);
-    }
-
-    if (activeGroup === 'popular') {
-      return [...availableTags].sort((a, b) => b.count - a.count).slice(0, 14);
-    }
-
-    return availableTags.slice(0, 12);
-  }, [activeGroup, availableTags, availableGames]);
+    return availableTags.slice(0, 30);
+  }, [availableTags]);
 
   const modalFilteredTags = useMemo(() => {
     if (!tagSearchQuery.trim()) return availableTags;
@@ -203,9 +131,16 @@ export default function Gallery() {
     navigate(`/wallpaper/${wallpaper.id}`, { state: { wallpaper } });
   };
 
+  const handleSelectAll = () => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('tag');
+    newParams.set('page', '1');
+    setSearchParams(newParams);
+  };
+
   const handleTagSelect = (tagToSet) => {
     const newParams = new URLSearchParams(searchParams);
-    if (activeTag === tagToSet) {
+    if (activeTag.toLowerCase() === tagToSet.toLowerCase()) {
       newParams.delete('tag');
     } else {
       newParams.set('tag', tagToSet);
@@ -281,42 +216,42 @@ export default function Gallery() {
         </div>
 
         <div className={styles.filtersSection}>
-          <div className={styles.taxonomyBar}>
-            <div className={styles.taxonomyTabs} role="tablist">
-              {TAXONOMY_GROUPS.map((grp) => (
-                <button
-                  key={grp.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeGroup === grp.id}
-                  className={`${styles.taxonomyBtn} ${activeGroup === grp.id ? styles.active : ''}`}
-                  onClick={() => setActiveGroup(grp.id)}
-                >
-                  {grp.label}
-                </button>
-              ))}
-            </div>
-
-            <div className={styles.sortControls}>
+          <div className={styles.firstLineBar}>
+            <div className={styles.firstLineActions}>
               <button
                 type="button"
-                className={`${styles.sortBtn} ${currentSort !== 'popular' ? styles.active : ''}`}
-                onClick={() => handleSortToggle('recent')}
-                title="Mais Recentes"
+                className={`${styles.filterPillBtn} ${!activeTag ? styles.active : ''}`}
+                onClick={handleSelectAll}
               >
-                <Clock size={13} />
+                <span>Todos</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.filterPillBtn} ${currentSort !== 'popular' ? styles.active : ''}`}
+                onClick={() => handleSortToggle('recent')}
+              >
                 <span>Recentes</span>
               </button>
+
               <button
                 type="button"
-                className={`${styles.sortBtn} ${currentSort === 'popular' ? styles.active : ''}`}
+                className={`${styles.filterPillBtn} ${currentSort === 'popular' ? styles.active : ''}`}
                 onClick={() => handleSortToggle('popular')}
-                title="Mais Populares"
               >
-                <Flame size={13} />
                 <span>Populares</span>
               </button>
             </div>
+
+            <button
+              type="button"
+              className={styles.btnOpenModal}
+              onClick={handleOpenModal}
+              title="Filtrar por tags"
+            >
+              <SlidersHorizontal size={14} />
+              <span>Filtrar</span>
+            </button>
           </div>
 
           <div className={styles.chipsContainer}>
@@ -334,17 +269,6 @@ export default function Gallery() {
                 </button>
               );
             })}
-
-            {availableTags.length > 8 && (
-              <button
-                type="button"
-                className={styles.btnAllTags}
-                onClick={() => setTagModalOpen(true)}
-              >
-                <SlidersHorizontal size={13} />
-                <span>Ver todas as tags ({availableTags.length})</span>
-              </button>
-            )}
           </div>
 
           {hasActiveFilters && (
@@ -413,7 +337,12 @@ export default function Gallery() {
           <Loader text="Buscando wallpapers..." />
         ) : wallpapers.length > 0 ? (
           <>
-            <WallpaperGrid wallpapers={wallpapers} onView={handleViewDetails} />
+            <WallpaperGrid
+              wallpapers={wallpapers}
+              onView={handleViewDetails}
+              maxColumns={6}
+            />
+
             <Pagination
               currentPage={page}
               totalPages={totalPages}
@@ -437,80 +366,113 @@ export default function Gallery() {
         )}
       </div>
 
-      {tagModalOpen && (
-        <div
-          className={styles.tagModalOverlay}
-          onClick={() => setTagModalOpen(false)}
-        >
+      {tagModalOpen &&
+        createPortal(
           <div
-            className={styles.tagModalContent}
-            onClick={(e) => e.stopPropagation()}
+            className={styles.modalOverlay}
+            onClick={handleCloseModal}
           >
-            <div className={styles.tagModalHeader}>
-              <div className={styles.titleArea}>
-                <h3 className={styles.tagModalTitle}>Todas as Tags & Categorias</h3>
-                <span className={styles.subtitle}>
-                  Selecione uma tag para filtrar os wallpapers
-                </span>
-              </div>
+            <div
+              className={styles.modalCard}
+              role="dialog"
+              aria-modal="true"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
                 type="button"
-                className={styles.tagModalClose}
-                onClick={() => setTagModalOpen(false)}
-                aria-label="Fechar modal"
+                className={styles.modalCloseBtn}
+                onClick={handleCloseModal}
+                aria-label="Fechar"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
-            </div>
 
-            <div className={styles.tagModalSearchWrapper}>
-              <div className={styles.tagModalSearchInput}>
-                <Search size={16} className={styles.searchIcon} />
-                <input
-                  type="text"
-                  placeholder="Pesquisar entre todas as tags..."
-                  value={tagSearchQuery}
-                  onChange={(e) => setTagSearchQuery(e.target.value)}
-                  autoFocus
-                />
-                {tagSearchQuery && (
-                  <button
-                    type="button"
-                    className={styles.tagModalClose}
-                    onClick={() => setTagSearchQuery('')}
-                  >
-                    <X size={14} />
-                  </button>
+              <div className={styles.modalHeader}>
+                <h2 className={styles.modalTitle}>Filtrar por Tags</h2>
+                <p className={styles.modalSubtitle}>
+                  Selecione uma tag para refinar os wallpapers
+                </p>
+              </div>
+
+              <div className={styles.modalSearchArea}>
+                <div className={styles.modalSearchInput}>
+                  <Search size={16} />
+                  <input
+                    type="text"
+                    placeholder="Pesquisar tags..."
+                    value={tagSearchQuery}
+                    onChange={(e) => setTagSearchQuery(e.target.value)}
+                    autoFocus
+                  />
+                  {tagSearchQuery && (
+                    <button
+                      type="button"
+                      className={styles.modalClearSearchBtn}
+                      onClick={() => setTagSearchQuery('')}
+                      aria-label="Limpar pesquisa"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className={styles.modalTagsBody}>
+                {modalFilteredTags.length === 0 ? (
+                  <div className={styles.modalEmpty}>
+                    <p>Nenhuma tag encontrada para &quot;{tagSearchQuery}&quot;</p>
+                  </div>
+                ) : (
+                  modalFilteredTags.map((t) => {
+                    const isSelected = activeTag.toLowerCase() === t.name.toLowerCase();
+                    return (
+                      <button
+                        key={t.name}
+                        type="button"
+                        className={`${styles.modalTagChip} ${isSelected ? styles.active : ''}`}
+                        onClick={() => handleTagSelect(t.name)}
+                      >
+                        <Tag size={12} />
+                        <span>{t.name}</span>
+                        <span className={styles.modalTagCount}>{t.count}</span>
+                      </button>
+                    );
+                  })
                 )}
               </div>
-            </div>
 
-            <div className={styles.tagModalBody}>
-              {modalFilteredTags.length === 0 ? (
-                <div className={styles.empty}>
-                  <p>Nenhuma tag encontrada para &quot;{tagSearchQuery}&quot;</p>
+              <div className={styles.modalFooter}>
+                <div className={styles.modalFooterMeta}>
+                  {activeTag ? (
+                    <span>Tag ativa: <strong>{activeTag}</strong></span>
+                  ) : (
+                    <span>{availableTags.length} tags disponíveis</span>
+                  )}
                 </div>
-              ) : (
-                modalFilteredTags.map((t) => {
-                  const isSelected = activeTag.toLowerCase() === t.name.toLowerCase();
-                  return (
+
+                <div className={styles.modalFooterActions}>
+                  {activeTag && (
                     <button
-                      key={t.name}
                       type="button"
-                      className={`${styles.tagChip} ${isSelected ? styles.active : ''}`}
-                      onClick={() => handleTagSelect(t.name)}
+                      className={styles.btnModalClear}
+                      onClick={() => handleTagSelect(activeTag)}
                     >
-                      <Tag size={12} />
-                      <span>{t.name}</span>
-                      <span className={styles.tagCount}>{t.count}</span>
+                      Limpar seleção
                     </button>
-                  );
-                })
-              )}
+                  )}
+                  <button
+                    type="button"
+                    className={styles.btnModalClose}
+                    onClick={handleCloseModal}
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

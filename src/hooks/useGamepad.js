@@ -391,6 +391,8 @@ export default function useGamepad() {
     animFrameRef.current = requestAnimationFrame(pollGamepad);
 
     const handlePointerMove = (e) => {
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
       const target = e.target?.closest?.(FOCUSABLE_SELECTOR);
       if (target && target !== document.activeElement) {
         target.focus({ preventScroll: true });

@@ -46,7 +46,7 @@
   @include gamepad-focus;
 
   &:hover {
-    background-color: lighten($color-bg-tertiary, 5%);
+    background-color: color-mix(in srgb, $color-bg-tertiary, white 5%);
   }
 
   &:focus-visible {

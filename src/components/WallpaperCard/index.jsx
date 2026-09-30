@@ -13,14 +13,21 @@ const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete,
     : `${API_URL}${wallpaper.thumbUrl || wallpaper.storageUrl}`;
 
   return (
-    <button type="button" className={styles.card} onClick={() => onView(wallpaper)}>
+    <div
+      role="button"
+      tabIndex={0}
+      className={styles.card}
+      onClick={() => onView(wallpaper)}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onView(wallpaper)}
+    >
       {!loaded && <div className={styles.skeleton} />}
       <img
         className={`${styles.image} ${loaded ? styles.loaded : ''}`}
         src={thumbSrc}
-        alt="Wallpaper"
+        alt={wallpaper.title || 'Wallpaper'}
         loading="lazy"
         onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)}
       />
 
       <div className={styles.overlay}>
@@ -31,21 +38,20 @@ const WallpaperCard = memo(function WallpaperCard({ wallpaper, onView, onDelete,
         </div>
 
         {showDelete && onDelete && (
-          <div
+          <button
+            type="button"
             className={styles.btnDelete}
             onClick={(e) => {
               e.stopPropagation();
               onDelete(wallpaper);
             }}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && onDelete(wallpaper)}
+            aria-label="Excluir wallpaper"
           >
             <Trash2 size={16} />
-          </div>
+          </button>
         )}
       </div>
-    </button>
+    </div>
   );
 });
 

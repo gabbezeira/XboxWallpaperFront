@@ -123,18 +123,15 @@ export default function Home() {
   return (
     <div className={styles.home}>
       <div className={styles.backgroundGlow}>
-        {heroSlides.map((banner, index) => {
-          const imageUrl = heroSlideImageUrl(banner);
-          return (
-            <img
-              key={`glow-${banner.id}`}
-              src={imageUrl}
-              alt=""
-              className={`${styles.glowImage} ${index === activeBanner ? styles.active : ''}`}
-              aria-hidden="true"
-            />
-          );
-        })}
+        {currentBanner?.imageUrl && (
+          <img
+            key={`glow-${currentBanner.id}`}
+            src={heroSlideImageUrl(currentBanner)}
+            alt=""
+            className={`${styles.glowImage} ${styles.active}`}
+            aria-hidden="true"
+          />
+        )}
       </div>
 
       <section className={styles.hero}>

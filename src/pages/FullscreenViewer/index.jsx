@@ -1,16 +1,20 @@
 import { useEffect, useState, useMemo } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { useLocation, useNavigate, Navigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { api } from '../../services/api';
+import Loader from '../../components/Loader';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
 export default function FullscreenViewer() {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
-  const wallpaper = location.state?.wallpaper;
+  const [wallpaper, setWallpaper] = useState(location.state?.wallpaper || null);
+  const [loading, setLoading] = useState(!location.state?.wallpaper);
   const [mediaToken, setMediaToken] = useState(null);
 
   useEffect(() => {
@@ -20,6 +24,29 @@ export default function FullscreenViewer() {
     document.addEventListener('keydown', handleEsc);
     return () => document.removeEventListener('keydown', handleEsc);
   }, [navigate]);
+
+  useEffect(() => {
+    if (wallpaper) return;
+    if (!id) return;
+    let cancelled = false;
+    api.wallpapers
+      .getById(id)
+      .then((data) => {
+        if (!cancelled) {
+          setWallpaper(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLoading(false);
+          navigate('/', { replace: true });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, wallpaper, navigate]);
 
   useEffect(() => {
     if (!authUser || !wallpaper?.id) {
@@ -53,8 +80,16 @@ export default function FullscreenViewer() {
     return path;
   }, [wallpaper, authUser?.uid, mediaToken]);
 
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <Loader />
+      </div>
+    );
+  }
+
   if (!wallpaper) {
-    return <Navigate to="/" replace />;
+    return null;
   }
 
   return (

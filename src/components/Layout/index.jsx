@@ -10,7 +10,7 @@ import styles from './styles.module.scss';
 const MOBILE_MAX = 768;
 const RESIZE_THROTTLE_MS = 120;
 
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logosvg.svg';
 
 export default function Layout({ children, onLoginClick }) {
   const { user } = useAuth();

@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../services/firebase';
 import { useAuth } from '../../../hooks/useAuth';
 import styles from './styles.module.scss';
-import logo from '../../../assets/logo.png';
+import logo from '../../../assets/logosvg.svg';
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 

@@ -4,7 +4,7 @@ import { signInWithMicrosoft, signInWithEmail, signUpWithEmail } from '../../ser
 import { useAuth } from '../../hooks/useAuth';
 import { isXboxConsole } from '../../utils/device';
 import DeviceAuth from '../DeviceAuth';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logosvg.svg';
 import styles from './styles.module.scss';
 
 export default function AuthModal({ onClose }) {

@@ -67,8 +67,27 @@ export default function Terms() {
             <img src={avatar} alt="Gabriel Alves" className={styles.authorAvatar} />
             <div className={styles.authorInfo}>
               <span className={styles.authorName}>Gabriel Alves</span>
-              <span className={styles.authorHandle}>@gabbezeira</span>
-              <span className={styles.authorRole}>Desenvolvedor & Criador do projeto</span>
+              <a
+                href="https://x.com/Gabbezeira"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.authorSocialLink}
+                title="Perfil no X (@Gabbezeira)"
+                tabIndex={0}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="13"
+                  height="13"
+                  fill="currentColor"
+                  className={styles.xIcon}
+                  aria-hidden="true"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+                <span className={styles.authorHandle}>@Gabbezeira</span>
+              </a>
+              <span className={styles.authorRole}>Desenvolvedor &amp; Criador do projeto</span>
             </div>
           </div>
 

@@ -153,9 +153,34 @@
   color: $color-text-primary;
 }
 
+.authorSocialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  color: $color-primary;
+  text-decoration: none;
+  font-size: $fs-body;
+  font-weight: $fw-medium;
+  border-radius: $radius-sm;
+  transition: color $transition-fast;
+  @include gamepad-focus;
+
+  &:hover {
+    color: $color-primary-hover;
+  }
+}
+
+.xIcon {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
 .authorHandle {
   font-size: $fs-body;
-  color: $color-primary;
+  color: inherit;
   font-weight: $fw-medium;
 }
 

@@ -8,6 +8,8 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { formatFileSize } from '../../utils/format.js';
+import { auth } from '../../services/firebase';
+import Pagination from '../../components/Pagination';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -21,13 +23,43 @@ const REJECTION_REASONS = [
   'Outro',
 ];
 
-function formatResolution(width, height) {
-  if (!width || !height) return '';
-  if (width >= 3840) return '4K';
-  if (width >= 2560) return '2K';
-  if (width >= 1920) return '1080p';
-  return `${width}×${height}`;
-}
+const ModerationImage = ({ src, alt }) => {
+  const [blobUrl, setBlobUrl] = useState(null);
+  const [imgLoading, setImgLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const fetchImage = async () => {
+      try {
+        setImgLoading(true);
+        const token = await auth.currentUser?.getIdToken();
+        const res = await fetch(src, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error('Fetch failed');
+        const blob = await res.blob();
+        if (active) {
+          setBlobUrl(URL.createObjectURL(blob));
+          setError(false);
+        }
+      } catch (err) {
+        if (active) setError(true);
+      } finally {
+        if (active) setImgLoading(false);
+      }
+    };
+    fetchImage();
+    return () => {
+      active = false;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
+  }, [src]);
+
+  if (imgLoading) return <div className={styles.modImagePlaceholder} />;
+  if (error) return <div className={styles.modImageError}>Erro ao carregar imagem</div>;
+  return <img src={blobUrl} alt={alt} className={styles.modImage} />;
+};
 
 export default function ModerationQueue({ onApprovedCountChange }) {
   const [wallpapers, setWallpapers] = useState([]);
@@ -40,6 +72,9 @@ export default function ModerationQueue({ onApprovedCountChange }) {
   const [selectedReason, setSelectedReason] = useState(REJECTION_REASONS[0]);
   const [customReason, setCustomReason] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   const fetchQueue = async () => {
     try {
@@ -61,6 +96,7 @@ export default function ModerationQueue({ onApprovedCountChange }) {
   };
 
   useEffect(() => {
+    setCurrentPage(1);
     fetchQueue();
   }, []);
 
@@ -129,6 +165,12 @@ export default function ModerationQueue({ onApprovedCountChange }) {
     );
   }
 
+  const totalPages = Math.ceil(wallpapers.length / itemsPerPage);
+  const paginatedWallpapers = wallpapers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div className={styles.viewContainer}>
       <div className={styles.sectionHeader}>
@@ -147,18 +189,16 @@ export default function ModerationQueue({ onApprovedCountChange }) {
       </div>
 
       <div className={styles.moderationGrid}>
-        {wallpapers.map((w) => {
+        {paginatedWallpapers.map((w) => {
           const raw = w.thumbUrl || w.storageUrl || '';
           const thumbUrl = raw.startsWith('http')
             ? raw
             : `${API_URL}${raw.includes('thumb=true') ? raw : `${raw}${raw.includes('?') ? '&' : '?'}thumb=true`}`;
-          const resLabel = formatResolution(w.width, w.height);
 
           return (
             <div key={w.id} className={styles.moderationCard}>
               <div className={styles.modImageWrapper}>
-                <img src={thumbUrl} alt={w.title} className={styles.modImage} loading="lazy" />
-                {resLabel && <span className={styles.modResolutionBadge}>{resLabel}</span>}
+                <ModerationImage src={thumbUrl} alt={w.title} />
               </div>
 
               <div className={styles.modCardBody}>
@@ -233,6 +273,14 @@ export default function ModerationQueue({ onApprovedCountChange }) {
           );
         })}
       </div>
+      
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
 
       {rejectModalOpen && (
         <div

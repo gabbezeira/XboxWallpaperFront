@@ -11,8 +11,6 @@ const MOBILE_MAX = 768;
 const RESIZE_THROTTLE_MS = 120;
 const HIDE_SEARCH_ROUTES = ['/upload', '/my-wallpapers', '/favorites', '/my-collection'];
 
-import logo from '../../assets/logosvg.svg';
-
 export default function Layout({ children, onLoginClick }) {
   const { user } = useAuth();
   const location = useLocation();

@@ -55,7 +55,9 @@ export default function Admin() {
         collectionsCount: colsList?.length || 0,
         creatorsCount: verifiedCount,
       });
-    } catch {}
+    } catch (err) {
+      void err;
+    }
   };
 
   useEffect(() => {

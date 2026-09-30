@@ -26,7 +26,9 @@ export default function Collection() {
             setWallpapers(colRes.wallpapers || []);
             return;
           }
-        } catch {}
+        } catch (err) {
+          void err;
+        }
 
         const response = await api.wallpapers.list({ tag, page: 1, limit: 100 });
         if (isMounted) {

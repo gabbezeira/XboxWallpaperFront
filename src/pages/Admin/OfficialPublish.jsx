@@ -8,8 +8,6 @@ import {
   X,
   Check,
   AlertCircle,
-  Plus,
-  Trash2,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 

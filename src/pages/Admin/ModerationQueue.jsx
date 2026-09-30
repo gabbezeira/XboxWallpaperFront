@@ -4,12 +4,8 @@ import Loader from '../../components/Loader';
 import {
   Check,
   X,
-  Clock,
-  Layers,
-  Calendar,
   ShieldCheck,
   RefreshCw,
-  HardDrive,
 } from 'lucide-react';
 import { formatFileSize } from '../../utils/format.js';
 import styles from './styles.module.scss';

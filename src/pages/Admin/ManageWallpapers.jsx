@@ -4,13 +4,11 @@ import Loader from '../../components/Loader';
 import {
   Trash2,
   ChevronDown,
-  Check,
   CheckSquare,
   Square,
   X,
   Search,
   Tag,
-  AlertTriangle,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 

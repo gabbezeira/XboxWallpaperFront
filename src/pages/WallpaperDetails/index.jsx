@@ -19,6 +19,15 @@ function formatResolution(width, height) {
   return `${width}×${height}`;
 }
 
+const TIER_LABELS = {
+  spartan: 'SPARTAN ULTIMATE',
+  elite: 'ELITE',
+  veterano: 'VETERANO',
+  criador: 'CRIADOR',
+  explorador: 'EXPLORADOR',
+  recruta: 'RECRUTA',
+};
+
 function getUserLevel(favoritesCount = 0) {
   if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN ULTIMATE' };
   if (favoritesCount >= 100) return { key: 'elite', label: 'ELITE' };
@@ -41,6 +50,7 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
 
   const isOwn = Boolean(authUser?.uid) && wallpaper.userId === authUser.uid;
   if (isOwn) {
+    const tierKey = wallpaper.authorTier || getUserLevel(profile?.totalFavoritesReceived || 0).key;
     return {
       label:
         wallpaper.authorName ||
@@ -50,15 +60,16 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
         'Usuário',
       photo: wallpaper.authorPhoto || profile?.photoURL || authUser?.photoURL || null,
       isVerified: Boolean(wallpaper.isVerified ?? profile?.isVerified),
-      tier: getUserLevel(profile?.totalFavoritesReceived || 0),
+      tier: { key: tierKey, label: TIER_LABELS[tierKey] || 'RECRUTA' },
     };
   }
 
+  const tierKey = wallpaper.authorTier || 'recruta';
   return {
     label: wallpaper.authorName || 'Comunidade Xbox',
     photo: wallpaper.authorPhoto || null,
     isVerified: Boolean(wallpaper.isVerified),
-    tier: getUserLevel(wallpaper.authorFavoritesReceived || 0),
+    tier: { key: tierKey, label: TIER_LABELS[tierKey] || 'RECRUTA' },
   };
 }
 

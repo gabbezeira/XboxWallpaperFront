@@ -1,49 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { UploadCloud, Ban, X, Lock, Globe, Layers, Plus } from 'lucide-react';
-import { useUpload } from '../../hooks/useUpload';
+import { Ban, Globe, Layers, Lock, Plus, UploadCloud, X } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { api } from '../../services/api';
+import { useUpload } from '../../hooks/useUpload';
 import styles from './styles.module.scss';
-
-const SUGGESTED_GAMES = [
-  'Halo Infinite',
-  'Forza Horizon 5',
-  'Gears 5',
-  'Minecraft',
-  'Starfield',
-  'Sea of Thieves',
-  'Cyberpunk 2077',
-  'Elden Ring',
-  'Grounded',
-  'Redfall',
-  'Hi-Fi RUSH',
-  'Hellblade II',
-];
-
-const DEFAULT_EXISTING_TAGS = [
-  'Halo',
-  'Forza',
-  'Gears',
-  'Minecraft',
-  'Starfield',
-  'Sea of Thieves',
-  'Cyberpunk 2077',
-  'Elden Ring',
-  'Hi-Fi RUSH',
-  'Hellblade II',
-  'Dark',
-  'Abstract',
-  'Nature',
-  'Minimal',
-  'Retro',
-  'Neon',
-  'Space',
-  'Sci-Fi',
-  'Landscape',
-  'Anime',
-  '4K',
-  'OLED',
-];
 
 export default function UploadZone({ onUploadComplete }) {
   const { upload, uploading, progress, error } = useUpload();
@@ -58,33 +17,11 @@ export default function UploadZone({ onUploadComplete }) {
   const [tagInput, setTagInput] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [addToCollection, setAddToCollection] = useState(false);
-  const [existingTags, setExistingTags] = useState(DEFAULT_EXISTING_TAGS);
-
-  const [showGameSuggestions, setShowGameSuggestions] = useState(false);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const inputRef = useRef(null);
 
   const userMaxImages = Math.max(10, profile?.maxImages || 10);
   const isQuotaFull = profile && (profile.imageCount || 0) >= userMaxImages;
-
-  useEffect(() => {
-    let isMounted = true;
-    api.collections
-      .list()
-      .then((colls) => {
-        if (!isMounted || !Array.isArray(colls)) return;
-        const tagSet = new Set(DEFAULT_EXISTING_TAGS);
-        colls.forEach((c) => {
-          if (c.title) tagSet.add(c.title);
-          if (c.slug) tagSet.add(c.slug);
-        });
-        setExistingTags(Array.from(tagSet));
-      })
-      .catch(() => { });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const handleSelectFile = (file) => {
     setLocalError(null);
@@ -114,7 +51,8 @@ export default function UploadZone({ onUploadComplete }) {
         game: game || null,
         tags,
         isPublic,
-        collectionId: addToCollection && profile?.assignedCollectionId ? profile.assignedCollectionId : null,
+        collectionId:
+          addToCollection && profile?.assignedCollectionId ? profile.assignedCollectionId : null,
       });
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -144,16 +82,9 @@ export default function UploadZone({ onUploadComplete }) {
     const cleaned = tag.trim();
     if (cleaned && !tags.includes(cleaned) && tags.length < 5) {
       setTags((prev) => [...prev, cleaned]);
-      setExistingTags((prev) => (prev.includes(cleaned) ? prev : [...prev, cleaned]));
     }
     setTagInput('');
     setShowTagSuggestions(false);
-  };
-
-  const handleGameSelect = (selectedGame) => {
-    setGame(selectedGame);
-    setShowGameSuggestions(false);
-    addTag(selectedGame);
   };
 
   const removeTag = (tag) => {
@@ -176,15 +107,8 @@ export default function UploadZone({ onUploadComplete }) {
     }
   };
 
-  const filteredGames = SUGGESTED_GAMES.filter((g) => g.toLowerCase().includes(game.toLowerCase()));
   const trimmedTag = tagInput.trim();
-  const filteredTags = existingTags.filter(
-    (t) => t.toLowerCase().includes(trimmedTag.toLowerCase()) && !tags.includes(t),
-  );
-  const exactMatchExists = existingTags.some(
-    (t) => t.toLowerCase() === trimmedTag.toLowerCase(),
-  );
-  const canCreateTag = trimmedTag.length > 0 && !exactMatchExists && !tags.includes(trimmedTag);
+  const canCreateTag = trimmedTag.length > 0 && !tags.includes(trimmedTag) && tags.length < 5;
 
   if (uploading) {
     return (
@@ -216,27 +140,9 @@ export default function UploadZone({ onUploadComplete }) {
                 type="text"
                 placeholder="Jogo (ex: Halo Infinite)"
                 value={game}
-                onChange={(e) => {
-                  setGame(e.target.value);
-                  setShowGameSuggestions(true);
-                }}
-                onFocus={() => setShowGameSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowGameSuggestions(false), 200)}
+                onChange={(e) => setGame(e.target.value)}
                 className={styles.fieldInput}
               />
-              {showGameSuggestions && filteredGames.length > 0 && (
-                <div className={styles.dropdownList}>
-                  {filteredGames.map((g) => (
-                    <button
-                      key={g}
-                      className={styles.dropdownItem}
-                      onClick={() => handleGameSelect(g)}
-                    >
-                      {g}
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
 
             <div className={styles.tagSection}>
@@ -258,35 +164,24 @@ export default function UploadZone({ onUploadComplete }) {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (tagInput.trim()) {
-                        addTag(tagInput.trim());
+                      if (canCreateTag) {
+                        addTag(trimmedTag);
                       }
                     }
                   }}
                   className={styles.fieldInput}
                 />
-                {showTagSuggestions && trimmedTag.length > 0 && (filteredTags.length > 0 || canCreateTag) && (
+                {showTagSuggestions && canCreateTag && (
                   <div className={styles.dropdownList}>
-                    {filteredTags.map((t) => (
-                      <button
-                        key={t}
-                        type="button"
-                        className={styles.dropdownItem}
-                        onClick={() => addTag(t)}
-                      >
-                        {t}
-                      </button>
-                    ))}
-                    {canCreateTag && (
-                      <button
-                        type="button"
-                        className={`${styles.dropdownItem} ${styles.dropdownCreateItem}`}
-                        onClick={() => addTag(trimmedTag)}
-                      >
-                        <Plus size={14} />
-                        <span>Criar tag &quot;{trimmedTag}&quot;</span>
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className={`${styles.dropdownItem} ${styles.dropdownCreateItem}`}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => addTag(trimmedTag)}
+                    >
+                      <Plus size={14} />
+                      <span>Criar tag &quot;{trimmedTag}&quot;</span>
+                    </button>
                   </div>
                 )}
               </div>

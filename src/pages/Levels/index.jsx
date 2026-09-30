@@ -1,21 +1,21 @@
-import {
-  ArrowRight,
-  Award,
-  Check,
-  CheckCircle2,
-  Compass,
-  Crown,
-  Heart,
-  Info,
-  Layers,
-  Medal,
-  Shield,
-  ShieldAlert,
-  Sparkles,
-  Trophy,
-  UploadCloud,
-} from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {
+  Shield,
+  Compass,
+  Sparkles,
+  Medal,
+  Crown,
+  Trophy,
+  Heart,
+  UploadCloud,
+  CheckCircle2,
+  Layers,
+  Award,
+  ArrowRight,
+  Info,
+  ShieldAlert,
+  Check,
+} from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './styles.module.scss';
@@ -147,9 +147,8 @@ export default function Levels() {
           </div>
           <h1 className={styles.title}>Níveis e Badges</h1>
           <p className={styles.subtitle}>
-            Descubra como evoluir sua patente na comunidade Spartan Wallpapers, conquistar novos
-            selos exclusivos e transformar suas criações em destaque nos consoles Xbox de todo o
-            mundo.
+            Descubra como evoluir sua patente na comunidade Spartan Wallpapers, conquistar novos selos
+            exclusivos e transformar suas criações em destaque nos consoles Xbox de todo o mundo.
           </p>
           <div className={styles.divider} />
         </header>
@@ -209,8 +208,7 @@ export default function Levels() {
                       Próxima patente: <strong>{nextTier.name}</strong>
                     </span>
                     <span className={styles.progressRemaining}>
-                      Faltam <strong>{remainingFavs}</strong>{' '}
-                      {remainingFavs === 1 ? 'favorito' : 'favoritos'}
+                      Faltam <strong>{remainingFavs}</strong> {remainingFavs === 1 ? 'favorito' : 'favoritos'}
                     </span>
                   </div>
                   <progress
@@ -235,8 +233,7 @@ export default function Levels() {
             <div className={styles.guestContent}>
               <h2 className={styles.guestTitle}>Acompanhe Sua Jornada</h2>
               <p className={styles.guestText}>
-                Faça login para acompanhar sua contagem de favoritos recebidos, visualizar seu nível
-                atual em tempo real e ver quantos pontos faltam para alcançar a próxima patente.
+                Faça login para acompanhar sua contagem de favoritos recebidos, visualizar seu nível atual em tempo real e ver quantos pontos faltam para alcançar a próxima patente.
               </p>
             </div>
           </section>
@@ -258,8 +255,7 @@ export default function Levels() {
               </div>
               <h3 className={styles.stepTitle}>Envie Wallpapers</h3>
               <p className={styles.stepDesc}>
-                Suba capturas e artes em alta resolução (1080p, 2K ou 4K) em formato JPG, PNG ou
-                WebP através da aba Enviar.
+                Suba capturas e artes em alta resolução (1080p, 2K ou 4K) em formato JPG, PNG ou WebP através da aba Enviar.
               </p>
             </div>
 
@@ -270,8 +266,7 @@ export default function Levels() {
               </div>
               <h3 className={styles.stepTitle}>Solicite Publicação</h3>
               <p className={styles.stepDesc}>
-                Em Meus Wallpapers, solicite a publicação comunitária dos seus envios para que sejam
-                avaliados pela moderação.
+                Em Meus Wallpapers, solicite a publicação comunitária dos seus envios para que sejam avaliados pela moderação.
               </p>
             </div>
 
@@ -282,8 +277,7 @@ export default function Levels() {
               </div>
               <h3 className={styles.stepTitle}>Curadoria &amp; Aprovação</h3>
               <p className={styles.stepDesc}>
-                Nossa equipe analisa a fidelidade visual, ausência de distorções e adequação à tela
-                do console Xbox.
+                Nossa equipe analisa a fidelidade visual, ausência de distorções e adequação à tela do console Xbox.
               </p>
             </div>
 
@@ -294,8 +288,7 @@ export default function Levels() {
               </div>
               <h3 className={styles.stepTitle}>Conquiste Favoritos</h3>
               <p className={styles.stepDesc}>
-                Cada jogador que favoritar seu wallpaper público soma 1 ponto direto à sua contagem
-                global de patente.
+                Cada jogador que favoritar seu wallpaper público soma 1 ponto direto à sua contagem global de patente.
               </p>
             </div>
           </div>
@@ -305,8 +298,7 @@ export default function Levels() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>As 6 Patentes Oficiais</h2>
             <p className={styles.sectionSubtitle}>
-              Conheça todos os estágios de progressão, requisitos de favoritos e privilégios de cada
-              nível.
+              Conheça todos os estágios de progressão, requisitos de favoritos e privilégios de cada nível.
             </p>
           </div>
 
@@ -359,8 +351,7 @@ export default function Levels() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Badges &amp; Reconhecimentos Especiais</h2>
             <p className={styles.sectionSubtitle}>
-              Símbolos de prestígio atribuídos pela administração aos criadores mais dedicados da
-              plataforma.
+              Símbolos de prestígio atribuídos pela administração aos criadores mais dedicados da plataforma.
             </p>
           </div>
 
@@ -372,23 +363,15 @@ export default function Levels() {
               <div className={styles.badgeCardContent}>
                 <h3 className={styles.badgeCardTitle}>Selo de Criador Verificado</h3>
                 <p className={styles.badgeCardDesc}>
-                  O selo de verificação é concedido manualmente pela equipe aos autores que mantêm
-                  um padrão constante de excelência e confiabilidade em seus uploads.
+                  O selo de verificação é concedido manualmente pela equipe aos autores que mantêm um padrão constante de excelência e confiabilidade em seus uploads.
                 </p>
                 <div className={styles.badgeCriteriaBox}>
                   <span className={styles.criteriaTitle}>Critérios de Elegibilidade:</span>
                   <ul className={styles.criteriaList}>
                     <li>Resoluções nativas superiores (Full HD, 2K QHD ou 4K UHD nítidos).</li>
-                    <li>
-                      Composição otimizada para o layout de blocos e relógio da dashboard do Xbox.
-                    </li>
-                    <li>
-                      Ausência de artefatos visuais de baixa qualidade ou marcas d&apos;água
-                      intrusivas.
-                    </li>
-                    <li>
-                      Histórico contínuo de respeito aos Termos de Uso e diretrizes comunitárias.
-                    </li>
+                    <li>Composição otimizada para o layout de blocos e relógio da dashboard do Xbox.</li>
+                    <li>Ausência de artefatos visuais de baixa qualidade ou marcas d&apos;água intrusivas.</li>
+                    <li>Histórico contínuo de respeito aos Termos de Uso e diretrizes comunitárias.</li>
                   </ul>
                 </div>
               </div>
@@ -403,16 +386,13 @@ export default function Levels() {
               <div className={styles.badgeCardContent}>
                 <h3 className={styles.badgeCardTitle}>Criador com Coleção Própria</h3>
                 <p className={styles.badgeCardDesc}>
-                  Artistas, fotógrafos virtuais e curadores temáticos podem ter uma página de
-                  coleção dedicada vinculada ao seu perfil e exibida no catálogo oficial.
+                  Artistas, fotógrafos virtuais e curadores temáticos podem ter uma página de coleção dedicada vinculada ao seu perfil e exibida no catálogo oficial.
                 </p>
                 <div className={styles.badgeCriteriaBox}>
                   <span className={styles.criteriaTitle}>Como Funciona:</span>
                   <ul className={styles.criteriaList}>
                     <li>Atribuído a criadores da patente Criador ou superior.</li>
-                    <li>
-                      Séries temáticas consolidadas (ex: franquias Halo, Forza, Gears, Cyberpunk).
-                    </li>
+                    <li>Séries temáticas consolidadas (ex: franquias Halo, Forza, Gears, Cyberpunk).</li>
                     <li>Acesso à aba Minha Coleção para organização de wallpapers dedicados.</li>
                     <li>Destaque nas trilhas de coleções na página inicial e de exploração.</li>
                   </ul>
@@ -436,9 +416,7 @@ export default function Levels() {
               <div className={styles.ruleCardBody}>
                 <h3 className={styles.ruleTitle}>Proteção Anti-Farm</h3>
                 <p className={styles.ruleText}>
-                  Favoritos concedidos pelo próprio autor às suas próprias imagens não somam pontos
-                  no contador de patente. Apenas favoritos genuínos de outros membros são
-                  contabilizados.
+                  Favoritos concedidos pelo próprio autor às suas próprias imagens não somam pontos no contador de patente. Apenas favoritos genuínos de outros membros são contabilizados.
                 </p>
               </div>
             </div>
@@ -448,9 +426,7 @@ export default function Levels() {
               <div className={styles.ruleCardBody}>
                 <h3 className={styles.ruleTitle}>Padrão de Resolução 16:9</h3>
                 <p className={styles.ruleText}>
-                  Como o Spartan Wallpapers foi desenhado para televisores e monitores de console,
-                  priorizamos a proporção 16:9 para um ajuste visual perfeito sem cortes
-                  indesejados.
+                  Como o Spartan Wallpapers foi desenhado para televisores e monitores de console, priorizamos a proporção 16:9 para um ajuste visual perfeito sem cortes indesejados.
                 </p>
               </div>
             </div>
@@ -460,8 +436,7 @@ export default function Levels() {
               <div className={styles.ruleCardBody}>
                 <h3 className={styles.ruleTitle}>Moderação Comunitária</h3>
                 <p className={styles.ruleText}>
-                  Envios com conteúdo ofensivo, impróprio ou repetido são reprovados na moderação e
-                  podem levar à suspensão do direito de publicar wallpapers públicos.
+                  Envios com conteúdo ofensivo, impróprio ou repetido são reprovados na moderação e podem levar à suspensão do direito de publicar wallpapers públicos.
                 </p>
               </div>
             </div>
@@ -472,8 +447,7 @@ export default function Levels() {
           <div className={styles.actionsInner}>
             <h2 className={styles.actionsTitle}>Pronto para iniciar sua jornada?</h2>
             <p className={styles.actionsDesc}>
-              Compartilhe suas melhores capturas com a comunidade Xbox ou descubra novos papéis de
-              parede para o seu console.
+              Compartilhe suas melhores capturas com a comunidade Xbox ou descubra novos papéis de parede para o seu console.
             </p>
             <div className={styles.actionsButtonGroup}>
               <Link to="/gallery" className={styles.btnPrimary} tabIndex={0}>

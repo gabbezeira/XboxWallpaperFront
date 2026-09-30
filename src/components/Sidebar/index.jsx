@@ -137,9 +137,13 @@ export default function Sidebar({ onLoginClick }) {
                   </button>
                 )}
                 <div className={styles.profileStatsRow}>
-                  <div className={`${styles.badge} ${styles[userLevel.key]}`}>
+                  <Link
+                    to="/levels"
+                    className={`${styles.badge} ${styles[userLevel.key]}`}
+                    title="Ver sistema de níveis e conquistas"
+                  >
                     {userLevel.label}
-                  </div>
+                  </Link>
                   <div className={styles.profileFavBadge} title="Total de Favoritos Recebidos">
                     <Heart size={10} />
                     <span>{profile?.totalFavoritesReceived || 0}</span>
@@ -158,6 +162,9 @@ export default function Sidebar({ onLoginClick }) {
           </button>
         )}
         <div className={styles.sidebarFooter}>
+          <Link to="/levels" className={styles.footerLink}>
+            Níveis &amp; Badges
+          </Link>
           <Link to="/terms" className={styles.footerLink}>
             Termos &amp; Privacidade
           </Link>

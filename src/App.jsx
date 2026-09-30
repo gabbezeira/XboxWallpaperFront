@@ -20,6 +20,7 @@ const WallpaperDetails = lazy(() => import('./pages/WallpaperDetails'));
 const FullscreenViewer = lazy(() => import('./pages/FullscreenViewer'));
 const Collection = lazy(() => import('./pages/Collection'));
 const Terms = lazy(() => import('./pages/Terms'));
+const Levels = lazy(() => import('./pages/Levels'));
 const Admin = lazy(() => import('./pages/Admin'));
 const AdminLogin = lazy(() => import('./pages/Admin/Login'));
 const LinkDevice = lazy(() => import('./pages/LinkDevice'));
@@ -56,6 +57,7 @@ function AppRoutes() {
                   <Route path="/collection/:tag" element={<Collection />} />
                   <Route path="/c/:tag" element={<Collection />} />
                   <Route path="/terms" element={<Terms />} />
+                  <Route path="/levels" element={<Levels />} />
                   <Route
                     path="/favorites"
                     element={

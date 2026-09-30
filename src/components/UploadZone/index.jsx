@@ -80,7 +80,7 @@ export default function UploadZone({ onUploadComplete }) {
         });
         setExistingTags(Array.from(tagSet));
       })
-      .catch(() => {});
+      .catch(() => { });
     return () => {
       isMounted = false;
     };
@@ -314,7 +314,7 @@ export default function UploadZone({ onUploadComplete }) {
                   <Lock size={16} />
                   <div className={styles.visibilityText}>
                     <span className={styles.visibilityTitle}>Privado</span>
-                    <span className={styles.visibilityDesc}>Apenas você vê no console</span>
+                    <span className={styles.visibilityDesc}>Apenas você vê</span>
                   </div>
                 </button>
                 <button

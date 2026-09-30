@@ -9,7 +9,14 @@ import styles from './styles.module.scss';
 
 const MOBILE_MAX = 768;
 const RESIZE_THROTTLE_MS = 120;
-const HIDE_SEARCH_ROUTES = ['/upload', '/my-wallpapers', '/favorites', '/my-collection'];
+const HIDE_SEARCH_ROUTES = [
+  '/upload',
+  '/my-wallpapers',
+  '/favorites',
+  '/my-collection',
+  '/terms',
+  '/levels',
+];
 
 export default function Layout({ children, onLoginClick }) {
   const { user } = useAuth();

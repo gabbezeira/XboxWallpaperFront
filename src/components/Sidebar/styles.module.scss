@@ -195,6 +195,13 @@
   width: fit-content;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity $transition-fast, transform $transition-fast;
+
+  &:hover {
+    opacity: 0.85;
+  }
 
   &.recruta {
     background-color: #27272a;

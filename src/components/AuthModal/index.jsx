@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, QrCode } from 'lucide-react';
+import { X, QrCode, Mail, ArrowLeft } from 'lucide-react';
 import { signInWithMicrosoft, signInWithEmail, signUpWithEmail } from '../../services/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { isXboxConsole } from '../../utils/device';
@@ -8,9 +8,10 @@ import logo from '../../assets/logosvg.svg';
 import styles from './styles.module.scss';
 
 export default function AuthModal({ onClose }) {
-  const { refreshProfile, authError } = useAuth();
+  const { refreshProfile, authError, user } = useAuth();
   const isConsole = isXboxConsole();
-  const [mode, setMode] = useState(isConsole ? 'qrcode' : 'login');
+  const [view, setView] = useState(isConsole ? 'qrcode' : 'main');
+  const [emailMode, setEmailMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -25,18 +26,25 @@ export default function AuthModal({ onClose }) {
     };
   }, []);
 
-  const { user } = useAuth();
   useEffect(() => {
-    if (user) {
-      onClose();
-    }
+    if (user) onClose();
   }, [user, onClose]);
 
   useEffect(() => {
-    if (authError) {
-      setError(authError);
-    }
+    if (authError) setError(authError);
   }, [authError]);
+
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setName('');
+    setError(null);
+  };
+
+  const goBack = () => {
+    resetForm();
+    setView('main');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +52,7 @@ export default function AuthModal({ onClose }) {
     setLoading(true);
 
     try {
-      if (mode === 'login') {
+      if (emailMode === 'login') {
         await signInWithEmail(email, password);
       } else {
         if (!name.trim()) {
@@ -102,6 +110,173 @@ export default function AuthModal({ onClose }) {
     );
   }
 
+  const renderMainView = () => (
+    <>
+      <div className={styles.header}>
+        <img src={logo} alt="Spartan Wallpapers" className={styles.logo} />
+        <h2 className={styles.title}>Entrar</h2>
+        <p className={styles.subtitle}>Escolha como deseja acessar sua conta</p>
+      </div>
+
+      <div className={styles.providerButtons}>
+        <button className={styles.btnQrCode} onClick={() => setView('qrcode')}>
+          <QrCode size={20} />
+          Entrar via QR Code
+        </button>
+
+        <button className={styles.btnMicrosoft} onClick={handleMicrosoft}>
+          <svg width="20" height="20" viewBox="0 0 21 21" focusable="false">
+            <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+            <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+            <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+            <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+          </svg>
+          Continuar com Microsoft
+        </button>
+
+        <button
+          className={styles.btnEmail}
+          onClick={() => {
+            setEmailMode('login');
+            setView('email');
+          }}
+        >
+          <Mail size={20} />
+          Entrar com Email
+        </button>
+      </div>
+
+      <div className={styles.toggle}>
+        Não tem conta?
+        <button
+          onClick={() => {
+            setEmailMode('register');
+            setView('email');
+          }}
+        >
+          Criar conta
+        </button>
+      </div>
+    </>
+  );
+
+  const renderEmailView = () => (
+    <>
+      <div className={styles.headerRow}>
+        <button className={styles.btnBack} onClick={goBack} aria-label="Voltar">
+          <ArrowLeft size={20} />
+        </button>
+        <h2 className={styles.title}>
+          {emailMode === 'login' ? 'Entrar com Email' : 'Criar conta'}
+        </h2>
+      </div>
+
+      {error && <div className={styles.error}>{error}</div>}
+
+      <form className={styles.form} onSubmit={handleSubmit}>
+        {emailMode === 'register' && (
+          <div className={styles.field}>
+            <label className={styles.label}>Nome</label>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Seu nome"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        )}
+
+        <div className={styles.field}>
+          <label className={styles.label}>Email</label>
+          <input
+            className={styles.input}
+            type="email"
+            placeholder="seu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label}>Senha</label>
+          <input
+            className={styles.input}
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+          />
+        </div>
+
+        <button className={styles.btnSubmit} type="submit" disabled={loading}>
+          {loading ? (
+            <span className={styles.btnLoading}>
+              <span className={styles.btnSpinner} />
+              Carregando...
+            </span>
+          ) : emailMode === 'login' ? (
+            'Entrar'
+          ) : (
+            'Criar conta'
+          )}
+        </button>
+      </form>
+
+      <div className={styles.toggle}>
+        {emailMode === 'login' ? (
+          <>
+            Não tem conta?
+            <button
+              onClick={() => {
+                setEmailMode('register');
+                setError(null);
+              }}
+            >
+              Criar conta
+            </button>
+          </>
+        ) : (
+          <>
+            Já tem conta?
+            <button
+              onClick={() => {
+                setEmailMode('login');
+                setError(null);
+              }}
+            >
+              Entrar
+            </button>
+          </>
+        )}
+      </div>
+    </>
+  );
+
+  const renderQrCodeView = () => (
+    <>
+      <div className={styles.headerRow}>
+        {!isConsole && (
+          <button className={styles.btnBack} onClick={goBack} aria-label="Voltar">
+            <ArrowLeft size={20} />
+          </button>
+        )}
+        <h2 className={styles.title}>Conectar via QR Code</h2>
+      </div>
+
+      <DeviceAuth onSuccess={onClose} />
+
+      {!isConsole && (
+        <div className={styles.toggle}>
+          <button onClick={goBack}>Usar outro método</button>
+        </div>
+      )}
+    </>
+  );
+
   return (
     <div className={styles.backdrop} onClick={onClose}>
       <div
@@ -114,142 +289,9 @@ export default function AuthModal({ onClose }) {
           <X size={20} />
         </button>
 
-        <div className={styles.header}>
-          <img src={logo} alt="Xbox" className={styles.logo} />
-          <h2 className={styles.title}>
-            {mode === 'qrcode'
-              ? 'Conectar via Celular'
-              : mode === 'login'
-              ? 'Bem-vindo de volta'
-              : 'Criar conta'}
-          </h2>
-          <p className={styles.subtitle}>
-            {mode === 'qrcode'
-              ? 'Escaneie o QR Code no seu celular para entrar com segurança'
-              : mode === 'login'
-              ? 'Entre para acessar seus wallpapers'
-              : 'Crie sua conta para enviar wallpapers'}
-          </p>
-        </div>
-
-        {mode === 'qrcode' ? (
-          <DeviceAuth onSuccess={onClose} />
-        ) : (
-          <>
-            <div className={styles.providerButtons}>
-              <button className={styles.btnQrCode} onClick={() => setMode('qrcode')}>
-                <QrCode size={20} />
-                Entrar via QR Code (Recomendado para Xbox)
-              </button>
-
-              <button className={styles.btnMicrosoft} onClick={handleMicrosoft}>
-                <svg width="20" height="20" viewBox="0 0 21 21" focusable="false">
-                  <rect x="1" y="1" width="9" height="9" fill="#f25022" />
-                  <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
-                  <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
-                  <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
-                </svg>
-                Continuar com Microsoft
-              </button>
-            </div>
-
-            <div className={styles.divider}>
-              <span>ou entre com email</span>
-            </div>
-
-            {error && <div className={styles.error}>{error}</div>}
-
-            <form className={styles.form} onSubmit={handleSubmit}>
-              {mode === 'register' && (
-                <div className={styles.field}>
-                  <label className={styles.label}>Nome</label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    placeholder="Seu nome"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-              )}
-
-              <div className={styles.field}>
-                <label className={styles.label}>Email</label>
-                <input
-                  className={styles.input}
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className={styles.field}>
-                <label className={styles.label}>Senha</label>
-                <input
-                  className={styles.input}
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-
-              <button className={styles.btnSubmit} type="submit" disabled={loading}>
-                {loading ? (
-                  <span className={styles.btnLoading}>
-                    <span className={styles.btnSpinner} />
-                    Carregando...
-                  </span>
-                ) : mode === 'login' ? (
-                  'Entrar'
-                ) : (
-                  'Criar conta'
-                )}
-              </button>
-            </form>
-          </>
-        )}
-
-        <div className={styles.toggle}>
-          {mode === 'qrcode' ? (
-            <button
-              onClick={() => {
-                setMode('login');
-                setError(null);
-              }}
-            >
-              Entrar com Email ou Microsoft
-            </button>
-          ) : mode === 'login' ? (
-            <>
-              Não tem conta?
-              <button
-                onClick={() => {
-                  setMode('register');
-                  setError(null);
-                }}
-              >
-                Criar conta
-              </button>
-            </>
-          ) : (
-            <>
-              Já tem conta?
-              <button
-                onClick={() => {
-                  setMode('login');
-                  setError(null);
-                }}
-              >
-                Entrar
-              </button>
-            </>
-          )}
-        </div>
+        {view === 'main' && renderMainView()}
+        {view === 'email' && renderEmailView()}
+        {view === 'qrcode' && renderQrCodeView()}
       </div>
     </div>
   );

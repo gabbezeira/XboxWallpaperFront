@@ -91,7 +91,7 @@ export default function DeviceAuth({ onSuccess }) {
     return (
       <div className={styles.container}>
         <div className={styles.spinner} />
-        <p className={styles.instructions}>Gerando código de conexão...</p>
+        <p className={styles.statusText}>Gerando código...</p>
       </div>
     );
   }
@@ -109,7 +109,7 @@ export default function DeviceAuth({ onSuccess }) {
 
   if (expired) {
     return (
-      <div className={styles.expiredContainer}>
+      <div className={styles.container}>
         <p className={styles.error}>O código expirou.</p>
         <button className={styles.btnRefresh} onClick={fetchDeviceCode}>
           Gerar novo código
@@ -122,25 +122,26 @@ export default function DeviceAuth({ onSuccess }) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.qrWrapper}>
-        <QRCodeSVG value={qrUrl} size={150} />
-      </div>
+      <div className={styles.qrRow}>
+        <div className={styles.qrWrapper}>
+          <QRCodeSVG value={qrUrl} size={120} />
+        </div>
 
-      <div className={styles.codeContainer}>
-        <span className={styles.codeLabel}>Código de Conexão</span>
-        <span className={styles.codeValue}>{deviceData.userCode}</span>
+        <div className={styles.qrInfo}>
+          <span className={styles.codeLabel}>Código</span>
+          <span className={styles.codeValue}>{deviceData.userCode}</span>
+          <div className={styles.statusRow}>
+            <div className={styles.spinner} />
+            <span>Aguardando...</span>
+          </div>
+          <span className={styles.timer}>{formatTime(timeLeft)}</span>
+        </div>
       </div>
 
       <p className={styles.instructions}>
-        Escaneie o <strong>QR Code</strong> pelo celular ou acesse <strong>{deviceData.verificationUri}</strong> para conectar sua conta.
+        Escaneie o <strong>QR Code</strong> pelo celular ou acesse{' '}
+        <strong>{deviceData.verificationUri}</strong>
       </p>
-
-      <div className={styles.statusMessage}>
-        <div className={styles.spinner} />
-        <span>Aguardando autorização no celular...</span>
-      </div>
-
-      <span className={styles.timer}>Expira em {formatTime(timeLeft)}</span>
     </div>
   );
 }

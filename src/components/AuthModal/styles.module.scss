@@ -10,38 +10,41 @@
   -webkit-backdrop-filter: blur(4px);
   @include flex-center;
   animation: fadeIn $transition-fast forwards;
-  padding: $spacing-xl;
+  padding: $spacing-md;
 }
 
 .modal {
   width: 90%;
-  max-width: 400px;
+  max-width: 380px;
+  max-height: calc(100dvh - $spacing-2xl);
+  overflow-y: auto;
   background-color: $color-bg-secondary;
   border: 1px solid $color-border;
   border-radius: $radius-xl;
-  padding: $spacing-xl;
+  padding: $spacing-lg;
   animation: scaleIn $transition-base forwards;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
+  gap: $spacing-md;
 
   @include respond-to(md) {
-    padding: $spacing-2xl;
+    padding: $spacing-xl;
+    max-width: 400px;
   }
 
   @include respond-to(2xl) {
-    max-width: 480px;
-    padding: $spacing-3xl;
+    max-width: 440px;
+    padding: $spacing-2xl;
   }
 }
 
 .close {
   position: absolute;
-  top: $spacing-md;
-  right: $spacing-md;
-  width: 40px;
-  height: 40px;
+  top: $spacing-sm;
+  right: $spacing-sm;
+  width: 36px;
+  height: 36px;
   @include flex-center;
   color: $color-text-muted;
   background: transparent;
@@ -65,31 +68,58 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  gap: $spacing-xs;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
   gap: $spacing-sm;
-  margin-bottom: $spacing-sm;
+}
+
+.btnBack {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  @include flex-center;
+  color: $color-text-secondary;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  @include gamepad-focus;
+  transition: all $transition-fast;
+
+  &:focus-visible {
+    transform: none;
+  }
+
+  &:hover {
+    color: $color-text-primary;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
 }
 
 .logo {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
 
   @include respond-to(2xl) {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 }
 
 .title {
-  font-size: $fs-title;
+  font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
   letter-spacing: -0.02em;
 }
 
 .subtitle {
-  font-size: $fs-body;
-  color: $color-text-secondary;
+  font-size: $fs-small;
+  color: $color-text-muted;
 }
 
 .providerButtons {
@@ -118,7 +148,7 @@
 }
 
 .input {
-  padding: $spacing-md;
+  padding: $spacing-sm $spacing-md;
   background-color: $color-bg-main;
   border: 1px solid $color-border;
   border-radius: $radius-lg;
@@ -146,8 +176,7 @@
 .btnSubmit {
   @include btn-primary;
   width: 100%;
-  padding: $spacing-md;
-  margin-top: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
   font-size: $fs-body;
   border-radius: $radius-lg;
 }
@@ -166,33 +195,10 @@
   animation: spin 0.6s linear infinite;
 }
 
-.divider {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  margin: $spacing-sm 0;
-
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: $color-border;
-  }
-
-  span {
-    font-size: $fs-small;
-    color: $color-text-muted;
-    font-weight: $fw-medium;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-}
-
 .btnMicrosoft {
   @include btn-base;
   width: 100%;
-  padding: $spacing-md;
+  padding: $spacing-sm $spacing-md;
   background-color: #ffffff;
   border: 1px solid #ffffff;
   color: #000000;
@@ -211,7 +217,7 @@
 .btnQrCode {
   @include btn-base;
   width: 100%;
-  padding: $spacing-md;
+  padding: $spacing-sm $spacing-md;
   background-color: $color-accent;
   border: 1px solid $color-accent;
   color: #ffffff;
@@ -227,19 +233,35 @@
   }
 }
 
+.btnEmail {
+  @include btn-base;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
+  color: $color-text-primary;
+  gap: $spacing-md;
+  font-size: $fs-body;
+  border-radius: $radius-lg;
+  font-weight: $fw-bold;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: color-mix(in srgb, $color-bg-tertiary, white 5%);
+  }
+}
 
 .toggle {
   text-align: center;
-  font-size: $fs-body;
+  font-size: $fs-small;
   color: $color-text-muted;
-  margin-top: $spacing-sm;
 
   button {
     background: transparent;
     border: none;
     color: $color-primary;
     font-weight: $fw-semibold;
-    font-size: $fs-body;
+    font-size: $fs-small;
     margin-left: $spacing-xs;
     border-radius: $radius-md;
     padding: $spacing-xs $spacing-sm;
@@ -263,7 +285,7 @@
   border: 1px solid rgba($color-danger, 0.2);
   border-radius: $radius-md;
   color: $color-danger;
-  font-size: $fs-body;
+  font-size: $fs-small;
   text-align: center;
   font-weight: $fw-medium;
 }
@@ -272,7 +294,7 @@
   @include flex-center;
   flex-direction: column;
   gap: $spacing-lg;
-  padding: $spacing-3xl $spacing-xl;
+  padding: $spacing-2xl $spacing-xl;
   text-align: center;
 
   p {
@@ -293,5 +315,21 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

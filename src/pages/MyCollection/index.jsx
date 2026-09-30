@@ -22,6 +22,12 @@ export default function MyCollection() {
   const [wallpaperToDelete, setWallpaperToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [visibilityModal, setVisibilityModal] = useState({
+    open: false,
+    wallpaper: null,
+    nextIsPublic: false,
+  });
+  const [updatingVisibility, setUpdatingVisibility] = useState(false);
 
   const fetchMine = async () => {
     try {
@@ -71,6 +77,40 @@ export default function MyCollection() {
       setDeleting(false);
       setWallpaperToDelete(null);
     }
+  };
+
+  const promptToggleVisibility = (wallpaper, explicitNextPublic) => {
+    const isCurrentlyPublic =
+      wallpaper.isPublic || wallpaper.status === 'approved' || wallpaper.status === 'pending';
+    const nextIsPublic = explicitNextPublic !== undefined ? explicitNextPublic : !isCurrentlyPublic;
+    if (nextIsPublic === isCurrentlyPublic) return;
+    setVisibilityModal({
+      open: true,
+      wallpaper,
+      nextIsPublic,
+    });
+  };
+
+  const confirmToggleVisibility = async () => {
+    if (!visibilityModal.wallpaper) return;
+
+    try {
+      setUpdatingVisibility(true);
+      const targetId = visibilityModal.wallpaper.id;
+      const nextPublic = visibilityModal.nextIsPublic;
+      setVisibilityModal({ open: false, wallpaper: null, nextIsPublic: false });
+
+      await api.wallpapers.updateVisibility(targetId, nextPublic);
+      await fetchMine();
+    } catch (err) {
+      alert(err.response?.data?.error || err.message || 'Erro ao alterar visibilidade');
+    } finally {
+      setUpdatingVisibility(false);
+    }
+  };
+
+  const cancelToggleVisibility = () => {
+    setVisibilityModal({ open: false, wallpaper: null, nextIsPublic: false });
   };
 
   const totalPages = useMemo(() => Math.ceil(wallpapers.length / ITEMS_PER_PAGE), [wallpapers.length]);
@@ -167,6 +207,7 @@ export default function MyCollection() {
             wallpapers={paginatedWallpapers}
             onView={handleViewDetails}
             onDelete={promptDelete}
+            onToggleVisibility={promptToggleVisibility}
             showDelete={true}
             showStatus={true}
             emptyMessage="Nenhum wallpaper adicionado a esta coleção ainda. Clique em 'Adicionar Wallpaper' para começar!"
@@ -194,9 +235,37 @@ export default function MyCollection() {
         variant="danger"
       />
 
+      <Modal
+        isOpen={visibilityModal.open}
+        title={
+          visibilityModal.nextIsPublic
+            ? 'Tornar Wallpaper Público'
+            : 'Tornar Wallpaper Privado'
+        }
+        message={
+          visibilityModal.nextIsPublic
+            ? 'Ao tornar público, seu wallpaper será enviado para moderação antes de aparecer na galeria pública para outros usuários.'
+            : 'Ao tornar privado, este wallpaper ficará visível somente para você nesta aba da sua Coleção.'
+        }
+        onConfirm={confirmToggleVisibility}
+        onCancel={cancelToggleVisibility}
+        confirmText={
+          visibilityModal.nextIsPublic
+            ? 'Sim, Tornar Público'
+            : 'Sim, Tornar Privado'
+        }
+        cancelText="Cancelar"
+      />
+
       {deleting && (
         <div className={styles.overlayLoader}>
           <Loader text="Removendo da coleção..." />
+        </div>
+      )}
+
+      {updatingVisibility && (
+        <div className={styles.overlayLoader}>
+          <Loader text="Atualizando visibilidade..." />
         </div>
       )}
     </div>

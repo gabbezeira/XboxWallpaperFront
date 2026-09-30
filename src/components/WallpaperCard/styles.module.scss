@@ -192,6 +192,18 @@
     }
   }
 
+  &.triggerPending {
+    .statusIcon {
+      color: #fbbf24;
+    }
+  }
+
+  &.triggerRejected {
+    .statusIcon {
+      color: #f87171;
+    }
+  }
+
   &.triggerPrivate {
     .statusIcon {
       color: #a1a1aa;
@@ -273,39 +285,40 @@
   z-index: 5;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   height: 24px;
   padding: 0 7px;
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: $fw-semibold;
   letter-spacing: 0.02em;
+  font-family: $font-primary;
   background: #111318;
   border: 1px solid #27272a;
   color: #e4e4e7;
 
   &.approved {
-    border-color: #065f46;
-    background-color: #062b1e;
-    color: #34d399;
+    .statusIcon {
+      color: #34d399;
+    }
   }
 
   &.pending {
-    border-color: #92400e;
-    background-color: #351c04;
-    color: #fbbf24;
+    .statusIcon {
+      color: #fbbf24;
+    }
   }
 
   &.rejected {
-    border-color: #991b1b;
-    background-color: #3b0c0c;
-    color: #f87171;
+    .statusIcon {
+      color: #f87171;
+    }
   }
 
   &.private {
-    border-color: #27272a;
-    background-color: #111318;
-    color: #a1a1aa;
+    .statusIcon {
+      color: #a1a1aa;
+    }
   }
 }
 

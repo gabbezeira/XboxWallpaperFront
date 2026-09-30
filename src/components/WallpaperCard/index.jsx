@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, memo } from 'react';
-import { Trash2, Clock, CheckCircle2, Lock, AlertCircle, Globe, ChevronDown, Check, Heart } from 'lucide-react';
+import { Trash2, Clock, Lock, AlertCircle, Globe, ChevronDown, Check, Heart } from 'lucide-react';
 import VerifiedBadge from '../VerifiedBadge';
 import { formatFileSize } from '../../utils/format.js';
 import styles from './styles.module.scss';
@@ -70,7 +70,15 @@ const WallpaperCard = memo(function WallpaperCard({
         >
           <button
             type="button"
-            className={`${styles.visibilityDropdownTrigger} ${wallpaper.isPublic ? styles.triggerPublic : styles.triggerPrivate}`}
+            className={`${styles.visibilityDropdownTrigger} ${
+              wallpaper.isPublic
+                ? styles.triggerPublic
+                : currentStatus === 'pending'
+                ? styles.triggerPending
+                : currentStatus === 'rejected'
+                ? styles.triggerRejected
+                : styles.triggerPrivate
+            }`}
             onClick={(e) => {
               e.stopPropagation();
               setDropdownOpen((prev) => !prev);
@@ -145,28 +153,31 @@ const WallpaperCard = memo(function WallpaperCard({
           )}
         </div>
       ) : showStatus ? (
-        <div className={`${styles.statusBadge} ${styles[currentStatus] || styles.private}`}>
-          {currentStatus === 'approved' && (
+        <div
+          className={`${styles.statusBadge} ${
+            wallpaper.isPublic || currentStatus === 'approved'
+              ? styles.approved
+              : styles[currentStatus] || styles.private
+          }`}
+        >
+          {wallpaper.isPublic || currentStatus === 'approved' ? (
             <>
-              <CheckCircle2 size={12} />
+              <Globe size={12} className={styles.statusIcon} />
               <span>Público</span>
             </>
-          )}
-          {currentStatus === 'pending' && (
+          ) : currentStatus === 'pending' ? (
             <>
-              <Clock size={12} />
+              <Clock size={12} className={styles.statusIcon} />
               <span>Em Análise</span>
             </>
-          )}
-          {currentStatus === 'rejected' && (
+          ) : currentStatus === 'rejected' ? (
             <>
-              <AlertCircle size={12} />
+              <AlertCircle size={12} className={styles.statusIcon} />
               <span>Recusado</span>
             </>
-          )}
-          {currentStatus === 'private' && (
+          ) : (
             <>
-              <Lock size={12} />
+              <Lock size={12} className={styles.statusIcon} />
               <span>Privado</span>
             </>
           )}

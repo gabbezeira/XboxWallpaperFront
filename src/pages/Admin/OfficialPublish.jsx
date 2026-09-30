@@ -46,7 +46,7 @@ export default function OfficialPublish({ onPublishComplete }) {
   useEffect(() => {
     api.collections.list().then((res) => {
       setCollections(res || []);
-    }).catch(() => {});
+    }).catch(() => { });
   }, []);
 
   const handleHeroSubmit = async (e) => {

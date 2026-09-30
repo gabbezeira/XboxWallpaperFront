@@ -273,7 +273,7 @@ export default function ModerationQueue({ onApprovedCountChange }) {
           );
         })}
       </div>
-      
+
       {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}

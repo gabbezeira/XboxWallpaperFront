@@ -26,7 +26,6 @@ export default function AdminLogin() {
     );
   }
 
-  // Se já está logado como admin, vai direto
   if (user && user.email === ADMIN_EMAIL) {
     return <Navigate to="/adminpanel" replace />;
   }

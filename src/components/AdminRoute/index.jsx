@@ -16,8 +16,6 @@ export default function AdminRoute({ children }) {
   }
 
   if (user.email !== ADMIN_EMAIL) {
-    // Apenas redireciona para a tela de login para que ele faça o login correto
-    // sem forçar logout imediato do usuário comum
     return <Navigate to="/admin" replace state={{ requireAdminLogin: true }} />;
   }
 

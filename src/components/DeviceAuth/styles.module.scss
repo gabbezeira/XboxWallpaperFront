@@ -1,0 +1,110 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0;
+  gap: 1.25rem;
+}
+
+.qrWrapper {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.codeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.codeLabel {
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.codeValue {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: #107c41;
+  background: rgba(16, 124, 65, 0.1);
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 124, 65, 0.3);
+  font-family: monospace;
+}
+
+.instructions {
+  font-size: 0.9rem;
+  color: #cccccc;
+  line-height: 1.5;
+  max-width: 340px;
+
+  strong {
+    color: #ffffff;
+  }
+}
+
+.timer {
+  font-size: 0.85rem;
+  color: #888888;
+}
+
+.statusMessage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #107c41;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(16, 124, 65, 0.3);
+  border-top-color: #107c41;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.expiredContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btnRefresh {
+  background: #107c41;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #13964f;
+  }
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 0.9rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

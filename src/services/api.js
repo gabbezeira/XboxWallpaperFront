@@ -80,4 +80,19 @@ export const api = {
         body: JSON.stringify({ preferences }),
       }),
   },
+
+  deviceAuth: {
+    request: () => request('/api/auth/device-code', { method: 'POST' }),
+    poll: (deviceCode) =>
+      request('/api/auth/device-code/poll', {
+        method: 'POST',
+        body: JSON.stringify({ deviceCode }),
+      }),
+    authorize: (userCode) =>
+      request('/api/auth/device-code/authorize', {
+        method: 'POST',
+        body: JSON.stringify({ userCode }),
+      }),
+  },
 };
+

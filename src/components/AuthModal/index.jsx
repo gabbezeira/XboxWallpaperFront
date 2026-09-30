@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, QrCode } from 'lucide-react';
 import { signInWithMicrosoft, signInWithEmail, signUpWithEmail } from '../../services/auth';
 import { useAuth } from '../../hooks/useAuth';
+import { isXboxConsole } from '../../utils/device';
+import DeviceAuth from '../DeviceAuth';
 import logo from '../../assets/logo.png';
 import styles from './styles.module.scss';
 
 export default function AuthModal({ onClose }) {
   const { refreshProfile, authError } = useAuth();
-  const [mode, setMode] = useState('login');
+  const isConsole = isXboxConsole();
+  const [mode, setMode] = useState(isConsole ? 'qrcode' : 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -79,7 +82,6 @@ export default function AuthModal({ onClose }) {
       setError('Ocorreu um erro ao tentar acessar a Microsoft.');
     });
 
-    // Fallback caso a navegação falhe silenciosamente (ex: bloqueadores agressivos)
     setTimeout(() => {
       setRedirecting(false);
       sessionStorage.removeItem('oauth_redirect');
@@ -115,88 +117,114 @@ export default function AuthModal({ onClose }) {
         <div className={styles.header}>
           <img src={logo} alt="Xbox" className={styles.logo} />
           <h2 className={styles.title}>
-            {mode === 'login' ? 'Bem-vindo de volta' : 'Criar conta'}
+            {mode === 'qrcode'
+              ? 'Conectar via Celular'
+              : mode === 'login'
+              ? 'Bem-vindo de volta'
+              : 'Criar conta'}
           </h2>
           <p className={styles.subtitle}>
-            {mode === 'login'
+            {mode === 'qrcode'
+              ? 'Escaneie o QR Code no seu celular para entrar com segurança'
+              : mode === 'login'
               ? 'Entre para acessar seus wallpapers'
               : 'Crie sua conta para enviar wallpapers'}
           </p>
         </div>
 
-        <div className={styles.providerButtons}>
-          <button className={styles.btnMicrosoft} onClick={handleMicrosoft}>
-            <svg width="20" height="20" viewBox="0 0 21 21" focusable="false">
-              <rect x="1" y="1" width="9" height="9" fill="#f25022" />
-              <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
-              <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
-              <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
-            </svg>
-            Continuar com Microsoft
-          </button>
-        </div>
+        {mode === 'qrcode' ? (
+          <DeviceAuth onSuccess={onClose} />
+        ) : (
+          <>
+            <div className={styles.providerButtons}>
+              <button className={styles.btnQrCode} onClick={() => setMode('qrcode')}>
+                <QrCode size={20} />
+                Entrar via QR Code (Recomendado para Xbox)
+              </button>
 
-        <div className={styles.divider}>
-          <span>ou entre com email</span>
-        </div>
-
-        {error && <div className={styles.error}>{error}</div>}
-
-        <form className={styles.form} onSubmit={handleSubmit}>
-          {mode === 'register' && (
-            <div className={styles.field}>
-              <label className={styles.label}>Nome</label>
-              <input
-                className={styles.input}
-                type="text"
-                placeholder="Seu nome"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+              <button className={styles.btnMicrosoft} onClick={handleMicrosoft}>
+                <svg width="20" height="20" viewBox="0 0 21 21" focusable="false">
+                  <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+                  <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+                  <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+                  <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+                </svg>
+                Continuar com Microsoft
+              </button>
             </div>
-          )}
 
-          <div className={styles.field}>
-            <label className={styles.label}>Email</label>
-            <input
-              className={styles.input}
-              type="email"
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+            <div className={styles.divider}>
+              <span>ou entre com email</span>
+            </div>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Senha</label>
-            <input
-              className={styles.input}
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-            />
-          </div>
+            {error && <div className={styles.error}>{error}</div>}
 
-          <button className={styles.btnSubmit} type="submit" disabled={loading}>
-            {loading ? (
-              <span className={styles.btnLoading}>
-                <span className={styles.btnSpinner} />
-                Carregando...
-              </span>
-            ) : mode === 'login' ? (
-              'Entrar'
-            ) : (
-              'Criar conta'
-            )}
-          </button>
-        </form>
+            <form className={styles.form} onSubmit={handleSubmit}>
+              {mode === 'register' && (
+                <div className={styles.field}>
+                  <label className={styles.label}>Nome</label>
+                  <input
+                    className={styles.input}
+                    type="text"
+                    placeholder="Seu nome"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+              )}
+
+              <div className={styles.field}>
+                <label className={styles.label}>Email</label>
+                <input
+                  className={styles.input}
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label}>Senha</label>
+                <input
+                  className={styles.input}
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+
+              <button className={styles.btnSubmit} type="submit" disabled={loading}>
+                {loading ? (
+                  <span className={styles.btnLoading}>
+                    <span className={styles.btnSpinner} />
+                    Carregando...
+                  </span>
+                ) : mode === 'login' ? (
+                  'Entrar'
+                ) : (
+                  'Criar conta'
+                )}
+              </button>
+            </form>
+          </>
+        )}
 
         <div className={styles.toggle}>
-          {mode === 'login' ? (
+          {mode === 'qrcode' ? (
+            <button
+              onClick={() => {
+                setMode('login');
+                setError(null);
+              }}
+            >
+              Entrar com Email ou Microsoft
+            </button>
+          ) : mode === 'login' ? (
             <>
               Não tem conta?
               <button

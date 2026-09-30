@@ -16,7 +16,7 @@ import Collection from './pages/Collection';
 import Terms from './pages/Terms';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/Admin/Login';
-import AdminRoute from './components/AdminRoute';
+import LinkDevice from './pages/LinkDevice';
 import { Analytics } from '@vercel/analytics/react';
 
 import GlobalLoader from './components/GlobalLoader';
@@ -38,8 +38,10 @@ function AppRoutes() {
           }
         />
 
+        <Route path="/link" element={<LinkDevice />} />
         <Route path="/wallpaper/:id" element={<WallpaperDetails />} />
         <Route path="/wallpaper/:id/fullscreen" element={<FullscreenViewer />} />
+
 
         <Route
           path="*"

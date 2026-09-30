@@ -208,6 +208,26 @@
   }
 }
 
+.btnQrCode {
+  @include btn-base;
+  width: 100%;
+  padding: $spacing-md;
+  background-color: #107c41;
+  border: 1px solid #107c41;
+  color: #ffffff;
+  gap: $spacing-md;
+  font-size: $fs-body;
+  border-radius: $radius-lg;
+  font-weight: $fw-bold;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: #13964f;
+    border-color: #13964f;
+  }
+}
+
+
 .toggle {
   text-align: center;
   font-size: $fs-body;

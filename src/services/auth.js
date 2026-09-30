@@ -5,6 +5,7 @@ import {
   signOut,
   signInWithRedirect,
   getRedirectResult,
+  signInWithCustomToken,
   OAuthProvider,
 } from 'firebase/auth';
 import { auth } from './firebase';
@@ -63,9 +64,16 @@ export const signInWithMicrosoft = () => {
   return signInWithRedirect(auth, microsoftProvider);
 };
 
+export const loginWithCustomToken = async (customToken) => {
+  const result = await signInWithCustomToken(auth, customToken);
+  await syncWithBackend(result.user);
+  return result.user;
+};
+
 export const handleAuthRedirectResult = async () => {
   const result = await getRedirectResult(auth);
   if (!result) return null;
   await syncWithBackend(result.user);
   return result.user;
 };
+

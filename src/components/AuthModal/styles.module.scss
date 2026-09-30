@@ -212,8 +212,8 @@
   @include btn-base;
   width: 100%;
   padding: $spacing-md;
-  background-color: #107c41;
-  border: 1px solid #107c41;
+  background-color: $color-accent;
+  border: 1px solid $color-accent;
   color: #ffffff;
   gap: $spacing-md;
   font-size: $fs-body;
@@ -222,8 +222,8 @@
   transition: all $transition-fast;
 
   &:hover {
-    background-color: #13964f;
-    border-color: #13964f;
+    background-color: $color-primary;
+    border-color: $color-primary;
   }
 }
 

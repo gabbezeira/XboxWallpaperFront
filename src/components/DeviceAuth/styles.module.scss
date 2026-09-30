@@ -1,78 +1,80 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 1rem 0;
-  gap: 1.25rem;
+  padding: $spacing-md 0;
+  gap: $spacing-lg;
 }
 
 .qrWrapper {
   background: #ffffff;
-  padding: 1rem;
-  border-radius: 12px;
+  padding: $spacing-md;
+  border-radius: $radius-lg;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
 }
 
 .codeContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: $spacing-sm;
 }
 
 .codeLabel {
-  font-size: 0.875rem;
-  color: #a0a0a0;
+  font-size: $fs-small;
+  color: $color-text-muted;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: $fw-semibold;
 }
 
 .codeValue {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: $fs-title;
+  font-weight: $fw-bold;
   letter-spacing: 0.25em;
-  color: #107c41;
-  background: rgba(16, 124, 65, 0.1);
-  padding: 0.5rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid rgba(16, 124, 65, 0.3);
+  color: $color-primary;
+  background: rgba($color-accent, 0.1);
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-md;
+  border: 1px solid rgba($color-accent, 0.3);
   font-family: monospace;
 }
 
 .instructions {
-  font-size: 0.9rem;
-  color: #cccccc;
+  font-size: $fs-body;
+  color: $color-text-secondary;
   line-height: 1.5;
   max-width: 340px;
 
   strong {
-    color: #ffffff;
+    color: $color-text-primary;
   }
 }
 
 .timer {
-  font-size: 0.85rem;
-  color: #888888;
+  font-size: $fs-small;
+  color: $color-text-muted;
 }
 
 .statusMessage {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #107c41;
+  gap: $spacing-sm;
+  font-size: $fs-body;
+  color: $color-primary;
 }
 
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(16, 124, 65, 0.3);
-  border-top-color: #107c41;
-  border-radius: 50%;
+  border: 2px solid rgba($color-accent, 0.3);
+  border-top-color: $color-primary;
+  border-radius: $radius-full;
   animation: spin 1s linear infinite;
 }
 
@@ -80,27 +82,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
 }
 
 .btnRefresh {
-  background: #107c41;
-  color: #ffffff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: #13964f;
-  }
+  @include btn-primary;
+  padding: $spacing-sm $spacing-lg;
+  font-size: $fs-body;
+  border-radius: $radius-lg;
 }
 
 .error {
-  color: #ff4d4d;
-  font-size: 0.9rem;
+  color: $color-danger;
+  font-size: $fs-body;
+  background: rgba($color-danger, 0.1);
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  font-weight: $fw-medium;
 }
 
 @keyframes spin {

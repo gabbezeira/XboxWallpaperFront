@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Monitor, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
@@ -66,7 +66,7 @@ export default function LinkDevice() {
 
         {success ? (
           <div className={styles.successBox}>
-            <CheckCircle size={48} color="#107c41" />
+            <CheckCircle size={48} color="#00ab00" />
             <p>Xbox autorizado com sucesso!</p>
             <span className={styles.subtitle}>
               O seu console já está conectado. Você pode fechar esta página.

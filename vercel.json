@@ -2,6 +2,12 @@
   "redirects": [
     {
       "source": "/((?!\\.well-known/assetlinks\\.json$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "spartanwp.com.br"
+        }
+      ],
       "destination": "https://www.spartanwp.com.br/$1",
       "permanent": true
     }

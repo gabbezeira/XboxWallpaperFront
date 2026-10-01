@@ -517,40 +517,6 @@ export default function Guide() {
             })}
           </div>
 
-          <div className={styles.xboxInfoCard}>
-            <div className={styles.xboxInfoHeader}>
-              <Monitor size={20} />
-              <h3 className={styles.xboxInfoTitle}>Como funciona por trás</h3>
-            </div>
-            <div className={styles.xboxInfoGrid}>
-              <div className={styles.xboxInfoItem}>
-                <span className={styles.xboxInfoLabel}>QR Code</span>
-                <span className={styles.xboxInfoValue}>
-                  Contém um link para a página de autorização com o código do console embutido
-                </span>
-              </div>
-              <div className={styles.xboxInfoItem}>
-                <span className={styles.xboxInfoLabel}>Código do Console</span>
-                <span className={styles.xboxInfoValue}>
-                  Um código alfanumérico único gerado para cada sessão (ex: XB-A1B2)
-                </span>
-              </div>
-              <div className={styles.xboxInfoItem}>
-                <span className={styles.xboxInfoLabel}>Polling</span>
-                <span className={styles.xboxInfoValue}>
-                  O console verifica automaticamente a cada poucos segundos se a autorização foi
-                  feita
-                </span>
-              </div>
-              <div className={styles.xboxInfoItem}>
-                <span className={styles.xboxInfoLabel}>Expiração</span>
-                <span className={styles.xboxInfoValue}>
-                  O código expira após 5 minutos. Se expirar, basta gerar um novo
-                </span>
-              </div>
-            </div>
-          </div>
-
           <div className={styles.tipBox}>
             <Info size={18} className={styles.tipIcon} />
             <p className={styles.tipText}>

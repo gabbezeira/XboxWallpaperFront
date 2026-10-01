@@ -162,6 +162,9 @@ export default function Sidebar({ onLoginClick }) {
           </button>
         )}
         <div className={styles.sidebarFooter}>
+          <Link to="/guide" className={styles.footerLink}>
+            Guia de Uso
+          </Link>
           <Link to="/levels" className={styles.footerLink}>
             Níveis &amp; Badges
           </Link>

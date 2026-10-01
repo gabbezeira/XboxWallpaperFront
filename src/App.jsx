@@ -24,6 +24,7 @@ const Levels = lazy(() => import('./pages/Levels'));
 const Admin = lazy(() => import('./pages/Admin'));
 const AdminLogin = lazy(() => import('./pages/Admin/Login'));
 const LinkDevice = lazy(() => import('./pages/LinkDevice'));
+const Guide = lazy(() => import('./pages/Guide'));
 
 function AppRoutes() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -58,6 +59,7 @@ function AppRoutes() {
                   <Route path="/c/:tag" element={<Collection />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/levels" element={<Levels />} />
+                  <Route path="/guide" element={<Guide />} />
                   <Route
                     path="/favorites"
                     element={

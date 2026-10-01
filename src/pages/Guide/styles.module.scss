@@ -1,0 +1,769 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-xl;
+
+  @include respond-to(md) {
+    padding: $spacing-2xl;
+  }
+
+  @include respond-to(2xl) {
+    padding: $spacing-3xl;
+  }
+}
+
+.inner {
+  max-width: 980px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+
+  @include respond-to(2xl) {
+    max-width: 1200px;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.headerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: 4px 10px;
+  background-color: rgba($color-primary, 0.1);
+  border: 1px solid rgba($color-primary, 0.25);
+  border-radius: $radius-full;
+  color: $color-primary;
+  font-size: $fs-small;
+  font-weight: $fw-semibold;
+  width: fit-content;
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  line-height: 1.6;
+  max-width: 780px;
+}
+
+.divider {
+  width: 48px;
+  height: 3px;
+  background-color: $color-primary;
+  border-radius: $radius-full;
+  margin-top: $spacing-xs;
+}
+
+.tocNav {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+}
+
+.tocLabel {
+  font-size: $fs-small;
+  font-weight: $fw-semibold;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tocLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.tocLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: $color-text-secondary;
+  font-size: $fs-small;
+  font-weight: $fw-medium;
+  text-decoration: none;
+  transition: background-color $transition-fast, color $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    background-color: rgba($color-primary, 0.1);
+    border-color: rgba($color-primary, 0.25);
+    color: $color-primary;
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  scroll-margin-top: $spacing-xl;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: 3px 8px;
+  border-radius: $radius-full;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: $color-text-muted;
+  font-size: 10px;
+  font-weight: $fw-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
+  margin-bottom: $spacing-xs;
+
+  &.xboxBadge {
+    background-color: rgba($color-primary, 0.1);
+    border-color: rgba($color-primary, 0.25);
+    color: $color-primary;
+  }
+}
+
+.sectionTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.sectionSubtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(xl) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stepCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+  transition: transform $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.stepNumber {
+  position: absolute;
+  top: $spacing-md;
+  right: $spacing-md;
+  font-size: 11px;
+  font-weight: $fw-bold;
+  color: $color-text-muted;
+  opacity: 0.6;
+  letter-spacing: 1px;
+}
+
+.stepIconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-primary;
+}
+
+.stepTitle {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.stepDesc {
+  font-size: $fs-small;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.tipBox {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  border-radius: $radius-lg;
+  background-color: rgba($color-primary, 0.06);
+  border: 1px solid rgba($color-primary, 0.15);
+}
+
+.tipIcon {
+  color: $color-primary;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tipText {
+  font-size: $fs-body;
+  line-height: 1.6;
+  color: $color-text-secondary;
+
+  strong {
+    color: $color-text-primary;
+    font-weight: $fw-semibold;
+  }
+}
+
+.authMethodsCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+}
+
+.authMethodsTitle {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.authMethodsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.authMethodItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.authMethodIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+}
+
+.authMethodInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.authMethodName {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.authMethodDesc {
+  font-size: $fs-small;
+  color: $color-text-muted;
+  line-height: 1.4;
+}
+
+.specsCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+}
+
+.specsTitle {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.specsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.specItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.specLabel {
+  font-size: 10px;
+  font-weight: $fw-bold;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.specValue {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.visibilityGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-lg;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.visibilityCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+  transition: border-color $transition-fast;
+
+  &.privateCard {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+  }
+
+  &.publicCard {
+    border: 1px solid rgba($color-primary, 0.2);
+
+    &:hover {
+      border-color: rgba($color-primary, 0.4);
+    }
+  }
+}
+
+.visibilityCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.visibilityIconBox {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-lg;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-secondary;
+
+  .publicCard & {
+    background-color: rgba($color-primary, 0.1);
+    border-color: rgba($color-primary, 0.25);
+    color: $color-primary;
+  }
+}
+
+.visibilityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: $fw-bold;
+  letter-spacing: 0.5px;
+  background-color: #27272a;
+  color: #a1a1aa;
+  border: 1px solid #3f3f46;
+
+  &.publicBadge {
+    background-color: #072d12;
+    color: #4ade80;
+    border-color: #107c10;
+  }
+}
+
+.visibilityCardTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.visibilityCardDesc {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  line-height: 1.6;
+
+  strong {
+    color: $color-text-primary;
+    font-weight: $fw-semibold;
+  }
+}
+
+.visibilityList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding-top: $spacing-sm;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  list-style: none;
+  padding-left: 0;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-xs;
+    font-size: $fs-small;
+    color: $color-text-secondary;
+    line-height: 1.4;
+
+    svg {
+      color: $color-primary;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  }
+}
+
+.flowCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+}
+
+.flowTitle {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.flowSteps {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-xs;
+  overflow-x: auto;
+  padding-bottom: $spacing-sm;
+
+  @include respond-to(md) {
+    gap: $spacing-sm;
+  }
+}
+
+.flowStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 80px;
+  text-align: center;
+  flex: 1;
+}
+
+.flowStepIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-secondary;
+
+  &.flowStepApproved {
+    background-color: rgba($color-primary, 0.1);
+    border-color: rgba($color-primary, 0.25);
+    color: $color-primary;
+  }
+}
+
+.flowStepLabel {
+  font-size: $fs-small;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.flowStepSub {
+  font-size: 10px;
+  color: $color-text-muted;
+}
+
+.flowArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-muted;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+.xboxStepsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.xboxStepCard {
+  display: flex;
+  gap: $spacing-lg;
+}
+
+.xboxStepLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 32px;
+}
+
+.xboxStepNumber {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  background-color: rgba($color-primary, 0.1);
+  border: 1px solid rgba($color-primary, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-primary;
+  font-size: 11px;
+  font-weight: $fw-bold;
+  flex-shrink: 0;
+}
+
+.xboxStepLine {
+  width: 2px;
+  flex: 1;
+  background-color: rgba($color-primary, 0.15);
+  margin: 4px 0;
+
+  .xboxStepCard:last-child & {
+    display: none;
+  }
+}
+
+.xboxStepContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding-bottom: $spacing-xl;
+
+  .xboxStepCard:last-child & {
+    padding-bottom: 0;
+  }
+}
+
+.xboxStepIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-primary;
+}
+
+.xboxStepTitle {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.xboxStepDesc {
+  font-size: $fs-small;
+  color: $color-text-secondary;
+  line-height: 1.5;
+  max-width: 560px;
+}
+
+.xboxInfoCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+}
+
+.xboxInfoHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  color: $color-text-primary;
+}
+
+.xboxInfoTitle {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.xboxInfoGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.xboxInfoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.xboxInfoLabel {
+  font-size: 10px;
+  font-weight: $fw-bold;
+  color: $color-primary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.xboxInfoValue {
+  font-size: $fs-small;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.actionsSection {
+  padding: $spacing-2xl $spacing-xl;
+  border: 1px solid rgba($color-primary, 0.25);
+  border-radius: $radius-xl;
+  background: linear-gradient(135deg, rgba(16, 124, 16, 0.08) 0%, rgba(7, 7, 7, 0.95) 100%);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.actionsInner {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.actionsTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+
+  @include respond-to(md) {
+    font-size: $fs-title;
+  }
+}
+
+.actionsDesc {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  line-height: 1.6;
+}
+
+.actionsButtonGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+  margin-top: $spacing-sm;
+}
+
+.btnPrimary {
+  @include btn-primary;
+  text-decoration: none;
+}
+
+.btnSecondary {
+  @include btn-secondary;
+  text-decoration: none;
+}
+
+.btnGhost {
+  @include btn-ghost;
+  text-decoration: none;
+}

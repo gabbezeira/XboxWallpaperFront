@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/((?!\\.well-known/assetlinks\\.json$).*)",
+      "destination": "https://www.spartanwp.com.br/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

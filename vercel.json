@@ -5,10 +5,10 @@
       "has": [
         {
           "type": "host",
-          "value": "spartanwp.com.br"
+          "value": "www.spartanwp.com.br"
         }
       ],
-      "destination": "https://www.spartanwp.com.br/$1",
+      "destination": "https://spartanwp.com.br/$1",
       "permanent": true
     }
   ],

@@ -61,6 +61,9 @@ export const api = {
   heroSlides: {
     list: () => request('/api/hero-slides'),
     listManage: () => request('/api/hero-slides/manage'),
+    upload: (formData) => request('/api/hero-slides/upload', { method: 'POST', body: formData }),
+    update: (id, data) => request(`/api/hero-slides/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    reorder: (orders) => request('/api/hero-slides/reorder', { method: 'PATCH', body: JSON.stringify({ orders }) }),
     remove: (id) => request(`/api/hero-slides/${id}`, { method: 'DELETE' }),
   },
 
@@ -202,6 +205,7 @@ export const api = {
     getFirestoreMetrics: () => request('/api/admin/metrics/firestore'),
     resetFirestoreMetrics: () => request('/api/admin/metrics/firestore/reset', { method: 'POST' }),
     rebuildTagsMetadata: () => request('/api/admin/metadata/rebuild-tags', { method: 'POST' }),
+    verifyAuth: () => request('/api/admin/auth/verify', { method: 'POST' }),
   },
 
   favorites: {

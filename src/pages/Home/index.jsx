@@ -77,9 +77,8 @@ export default function Home() {
       try {
         const data = await api.heroSlides.list();
         if (data.length > 0 && isMounted) {
-          const shuffled = shuffleArray(data);
-          setHeroSlides(shuffled);
-          writeHeroCache(shuffled);
+          setHeroSlides(data);
+          writeHeroCache(data);
         }
       } catch (error) {
         if (isMounted) console.error('Erro ao buscar hero slides:', error);
@@ -183,7 +182,7 @@ export default function Home() {
                   className={styles.btnPrimary}
                   onClick={() => navigate(`/collection/${currentBanner.targetTag}`)}
                 >
-                  Ver Coleção
+                  {currentBanner.buttonText || 'Ver Coleção'}
                 </button>
               </div>
 

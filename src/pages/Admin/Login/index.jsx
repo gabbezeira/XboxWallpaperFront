@@ -1,18 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../services/firebase';
+import { api } from '../../../services/api';
 import { useAuth } from '../../../hooks/useAuth';
 import styles from './styles.module.scss';
 import logo from '../../../assets/logosvg.svg';
+
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_KEY = 'spartan_admin_lockout_until';
+const ATTEMPTS_KEY = 'spartan_admin_failed_attempts';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [lockoutSeconds, setLockoutSeconds] = useState(0);
   const navigate = useNavigate();
   const { user, isAdmin, refreshAdminStatus, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    const checkLockout = () => {
+      const storedUntil = parseInt(sessionStorage.getItem(LOCKOUT_KEY) || '0', 10);
+      const remainingMs = storedUntil - Date.now();
+      if (remainingMs > 0) {
+        setLockoutSeconds(Math.ceil(remainingMs / 1000));
+      } else {
+        setLockoutSeconds(0);
+        sessionStorage.removeItem(LOCKOUT_KEY);
+      }
+    };
+
+    checkLockout();
+    const interval = setInterval(checkLockout, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (authLoading) {
     return (
@@ -30,18 +53,27 @@ export default function AdminLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (lockoutSeconds > 0) return;
+
     setError('');
     setLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const tokenResult = await userCredential.user.getIdTokenResult(true);
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
 
-      if (!tokenResult.claims.admin) {
-        await auth.signOut();
-        setError('Acesso negado. Esta conta não possui privilégios de administrador.');
-        return;
+      try {
+        await api.admin.verifyAuth();
+      } catch {
+        const tokenResult = await userCredential.user.getIdTokenResult(true);
+        if (!tokenResult.claims.admin) {
+          await auth.signOut();
+          setError('Acesso negado. Esta conta não possui privilégios de administrador.');
+          return;
+        }
       }
+
+      sessionStorage.removeItem(ATTEMPTS_KEY);
+      sessionStorage.removeItem(LOCKOUT_KEY);
 
       if (refreshAdminStatus) {
         await refreshAdminStatus();
@@ -49,7 +81,19 @@ export default function AdminLogin() {
 
       navigate('/adminpanel', { replace: true });
     } catch (err) {
-      setError('Falha ao autenticar. Verifique seus dados.');
+      const currentAttempts = parseInt(sessionStorage.getItem(ATTEMPTS_KEY) || '0', 10) + 1;
+      sessionStorage.setItem(ATTEMPTS_KEY, String(currentAttempts));
+
+      if (currentAttempts >= MAX_ATTEMPTS) {
+        const lockoutUntil = Date.now() + 60 * 1000;
+        sessionStorage.setItem(LOCKOUT_KEY, String(lockoutUntil));
+        setLockoutSeconds(60);
+        sessionStorage.setItem(ATTEMPTS_KEY, '0');
+        setError('Muitas tentativas sem sucesso. Bloqueado por 60 segundos por segurança.');
+      } else {
+        const remaining = MAX_ATTEMPTS - currentAttempts;
+        setError(`Falha ao autenticar. Verifique seus dados. (${remaining} tentativa${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''})`);
+      }
       console.error(err);
     } finally {
       setLoading(false);
@@ -89,8 +133,12 @@ export default function AdminLogin() {
             />
           </div>
 
-          <button type="submit" disabled={loading} className={styles.submitBtn}>
-            {loading ? 'Autenticando...' : 'Entrar no Sistema'}
+          <button type="submit" disabled={loading || lockoutSeconds > 0} className={styles.submitBtn}>
+            {lockoutSeconds > 0
+              ? `Bloqueado (${lockoutSeconds}s)`
+              : loading
+                ? 'Autenticando...'
+                : 'Entrar no Sistema'}
           </button>
         </form>
       </div>

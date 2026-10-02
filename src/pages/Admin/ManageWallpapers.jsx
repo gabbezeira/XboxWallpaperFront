@@ -163,7 +163,7 @@ export default function ManageWallpapers() {
         </div>
       </div>
 
-      <form onSubmit={handleSearch} className={styles.toolbar}>
+      <form onSubmit={handleSearch} className={styles.filterToolbar}>
         <div className={styles.searchBox}>
           <Search size={16} className={styles.searchIcon} />
           <input
@@ -175,22 +175,20 @@ export default function ManageWallpapers() {
           />
         </div>
 
-        <div className={styles.toolbarActions}>
-          <div className={styles.searchBox}>
-            <Tag size={16} className={styles.searchIcon} />
-            <input
-              type="text"
-              placeholder="Filtrar por tag..."
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-              className={styles.searchInput}
-            />
-          </div>
-
-          <button type="submit" className={styles.btnSecondary}>
-            Filtrar
-          </button>
+        <div className={styles.searchBox}>
+          <Tag size={16} className={styles.searchIcon} />
+          <input
+            type="text"
+            placeholder="Filtrar por tag..."
+            value={tag}
+            onChange={(e) => setTag(e.target.value)}
+            className={styles.searchInput}
+          />
         </div>
+
+        <button type="submit" className={styles.btnSecondary}>
+          Filtrar
+        </button>
       </form>
 
       {selectedIds.size > 0 && (
@@ -279,10 +277,10 @@ export default function ManageWallpapers() {
       )}
 
       {hasMore && !loading && (
-        <div className={styles.toolbarActions}>
+        <div className={styles.loadMoreContainer}>
           <button
             type="button"
-            className={styles.btnSecondary}
+            className={styles.btnLoadMore}
             onClick={handleLoadMore}
           >
             <span>Carregar mais</span>

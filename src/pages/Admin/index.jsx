@@ -129,7 +129,6 @@ export default function Admin() {
             </div>
             <div className={styles.brandInfo}>
               <span className={styles.brandMainTitle}>Xbox Admin</span>
-              <span className={styles.brandVersion}>Console v2.0</span>
             </div>
           </div>
           <button
@@ -140,14 +139,6 @@ export default function Admin() {
           >
             <X size={18} />
           </button>
-        </div>
-
-        <div className={styles.serverStatusCard}>
-          <div className={styles.statusDotLive} />
-          <div className={styles.statusTextCol}>
-            <span className={styles.statusTitle}>Servidor Conectado</span>
-            <span className={styles.statusSubtitle}>Firestore & API Online</span>
-          </div>
         </div>
 
         <nav className={styles.navMenu}>

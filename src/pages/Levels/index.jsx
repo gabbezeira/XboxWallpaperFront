@@ -2,18 +2,16 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Shield,
+  Gauge,
   Compass,
-  Sparkles,
-  Medal,
+  Flame,
   Crown,
-  Trophy,
+  Zap,
   Heart,
   UploadCloud,
   CheckCircle2,
   Layers,
   ArrowRight,
-  Info,
-  ShieldAlert,
   Check,
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
@@ -23,61 +21,69 @@ import styles from './styles.module.scss';
 const TIERS = [
   {
     key: 'recruta',
-    name: 'Iniciado',
+    name: 'Cadete UNSC',
+    badgeLabel: 'CADETE UNSC',
+    franchise: 'Universo Halo',
     minFavs: 0,
     maxFavs: 4,
     maxImages: 8,
     reqLabel: '0 a 4 favoritos',
     icon: Shield,
-    desc: 'Grau inicial de recrutamento na rede Spartan. Permite subir suas primeiras artes para a galeria e submetê-las para a curadoria comunitária.',
+    desc: 'Ingresso nas fileiras da UNSC. Protocolo de instrução para novos membros, permitindo o envio das primeiras capturas e integração à rede de personalização.',
     benefits: [
       'Acesso irrestrito a todo o catálogo e sistema de favoritos',
-      'Cota base de 8 slots de upload',
+      'Cota base de 8 slots de upload para wallpapers',
       'Submissão aberta para a curadoria comunitária',
     ],
   },
   {
     key: 'explorador',
-    name: 'Batedor Tático',
+    name: 'Piloto Horizon',
+    badgeLabel: 'PILOTO HORIZON',
+    franchise: 'Forza Horizon',
     minFavs: 5,
     maxFavs: 19,
     maxImages: 10,
     reqLabel: '5 a 19 favoritos',
-    icon: Compass,
-    desc: 'Primeiro marco de prestígio no campo. Suas capturas começam a ser adotadas e aplicadas nos consoles de outros jogadores.',
+    icon: Gauge,
+    desc: 'Credenciamento no Festival Horizon. Reconhecimento a fotógrafos dedicados a capturas automotivas, iluminação dinâmica e enquadramentos velozes.',
     benefits: [
-      'Insígnia sólida de Batedor Tático no perfil',
+      'Insígnia temática Piloto Horizon com velocímetro tático',
       'Expansão de cota para 10 slots de upload (+2 adicionais)',
       'Prioridade de indexação em buscas por jogos e tags',
     ],
   },
   {
     key: 'criador',
-    name: 'Sentinela',
+    name: 'Explorador Constelação',
+    badgeLabel: 'EXPLORADOR CONSTELAÇÃO',
+    franchise: 'Starfield',
     minFavs: 20,
     maxFavs: 49,
     maxImages: 12,
     reqLabel: '20 a 49 favoritos',
-    icon: Sparkles,
-    desc: 'Criador ativo com relevância reconhecida. Catálogo frequente de envios com alto índice de aprovação da curadoria.',
+    icon: Compass,
+    desc: 'Navegador oficial da Constellation nas fronteiras do espaço profundo. Domínio de astrofotografia, paisagens cósmicas e composição em novos mundos.',
     benefits: [
-      'Insígnia azul cobalto de Sentinela',
+      'Insígnia azul cobalto com bússola estelar de navegação',
       'Expansão de cota para 12 slots de upload (+2 adicionais)',
-      'Fila prioritária de análise na moderação',
+      'Fila prioritária de análise e moderação',
       'Elegibilidade para o Selo de Criador Verificado',
     ],
   },
   {
     key: 'veterano',
-    name: 'Vanguarda',
+    name: 'Veterano Gears COG',
+    badgeLabel: 'VETERANO COG',
+    franchise: 'Gears of War',
     minFavs: 50,
     maxFavs: 99,
     maxImages: 14,
     reqLabel: '50 a 99 favoritos',
-    icon: Medal,
-    desc: 'Patente de alta bravura e consistência. Membro respeitado com acervo autoral de papéis de parede em altíssima resolução.',
+    icon: Flame,
+    desc: 'Combatente condecorado do Esquadrão Delta. Acervo de alta intensidade com iluminação cinematográfica, peso tático e contraste dramático.',
     benefits: [
-      'Insígnia sólida violeta de Vanguarda',
+      'Insígnia sólida carmesim com chama de combate de Sera',
       'Expansão de cota para 14 slots de upload (+2 adicionais)',
       'Inclusão direta na seleção de criadores recomendados',
       'Destaque autoral nas páginas de visualização de detalhes',
@@ -85,34 +91,38 @@ const TIERS = [
   },
   {
     key: 'elite',
-    name: 'Comandante Nobre',
+    name: 'Guardião de Albion',
+    badgeLabel: 'GUARDIÃO DE ALBION',
+    franchise: 'Fable',
     minFavs: 100,
     maxFavs: 249,
     maxImages: 16,
     reqLabel: '100 a 249 favoritos',
     icon: Crown,
-    desc: 'Patente nobre de autoridade artística. Seus papéis de parede figuram entre os mais curtidos e baixados de todo o ecossistema.',
+    desc: 'Herói lendário consagrado pela Guilda de Albion. Catálogo autoral de prestígio com alto impacto de engajamento e reconhecimento artístico na comunidade.',
     benefits: [
-      'Insígnia dourada de Comandante Nobre',
+      'Insígnia dourada imperial com coroa de liderança',
       'Expansão de cota para 16 slots de upload (+2 adicionais)',
-      'Elegibilidade para Coleção Oficial dedicada',
-      'Candidatura permanente para os Hero Slides da Home',
+      'Elegibilidade para criação de Coleção Oficial dedicada',
+      'Candidatura preferencial para o Hero Slider da Home',
     ],
   },
   {
     key: 'spartan',
-    name: 'Spartan Mythic',
+    name: 'Spartan Mythic 117',
+    badgeLabel: 'SPARTAN 117',
+    franchise: 'Halo Spartan-II',
     minFavs: 250,
     maxFavs: null,
     maxImages: 18,
     reqLabel: '250+ favoritos',
-    icon: Trophy,
-    desc: 'O mais alto escalão lendário da comunidade. Maestria estética absoluta, referência definitiva de personalização de consoles.',
+    icon: Zap,
+    desc: 'A mais alta condecoração da plataforma. Armadura Mjolnir completa, liderança absoluta na comunidade e selo supremo de excelência do ecossistema Xbox.',
     benefits: [
-      'Insígnia mestre verde Spartan Mythic',
+      'Insígnia máxima verde Spartan com núcleo de energia Mjolnir',
       'Cota máxima definitiva de 18 slots de upload',
-      'Destaque editorial vitalício em toda a plataforma',
-      'Acesso a canal de curadoria direta com os administradores',
+      'Destaque editorial permanente em toda a plataforma',
+      'Acesso a canal de curadoria direta com a administração',
     ],
   },
 ];
@@ -191,8 +201,8 @@ export default function Levels() {
 
               <div className={styles.userStatusBadges}>
                 <div className={`${styles.tierBadge} ${styles[currentTier.key]}`}>
-                  <span className={styles.tierBadgeDot} />
-                  <span>{currentTier.name.toUpperCase()}</span>
+                  <currentTier.icon size={13} className={styles.badgeIcon} />
+                  <span>{currentTier.badgeLabel}</span>
                 </div>
                 <div className={styles.favBadge} title="Total de Favoritos Recebidos">
                   <Heart size={14} className={styles.favHeartIcon} />
@@ -326,9 +336,10 @@ export default function Levels() {
                     </div>
                     <div className={styles.tierMeta}>
                       <span className={`${styles.tierBadge} ${styles[tier.key]}`}>
-                        <span className={styles.tierBadgeDot} />
-                        <span>{tier.name.toUpperCase()}</span>
+                        <TierIcon size={13} className={styles.badgeIcon} />
+                        <span>{tier.badgeLabel}</span>
                       </span>
+                      <span className={styles.tierFranchiseText}>{tier.franchise}</span>
                       <span className={styles.tierReqText}>{tier.reqLabel}</span>
                     </div>
                   </div>
@@ -414,56 +425,45 @@ export default function Levels() {
 
           <div className={styles.rulesGrid}>
             <div className={styles.ruleCard}>
-              <ShieldAlert size={20} className={styles.ruleIconWarning} />
-              <div className={styles.ruleCardBody}>
-                <h3 className={styles.ruleTitle}>Prevenção Anti-Fraude</h3>
-                <p className={styles.ruleText}>
-                  Favoritos dados pelo próprio autor aos seus wallpapers não são computados na contagem de patente. Apenas interações de outros usuários geram pontos.
-                </p>
-              </div>
+              <h3 className={styles.ruleTitle}>Prevenção Anti-Fraude</h3>
+              <p className={styles.ruleText}>
+                Favoritos dados pelo próprio autor aos seus wallpapers não são computados na contagem de patente. Apenas interações de outros usuários geram pontos.
+              </p>
             </div>
 
             <div className={styles.ruleCard}>
-              <Sparkles size={20} className={styles.ruleIconPrimary} />
-              <div className={styles.ruleCardBody}>
-                <h3 className={styles.ruleTitle}>Proporção Recomendada 16:9</h3>
-                <p className={styles.ruleText}>
-                  Como a plataforma é pensada para monitores e TVs de Xbox, papéis de parede em 16:9 aproveitam 100% da tela sem cortes ou barras pretas.
-                </p>
-              </div>
+              <h3 className={styles.ruleTitle}>Proporção Recomendada 16:9</h3>
+              <p className={styles.ruleText}>
+                Como a plataforma é pensada para monitores e TVs de Xbox, papéis de parede em 16:9 aproveitam 100% da tela sem cortes ou barras pretas.
+              </p>
             </div>
 
             <div className={styles.ruleCard}>
-              <Info size={20} className={styles.ruleIconInfo} />
-              <div className={styles.ruleCardBody}>
-                <h3 className={styles.ruleTitle}>Fila de Moderação</h3>
-                <p className={styles.ruleText}>
-                  Imagens enviadas passam por análise antes de serem listadas na galeria pública para manter o padrão estético e a conformidade das regras.
-                </p>
-              </div>
+              <h3 className={styles.ruleTitle}>Fila de Moderação</h3>
+              <p className={styles.ruleText}>
+                Imagens enviadas passam por análise antes de serem listadas na galeria pública para manter o padrão estético e a conformidade das regras.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className={styles.actionsSection}>
-          <div className={styles.actionsInner}>
-            <h2 className={styles.actionsTitle}>Pronto para compartilhar seus wallpapers?</h2>
-            <p className={styles.actionsDesc}>
-              Envie capturas em alta resolução ou explore as criações da comunidade para o seu Xbox.
-            </p>
-            <div className={styles.actionsButtonGroup}>
-              <Link to="/gallery" className={styles.btnPrimary} tabIndex={0}>
-                Explorar Galeria
-                <ArrowRight size={18} />
-              </Link>
-              <Link to="/upload" className={styles.btnSecondary} tabIndex={0}>
-                <UploadCloud size={18} />
-                Enviar Wallpaper
-              </Link>
-              <Link to="/guide" className={styles.btnGhost} tabIndex={0}>
-                Guia de Uso
-              </Link>
-            </div>
+        <section className={styles.ctaSection}>
+          <h2 className={styles.ctaTitle}>Pronto para começar?</h2>
+          <p className={styles.ctaDesc}>
+            Explore a galeria da comunidade ou envie seus primeiros wallpapers para o seu Xbox.
+          </p>
+          <div className={styles.ctaButtons}>
+            <Link to="/gallery" className={styles.btnPrimary} tabIndex={0}>
+              Explorar Galeria
+              <ArrowRight size={18} />
+            </Link>
+            <Link to="/upload" className={styles.btnSecondary} tabIndex={0}>
+              <UploadCloud size={18} />
+              Enviar Wallpaper
+            </Link>
+            <Link to="/guide" className={styles.btnTertiary} tabIndex={0}>
+              Guia de Uso
+            </Link>
           </div>
         </section>
       </div>

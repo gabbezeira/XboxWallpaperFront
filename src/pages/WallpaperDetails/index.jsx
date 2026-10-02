@@ -20,21 +20,21 @@ function formatResolution(width, height) {
 }
 
 const TIER_LABELS = {
-  spartan: 'SPARTAN ULTIMATE',
-  elite: 'ELITE',
-  veterano: 'VETERANO',
-  criador: 'CRIADOR',
-  explorador: 'EXPLORADOR',
-  recruta: 'RECRUTA',
+  spartan: 'SPARTAN 117',
+  elite: 'GUARDIÃO DE ALBION',
+  veterano: 'VETERANO COG',
+  criador: 'EXPLORADOR CONSTELAÇÃO',
+  explorador: 'PILOTO HORIZON',
+  recruta: 'CADETE UNSC',
 };
 
 function getUserLevel(favoritesCount = 0) {
-  if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN ULTIMATE' };
-  if (favoritesCount >= 100) return { key: 'elite', label: 'ELITE' };
-  if (favoritesCount >= 50) return { key: 'veterano', label: 'VETERANO' };
-  if (favoritesCount >= 20) return { key: 'criador', label: 'CRIADOR' };
-  if (favoritesCount >= 5) return { key: 'explorador', label: 'EXPLORADOR' };
-  return { key: 'recruta', label: 'RECRUTA' };
+  if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN 117' };
+  if (favoritesCount >= 100) return { key: 'elite', label: 'GUARDIÃO DE ALBION' };
+  if (favoritesCount >= 50) return { key: 'veterano', label: 'VETERANO COG' };
+  if (favoritesCount >= 20) return { key: 'criador', label: 'EXPLORADOR CONSTELAÇÃO' };
+  if (favoritesCount >= 5) return { key: 'explorador', label: 'PILOTO HORIZON' };
+  return { key: 'recruta', label: 'CADETE UNSC' };
 }
 
 function getAuthorDisplay(wallpaper, authUser, profile) {

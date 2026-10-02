@@ -612,7 +612,15 @@
   text-decoration: none;
 }
 
-.btnGhost {
-  @include btn-ghost;
+.btnTertiary {
+  @include btn-base;
+  background-color: #1a1a1a;
+  color: $color-text-primary;
+  border: 1px solid #333333;
   text-decoration: none;
+
+  &:hover:not(:disabled) {
+    background-color: #262626;
+    border-color: #4a4a4a;
+  }
 }

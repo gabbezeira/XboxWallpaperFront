@@ -412,7 +412,7 @@ export default function Guide() {
               <UploadCloud size={18} />
               Enviar Wallpaper
             </Link>
-            <Link to="/levels" className={styles.btnGhost} tabIndex={0}>
+            <Link to="/levels" className={styles.btnTertiary} tabIndex={0}>
               Níveis &amp; Badges
             </Link>
           </div>

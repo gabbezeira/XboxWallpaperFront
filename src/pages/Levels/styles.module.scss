@@ -160,72 +160,69 @@
   line-height: 1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 
-  &.recruta {
-    background-color: #1e222a;
-    color: #f1f5f9;
-    border: 1px solid #475569;
+  .badgeIcon {
+    flex-shrink: 0;
+  }
 
-    .tierBadgeDot {
-      background-color: #94a3b8;
+  &.recruta {
+    background-color: #141820;
+    color: #f8fafc;
+    border: 1px solid #334155;
+
+    .badgeIcon {
+      color: #94a3b8;
     }
   }
 
   &.explorador {
-    background-color: #78350f;
+    background-color: #2b1404;
     color: #fef3c7;
-    border: 1px solid #d97706;
+    border: 1px solid #b45309;
 
-    .tierBadgeDot {
-      background-color: #fbbf24;
+    .badgeIcon {
+      color: #f59e0b;
     }
   }
 
   &.criador {
-    background-color: #1e40af;
+    background-color: #0b1d3a;
     color: #eff6ff;
-    border: 1px solid #3b82f6;
+    border: 1px solid #2563eb;
 
-    .tierBadgeDot {
-      background-color: #60a5fa;
+    .badgeIcon {
+      color: #60a5fa;
     }
   }
 
   &.veterano {
-    background-color: #581c87;
+    background-color: #2d0618;
     color: #faf5ff;
-    border: 1px solid #a855f7;
+    border: 1px solid #9333ea;
 
-    .tierBadgeDot {
-      background-color: #c084fc;
+    .badgeIcon {
+      color: #c084fc;
     }
   }
 
   &.elite {
-    background-color: #854d0e;
+    background-color: #2c1802;
     color: #fefce8;
-    border: 1px solid #eab308;
+    border: 1px solid #ca8a04;
 
-    .tierBadgeDot {
-      background-color: #facc15;
+    .badgeIcon {
+      color: #eab308;
     }
   }
 
   &.spartan {
-    background-color: #064e3b;
+    background-color: #032512;
     color: #4ade80;
     border: 1px solid #107c10;
 
-    .tierBadgeDot {
-      background-color: #4ade80;
+    .badgeIcon {
+      color: #4ade80;
     }
   }
-}
-
-.tierBadgeDot {
-  width: 6px;
-  height: 6px;
-  border-radius: $radius-full;
-  flex-shrink: 0;
 }
 
 .favBadge {
@@ -540,37 +537,37 @@
   flex-shrink: 0;
 
   &.icon_recruta {
-    background-color: #1e222a;
+    background-color: #141820;
     color: #94a3b8;
-    border: 1px solid #475569;
+    border: 1px solid #334155;
   }
 
   &.icon_explorador {
-    background-color: #78350f;
+    background-color: #2b1404;
     color: #fde68a;
-    border: 1px solid #d97706;
+    border: 1px solid #b45309;
   }
 
   &.icon_criador {
-    background-color: #1e40af;
+    background-color: #0b1d3a;
     color: #bfdbfe;
-    border: 1px solid #3b82f6;
+    border: 1px solid #2563eb;
   }
 
   &.icon_veterano {
-    background-color: #581c87;
+    background-color: #2d0618;
     color: #e9d5ff;
-    border: 1px solid #a855f7;
+    border: 1px solid #9333ea;
   }
 
   &.icon_elite {
-    background-color: #854d0e;
+    background-color: #2c1802;
     color: #fef08a;
-    border: 1px solid #eab308;
+    border: 1px solid #ca8a04;
   }
 
   &.icon_spartan {
-    background-color: #064e3b;
+    background-color: #032512;
     color: #4ade80;
     border: 1px solid #107c10;
   }
@@ -580,6 +577,14 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.tierFranchiseText {
+  font-size: 11px;
+  font-weight: $fw-semibold;
+  color: $color-primary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .tierReqText {
@@ -720,36 +725,12 @@
 
 .ruleCard {
   display: flex;
-  align-items: flex-start;
-  gap: $spacing-md;
+  flex-direction: column;
+  gap: $spacing-xs;
   padding: $spacing-lg;
   border: 1px solid $color-border;
   border-radius: $radius-xl;
   background-color: $color-bg-secondary;
-}
-
-.ruleIconWarning {
-  color: $color-warning;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.ruleIconPrimary {
-  color: $color-primary;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.ruleIconInfo {
-  color: #60a5fa;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.ruleCardBody {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .ruleTitle {
@@ -764,26 +745,19 @@
   line-height: 1.5;
 }
 
-.actionsSection {
+.ctaSection {
   padding: $spacing-2xl $spacing-xl;
-  border: 1px solid $color-border;
-  border-top: 3px solid $color-primary;
+  border: 1px solid rgba($color-primary, 0.25);
   border-radius: $radius-xl;
-  background-color: $color-bg-secondary;
+  background: linear-gradient(135deg, rgba(16, 124, 16, 0.08) 0%, rgba(7, 7, 7, 0.95) 100%);
   text-align: center;
-  display: flex;
-  justify-content: center;
-}
-
-.actionsInner {
-  max-width: 640px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: $spacing-md;
 }
 
-.actionsTitle {
+.ctaTitle {
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
@@ -793,13 +767,12 @@
   }
 }
 
-.actionsDesc {
+.ctaDesc {
   font-size: $fs-body;
   color: $color-text-secondary;
-  line-height: 1.6;
 }
 
-.actionsButtonGroup {
+.ctaButtons {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -818,7 +791,15 @@
   text-decoration: none;
 }
 
-.btnGhost {
-  @include btn-ghost;
+.btnTertiary {
+  @include btn-base;
+  background-color: #1a1a1a;
+  color: $color-text-primary;
+  border: 1px solid #333333;
   text-decoration: none;
+
+  &:hover:not(:disabled) {
+    background-color: #262626;
+    border-color: #4a4a4a;
+  }
 }

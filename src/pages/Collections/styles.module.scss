@@ -3,172 +3,59 @@
 
 .page {
   flex: 1;
+  padding: $spacing-xl 0;
   display: flex;
   flex-direction: column;
-  padding: $spacing-lg $spacing-md;
 
   @include respond-to(md) {
-    padding: $spacing-2xl;
-  }
-
-  @include respond-to(2xl) {
-    padding: $spacing-3xl;
+    padding: $spacing-2xl 0;
   }
 }
 
 .inner {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: $spacing-xl;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-xl;
 
   @include respond-to(md) {
-    gap: $spacing-2xl;
+    padding: 0;
   }
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
 }
 
 .title {
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-text-primary;
-  letter-spacing: -0.5px;
 }
 
 .subtitle {
   font-size: $fs-body;
   color: $color-text-secondary;
-  line-height: 1.6;
-  max-width: 780px;
 }
 
-.divider {
-  width: 48px;
-  height: 3px;
-  background-color: $color-primary;
-  border-radius: $radius-full;
-  margin-top: $spacing-xs;
-}
-
-.quickAccessCard {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-lg;
-  border-radius: $radius-xl;
-  background-color: $color-bg-secondary;
-  border: 1px solid $color-border;
-  border-left: 3px solid $color-primary;
-
-  @include respond-to(md) {
-    padding: $spacing-xl;
-    gap: $spacing-lg;
-  }
-}
-
-.quickAccessHeader {
-  display: flex;
-  align-items: flex-start;
-  gap: $spacing-md;
-}
-
-.quickAccessIconBox {
-  width: 44px;
-  height: 44px;
-  border-radius: $radius-lg;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-primary;
-  flex-shrink: 0;
-}
-
-.quickAccessText {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.quickAccessTitle {
-  font-size: $fs-subtitle;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-}
-
-.quickAccessDesc {
-  font-size: $fs-small;
-  color: $color-text-secondary;
-  line-height: 1.5;
-}
-
-.quickAccessForm {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-
-  @include respond-to(sm) {
-    flex-direction: row;
-    align-items: center;
-  }
-}
-
-.quickInputWrapper {
-  flex: 1;
-  position: relative;
-}
-
-.quickInput {
-  width: 100%;
-  padding: 12px $spacing-lg;
-  border-radius: $radius-md;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: $color-text-primary;
-  font-size: $fs-body;
-  font-weight: $fw-bold;
-  letter-spacing: 1px;
-  transition: all $transition-fast;
-  @include gamepad-focus;
-
-  &::placeholder {
-    font-weight: $fw-regular;
-    color: $color-text-muted;
-    letter-spacing: normal;
-  }
-
-  &:focus {
-    border-color: $color-primary;
-    box-shadow: 0 0 12px rgba($color-primary, 0.3);
-  }
-}
-
-.btnQuickSubmit {
-  @include btn-primary;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: $spacing-xs;
-  font-size: $fs-small;
-  padding: 12px $spacing-xl;
-  white-space: nowrap;
-}
-
-.codeErrorText {
-  font-size: $fs-small;
-  color: $color-danger;
-  font-weight: $fw-medium;
-}
-
-.searchBarSection {
+.toolbarSection {
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
@@ -185,11 +72,16 @@
   align-items: center;
   gap: $spacing-sm;
   padding: 10px $spacing-md;
-  background-color: $color-bg-secondary;
+  background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid $color-border;
-  border-radius: $radius-md;
+  border-radius: $radius-full;
   width: 100%;
   max-width: 480px;
+  transition: border-color $transition-fast;
+
+  &:focus-within {
+    border-color: $color-primary;
+  }
 }
 
 .searchIcon {
@@ -210,9 +102,27 @@
   }
 }
 
+.btnGoCode {
+  @include flex-center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-full;
+  background-color: $color-primary;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: darken($color-primary, 8%);
+  }
+}
+
 .resultsCount {
   font-size: $fs-small;
   color: $color-text-muted;
+  white-space: nowrap;
 }
 
 .collectionsGrid {

@@ -7,6 +7,7 @@ import {
   Layers,
   ArrowRight,
   Check,
+  Trophy,
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import { useAuth } from '../../hooks/useAuth';

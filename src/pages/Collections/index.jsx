@@ -7,7 +7,6 @@ import {
   Search,
   ArrowRight,
   User,
-  KeyRound,
   Copy,
   Check,
   Compass,
@@ -19,8 +18,6 @@ export default function Collections() {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [quickCode, setQuickCode] = useState('');
-  const [codeError, setCodeError] = useState('');
   const [copiedCode, setCopiedCode] = useState(null);
 
   useEffect(() => {
@@ -45,15 +42,18 @@ export default function Collections() {
     };
   }, []);
 
-  const handleQuickCodeSubmit = (e) => {
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
-    const clean = quickCode.trim();
-    if (!clean) {
-      setCodeError('Digite o código ou slug da coleção.');
-      return;
+    const clean = searchQuery.trim();
+    if (!clean) return;
+    const match = collections.find(
+      (c) =>
+        c.code?.toLowerCase() === clean.toLowerCase() ||
+        c.slug?.toLowerCase() === clean.toLowerCase()
+    );
+    if (match) {
+      navigate(`/collection/${match.slug || match.id}`);
     }
-    setCodeError('');
-    navigate(`/collection/${encodeURIComponent(clean)}`);
   };
 
   const handleCopyCode = (e, code) => {
@@ -82,63 +82,34 @@ export default function Collections() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>Coleções Oficiais</h1>
-          <p className={styles.subtitle}>
-            Explore coleções temáticas criadas por artistas e membros da comunidade. Digite um código de acesso rápido ou busque pelo acervo desejado.
-          </p>
-          <div className={styles.divider} />
-        </header>
-
-        <section className={styles.quickAccessCard}>
-          <div className={styles.quickAccessHeader}>
-            <div className={styles.quickAccessIconBox}>
-              <KeyRound size={22} />
-            </div>
-            <div className={styles.quickAccessText}>
-              <h2 className={styles.quickAccessTitle}>Acesso Rápido por Código</h2>
-              <p className={styles.quickAccessDesc}>
-                Tem o código de uma coleção compartilhada por um criador? Digite abaixo para ir direto sem precisar de URLs longas.
-              </p>
-            </div>
+        <div className={styles.header}>
+          <div className={styles.titleArea}>
+            <h1 className={styles.title}>Coleções</h1>
+            <p className={styles.subtitle}>
+              Explore coleções temáticas ou busque pelo código de acesso
+            </p>
           </div>
+        </div>
 
-          <form className={styles.quickAccessForm} onSubmit={handleQuickCodeSubmit}>
-            <div className={styles.quickInputWrapper}>
-              <input
-                type="text"
-                placeholder="Ex: XB-HALO, FORZA, CYBERPUNK..."
-                value={quickCode}
-                onChange={(e) => {
-                  setQuickCode(e.target.value.toUpperCase());
-                  if (codeError) setCodeError('');
-                }}
-                className={styles.quickInput}
-                maxLength={24}
-              />
-            </div>
-            <button type="submit" className={styles.btnQuickSubmit} tabIndex={0}>
-              <span>Acessar Coleção</span>
-              <ArrowRight size={18} />
-            </button>
-          </form>
-          {codeError && <span className={styles.codeErrorText}>{codeError}</span>}
-        </section>
-
-        <div className={styles.searchBarSection}>
-          <div className={styles.searchBox}>
+        <div className={styles.toolbarSection}>
+          <form className={styles.searchBox} onSubmit={handleSearchSubmit}>
             <Search size={18} className={styles.searchIcon} />
             <input
               type="text"
-              placeholder="Filtrar por nome, criador ou código..."
+              placeholder="Buscar por nome, criador ou código..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
             />
-          </div>
+            {searchQuery.trim() && (
+              <button type="submit" className={styles.btnGoCode} tabIndex={0}>
+                <ArrowRight size={16} />
+              </button>
+            )}
+          </form>
           <span className={styles.resultsCount}>
             {filteredCollections.length}{' '}
-            {filteredCollections.length === 1 ? 'coleção encontrada' : 'coleções encontradas'}
+            {filteredCollections.length === 1 ? 'coleção' : 'coleções'}
           </span>
         </div>
 
@@ -221,7 +192,7 @@ export default function Collections() {
             </div>
             <h3 className={styles.emptyTitle}>Nenhuma coleção encontrada</h3>
             <p className={styles.emptyDesc}>
-              Não localizamos nenhuma coleção com os termos digitados. Tente buscar por outro nome ou utilize o código de acesso rápido.
+              Não localizamos nenhuma coleção com os termos digitados. Tente buscar por outro nome ou código.
             </p>
           </div>
         )}

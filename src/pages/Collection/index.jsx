@@ -4,8 +4,9 @@ import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
-import { ArrowLeft, User, Layers, Share2, Check, Copy } from 'lucide-react';
+import { ArrowLeft, Layers, Share2, Check, Copy } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
+import UserAvatar from '../../components/UserAvatar';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -123,13 +124,11 @@ export default function Collection() {
             <div className={styles.badgeRow}>
               {collection && (
                 <span className={styles.creatorPill}>
-                  {linkedUserPhoto ? (
-                    <img src={linkedUserPhoto} alt="" className={styles.creatorAvatar} />
-                  ) : (
-                    <User size={13} />
-                  )}
-                  <span>Por {linkedUserName}</span>
-                  {linkedUserVerified && <VerifiedBadge size={14} />}
+                  <UserAvatar photoUrl={linkedUserPhoto} name={linkedUserName} />
+                  <span className={styles.creatorNameRow}>
+                    <span>Por {linkedUserName}</span>
+                    {linkedUserVerified && <VerifiedBadge size={16} />}
+                  </span>
                 </span>
               )}
               {wallpapers.length > 0 && (

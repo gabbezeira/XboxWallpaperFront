@@ -211,25 +211,6 @@
   gap: $spacing-md;
   color: $color-text-secondary;
   font-size: $fs-body;
-
-  .avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: $radius-full;
-    background-color: $color-primary;
-    color: #000;
-    @include flex-center;
-    font-size: 14px;
-    font-weight: $fw-bold;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .avatarImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 }
 
 .authorDetails {
@@ -370,7 +351,7 @@
   }
 
   .statFavIcon {
-    color: #ef4444; /* red heart */
+    color: #ef4444;
     fill: #ef4444;
   }
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Heart, Monitor, HardDrive, Download, Layers } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
+import UserAvatar from '../../components/UserAvatar';
 import { useLocation, useNavigate, Navigate, useParams, Link } from 'react-router-dom';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useAuth } from '../../hooks/useAuth';
@@ -93,7 +94,6 @@ export default function WallpaperDetailsPage() {
     return !(s?.id === id);
   });
   const [mediaToken, setMediaToken] = useState(null);
-  const [photoError, setPhotoError] = useState(false);
   const [previewLoaded, setPreviewLoaded] = useState(false);
 
   useEffect(() => {
@@ -101,11 +101,9 @@ export default function WallpaperDetailsPage() {
     if (seed) {
       setWallpaper(seed);
       setHydrating(false);
-      setPhotoError(false);
     } else {
       setHydrating(true);
       setWallpaper(null);
-      setPhotoError(false);
     }
 
     if (!id) return undefined;
@@ -283,21 +281,7 @@ export default function WallpaperDetailsPage() {
 
           <div className={styles.meta}>
             <div className={styles.author}>
-              <div className={styles.avatar}>
-                {authorInfo.photo && !photoError ? (
-                  <img
-                    src={authorInfo.photo}
-                    alt={authorInfo.label}
-                    className={styles.avatarImg}
-                    referrerPolicy="no-referrer"
-                    onError={() => setPhotoError(true)}
-                  />
-                ) : (
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                )}
-              </div>
+              <UserAvatar photoUrl={authorInfo.photo} name={authorInfo.label} />
               <div className={styles.authorDetails}>
                 <div className={styles.authorNameRow}>
                   <span>Por {authorInfo.label}</span>

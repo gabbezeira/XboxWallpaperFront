@@ -6,12 +6,12 @@ import {
   Layers,
   Search,
   ArrowRight,
-  User,
   Copy,
   Check,
   Compass,
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
+import UserAvatar from '../../components/UserAvatar';
 import styles from './styles.module.scss';
 
 export default function Collections() {
@@ -166,16 +166,16 @@ export default function Collections() {
                       {col.description && <p className={styles.cardDesc}>{col.description}</p>}
                       <div className={styles.cardFooter}>
                         <span className={styles.creatorPill} title={`Criador: ${linkedUserName}`}>
-                            {hasLinkedUser && col.linkedUserPhoto ? (
-                              <img src={col.linkedUserPhoto} alt="" className={styles.creatorAvatar} loading="lazy" />
-                            ) : (
-                              <span className={styles.creatorAvatarFallback}><User size={11} /></span>
-                            )}
-                            <span className={styles.creatorName}>{linkedUserName}</span>
-                            {linkedUserVerified && <VerifiedBadge size={13} />}
-                          </span>
+                          <UserAvatar
+                            photoUrl={hasLinkedUser ? col.linkedUserPhoto : null}
+                            name={linkedUserName}
+                            size="small"
+                          />
+                          <span className={styles.creatorName}>{linkedUserName}</span>
+                          {linkedUserVerified && <VerifiedBadge size={13} />}
+                        </span>
                         <span className={styles.viewLink}>
-                          Explorar <ArrowRight size={14} />
+                          Ver coleção <ArrowRight size={14} />
                         </span>
                       </div>
                     </div>

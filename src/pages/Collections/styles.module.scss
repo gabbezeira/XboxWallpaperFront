@@ -150,6 +150,18 @@
   overflow: hidden;
   cursor: pointer;
   @include gamepad-focus;
+
+  &:focus-visible,
+  &.force-focus {
+    transform: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    .cardBannerImg {
+      transform: scale(1.05);
+    }
+  }
 }
 
 .cardBannerArea {
@@ -162,6 +174,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform $transition-slow;
 }
 
 .cardBannerFallback {
@@ -212,7 +225,12 @@
   cursor: pointer;
   backdrop-filter: blur(8px);
   transition: background-color $transition-fast, border-color $transition-fast;
-  @include gamepad-focus;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -228,26 +246,6 @@
   font-size: $fs-small;
   font-weight: $fw-semibold;
   color: $color-text-primary;
-}
-
-.creatorAvatar,
-.creatorAvatarFallback {
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-  border-radius: $radius-full;
-}
-
-.creatorAvatar {
-  object-fit: cover;
-}
-
-.creatorAvatarFallback {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-text-secondary;
-  background: $color-bg-tertiary;
 }
 
 .creatorName {
@@ -291,11 +289,22 @@
 .viewLink {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
+  gap: $spacing-xs;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: $radius-full;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: $fs-small;
   font-weight: $fw-semibold;
-  color: $color-primary;
+  color: $color-text-primary;
   flex-shrink: 0;
+  transition: background-color $transition-fast, border-color $transition-fast;
+
+  .collectionCard:hover &,
+  .collectionCard:focus-visible & {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.24);
+  }
 }
 
 .emptyState {

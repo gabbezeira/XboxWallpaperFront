@@ -119,6 +119,8 @@ export default function OfficialPublish({ onPublishComplete }) {
         if (globalGame.trim()) formData.append('game', globalGame.trim());
         if (targetCollectionId) formData.append('collectionId', targetCollectionId);
         if (tagsArray.length > 0) formData.append('tags', JSON.stringify(tagsArray));
+        formData.append('isPublic', 'true');
+        formData.append('publishAsAdmin', 'true');
 
         const res = await fetch(`${API_URL}/api/wallpapers/upload`, {
           method: 'POST',

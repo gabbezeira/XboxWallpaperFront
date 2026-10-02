@@ -3,11 +3,12 @@ import { api } from '../../services/api';
 import { auth } from '../../services/firebase';
 import {
   UploadCloud,
-  Image as ImageIcon,
   Layers,
   X,
   Check,
   AlertCircle,
+  FileImage,
+  Sparkles,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 
@@ -25,19 +26,12 @@ function cleanFileNameToTitle(fileName) {
 }
 
 export default function OfficialPublish({ onPublishComplete }) {
-  const [subTab, setSubTab] = useState('batch');
   const [collections, setCollections] = useState([]);
-
-  const [heroForm, setHeroForm] = useState({ title: '', subtitle: '', targetTag: '', file: null });
-  const [heroLoading, setHeroLoading] = useState(false);
-  const [heroMessage, setHeroMessage] = useState(null);
-
   const [batchFiles, setBatchFiles] = useState([]);
   const [targetCollectionId, setTargetCollectionId] = useState('');
   const [globalGame, setGlobalGame] = useState('');
   const [globalTags, setGlobalTags] = useState('');
   const [titlePrefix, setTitlePrefix] = useState('');
-
   const [uploadingBatch, setUploadingBatch] = useState(false);
   const [batchProgress, setBatchProgress] = useState({ total: 0, completed: 0, current: '' });
 
@@ -46,46 +40,8 @@ export default function OfficialPublish({ onPublishComplete }) {
   useEffect(() => {
     api.collections.list().then((res) => {
       setCollections(res || []);
-    }).catch(() => { });
+    }).catch(() => {});
   }, []);
-
-  const handleHeroSubmit = async (e) => {
-    e.preventDefault();
-    if (!heroForm.file) return;
-    setHeroLoading(true);
-    setHeroMessage(null);
-
-    try {
-      const user = auth.currentUser;
-      if (!user) throw new Error('Não autenticado');
-      const token = await user.getIdToken(true);
-
-      const formData = new FormData();
-      formData.append('image', heroForm.file);
-      formData.append('title', heroForm.title);
-      formData.append('subtitle', heroForm.subtitle);
-      formData.append('targetTag', heroForm.targetTag);
-
-      const res = await fetch(`${API_URL}/api/hero-slides/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `HTTP ${res.status}`);
-      }
-
-      setHeroForm({ title: '', subtitle: '', targetTag: '', file: null });
-      setHeroMessage({ type: 'success', text: 'Hero Slide publicado com sucesso!' });
-      if (onPublishComplete) onPublishComplete();
-    } catch (err) {
-      setHeroMessage({ type: 'error', text: err.message });
-    } finally {
-      setHeroLoading(false);
-    }
-  };
 
   const handleFilesSelected = (filesList) => {
     const valid = Array.from(filesList).filter((f) =>
@@ -138,32 +94,44 @@ export default function OfficialPublish({ onPublishComplete }) {
     const queue = [...batchFiles];
     let completedCount = 0;
 
-    const processItem = async (item) => {
+    for (let i = 0; i < queue.length; i++) {
+      const item = queue[i];
+      if (item.status === 'success') continue;
+
+      setBatchProgress({
+        total: queue.length,
+        completed: completedCount,
+        current: `Enviando (${i + 1}/${queue.length}): ${item.title}...`,
+      });
+
+      setBatchFiles((prev) =>
+        prev.map((f) => (f.id === item.id ? { ...f, status: 'uploading' } : f))
+      );
+
       try {
-        setBatchProgress((prev) => ({
-          ...prev,
-          current: `Enviando: ${item.title}`,
-        }));
+        const user = auth.currentUser;
+        if (!user) throw new Error('Não autenticado');
+        const token = await user.getIdToken();
 
-        setBatchFiles((prev) =>
-          prev.map((f) => (f.id === item.id ? { ...f, status: 'uploading' } : f))
-        );
+        const formData = new FormData();
+        formData.append('image', item.file);
+        formData.append('title', item.title || 'Sem título');
+        if (globalGame.trim()) formData.append('game', globalGame.trim());
+        if (targetCollectionId) formData.append('collectionId', targetCollectionId);
+        if (tagsArray.length > 0) formData.append('tags', JSON.stringify(tagsArray));
 
-        await api.wallpapers.upload(item.file, {
-          title: item.title || null,
-          game: globalGame.trim() || null,
-          tags: tagsArray,
-          isPublic: true,
-          collectionId: targetCollectionId || null,
+        const res = await fetch(`${API_URL}/api/wallpapers/upload`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
         });
 
-        completedCount += 1;
-        setBatchProgress({
-          total: batchFiles.length,
-          completed: completedCount,
-          current: `${completedCount} de ${batchFiles.length} concluídos`,
-        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || `HTTP ${res.status}`);
+        }
 
+        completedCount++;
         setBatchFiles((prev) =>
           prev.map((f) => (f.id === item.id ? { ...f, status: 'success' } : f))
         );
@@ -174,17 +142,13 @@ export default function OfficialPublish({ onPublishComplete }) {
           )
         );
       }
-    };
-
-    const CONCURRENCY = 2;
-    for (let i = 0; i < queue.length; i += CONCURRENCY) {
-      const chunk = queue.slice(i, i + CONCURRENCY);
-      await Promise.all(chunk.map((item) => processItem(item)));
-      if (i + CONCURRENCY < queue.length) {
-        await new Promise((resolve) => setTimeout(resolve, 200));
-      }
     }
 
+    setBatchProgress({
+      total: queue.length,
+      completed: completedCount,
+      current: `Concluído! ${completedCount} de ${queue.length} enviados.`,
+    });
     setUploadingBatch(false);
     if (onPublishComplete) onPublishComplete();
   };
@@ -193,187 +157,178 @@ export default function OfficialPublish({ onPublishComplete }) {
     <div className={styles.viewContainer}>
       <div className={styles.sectionHeader}>
         <div className={styles.sectionTitleArea}>
-          <h2 className={styles.sectionTitle}>Publicação & Gestão de Mídia</h2>
+          <h2 className={styles.sectionTitle}>Publicação e Upload em Lote</h2>
           <p className={styles.sectionSubtitle}>
-            Envio em lote para coleções oficiais ou novos destaques no Hero Carousel da Home.
+            Faça upload em massa de múltiplos papéis de parede para o acervo oficial com tags e coleções unificadas.
           </p>
-        </div>
-
-        <div className={styles.subSegment}>
-          <button
-            type="button"
-            className={`${styles.subSegmentBtn} ${subTab === 'batch' ? styles.subSegmentActive : ''}`}
-            onClick={() => setSubTab('batch')}
-          >
-            <UploadCloud size={14} />
-            <span>Upload em Lote</span>
-          </button>
-          <button
-            type="button"
-            className={`${styles.subSegmentBtn} ${subTab === 'hero' ? styles.subSegmentActive : ''}`}
-            onClick={() => setSubTab('hero')}
-          >
-            <ImageIcon size={14} />
-            <span>Hero Slide</span>
-          </button>
         </div>
       </div>
 
-      {subTab === 'batch' && (
-        <div className={styles.publishGrid}>
-          <div className={styles.publishConfigCard}>
-            <h3 className={styles.configCardTitle}>
-              <Layers size={16} />
-              <span>Configurações do Lote</span>
-            </h3>
+      <div className={styles.publishGrid}>
+        <div className={styles.publishConfigCard}>
+          <div className={styles.configCardHeader}>
+            <div className={styles.cardHeaderIcon}>
+              <Layers size={18} />
+            </div>
+            <div>
+              <h3 className={styles.configCardTitle}>Configurações do Lote</h3>
+              <p className={styles.configCardSub}>Metadados aplicados aos envios</p>
+            </div>
+          </div>
 
-            <div className={styles.formField}>
-              <label className={styles.fieldLabel}>Coleção Alvo</label>
-              <select
-                value={targetCollectionId}
-                onChange={(e) => setTargetCollectionId(e.target.value)}
-                className={styles.fieldSelect}
+          <div className={styles.formField}>
+            <label className={styles.fieldLabel}>Coleção Alvo</label>
+            <select
+              value={targetCollectionId}
+              onChange={(e) => setTargetCollectionId(e.target.value)}
+              className={styles.fieldSelect}
+            >
+              <option value="">Apenas Catálogo Público Geral</option>
+              {collections.map((col) => (
+                <option key={col.id} value={col.id}>
+                  {col.name} ({col.slug})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.formField}>
+            <label className={styles.fieldLabel}>Jogo Padrão</label>
+            <input
+              type="text"
+              placeholder="Ex: Halo Infinite, Forza Horizon 5"
+              value={globalGame}
+              onChange={(e) => setGlobalGame(e.target.value)}
+              className={styles.fieldInput}
+            />
+          </div>
+
+          <div className={styles.formField}>
+            <label className={styles.fieldLabel}>Tags Compartilhadas (separadas por vírgula)</label>
+            <input
+              type="text"
+              placeholder="Ex: 4k, oled, paisagem, hdr"
+              value={globalTags}
+              onChange={(e) => setGlobalTags(e.target.value)}
+              className={styles.fieldInput}
+            />
+          </div>
+
+          <div className={styles.formField}>
+            <label className={styles.fieldLabel}>Prefixo de Título</label>
+            <div className={styles.fieldRowWithAction}>
+              <input
+                type="text"
+                placeholder="Ex: Master Chief"
+                value={titlePrefix}
+                onChange={(e) => setTitlePrefix(e.target.value)}
+                className={styles.fieldInput}
+              />
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={handleApplyPrefix}
+                disabled={!titlePrefix.trim() || batchFiles.length === 0}
               >
-                <option value="">Apenas Catálogo Público Geral</option>
-                {collections.map((col) => (
-                  <option key={col.id} value={col.id}>
-                    {col.name} ({col.slug})
-                  </option>
-                ))}
-              </select>
+                Aplicar
+              </button>
             </div>
+          </div>
 
-            <div className={styles.formField}>
-              <label className={styles.fieldLabel}>Jogo padrão</label>
-              <input
-                type="text"
-                placeholder="Ex: Halo Infinite, Forza"
-                value={globalGame}
-                onChange={(e) => setGlobalGame(e.target.value)}
-                className={styles.fieldInput}
+          {batchFiles.length > 0 && (
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={handleStartBatchUpload}
+              disabled={uploadingBatch}
+            >
+              <UploadCloud size={16} />
+              <span>
+                {uploadingBatch
+                  ? 'Enviando...'
+                  : `Publicar ${batchFiles.length} Wallpaper${batchFiles.length > 1 ? 's' : ''}`}
+              </span>
+            </button>
+          )}
+
+          {uploadingBatch && (
+            <div className={styles.progressBarContainer}>
+              <progress
+                className={styles.progressBarFill}
+                value={batchProgress.completed}
+                max={batchProgress.total || 1}
               />
+              <div className={styles.progressStatusText}>
+                <span>{batchProgress.current}</span>
+                <span>
+                  {batchProgress.completed} / {batchProgress.total}
+                </span>
+              </div>
             </div>
+          )}
+        </div>
 
-            <div className={styles.formField}>
-              <label className={styles.fieldLabel}>Tags (separadas por vírgula)</label>
-              <input
-                type="text"
-                placeholder="Ex: 4k, oled, minimalista"
-                value={globalTags}
-                onChange={(e) => setGlobalTags(e.target.value)}
-                className={styles.fieldInput}
-              />
+        <div className={styles.batchFilesSection}>
+          <div
+            className={styles.dropzone}
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (e.dataTransfer.files?.length) {
+                handleFilesSelected(e.dataTransfer.files);
+              }
+            }}
+          >
+            <div className={styles.dropzoneIconWrapper}>
+              <UploadCloud size={32} className={styles.dropzoneIcon} />
             </div>
+            <p className={styles.dropzoneTitle}>
+              Arraste imagens ou clique para selecionar
+            </p>
+            <p className={styles.dropzoneHint}>
+              Formatos recomendados: 16:9 em WebP, PNG ou JPG (até 20MB cada).
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files?.length) {
+                  handleFilesSelected(e.target.files);
+                }
+              }}
+              hidden
+            />
+          </div>
 
-            <div className={styles.formField}>
-              <label className={styles.fieldLabel}>Prefixo de Título</label>
-              <div className={styles.fieldRowWithAction}>
-                <input
-                  type="text"
-                  placeholder="Ex: Spartan Series"
-                  value={titlePrefix}
-                  onChange={(e) => setTitlePrefix(e.target.value)}
-                  className={styles.fieldInput}
-                />
+          {batchFiles.length > 0 && (
+            <div className={styles.batchQueueCard}>
+              <div className={styles.batchFilesHeader}>
+                <div className={styles.batchQueueTitle}>
+                  <FileImage size={16} />
+                  <span>Fila de Envio ({batchFiles.length} {batchFiles.length === 1 ? 'imagem' : 'imagens'})</span>
+                </div>
                 <button
                   type="button"
                   className={styles.btnSecondary}
-                  onClick={handleApplyPrefix}
-                  disabled={!titlePrefix.trim() || batchFiles.length === 0}
+                  onClick={() => setBatchFiles([])}
+                  disabled={uploadingBatch}
                 >
-                  Aplicar
+                  Limpar fila
                 </button>
               </div>
-            </div>
 
-            {batchFiles.length > 0 && (
-              <button
-                type="button"
-                className={styles.btnPrimary}
-                onClick={handleStartBatchUpload}
-                disabled={uploadingBatch}
-              >
-                <UploadCloud size={16} />
-                <span>
-                  {uploadingBatch
-                    ? 'Enviando...'
-                    : `Publicar ${batchFiles.length} Wallpaper${batchFiles.length > 1 ? 's' : ''}`}
-                </span>
-              </button>
-            )}
-
-            {uploadingBatch && (
-              <div className={styles.progressBarContainer}>
-                <progress
-                  className={styles.progressBarFill}
-                  value={batchProgress.completed}
-                  max={batchProgress.total || 1}
-                />
-                <div className={styles.progressStatusText}>
-                  <span>{batchProgress.current}</span>
-                  <span>
-                    {batchProgress.completed} / {batchProgress.total}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className={styles.batchFilesSection}>
-            <div
-              className={styles.dropzone}
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (e.dataTransfer.files?.length) {
-                  handleFilesSelected(e.dataTransfer.files);
-                }
-              }}
-            >
-              <UploadCloud size={32} className={styles.dropzoneIcon} />
-              <p className={styles.dropzoneTitle}>
-                Arraste imagens ou clique para selecionar
-              </p>
-              <p className={styles.dropzoneHint}>
-                Formatos recomendados: 16:9 em WebP, PNG ou JPG (até 20MB cada).
-              </p>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files?.length) {
-                    handleFilesSelected(e.target.files);
-                  }
-                }}
-                hidden
-              />
-            </div>
-
-            {batchFiles.length > 0 && (
-              <div className={styles.batchFilesSection}>
-                <div className={styles.batchFilesHeader}>
-                  <span>Fila de envio ({batchFiles.length} imagens)</span>
-                  <button
-                    type="button"
-                    className={styles.btnSecondary}
-                    onClick={() => setBatchFiles([])}
-                    disabled={uploadingBatch}
-                  >
-                    Limpar fila
-                  </button>
-                </div>
-
-                <div className={styles.batchFilesList}>
-                  {batchFiles.map((item) => (
-                    <div key={item.id} className={styles.batchFileItem}>
-                      <img
-                        src={item.previewUrl}
-                        alt=""
-                        className={styles.batchThumb}
-                      />
+              <div className={styles.batchFilesList}>
+                {batchFiles.map((item) => (
+                  <div key={item.id} className={styles.batchFileItem}>
+                    <img
+                      src={item.previewUrl}
+                      alt=""
+                      className={styles.batchThumb}
+                    />
+                    <div className={styles.batchItemContent}>
                       <input
                         type="text"
                         value={item.title}
@@ -385,8 +340,11 @@ export default function OfficialPublish({ onPublishComplete }) {
                         }}
                         className={styles.batchTitleInput}
                         disabled={uploadingBatch}
+                        placeholder="Título do wallpaper"
                       />
+                    </div>
 
+                    <div className={styles.batchItemStatusCol}>
                       {item.status === 'uploading' && (
                         <span className={`${styles.batchItemStatus} ${styles.statusUploading}`}>
                           Enviando...
@@ -398,7 +356,7 @@ export default function OfficialPublish({ onPublishComplete }) {
                         </span>
                       )}
                       {item.status === 'error' && (
-                        <span className={`${styles.batchItemStatus} ${styles.statusError}`}>
+                        <span className={`${styles.batchItemStatus} ${styles.statusError}`} title={item.error || 'Erro'}>
                           <AlertCircle size={12} /> Erro
                         </span>
                       )}
@@ -408,87 +366,19 @@ export default function OfficialPublish({ onPublishComplete }) {
                           type="button"
                           className={styles.btnDangerIconSmall}
                           onClick={() => handleRemoveFile(item.id)}
+                          aria-label="Remover imagem da fila"
                         >
                           <X size={15} />
                         </button>
                       )}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {subTab === 'hero' && (
-        <form onSubmit={handleHeroSubmit} className={styles.publishConfigCard}>
-          <h3 className={styles.configCardTitle}>
-            <ImageIcon size={16} />
-            <span>Publicar Novo Hero Slide (Destaque)</span>
-          </h3>
-
-          <div className={styles.formField}>
-            <label className={styles.fieldLabel}>Título principal</label>
-            <input
-              type="text"
-              placeholder="Ex: Halo Infinite: Season 6"
-              value={heroForm.title}
-              onChange={(e) => setHeroForm({ ...heroForm, title: e.target.value })}
-              className={styles.fieldInput}
-              required
-            />
-          </div>
-
-          <div className={styles.formField}>
-            <label className={styles.fieldLabel}>Subtítulo / Descrição curta</label>
-            <input
-              type="text"
-              placeholder="Ex: Novos wallpapers em 4K para seu console"
-              value={heroForm.subtitle}
-              onChange={(e) => setHeroForm({ ...heroForm, subtitle: e.target.value })}
-              className={styles.fieldInput}
-            />
-          </div>
-
-          <div className={styles.formField}>
-            <label className={styles.fieldLabel}>Tag de destino ao clicar</label>
-            <input
-              type="text"
-              placeholder="Ex: halo (redireciona para /collection/halo)"
-              value={heroForm.targetTag}
-              onChange={(e) => setHeroForm({ ...heroForm, targetTag: e.target.value })}
-              className={styles.fieldInput}
-              required
-            />
-          </div>
-
-          <div className={styles.formField}>
-            <label className={styles.fieldLabel}>Imagem Widescreen (16:9)</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setHeroForm({ ...heroForm, file: e.target.files[0] })}
-              className={styles.fieldInput}
-              required
-            />
-          </div>
-
-          {heroMessage && (
-            <div className={styles.batchActionText}>
-              <span>{heroMessage.text}</span>
             </div>
           )}
-
-          <button
-            type="submit"
-            className={styles.btnPrimary}
-            disabled={heroLoading || !heroForm.file}
-          >
-            {heroLoading ? 'Enviando Hero Slide...' : 'Publicar Hero Slide'}
-          </button>
-        </form>
-      )}
+        </div>
+      </div>
     </div>
   );
 }

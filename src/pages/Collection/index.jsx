@@ -109,6 +109,12 @@ export default function Collection() {
           </button>
 
           <div className={styles.titleArea}>
+            <h1 className={styles.title}>{collection?.name || tag}</h1>
+
+            {collection?.description && (
+              <p className={styles.description}>{collection.description}</p>
+            )}
+
             <div className={styles.badgeRow}>
               <span className={styles.categoryBadge}>Coleção Oficial</span>
               {collection?.creatorName && (
@@ -135,12 +141,6 @@ export default function Collection() {
                 </span>
               )}
             </div>
-
-            <h1 className={styles.title}>{collection?.name || tag}</h1>
-
-            {collection?.description && (
-              <p className={styles.description}>{collection.description}</p>
-            )}
           </div>
 
           <div className={styles.headerActions}>

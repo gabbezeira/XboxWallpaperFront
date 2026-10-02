@@ -8,12 +8,12 @@ import horizontalLogo from '../../assets/horizontal-logo.png';
 import styles from './styles.module.scss';
 
 function getUserLevel(favoritesCount = 0) {
-  if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN ULTIMATE' };
-  if (favoritesCount >= 100) return { key: 'elite', label: 'ELITE' };
-  if (favoritesCount >= 50) return { key: 'veterano', label: 'VETERANO' };
-  if (favoritesCount >= 20) return { key: 'criador', label: 'CRIADOR' };
-  if (favoritesCount >= 5) return { key: 'explorador', label: 'EXPLORADOR' };
-  return { key: 'recruta', label: 'RECRUTA' };
+  if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN MYTHIC' };
+  if (favoritesCount >= 100) return { key: 'elite', label: 'COMANDANTE NOBRE' };
+  if (favoritesCount >= 50) return { key: 'veterano', label: 'VANGUARDA' };
+  if (favoritesCount >= 20) return { key: 'criador', label: 'SENTINELA' };
+  if (favoritesCount >= 5) return { key: 'explorador', label: 'BATEDOR TÁTICO' };
+  return { key: 'recruta', label: 'INICIADO' };
 }
 
 export default function Sidebar({ onLoginClick }) {

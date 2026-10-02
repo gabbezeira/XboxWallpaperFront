@@ -83,10 +83,6 @@ export default function Collections() {
     <div className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <div className={styles.headerBadge}>
-            <Layers size={16} />
-            <span>Catálogo Comunitário</span>
-          </div>
           <h1 className={styles.title}>Coleções Oficiais</h1>
           <p className={styles.subtitle}>
             Explore coleções temáticas criadas por artistas e membros da comunidade. Digite um código de acesso rápido ou busque pelo acervo desejado.

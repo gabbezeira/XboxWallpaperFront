@@ -35,20 +35,6 @@
   gap: $spacing-sm;
 }
 
-.headerBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-xs;
-  padding: 4px 12px;
-  background-color: rgba($color-primary, 0.1);
-  border: 1px solid rgba($color-primary, 0.25);
-  border-radius: $radius-full;
-  color: $color-primary;
-  font-size: $fs-small;
-  font-weight: $fw-semibold;
-  width: fit-content;
-}
-
 .title {
   font-size: $fs-title;
   font-weight: $fw-bold;
@@ -82,8 +68,9 @@
   gap: $spacing-md;
   padding: $spacing-lg;
   border-radius: $radius-xl;
-  background: linear-gradient(135deg, rgba($color-primary, 0.08) 0%, rgba(13, 13, 13, 0.95) 100%);
-  border: 1px solid rgba($color-primary, 0.3);
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-left: 3px solid $color-primary;
 
   @include respond-to(md) {
     flex-direction: row;
@@ -97,8 +84,8 @@
   width: 48px;
   height: 48px;
   border-radius: $radius-lg;
-  background-color: rgba($color-primary, 0.15);
-  border: 1px solid rgba($color-primary, 0.35);
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,8 +146,8 @@
   width: 36px;
   height: 36px;
   border-radius: $radius-md;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,7 +190,7 @@
   border-radius: $radius-full;
   object-fit: cover;
   flex-shrink: 0;
-  border: 2px solid rgba($color-primary, 0.4);
+  border: 2px solid $color-primary;
 }
 
 .authorInfo {
@@ -229,11 +216,11 @@
 .authorTag {
   font-size: $fs-small;
   color: $color-primary;
-  background-color: rgba($color-primary, 0.1);
-  padding: 2px 8px;
+  background-color: #1a1a1a;
+  padding: 3px 10px;
   border-radius: $radius-full;
-  border: 1px solid rgba($color-primary, 0.2);
-  font-weight: $fw-medium;
+  border: 1px solid #333;
+  font-weight: $fw-semibold;
 }
 
 .authorBio {
@@ -250,9 +237,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 14px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   border-radius: $radius-md;
   color: $color-text-primary;
   text-decoration: none;
@@ -262,8 +249,7 @@
   @include gamepad-focus;
 
   &:hover {
-    background-color: rgba($color-primary, 0.15);
-    border-color: rgba($color-primary, 0.35);
+    border-color: $color-primary;
     color: $color-primary;
   }
 }
@@ -295,7 +281,7 @@
   @include gamepad-focus;
 
   &:hover {
-    border-color: rgba($color-primary, 0.4);
+    border-color: $color-primary;
     transform: translateY(-2px);
   }
 }
@@ -304,8 +290,8 @@
   width: 44px;
   height: 44px;
   border-radius: $radius-md;
-  background-color: rgba($color-primary, 0.1);
-  border: 1px solid rgba($color-primary, 0.2);
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;

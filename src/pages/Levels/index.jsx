@@ -11,7 +11,6 @@ import {
   UploadCloud,
   CheckCircle2,
   Layers,
-  Award,
   ArrowRight,
   Info,
   ShieldAlert,
@@ -24,97 +23,96 @@ import styles from './styles.module.scss';
 const TIERS = [
   {
     key: 'recruta',
-    name: 'Recruta',
+    name: 'Iniciado',
     minFavs: 0,
     maxFavs: 4,
     maxImages: 8,
     reqLabel: '0 a 4 favoritos',
     icon: Shield,
-    desc: 'Patente inicial ao ingressar no Spartan Wallpapers. Permite envio de até 8 papéis de parede para sua galeria e solicitação de publicação comunitária.',
+    desc: 'Grau inicial de recrutamento na rede Spartan. Permite subir suas primeiras artes para a galeria e submetê-las para a curadoria comunitária.',
     benefits: [
-      'Acesso ao catálogo completo',
-      'Upload de até 8 papéis de parede',
-      'Solicitação de publicação na galeria comunitária',
+      'Acesso irrestrito a todo o catálogo e sistema de favoritos',
+      'Cota base de 8 slots de upload',
+      'Submissão aberta para a curadoria comunitária',
     ],
   },
   {
     key: 'explorador',
-    name: 'Explorador',
+    name: 'Batedor Tático',
     minFavs: 5,
     maxFavs: 19,
     maxImages: 10,
     reqLabel: '5 a 19 favoritos',
     icon: Compass,
-    desc: 'Primeiro patamar de engajamento da comunidade. Aumenta a cota de uploads para 10 slots e adiciona o badge de Explorador ao perfil.',
+    desc: 'Primeiro marco de prestígio no campo. Suas capturas começam a ser adotadas e aplicadas nos consoles de outros jogadores.',
     benefits: [
-      'Badge exclusivo de Explorador no perfil',
-      'Upload de até 10 papéis de parede (+2 slots)',
-      'Maior visibilidade na busca comunitária',
-      'Elegível a destaques comunitários',
+      'Insígnia sólida de Batedor Tático no perfil',
+      'Expansão de cota para 10 slots de upload (+2 adicionais)',
+      'Prioridade de indexação em buscas por jogos e tags',
     ],
   },
   {
     key: 'criador',
-    name: 'Criador',
+    name: 'Sentinela',
     minFavs: 20,
     maxFavs: 49,
     maxImages: 12,
     reqLabel: '20 a 49 favoritos',
     icon: Sparkles,
-    desc: 'Nível concedido a criadores com relevância comprovada. Libera 12 slots de upload, badge azul de Criador e elegibilidade para verificação.',
+    desc: 'Criador ativo com relevância reconhecida. Catálogo frequente de envios com alto índice de aprovação da curadoria.',
     benefits: [
-      'Badge azul de Criador reconhecido',
-      'Upload de até 12 papéis de parede (+2 slots)',
-      'Prioridade na fila de moderação',
-      'Elegibilidade para solicitação do Selo Verificado',
+      'Insígnia azul cobalto de Sentinela',
+      'Expansão de cota para 12 slots de upload (+2 adicionais)',
+      'Fila prioritária de análise na moderação',
+      'Elegibilidade para o Selo de Criador Verificado',
     ],
   },
   {
     key: 'veterano',
-    name: 'Veterano',
+    name: 'Vanguarda',
     minFavs: 50,
     maxFavs: 99,
     maxImages: 14,
     reqLabel: '50 a 99 favoritos',
     icon: Medal,
-    desc: 'Nível avançado com catálogo sólido e contínuo de uploads. Libera 14 slots de upload e badge violeta de Veterano.',
+    desc: 'Patente de alta bravura e consistência. Membro respeitado com acervo autoral de papéis de parede em altíssima resolução.',
     benefits: [
-      'Badge violeta de Veterano',
-      'Upload de até 14 papéis de parede (+2 slots)',
-      'Destaque na página de detalhes das suas obras',
-      'Inclusão nas trilhas recomendadas da comunidade',
+      'Insígnia sólida violeta de Vanguarda',
+      'Expansão de cota para 14 slots de upload (+2 adicionais)',
+      'Inclusão direta na seleção de criadores recomendados',
+      'Destaque autoral nas páginas de visualização de detalhes',
     ],
   },
   {
     key: 'elite',
-    name: 'Elite',
+    name: 'Comandante Nobre',
     minFavs: 100,
     maxFavs: 249,
     maxImages: 16,
     reqLabel: '100 a 249 favoritos',
     icon: Crown,
-    desc: 'Nível de alta reputação com elevado volume de favoritos recebidos. Libera 16 slots de upload e elegibilidade para coleção própria oficial.',
+    desc: 'Patente nobre de autoridade artística. Seus papéis de parede figuram entre os mais curtidos e baixados de todo o ecossistema.',
     benefits: [
-      'Badge dourada de Elite',
-      'Upload de até 16 papéis de parede (+2 slots)',
-      'Elegibilidade para Coleção Própria oficial',
-      'Candidato para o Hero Slider da página inicial',
+      'Insígnia dourada de Comandante Nobre',
+      'Expansão de cota para 16 slots de upload (+2 adicionais)',
+      'Elegibilidade para Coleção Oficial dedicada',
+      'Candidatura permanente para os Hero Slides da Home',
     ],
   },
   {
     key: 'spartan',
-    name: 'Spartan Ultimate',
+    name: 'Spartan Mythic',
     minFavs: 250,
     maxFavs: null,
     maxImages: 18,
     reqLabel: '250+ favoritos',
     icon: Trophy,
-    desc: 'Patente máxima da plataforma com 18 slots de upload. Distintivo verde definitivo e prioridade editorial nas trilhas da comunidade.',
+    desc: 'O mais alto escalão lendário da comunidade. Maestria estética absoluta, referência definitiva de personalização de consoles.',
     benefits: [
-      'Badge mestre verde Spartan Ultimate',
-      'Upload de até 18 papéis de parede (cota máxima)',
-      'Destaque permanente em toda a plataforma',
-      'Canal prioritário de curadoria com a administração',
+      'Insígnia mestre verde Spartan Mythic',
+      'Cota máxima definitiva de 18 slots de upload',
+      'Destaque editorial vitalício em toda a plataforma',
+      'Acesso a canal de curadoria direta com os administradores',
     ],
   },
 ];
@@ -154,10 +152,6 @@ export default function Levels() {
     <div className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <div className={styles.headerBadge}>
-            <Award size={16} />
-            <span>Sistema de Patentes &amp; Reconhecimento</span>
-          </div>
           <h1 className={styles.title}>Níveis e Badges</h1>
           <p className={styles.subtitle}>
             Entenda como funciona o sistema de progressão por favoritos recebidos, limites de upload e desbloqueio de recursos para criadores.
@@ -197,7 +191,8 @@ export default function Levels() {
 
               <div className={styles.userStatusBadges}>
                 <div className={`${styles.tierBadge} ${styles[currentTier.key]}`}>
-                  {currentTier.name.toUpperCase()}
+                  <span className={styles.tierBadgeDot} />
+                  <span>{currentTier.name.toUpperCase()}</span>
                 </div>
                 <div className={styles.favBadge} title="Total de Favoritos Recebidos">
                   <Heart size={14} className={styles.favHeartIcon} />
@@ -226,7 +221,7 @@ export default function Levels() {
               ) : (
                 <div className={styles.maxTierNotice}>
                   <Trophy size={18} className={styles.maxTierIcon} />
-                  <span>Patente máxima alcançada: Spartan Ultimate.</span>
+                  <span>Patente máxima alcançada: Spartan Mythic.</span>
                 </div>
               )}
             </div>
@@ -234,12 +229,12 @@ export default function Levels() {
         ) : (
           <section className={styles.guestStatusCard}>
             <div className={styles.guestIconBox}>
-              <Award size={28} />
+              <Trophy size={28} />
             </div>
             <div className={styles.guestContent}>
               <h2 className={styles.guestTitle}>Monitore seu Progresso</h2>
               <p className={styles.guestText}>
-                Faça login para visualizar sua contagem de favoritos recebidos, sua patente atual e o número de curtidas restantes para desbloquear novos slots de upload.
+                Faça login para acompanhar sua contagem de favoritos recebidos, sua patente atual e a quantidade restante para desbloquear novos slots de upload.
               </p>
             </div>
           </section>
@@ -321,7 +316,7 @@ export default function Levels() {
                   {isCurrent && (
                     <div className={styles.currentTierMarker}>
                       <Check size={12} />
-                      <span>Sua Patente Atual</span>
+                      <span>Patente Ativa</span>
                     </div>
                   )}
 
@@ -331,7 +326,8 @@ export default function Levels() {
                     </div>
                     <div className={styles.tierMeta}>
                       <span className={`${styles.tierBadge} ${styles[tier.key]}`}>
-                        {tier.name.toUpperCase()}
+                        <span className={styles.tierBadgeDot} />
+                        <span>{tier.name.toUpperCase()}</span>
                       </span>
                       <span className={styles.tierReqText}>{tier.reqLabel}</span>
                     </div>
@@ -392,15 +388,15 @@ export default function Levels() {
               <div className={styles.badgeCardContent}>
                 <h3 className={styles.badgeCardTitle}>Coleção Oficial do Criador</h3>
                 <p className={styles.badgeCardDesc}>
-                  Página de coleção temática com link compartilhável dedicada a fotógrafos virtuais e artistas que mantêm séries temáticas consistentes.
+                  Página de coleção temática com link compartilhável e código rápido dedicada a fotógrafos virtuais e artistas com acervos consolidados.
                 </p>
                 <div className={styles.badgeCriteriaBox}>
                   <span className={styles.criteriaTitle}>Critérios de Atribuição:</span>
                   <ul className={styles.criteriaList}>
-                    <li>Disponível para usuários com patente Criador ou superior.</li>
+                    <li>Disponível para usuários com patente Sentinela ou superior.</li>
                     <li>Séries autorais consistentes (franquias, fotografia in-game temática).</li>
                     <li>Acesso ao painel Minha Coleção para organização dos papéis de parede.</li>
-                    <li>Link exclusivo no formato spartanwallpapers.vercel.app/collection/tag.</li>
+                    <li>Código de busca rápida exclusivo no catálogo oficial de coleções.</li>
                   </ul>
                 </div>
               </div>

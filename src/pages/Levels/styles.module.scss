@@ -39,20 +39,6 @@
   gap: $spacing-sm;
 }
 
-.headerBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-xs;
-  padding: 4px 12px;
-  background-color: rgba($color-primary, 0.1);
-  border: 1px solid rgba($color-primary, 0.25);
-  border-radius: $radius-full;
-  color: $color-primary;
-  font-size: $fs-small;
-  font-weight: $fw-semibold;
-  width: fit-content;
-}
-
 .title {
   font-size: $fs-title;
   font-weight: $fw-bold;
@@ -116,7 +102,7 @@
   color: #000;
   font-size: 1.1rem;
   flex-shrink: 0;
-  border: 2px solid rgba($color-primary, 0.4);
+  border: 2px solid $color-primary;
 
   &.avatarFallback {
     background: linear-gradient(135deg, $color-primary 0%, #0d5f0d 100%);
@@ -164,72 +150,105 @@
 .tierBadge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  font-size: 10px;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 11px;
   font-weight: $fw-bold;
   border-radius: $radius-sm;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   line-height: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 
   &.recruta {
-    background-color: #27272a;
-    color: #a1a1aa;
-    border: 1px solid #3f3f46;
+    background-color: #1e222a;
+    color: #f1f5f9;
+    border: 1px solid #475569;
+
+    .tierBadgeDot {
+      background-color: #94a3b8;
+    }
   }
 
   &.explorador {
-    background-color: #361b02;
-    color: #fbbf24;
-    border: 1px solid #854d0e;
+    background-color: #78350f;
+    color: #fef3c7;
+    border: 1px solid #d97706;
+
+    .tierBadgeDot {
+      background-color: #fbbf24;
+    }
   }
 
   &.criador {
-    background-color: #0c214d;
-    color: #60a5fa;
-    border: 1px solid #1d4ed8;
+    background-color: #1e40af;
+    color: #eff6ff;
+    border: 1px solid #3b82f6;
+
+    .tierBadgeDot {
+      background-color: #60a5fa;
+    }
   }
 
   &.veterano {
-    background-color: #261245;
-    color: #c084fc;
-    border: 1px solid #6d28d9;
+    background-color: #581c87;
+    color: #faf5ff;
+    border: 1px solid #a855f7;
+
+    .tierBadgeDot {
+      background-color: #c084fc;
+    }
   }
 
   &.elite {
-    background-color: #362703;
-    color: #fde047;
-    border: 1px solid #a16207;
+    background-color: #854d0e;
+    color: #fefce8;
+    border: 1px solid #eab308;
+
+    .tierBadgeDot {
+      background-color: #facc15;
+    }
   }
 
   &.spartan {
-    background-color: #072d12;
+    background-color: #064e3b;
     color: #4ade80;
     border: 1px solid #107c10;
+
+    .tierBadgeDot {
+      background-color: #4ade80;
+    }
   }
+}
+
+.tierBadgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: $radius-full;
+  flex-shrink: 0;
 }
 
 .favBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   border-radius: $radius-sm;
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: 11px;
   font-weight: $fw-semibold;
   color: $color-text-primary;
 }
 
 .favHeartIcon {
-  color: $color-favorite;
-  fill: $color-favorite;
+  color: $color-danger;
+  fill: $color-danger;
 }
 
 .stepHeartIcon {
-  color: $color-favorite;
-  fill: $color-favorite;
+  color: $color-danger;
+  fill: $color-danger;
 }
 
 .progressSection {
@@ -269,11 +288,11 @@
   -webkit-appearance: none;
   border: none;
   border-radius: $radius-full;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: #1f1f1f;
   overflow: hidden;
 
   &::-webkit-progress-bar {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: #1f1f1f;
     border-radius: $radius-full;
   }
 
@@ -318,8 +337,8 @@
   width: 56px;
   height: 56px;
   border-radius: $radius-lg;
-  background-color: rgba($color-primary, 0.1);
-  border: 1px solid rgba($color-primary, 0.25);
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -406,7 +425,6 @@
   font-size: 11px;
   font-weight: $fw-bold;
   color: $color-text-muted;
-  opacity: 0.6;
   letter-spacing: 1px;
 }
 
@@ -414,8 +432,8 @@
   width: 44px;
   height: 44px;
   border-radius: $radius-md;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -461,27 +479,27 @@
 
   &.activeTierCard {
     border-color: $color-primary;
-    box-shadow: 0 0 24px rgba($color-primary, 0.15);
+    box-shadow: 0 0 20px rgba(16, 124, 16, 0.25);
   }
 
   &.card_recruta:hover {
-    border-color: #3f3f46;
+    border-color: #475569;
   }
 
   &.card_explorador:hover {
-    border-color: #854d0e;
+    border-color: #d97706;
   }
 
   &.card_criador:hover {
-    border-color: #1d4ed8;
+    border-color: #3b82f6;
   }
 
   &.card_veterano:hover {
-    border-color: #6d28d9;
+    border-color: #a855f7;
   }
 
   &.card_elite:hover {
-    border-color: #a16207;
+    border-color: #eab308;
   }
 
   &.card_spartan:hover {
@@ -500,7 +518,7 @@
   color: #000;
   font-size: 10px;
   font-weight: $fw-bold;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: $radius-full;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -522,37 +540,37 @@
   flex-shrink: 0;
 
   &.icon_recruta {
-    background-color: #27272a;
-    color: #a1a1aa;
-    border: 1px solid #3f3f46;
+    background-color: #1e222a;
+    color: #94a3b8;
+    border: 1px solid #475569;
   }
 
   &.icon_explorador {
-    background-color: #361b02;
-    color: #fbbf24;
-    border: 1px solid #854d0e;
+    background-color: #78350f;
+    color: #fde68a;
+    border: 1px solid #d97706;
   }
 
   &.icon_criador {
-    background-color: #0c214d;
-    color: #60a5fa;
-    border: 1px solid #1d4ed8;
+    background-color: #1e40af;
+    color: #bfdbfe;
+    border: 1px solid #3b82f6;
   }
 
   &.icon_veterano {
-    background-color: #261245;
-    color: #c084fc;
-    border: 1px solid #6d28d9;
+    background-color: #581c87;
+    color: #e9d5ff;
+    border: 1px solid #a855f7;
   }
 
   &.icon_elite {
-    background-color: #362703;
-    color: #fde047;
-    border: 1px solid #a16207;
+    background-color: #854d0e;
+    color: #fef08a;
+    border: 1px solid #eab308;
   }
 
   &.icon_spartan {
-    background-color: #072d12;
+    background-color: #064e3b;
     color: #4ade80;
     border: 1px solid #107c10;
   }
@@ -629,8 +647,8 @@
   width: 64px;
   height: 64px;
   border-radius: $radius-lg;
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -668,8 +686,8 @@
   flex-direction: column;
   gap: $spacing-xs;
   padding: $spacing-md;
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #141414;
+  border: 1px solid #282828;
   border-radius: $radius-md;
 }
 
@@ -748,9 +766,10 @@
 
 .actionsSection {
   padding: $spacing-2xl $spacing-xl;
-  border: 1px solid rgba($color-primary, 0.25);
+  border: 1px solid $color-border;
+  border-top: 3px solid $color-primary;
   border-radius: $radius-xl;
-  background: linear-gradient(135deg, rgba(16, 124, 16, 0.08) 0%, rgba(7, 7, 7, 0.95) 100%);
+  background-color: $color-bg-secondary;
   text-align: center;
   display: flex;
   justify-content: center;

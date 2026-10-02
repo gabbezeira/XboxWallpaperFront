@@ -8,10 +8,6 @@ export default function Terms() {
     <div className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <div className={styles.headerBadge}>
-            <ShieldCheck size={16} />
-            <span>Transparência &amp; Diretrizes da Comunidade</span>
-          </div>
           <h1 className={styles.title}>Termos de Uso e Privacidade</h1>
           <p className={styles.subtitle}>
             Diretrizes legais, uso responsável dos recursos e compromisso com a privacidade dos membros da comunidade Spartan Wallpapers.

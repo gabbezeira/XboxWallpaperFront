@@ -164,6 +164,7 @@
     flex-shrink: 0;
   }
 
+  &.cadete,
   &.recruta {
     background-color: #141820;
     color: #f8fafc;
@@ -174,6 +175,7 @@
     }
   }
 
+  &.horizon,
   &.explorador {
     background-color: #2b1404;
     color: #fef3c7;
@@ -184,6 +186,7 @@
     }
   }
 
+  &.constelacao,
   &.criador {
     background-color: #0b1d3a;
     color: #eff6ff;
@@ -194,6 +197,7 @@
     }
   }
 
+  &.cog,
   &.veterano {
     background-color: #2d0618;
     color: #faf5ff;
@@ -204,6 +208,7 @@
     }
   }
 
+  &.albion,
   &.elite {
     background-color: #2c1802;
     color: #fefce8;
@@ -479,22 +484,27 @@
     box-shadow: 0 0 20px rgba(16, 124, 16, 0.25);
   }
 
+  &.card_cadete:hover,
   &.card_recruta:hover {
     border-color: #475569;
   }
 
+  &.card_horizon:hover,
   &.card_explorador:hover {
     border-color: #d97706;
   }
 
+  &.card_constelacao:hover,
   &.card_criador:hover {
     border-color: #3b82f6;
   }
 
+  &.card_cog:hover,
   &.card_veterano:hover {
     border-color: #a855f7;
   }
 
+  &.card_albion:hover,
   &.card_elite:hover {
     border-color: #eab308;
   }
@@ -536,30 +546,35 @@
   justify-content: center;
   flex-shrink: 0;
 
+  &.icon_cadete,
   &.icon_recruta {
     background-color: #141820;
     color: #94a3b8;
     border: 1px solid #334155;
   }
 
+  &.icon_horizon,
   &.icon_explorador {
     background-color: #2b1404;
     color: #fde68a;
     border: 1px solid #b45309;
   }
 
+  &.icon_constelacao,
   &.icon_criador {
     background-color: #0b1d3a;
     color: #bfdbfe;
     border: 1px solid #2563eb;
   }
 
+  &.icon_cog,
   &.icon_veterano {
     background-color: #2d0618;
     color: #e9d5ff;
     border: 1px solid #9333ea;
   }
 
+  &.icon_albion,
   &.icon_elite {
     background-color: #2c1802;
     color: #fef08a;

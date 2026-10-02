@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Shield,
-  Gauge,
-  Compass,
-  Flame,
-  Crown,
-  Zap,
   Heart,
   UploadCloud,
   CheckCircle2,
@@ -16,131 +10,8 @@ import {
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import { useAuth } from '../../hooks/useAuth';
+import { TIERS, getUserTier, getNextTier } from '../../config/tiers';
 import styles from './styles.module.scss';
-
-const TIERS = [
-  {
-    key: 'recruta',
-    name: 'Cadete UNSC',
-    badgeLabel: 'CADETE UNSC',
-    franchise: 'Universo Halo',
-    minFavs: 0,
-    maxFavs: 4,
-    maxImages: 8,
-    reqLabel: '0 a 4 favoritos',
-    icon: Shield,
-    desc: 'Ingresso nas fileiras da UNSC. Protocolo de instrução para novos membros, permitindo o envio das primeiras capturas e integração à rede de personalização.',
-    benefits: [
-      'Acesso irrestrito a todo o catálogo e sistema de favoritos',
-      'Cota base de 8 slots de upload para wallpapers',
-      'Submissão aberta para a curadoria comunitária',
-    ],
-  },
-  {
-    key: 'explorador',
-    name: 'Piloto Horizon',
-    badgeLabel: 'PILOTO HORIZON',
-    franchise: 'Forza Horizon',
-    minFavs: 5,
-    maxFavs: 19,
-    maxImages: 10,
-    reqLabel: '5 a 19 favoritos',
-    icon: Gauge,
-    desc: 'Credenciamento no Festival Horizon. Reconhecimento a fotógrafos dedicados a capturas automotivas, iluminação dinâmica e enquadramentos velozes.',
-    benefits: [
-      'Insígnia temática Piloto Horizon com velocímetro tático',
-      'Expansão de cota para 10 slots de upload (+2 adicionais)',
-      'Prioridade de indexação em buscas por jogos e tags',
-    ],
-  },
-  {
-    key: 'criador',
-    name: 'Explorador Constelação',
-    badgeLabel: 'EXPLORADOR CONSTELAÇÃO',
-    franchise: 'Starfield',
-    minFavs: 20,
-    maxFavs: 49,
-    maxImages: 12,
-    reqLabel: '20 a 49 favoritos',
-    icon: Compass,
-    desc: 'Navegador oficial da Constellation nas fronteiras do espaço profundo. Domínio de astrofotografia, paisagens cósmicas e composição em novos mundos.',
-    benefits: [
-      'Insígnia azul cobalto com bússola estelar de navegação',
-      'Expansão de cota para 12 slots de upload (+2 adicionais)',
-      'Fila prioritária de análise e moderação',
-      'Elegibilidade para o Selo de Criador Verificado',
-    ],
-  },
-  {
-    key: 'veterano',
-    name: 'Veterano Gears COG',
-    badgeLabel: 'VETERANO COG',
-    franchise: 'Gears of War',
-    minFavs: 50,
-    maxFavs: 99,
-    maxImages: 14,
-    reqLabel: '50 a 99 favoritos',
-    icon: Flame,
-    desc: 'Combatente condecorado do Esquadrão Delta. Acervo de alta intensidade com iluminação cinematográfica, peso tático e contraste dramático.',
-    benefits: [
-      'Insígnia sólida carmesim com chama de combate de Sera',
-      'Expansão de cota para 14 slots de upload (+2 adicionais)',
-      'Inclusão direta na seleção de criadores recomendados',
-      'Destaque autoral nas páginas de visualização de detalhes',
-    ],
-  },
-  {
-    key: 'elite',
-    name: 'Guardião de Albion',
-    badgeLabel: 'GUARDIÃO DE ALBION',
-    franchise: 'Fable',
-    minFavs: 100,
-    maxFavs: 249,
-    maxImages: 16,
-    reqLabel: '100 a 249 favoritos',
-    icon: Crown,
-    desc: 'Herói lendário consagrado pela Guilda de Albion. Catálogo autoral de prestígio com alto impacto de engajamento e reconhecimento artístico na comunidade.',
-    benefits: [
-      'Insígnia dourada imperial com coroa de liderança',
-      'Expansão de cota para 16 slots de upload (+2 adicionais)',
-      'Elegibilidade para criação de Coleção Oficial dedicada',
-      'Candidatura preferencial para o Hero Slider da Home',
-    ],
-  },
-  {
-    key: 'spartan',
-    name: 'Spartan Mythic 117',
-    badgeLabel: 'SPARTAN 117',
-    franchise: 'Halo Spartan-II',
-    minFavs: 250,
-    maxFavs: null,
-    maxImages: 18,
-    reqLabel: '250+ favoritos',
-    icon: Zap,
-    desc: 'A mais alta condecoração da plataforma. Armadura Mjolnir completa, liderança absoluta na comunidade e selo supremo de excelência do ecossistema Xbox.',
-    benefits: [
-      'Insígnia máxima verde Spartan com núcleo de energia Mjolnir',
-      'Cota máxima definitiva de 18 slots de upload',
-      'Destaque editorial permanente em toda a plataforma',
-      'Acesso a canal de curadoria direta com a administração',
-    ],
-  },
-];
-
-function getUserTier(favs = 0) {
-  if (favs >= 250) return TIERS[5];
-  if (favs >= 100) return TIERS[4];
-  if (favs >= 50) return TIERS[3];
-  if (favs >= 20) return TIERS[2];
-  if (favs >= 5) return TIERS[1];
-  return TIERS[0];
-}
-
-function getNextTier(currentTierKey) {
-  const currentIndex = TIERS.findIndex((t) => t.key === currentTierKey);
-  if (currentIndex < 0 || currentIndex >= TIERS.length - 1) return null;
-  return TIERS[currentIndex + 1];
-}
 
 export default function Levels() {
   const { user, profile } = useAuth();

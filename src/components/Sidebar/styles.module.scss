@@ -196,30 +196,35 @@
   letter-spacing: 0.5px;
   text-transform: uppercase;
 
+  &.cadete,
   &.recruta {
     background-color: #141820;
     color: #f8fafc;
     border: 1px solid #334155;
   }
 
+  &.horizon,
   &.explorador {
     background-color: #2b1404;
     color: #fef3c7;
     border: 1px solid #b45309;
   }
 
+  &.constelacao,
   &.criador {
     background-color: #0b1d3a;
     color: #eff6ff;
     border: 1px solid #2563eb;
   }
 
+  &.cog,
   &.veterano {
     background-color: #2d0618;
     color: #faf5ff;
     border: 1px solid #9333ea;
   }
 
+  &.albion,
   &.elite {
     background-color: #2c1802;
     color: #fefce8;

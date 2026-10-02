@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import { formatFileSize } from '../../utils/format.js';
 import Loader from '../../components/Loader';
+import { getTierByKey, getUserTier } from '../../config/tiers';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -19,38 +20,28 @@ function formatResolution(width, height) {
   return `${width}×${height}`;
 }
 
-const TIER_LABELS = {
-  spartan: 'SPARTAN 117',
-  elite: 'GUARDIÃO DE ALBION',
-  veterano: 'VETERANO COG',
-  criador: 'EXPLORADOR CONSTELAÇÃO',
-  explorador: 'PILOTO HORIZON',
-  recruta: 'CADETE UNSC',
-};
-
-function getUserLevel(favoritesCount = 0) {
-  if (favoritesCount >= 250) return { key: 'spartan', label: 'SPARTAN 117' };
-  if (favoritesCount >= 100) return { key: 'elite', label: 'GUARDIÃO DE ALBION' };
-  if (favoritesCount >= 50) return { key: 'veterano', label: 'VETERANO COG' };
-  if (favoritesCount >= 20) return { key: 'criador', label: 'EXPLORADOR CONSTELAÇÃO' };
-  if (favoritesCount >= 5) return { key: 'explorador', label: 'PILOTO HORIZON' };
-  return { key: 'recruta', label: 'CADETE UNSC' };
-}
-
 function getAuthorDisplay(wallpaper, authUser, profile) {
   const isSystem = wallpaper.userId === 'system' || !wallpaper.userId;
   if (isSystem) {
+    const systemTier = getTierByKey('spartan');
     return {
       label: 'Spartan Wallpapers',
       photo: null,
       isVerified: true,
-      tier: { key: 'spartan', label: 'SPARTAN' },
+      tier: {
+        key: systemTier.key,
+        label: systemTier.badgeLabel,
+        name: systemTier.name,
+        icon: systemTier.icon,
+      },
     };
   }
 
   const isOwn = Boolean(authUser?.uid) && wallpaper.userId === authUser.uid;
   if (isOwn) {
-    const tierKey = wallpaper.authorTier || getUserLevel(profile?.totalFavoritesReceived || 0).key;
+    const ownTier = wallpaper.authorTier
+      ? getTierByKey(wallpaper.authorTier)
+      : getUserTier(profile?.totalFavoritesReceived || 0);
     return {
       label:
         wallpaper.authorName ||
@@ -60,16 +51,26 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
         'Usuário',
       photo: wallpaper.authorPhoto || profile?.photoURL || authUser?.photoURL || null,
       isVerified: Boolean(wallpaper.isVerified ?? profile?.isVerified),
-      tier: { key: tierKey, label: TIER_LABELS[tierKey] || 'RECRUTA' },
+      tier: {
+        key: ownTier.key,
+        label: ownTier.badgeLabel,
+        name: ownTier.name,
+        icon: ownTier.icon,
+      },
     };
   }
 
-  const tierKey = wallpaper.authorTier || 'recruta';
+  const authorTierObj = getTierByKey(wallpaper.authorTier);
   return {
     label: wallpaper.authorName || 'Comunidade Xbox',
     photo: wallpaper.authorPhoto || null,
     isVerified: Boolean(wallpaper.isVerified),
-    tier: { key: tierKey, label: TIER_LABELS[tierKey] || 'RECRUTA' },
+    tier: {
+      key: authorTierObj.key,
+      label: authorTierObj.badgeLabel,
+      name: authorTierObj.name,
+      icon: authorTierObj.icon,
+    },
   };
 }
 
@@ -303,7 +304,10 @@ export default function WallpaperDetailsPage() {
                 </div>
                 {authorInfo.tier && (
                   <span className={`${styles.tierBadge} ${styles[authorInfo.tier.key]}`}>
-                    {authorInfo.tier.label}
+                    {authorInfo.tier.icon && (
+                      <authorInfo.tier.icon size={11} className={styles.badgeIcon} />
+                    )}
+                    <span>{authorInfo.tier.label}</span>
                   </span>
                 )}
               </div>

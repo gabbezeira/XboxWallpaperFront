@@ -64,7 +64,6 @@
   border-radius: $radius-xl;
   background-color: $color-bg-secondary;
   border: 1px solid $color-border;
-  border-left: 3px solid $color-primary;
 
   @include respond-to(md) {
     flex-direction: row;

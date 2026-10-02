@@ -46,18 +46,19 @@ export const api = {
   },
 
   wallpapers: {
-    list: async ({ q = '', tag = '', page = 1, limit = 20, sort = '' } = {}) => {
+    list: async ({ q = '', tag = '', page = 1, limit = 20, sort = '', cursor = '' } = {}) => {
       const params = new URLSearchParams();
       if (q) params.append('q', q);
       if (tag) params.append('tag', tag);
       if (sort) params.append('sort', sort);
+      if (cursor) params.append('cursor', cursor);
       params.append('page', page);
       params.append('limit', limit);
       const path = `/api/wallpapers?${params.toString()}`;
-      const cached = getCached('/api/wallpapers', { q, tag, sort, page, limit });
+      const cached = getCached('/api/wallpapers', { q, tag, sort, page, limit, cursor });
       if (cached) return cached;
       const data = await request(path);
-      setCache('/api/wallpapers', { q, tag, sort, page, limit }, data);
+      setCache('/api/wallpapers', { q, tag, sort, page, limit, cursor }, data);
       return data;
     },
     tags: async () => {

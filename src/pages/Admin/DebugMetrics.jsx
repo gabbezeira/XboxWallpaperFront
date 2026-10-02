@@ -213,9 +213,10 @@ export default function DebugMetrics() {
           </div>
           <div className={styles.kpiValue}>{totalReads.toLocaleString('pt-BR')}</div>
           <div className={styles.quotaBarWrapper}>
-            <div
-              className={styles.quotaBarFill}
-              style={{ width: `${Math.max(2, quotaPercent)}%` }}
+            <progress
+              className={styles.quotaProgress}
+              value={Math.min(totalReads, DAILY_FREE_READS_LIMIT)}
+              max={DAILY_FREE_READS_LIMIT}
             />
           </div>
           <span className={styles.kpiSub}>

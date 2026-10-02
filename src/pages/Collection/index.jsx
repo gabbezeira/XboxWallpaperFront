@@ -4,7 +4,7 @@ import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
-import { ArrowLeft, User, Layers, Share2, Check, KeyRound, Copy } from 'lucide-react';
+import { ArrowLeft, User, Layers, Share2, Check, KeyRound, Copy, CheckCircle2 } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -116,24 +116,12 @@ export default function Collection() {
             )}
 
             <div className={styles.badgeRow}>
-              <span className={styles.categoryBadge}>Coleção Oficial</span>
               {collection?.creatorName && (
                 <span className={styles.creatorPill}>
                   <User size={13} />
                   <span>{collection.creatorName}</span>
+                  {collection.creatorVerified && <CheckCircle2 size={13} className={styles.verifiedBadge} />}
                 </span>
-              )}
-              {collectionCode && (
-                <button
-                  type="button"
-                  className={styles.codeBadgeBtn}
-                  onClick={handleCopyCode}
-                  title="Copiar código de acesso rápido"
-                  tabIndex={0}
-                >
-                  <KeyRound size={12} />
-                  <span>Código: {codeCopied ? 'Copiado!' : collectionCode}</span>
-                </button>
               )}
               {wallpapers.length > 0 && (
                 <span className={styles.countPill}>
@@ -146,24 +134,13 @@ export default function Collection() {
           <div className={styles.headerActions}>
             <button
               type="button"
-              className={styles.btnGhostAction}
-              onClick={() => navigate('/collections')}
-              tabIndex={0}
-              title="Ver todas as coleções"
-            >
-              <Layers size={16} />
-              <span>Coleções</span>
-            </button>
-
-            <button
-              type="button"
               className={styles.btnCopyCode}
               onClick={handleCopyCode}
               tabIndex={0}
               title="Copiar código desta coleção"
             >
               {codeCopied ? <Check size={16} /> : <Copy size={16} />}
-              <span>{codeCopied ? 'Código Copiado!' : 'Copiar Código'}</span>
+              <span>{codeCopied ? 'Código Copiado!' : `Copiar: ${collectionCode || ''}`}</span>
             </button>
 
             <button

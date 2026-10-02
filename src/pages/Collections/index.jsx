@@ -10,6 +10,7 @@ import {
   Copy,
   Check,
   Compass,
+  CheckCircle2,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 
@@ -144,28 +145,28 @@ export default function Collections() {
                       </div>
                     )}
                     <div className={styles.cardBannerGradient} />
-                    <button
-                      type="button"
-                      className={styles.codePillButton}
-                      onClick={(e) => handleCopyCode(e, displayCode)}
-                      title="Copiar código da coleção"
-                      tabIndex={0}
-                    >
-                      {isCopied ? <Check size={12} /> : <Copy size={12} />}
-                      <span>{isCopied ? 'Copiado!' : displayCode}</span>
-                    </button>
                   </div>
 
                   <div className={styles.cardBody}>
                     <div className={styles.cardMetaRow}>
-                      {col.creatorName ? (
+                      {col.creatorName && (
                         <span className={styles.creatorPill}>
                           <User size={12} />
                           <span>{col.creatorName}</span>
+                          {col.creatorVerified && <CheckCircle2 size={12} className={styles.verifiedBadge} />}
                         </span>
-                      ) : (
-                        <span className={styles.officialPill}>Oficial</span>
                       )}
+                      
+                      <button
+                        type="button"
+                        className={styles.btnCopyCardCode}
+                        onClick={(e) => handleCopyCode(e, displayCode)}
+                        title="Copiar código da coleção"
+                        tabIndex={0}
+                      >
+                        {isCopied ? <Check size={12} /> : <Copy size={12} />}
+                        <span>{isCopied ? 'Copiado!' : displayCode}</span>
+                      </button>
                     </div>
 
                     <h3 className={styles.cardTitle}>{col.name}</h3>

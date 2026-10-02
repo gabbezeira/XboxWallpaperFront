@@ -89,16 +89,9 @@
   flex-wrap: wrap;
 }
 
-.categoryBadge {
-  font-size: 11px;
-  font-weight: $fw-bold;
-  color: #4ade80;
-  background-color: #0f291e;
-  border: 1px solid #107c10;
-  padding: 3px 10px;
-  border-radius: $radius-full;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.verifiedBadge {
+  color: #3b82f6;
+  fill: #3b82f6;
 }
 
 .creatorPill {
@@ -114,28 +107,7 @@
   border: 1px solid #333333;
 }
 
-.codeBadgeBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: $fw-bold;
-  font-family: monospace;
-  color: #4ade80;
-  background: #14281d;
-  padding: 3px 10px;
-  border-radius: $radius-full;
-  border: 1px solid #107c10;
-  cursor: pointer;
-  transition: all $transition-fast;
-  @include gamepad-focus;
 
-  &:hover {
-    background: #107c10;
-    color: #ffffff;
-    border-color: #22c55e;
-  }
-}
 
 .countPill {
   font-size: 11px;
@@ -180,20 +152,7 @@
   }
 }
 
-.btnGhostAction {
-  @include btn-ghost;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: $spacing-xs;
-  font-size: $fs-small;
-  padding: 10px 14px;
-  width: 100%;
 
-  @include respond-to(md) {
-    width: auto;
-  }
-}
 
 .btnCopyCode {
   @include btn-secondary;

@@ -61,27 +61,44 @@ export default function DeviceAuth({ onSuccess }) {
   useEffect(() => {
     if (!deviceData || expired) return;
 
-    const pollInterval = setInterval(async () => {
-      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
-        return;
-      }
-      try {
-        const res = await api.deviceAuth.poll(deviceData.deviceCode);
-        if (!isMountedRef.current) return;
+    const createdAt = Date.now();
+    let pollTimer = null;
 
-        if (res.status === 'authorized' && res.customToken) {
-          clearInterval(pollInterval);
-          await loginWithCustomToken(res.customToken);
-          if (onSuccess) onSuccess();
-        } else if (res.status === 'expired') {
-          clearInterval(pollInterval);
-          setExpired(true);
+    const getInterval = () => {
+      const elapsed = (Date.now() - createdAt) / 1000;
+      if (elapsed < 30) return 4000;
+      if (elapsed < 120) return 8000;
+      return 12000;
+    };
+
+    const schedulePoll = () => {
+      pollTimer = setTimeout(async () => {
+        if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+          schedulePoll();
+          return;
         }
-      } catch {
-      }
-    }, deviceData.interval || 5000);
+        try {
+          const res = await api.deviceAuth.poll(deviceData.deviceCode);
+          if (!isMountedRef.current) return;
 
-    return () => clearInterval(pollInterval);
+          if (res.status === 'authorized' && res.customToken) {
+            await loginWithCustomToken(res.customToken);
+            if (onSuccess) onSuccess();
+            return;
+          } else if (res.status === 'expired') {
+            setExpired(true);
+            return;
+          }
+        } catch {}
+        if (isMountedRef.current && !expired) schedulePoll();
+      }, getInterval());
+    };
+
+    schedulePoll();
+
+    return () => {
+      if (pollTimer) clearTimeout(pollTimer);
+    };
   }, [deviceData, expired, onSuccess]);
 
   const formatTime = (seconds) => {

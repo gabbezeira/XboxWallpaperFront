@@ -212,7 +212,12 @@ export const api = {
     refreshStorageMetrics: () => request('/api/admin/metrics/storage/refresh', { method: 'POST' }),
     resetFirestoreMetrics: () => request('/api/admin/metrics/firestore/reset', { method: 'POST' }),
     rebuildTagsMetadata: () => request('/api/admin/metadata/rebuild-tags', { method: 'POST' }),
-    verifyAuth: () => request('/api/admin/auth/verify', { method: 'POST' }),
+    verifyAuth: async () => {
+      if (auth.currentUser) {
+        await auth.currentUser.getIdToken(true).catch(() => {});
+      }
+      return request('/api/admin/auth/verify', { method: 'POST' });
+    },
   },
 
   favorites: {

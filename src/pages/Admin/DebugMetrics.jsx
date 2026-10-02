@@ -62,12 +62,10 @@ export default function DebugMetrics() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [recalculatingStorage, setRecalculatingStorage] = useState(false);
-  const [autoRefresh, setAutoRefresh] = useState(false);
   const [actionMessage, setActionMessage] = useState(null);
   const [actionError, setActionError] = useState(null);
   const [resetting, setResetting] = useState(false);
   const [rebuilding, setRebuilding] = useState(false);
-  const timerRef = useRef(null);
 
   const fetchMetrics = async (isBackground = false, forceStorage = false, forceStats = false) => {
     try {
@@ -86,20 +84,6 @@ export default function DebugMetrics() {
   useEffect(() => {
     fetchMetrics();
   }, []);
-
-  useEffect(() => {
-    if (autoRefresh) {
-      timerRef.current = setInterval(() => {
-        fetchMetrics(true);
-      }, 10000);
-    } else if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [autoRefresh]);
 
   const handleRefreshStorage = async () => {
     try {
@@ -189,15 +173,6 @@ export default function DebugMetrics() {
         </div>
 
         <div className={styles.toolbarActions}>
-          <label className={styles.autoRefreshToggle}>
-            <input
-              type="checkbox"
-              checked={autoRefresh}
-              onChange={(e) => setAutoRefresh(e.target.checked)}
-            />
-            <span>Auto (10s)</span>
-          </label>
-
           <button
             type="button"
             className={styles.btnSecondary}

@@ -92,8 +92,10 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    fetchOverallStats();
-  }, []);
+    if (activeTab === 'overview') {
+      fetchOverallStats();
+    }
+  }, [activeTab]);
 
   const handleSelectTab = (tabKey) => {
     setActiveTab(tabKey);
@@ -293,17 +295,6 @@ export default function Admin() {
           </div>
 
           <div className={styles.topHeaderActions}>
-            <button
-              type="button"
-              className={styles.headerActionBtn}
-              onClick={fetchOverallStats}
-              disabled={refreshing}
-              title="Recarregar estatísticas do sistema"
-            >
-              <RefreshCw size={15} className={refreshing ? styles.spinIcon : ''} />
-              <span className={styles.headerActionLabel}>Atualizar</span>
-            </button>
-
             <button
               type="button"
               onClick={() => navigate('/')}

@@ -62,6 +62,9 @@ export default function DeviceAuth({ onSuccess }) {
     if (!deviceData || expired) return;
 
     const pollInterval = setInterval(async () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+        return;
+      }
       try {
         const res = await api.deviceAuth.poll(deviceData.deviceCode);
         if (!isMountedRef.current) return;
@@ -76,7 +79,7 @@ export default function DeviceAuth({ onSuccess }) {
         }
       } catch {
       }
-    }, deviceData.interval || 3000);
+    }, deviceData.interval || 5000);
 
     return () => clearInterval(pollInterval);
   }, [deviceData, expired, onSuccess]);

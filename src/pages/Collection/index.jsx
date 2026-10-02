@@ -4,7 +4,8 @@ import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
-import { ArrowLeft, User, Layers, Share2, Check, KeyRound, Copy, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, User, Layers, Share2, Check, KeyRound, Copy } from 'lucide-react';
+import VerifiedBadge from '../../components/VerifiedBadge';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -58,11 +59,10 @@ export default function Collection() {
   }, [tag]);
 
   const collectionCode = collection?.code || collection?.slug?.toUpperCase() || tag?.toUpperCase();
-  const linkedUserName = collection?.linkedUserName || collection?.creatorName;
-  const linkedUserPhoto = collection?.linkedUserName ? collection?.linkedUserPhoto : collection?.creatorPhoto;
-  const linkedUserVerified = collection?.linkedUserName
-    ? collection?.linkedUserVerified
-    : collection?.creatorVerified;
+  const hasLinkedUser = Boolean(collection?.linkedUserName);
+  const linkedUserName = collection?.linkedUserName || 'Spartan Wallpapers';
+  const linkedUserPhoto = hasLinkedUser ? collection?.linkedUserPhoto : null;
+  const linkedUserVerified = hasLinkedUser ? collection?.linkedUserVerified : true;
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -121,7 +121,7 @@ export default function Collection() {
             )}
 
             <div className={styles.badgeRow}>
-              {linkedUserName && (
+              {collection && (
                 <span className={styles.creatorPill}>
                   {linkedUserPhoto ? (
                     <img src={linkedUserPhoto} alt="" className={styles.creatorAvatar} />
@@ -129,7 +129,7 @@ export default function Collection() {
                     <User size={13} />
                   )}
                   <span>Por {linkedUserName}</span>
-                  {linkedUserVerified && <CheckCircle2 size={13} className={styles.verifiedBadge} />}
+                  {linkedUserVerified && <VerifiedBadge size={14} />}
                 </span>
               )}
               {wallpapers.length > 0 && (

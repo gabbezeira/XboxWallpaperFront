@@ -6,11 +6,12 @@ import {
   Layers,
   Search,
   ArrowRight,
+  User,
   Copy,
   Check,
   Compass,
-  CheckCircle2,
 } from 'lucide-react';
+import VerifiedBadge from '../../components/VerifiedBadge';
 import styles from './styles.module.scss';
 
 export default function Collections() {
@@ -121,8 +122,9 @@ export default function Collections() {
             {filteredCollections.map((col) => {
               const displayCode = col.code || col.slug?.toUpperCase() || `COL-${col.id.slice(0, 5).toUpperCase()}`;
               const isCopied = copiedCode === displayCode;
-              const linkedUserName = col.linkedUserName || col.creatorName;
-              const linkedUserVerified = col.linkedUserName ? col.linkedUserVerified : col.creatorVerified;
+              const hasLinkedUser = Boolean(col.linkedUserName);
+              const linkedUserName = col.linkedUserName || 'Spartan Wallpapers';
+              const linkedUserVerified = hasLinkedUser ? col.linkedUserVerified : true;
 
               return (
                 <div
@@ -163,17 +165,15 @@ export default function Collections() {
                       <h3 className={styles.cardTitle}>{col.name}</h3>
                       {col.description && <p className={styles.cardDesc}>{col.description}</p>}
                       <div className={styles.cardFooter}>
-                        {linkedUserName ? (
-                          <span className={styles.creatorPill} title={`Vinculada a ${linkedUserName}`}>
-                            {col.linkedUserPhoto ? (
+                        <span className={styles.creatorPill} title={`Criador: ${linkedUserName}`}>
+                            {hasLinkedUser && col.linkedUserPhoto ? (
                               <img src={col.linkedUserPhoto} alt="" className={styles.creatorAvatar} loading="lazy" />
                             ) : (
-                              <span className={styles.creatorAvatarFallback}><Layers size={11} /></span>
+                              <span className={styles.creatorAvatarFallback}><User size={11} /></span>
                             )}
                             <span className={styles.creatorName}>{linkedUserName}</span>
-                            {linkedUserVerified && <CheckCircle2 size={12} className={styles.verifiedBadge} />}
+                            {linkedUserVerified && <VerifiedBadge size={13} />}
                           </span>
-                        ) : <span />}
                         <span className={styles.viewLink}>
                           Explorar <ArrowRight size={14} />
                         </span>

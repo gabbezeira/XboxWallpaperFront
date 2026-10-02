@@ -347,25 +347,46 @@
   align-items: center;
   gap: 6px;
   font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .breadcrumbRoot {
   color: $color-text-muted;
   font-weight: $fw-medium;
+  display: none;
+
+  @include respond-to(md) {
+    display: inline;
+  }
 }
 
 .breadcrumbSection {
   color: $color-text-muted;
   font-weight: $fw-medium;
+  display: none;
+
+  @include respond-to(md) {
+    display: inline;
+  }
 }
 
 .breadcrumbSeparator {
   color: rgba(255, 255, 255, 0.2);
+  display: none;
+
+  @include respond-to(md) {
+    display: inline;
+  }
 }
 
 .breadcrumbCurrent {
   color: #ffffff;
   font-weight: $fw-semibold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .topHeaderActions {
@@ -468,20 +489,26 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .sectionTitleRow {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .sectionTitle {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: $fw-bold;
   letter-spacing: -0.01em;
   color: #ffffff;
   margin: 0;
+
+  @include respond-to(md) {
+    font-size: 1.35rem;
+  }
 }
 
 .counterBadge {
@@ -492,6 +519,7 @@
   border: 1px solid rgba(16, 124, 16, 0.3);
   padding: 2px 8px;
   border-radius: $radius-full;
+  white-space: nowrap;
 }
 
 .sectionSubtitle {
@@ -506,6 +534,11 @@
   align-items: center;
   gap: $spacing-sm;
   flex-wrap: wrap;
+  width: 100%;
+
+  @include respond-to(md) {
+    width: auto;
+  }
 }
 
 .filterToolbar {
@@ -514,6 +547,7 @@
   gap: 10px;
   flex-wrap: wrap;
   margin-bottom: $spacing-md;
+  width: 100%;
 }
 
 .searchBox {
@@ -521,7 +555,7 @@
   display: flex;
   align-items: center;
   flex: 1;
-  min-width: 220px;
+  min-width: 160px;
 }
 
 .searchIcon {
@@ -763,9 +797,16 @@
   border-radius: $radius-md;
   padding: 10px $spacing-md;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: $spacing-sm;
+  align-items: flex-start;
   margin-bottom: $spacing-md;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 .batchActionText {
@@ -989,6 +1030,12 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+  width: 100%;
+  justify-content: flex-end;
+
+  @include respond-to(md) {
+    width: auto;
+  }
 }
 
 .tableWrapper {
@@ -1001,7 +1048,11 @@
 }
 
 .desktopTableOnly {
-  display: block;
+  display: none;
+
+  @include respond-to(md) {
+    display: block;
+  }
 }
 
 .dataTable {
@@ -1172,6 +1223,47 @@
   }
 }
 
+.mobileUsersGrid {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  @include respond-to(md) {
+    display: none;
+  }
+}
+
+.mobileUserCard {
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.mobileUserCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  padding-bottom: $spacing-xs;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+  .userCell {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+.mobileUserCardBody {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .collectionsGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1293,12 +1385,13 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  padding: $spacing-xl;
+  padding: $spacing-md;
   border-radius: $radius-xl;
   background: radial-gradient(100% 100% at 0% 0%, rgba(16, 124, 16, 0.15) 0%, rgba(7, 7, 7, 0.9) 70%);
   border: 1px solid rgba(255, 255, 255, 0.06);
 
   @include respond-to(md) {
+    padding: $spacing-xl;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -1762,6 +1855,33 @@
   gap: 8px;
 }
 
+.cacheCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #55d688;
+}
+
+.cacheCardTitle {
+  font-size: 0.85rem;
+  font-weight: $fw-semibold;
+  color: #ffffff;
+  margin: 0;
+}
+
+.cacheCardValue {
+  font-size: 1.25rem;
+  font-weight: $fw-bold;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.cacheCardSub {
+  font-size: 0.72rem;
+  color: $color-text-muted;
+  line-height: 1.4;
+}
+
 .cacheHeader {
   display: flex;
   align-items: center;
@@ -1811,6 +1931,7 @@
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: $radius-md;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .endpointsTable {
@@ -2074,6 +2195,87 @@
 .checkboxLabel {
   font-size: 0.82rem;
   color: $color-text-secondary;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.heroDropZone {
+  border: 2px dashed rgba(255, 255, 255, 0.12);
+  border-radius: $radius-lg;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.015);
+  transition: all $transition-fast;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border-color: #107c10;
+    background-color: rgba(16, 124, 16, 0.03);
+  }
+}
+
+.heroPreviewContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  &:hover .heroPreviewOverlay {
+    opacity: 1;
+  }
+}
+
+.heroPreviewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.heroPreviewOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: $fw-medium;
+  opacity: 0;
+  transition: opacity $transition-fast;
+}
+
+.heroDropPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: $spacing-lg;
+  gap: 8px;
+  color: $color-text-muted;
+}
+
+.dropMainText {
+  font-size: 0.88rem;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.dropSubText {
+  font-size: 0.75rem;
+  color: $color-text-muted;
 }
 
 .heroUploadDropzone {
@@ -2369,6 +2571,62 @@
   }
 }
 
+.modBtnRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.btnApprove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: $radius-md;
+  background-color: #107c10;
+  border: none;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: #16a516;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btnReject {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: $radius-md;
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  font-size: 0.82rem;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(239, 68, 68, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .modActionBtns {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2616,6 +2874,7 @@
   object-fit: cover;
   border-radius: $radius-xs;
   background-color: $color-bg-tertiary;
+  flex-shrink: 0;
 }
 
 .batchItemContent {

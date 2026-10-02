@@ -189,6 +189,10 @@ export default function MyCollection() {
               <ArrowLeft size={20} />
             </button>
             <div className={styles.headerInfo}>
+              <h1 className={styles.title}>{collection.name}</h1>
+              {collection.description && (
+                <p className={styles.subtitle}>{collection.description}</p>
+              )}
               <div className={styles.headerBadgeRow}>
                 <span className={styles.collectionBadge}>Painel do Criador</span>
                 <span className={styles.slugBadge}>/{collection.slug}</span>
@@ -212,10 +216,6 @@ export default function MyCollection() {
                   </button>
                 )}
               </div>
-              <h1 className={styles.title}>{collection.name}</h1>
-              {collection.description && (
-                <p className={styles.subtitle}>{collection.description}</p>
-              )}
             </div>
           </div>
 

@@ -92,9 +92,9 @@
 .categoryBadge {
   font-size: 11px;
   font-weight: $fw-bold;
-  color: $color-primary;
-  background-color: rgba($color-primary, 0.1);
-  border: 1px solid rgba($color-primary, 0.25);
+  color: #4ade80;
+  background-color: #0f291e;
+  border: 1px solid #107c10;
   padding: 3px 10px;
   border-radius: $radius-full;
   text-transform: uppercase;
@@ -108,10 +108,10 @@
   font-size: 11px;
   font-weight: $fw-medium;
   color: $color-text-secondary;
-  background: rgba(255, 255, 255, 0.05);
+  background: #1e1e1e;
   padding: 3px 10px;
   border-radius: $radius-full;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid #333333;
 }
 
 .codeBadgeBtn {
@@ -121,18 +121,19 @@
   font-size: 11px;
   font-weight: $fw-bold;
   font-family: monospace;
-  color: $color-primary;
-  background: rgba($color-primary, 0.12);
+  color: #4ade80;
+  background: #14281d;
   padding: 3px 10px;
   border-radius: $radius-full;
-  border: 1px solid rgba($color-primary, 0.3);
+  border: 1px solid #107c10;
   cursor: pointer;
   transition: all $transition-fast;
   @include gamepad-focus;
 
   &:hover {
-    background: rgba($color-primary, 0.22);
-    border-color: $color-primary;
+    background: #107c10;
+    color: #ffffff;
+    border-color: #22c55e;
   }
 }
 
@@ -140,10 +141,10 @@
   font-size: 11px;
   font-weight: $fw-medium;
   color: $color-text-muted;
-  background: rgba(255, 255, 255, 0.03);
+  background: #181818;
   padding: 3px 10px;
   border-radius: $radius-full;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid #2a2a2a;
 }
 
 .title {

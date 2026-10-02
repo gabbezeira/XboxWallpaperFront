@@ -4,7 +4,7 @@ import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
-import { ArrowLeft, User, Layers, Share2, Check, KeyRound, Copy } from 'lucide-react';
+import { ArrowLeft, User, Layers, Share2, Check, Copy } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import styles from './styles.module.scss';
 

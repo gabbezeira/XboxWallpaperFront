@@ -74,7 +74,7 @@ export default function Collections() {
       const nameMatch = c.name?.toLowerCase().includes(q);
       const slugMatch = c.slug?.toLowerCase().includes(q);
       const codeMatch = c.code?.toLowerCase().includes(q);
-      const linkedName = c.linkedUserName || c.creatorName;
+      const linkedName = c.linkedUserName || 'Spartan Wallpapers';
       const creatorMatch = linkedName?.toLowerCase().includes(q);
       const descMatch = c.description?.toLowerCase().includes(q);
       return nameMatch || slugMatch || codeMatch || creatorMatch || descMatch;

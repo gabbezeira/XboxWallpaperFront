@@ -7,7 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import { formatFileSize } from '../../utils/format.js';
 import Loader from '../../components/Loader';
-import { getTierByKey, getUserTier } from '../../config/tiers';
+import { getTierByKey, getUserTier, getTierCssClass } from '../../config/tiers';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -30,6 +30,7 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
       isVerified: true,
       tier: {
         key: systemTier.key,
+        level: systemTier.level,
         label: systemTier.badgeLabel,
         name: systemTier.name,
         icon: systemTier.icon,
@@ -53,6 +54,7 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
       isVerified: Boolean(wallpaper.isVerified ?? profile?.isVerified),
       tier: {
         key: ownTier.key,
+        level: ownTier.level,
         label: ownTier.badgeLabel,
         name: ownTier.name,
         icon: ownTier.icon,
@@ -67,6 +69,7 @@ function getAuthorDisplay(wallpaper, authUser, profile) {
     isVerified: Boolean(wallpaper.isVerified),
     tier: {
       key: authorTierObj.key,
+      level: authorTierObj.level,
       label: authorTierObj.badgeLabel,
       name: authorTierObj.name,
       icon: authorTierObj.icon,
@@ -303,7 +306,7 @@ export default function WallpaperDetailsPage() {
                   )}
                 </div>
                 {authorInfo.tier && (
-                  <span className={`${styles.tierBadge} ${styles[authorInfo.tier.key]}`}>
+                  <span className={`${styles.tierBadge} ${styles[getTierCssClass(authorInfo.tier)]}`}>
                     {authorInfo.tier.icon && (
                       <authorInfo.tier.icon size={11} className={styles.badgeIcon} />
                     )}

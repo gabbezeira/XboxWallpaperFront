@@ -10,6 +10,7 @@ import {
 export const TIERS = [
   {
     key: 'cadete',
+    level: 1,
     name: 'Cadete UNSC',
     badgeLabel: 'CADETE UNSC',
     franchise: 'Universo Halo',
@@ -27,6 +28,7 @@ export const TIERS = [
   },
   {
     key: 'horizon',
+    level: 2,
     name: 'Piloto Horizon',
     badgeLabel: 'PILOTO HORIZON',
     franchise: 'Forza Horizon',
@@ -44,6 +46,7 @@ export const TIERS = [
   },
   {
     key: 'constelacao',
+    level: 3,
     name: 'Explorador Constelação',
     badgeLabel: 'EXPLORADOR CONSTELAÇÃO',
     franchise: 'Starfield',
@@ -62,6 +65,7 @@ export const TIERS = [
   },
   {
     key: 'cog',
+    level: 4,
     name: 'Veterano Gears COG',
     badgeLabel: 'VETERANO COG',
     franchise: 'Gears of War',
@@ -80,6 +84,7 @@ export const TIERS = [
   },
   {
     key: 'albion',
+    level: 5,
     name: 'Guardião de Albion',
     badgeLabel: 'GUARDIÃO DE ALBION',
     franchise: 'Fable',
@@ -98,6 +103,7 @@ export const TIERS = [
   },
   {
     key: 'spartan',
+    level: 6,
     name: 'Spartan Mythic 117',
     badgeLabel: 'SPARTAN 117',
     franchise: 'Halo Spartan-II',
@@ -159,10 +165,22 @@ export function getUserLevel(favoritesCount = 0) {
   const tier = getUserTier(favoritesCount);
   return {
     key: tier.key,
+    level: tier.level,
     label: tier.badgeLabel,
     name: tier.name,
     icon: tier.icon,
   };
+}
+
+export function getTierCssClass(tierOrLevel) {
+  if (!tierOrLevel) return 'level_1';
+  if (typeof tierOrLevel === 'number') return `level_${tierOrLevel}`;
+  if (typeof tierOrLevel === 'object' && tierOrLevel.level) return `level_${tierOrLevel.level}`;
+  if (typeof tierOrLevel === 'string') {
+    const found = getTierByKey(tierOrLevel);
+    return `level_${found?.level || 1}`;
+  }
+  return 'level_1';
 }
 
 export const TIER_LABELS = {

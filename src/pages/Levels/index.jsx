@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import { useAuth } from '../../hooks/useAuth';
-import { TIERS, getUserTier, getNextTier } from '../../config/tiers';
+import { TIERS, getUserTier, getNextTier, getTierCssClass } from '../../config/tiers';
 import styles from './styles.module.scss';
 
 export default function Levels() {
@@ -72,7 +72,7 @@ export default function Levels() {
               </div>
 
               <div className={styles.userStatusBadges}>
-                <div className={`${styles.tierBadge} ${styles[currentTier.key]}`}>
+                <div className={`${styles.tierBadge} ${styles[getTierCssClass(currentTier)]}`}>
                   <currentTier.icon size={13} className={styles.badgeIcon} />
                   <span>{currentTier.badgeLabel}</span>
                 </div>
@@ -193,7 +193,7 @@ export default function Levels() {
               return (
                 <div
                   key={tier.key}
-                  className={`${styles.tierCard} ${styles[`card_${tier.key}`]} ${isCurrent ? styles.activeTierCard : ''}`}
+                  className={`${styles.tierCard} ${styles[`card_level_${tier.level}`]} ${isCurrent ? styles.activeTierCard : ''}`}
                 >
                   {isCurrent && (
                     <div className={styles.currentTierMarker}>
@@ -203,11 +203,11 @@ export default function Levels() {
                   )}
 
                   <div className={styles.tierCardTop}>
-                    <div className={`${styles.tierIconContainer} ${styles[`icon_${tier.key}`]}`}>
+                    <div className={`${styles.tierIconContainer} ${styles[`icon_level_${tier.level}`]}`}>
                       <TierIcon size={24} />
                     </div>
                     <div className={styles.tierMeta}>
-                      <span className={`${styles.tierBadge} ${styles[tier.key]}`}>
+                      <span className={`${styles.tierBadge} ${styles[getTierCssClass(tier)]}`}>
                         <TierIcon size={13} className={styles.badgeIcon} />
                         <span>{tier.badgeLabel}</span>
                       </span>

@@ -196,42 +196,37 @@
   letter-spacing: 0.5px;
   text-transform: uppercase;
 
-  &.cadete,
-  &.recruta {
+  &.level_1 {
     background-color: #141820;
     color: #f8fafc;
     border: 1px solid #334155;
   }
 
-  &.horizon,
-  &.explorador {
+  &.level_2 {
     background-color: #2b1404;
     color: #fef3c7;
     border: 1px solid #b45309;
   }
 
-  &.constelacao,
-  &.criador {
+  &.level_3 {
     background-color: #0b1d3a;
     color: #eff6ff;
     border: 1px solid #2563eb;
   }
 
-  &.cog,
-  &.veterano {
+  &.level_4 {
     background-color: #2d0618;
     color: #faf5ff;
     border: 1px solid #9333ea;
   }
 
-  &.albion,
-  &.elite {
+  &.level_5 {
     background-color: #2c1802;
     color: #fefce8;
     border: 1px solid #ca8a04;
   }
 
-  &.spartan {
+  &.level_6 {
     background-color: #032512;
     color: #4ade80;
     border: 1px solid #107c10;

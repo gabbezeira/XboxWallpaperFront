@@ -4,7 +4,7 @@ import { Home, Compass, UploadCloud, Heart, LogOut, Images, Layers, Copy, Check 
 import VerifiedBadge from '../VerifiedBadge';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
-import { getUserLevel } from '../../config/tiers';
+import { getUserLevel, getTierCssClass } from '../../config/tiers';
 import horizontalLogo from '../../assets/horizontal-logo.png';
 import styles from './styles.module.scss';
 
@@ -135,7 +135,7 @@ export default function Sidebar({ onLoginClick }) {
                 <div className={styles.profileStatsRow}>
                   <Link
                     to="/levels"
-                    className={`${styles.badge} ${styles[userLevel.key]}`}
+                    className={`${styles.badge} ${styles[getTierCssClass(userLevel)]}`}
                     title="Ver sistema de níveis e conquistas"
                   >
                     {userLevel.label}

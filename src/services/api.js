@@ -8,7 +8,26 @@ async function getToken() {
   return user.getIdToken();
 }
 
+const inFlightRequests = new Map();
+
 async function request(path, options = {}, retries = 3) {
+  const isGet = !options.method || options.method === 'GET';
+  if (isGet) {
+    const flightKey = `${path}`;
+    if (inFlightRequests.has(flightKey)) {
+      return inFlightRequests.get(flightKey);
+    }
+    const flightPromise = executeRequest(path, options, retries)
+      .finally(() => {
+        inFlightRequests.delete(flightKey);
+      });
+    inFlightRequests.set(flightKey, flightPromise);
+    return flightPromise;
+  }
+  return executeRequest(path, options, retries);
+}
+
+async function executeRequest(path, options = {}, retries = 3) {
   const token = await getToken();
   const headers = { ...options.headers };
 
@@ -27,7 +46,7 @@ async function request(path, options = {}, retries = 3) {
 
   if (res.status === 429 && retries > 0) {
     await new Promise((resolve) => setTimeout(resolve, 1500 * (4 - retries)));
-    return request(path, options, retries - 1);
+    return executeRequest(path, options, retries - 1);
   }
 
   if (!res.ok) {

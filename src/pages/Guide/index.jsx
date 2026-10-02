@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import {
-  BookOpen,
   Smartphone,
-  Monitor,
   Laptop,
   QrCode,
   UploadCloud,
@@ -20,533 +18,403 @@ import {
   Mail,
   Layers,
   Info,
+  AlertTriangle,
 } from 'lucide-react';
 import styles from './styles.module.scss';
-
-const LOGIN_STEPS_MOBILE = [
-  {
-    number: '01',
-    icon: Smartphone,
-    title: 'Abra o Site no Celular',
-    desc: 'Acesse o Spartan Wallpapers pelo navegador do seu smartphone (Chrome, Safari ou qualquer outro).',
-  },
-  {
-    number: '02',
-    icon: LogIn,
-    title: 'Toque em "Entrar"',
-    desc: 'Na barra lateral ou no menu inferior, toque no botão Entrar para abrir o painel de autenticação.',
-  },
-  {
-    number: '03',
-    icon: Shield,
-    title: 'Escolha Seu Método',
-    desc: 'Você pode entrar com sua conta Microsoft, criar uma conta com email e senha, ou usar o QR Code.',
-  },
-  {
-    number: '04',
-    icon: CheckCircle2,
-    title: 'Pronto!',
-    desc: 'Após o login, você tem acesso completo: favoritar, enviar wallpapers e gerenciar suas imagens.',
-  },
-];
-
-const LOGIN_STEPS_DESKTOP = [
-  {
-    number: '01',
-    icon: Laptop,
-    title: 'Acesse pelo Navegador',
-    desc: 'Abra o site no computador usando Chrome, Edge, Firefox ou qualquer navegador moderno.',
-  },
-  {
-    number: '02',
-    icon: LogIn,
-    title: 'Clique em "Entrar"',
-    desc: 'O botão de login fica na barra lateral esquerda, no rodapé da navegação principal.',
-  },
-  {
-    number: '03',
-    icon: Shield,
-    title: 'Autentique-se',
-    desc: 'Escolha entre Microsoft, Email ou QR Code. O login com Microsoft importa automaticamente seu nome e foto de perfil.',
-  },
-  {
-    number: '04',
-    icon: CheckCircle2,
-    title: 'Navegue e Crie',
-    desc: 'Com a sessão ativa, todas as funcionalidades ficam disponíveis: upload, favoritos, coleções e mais.',
-  },
-];
-
-const UPLOAD_STEPS = [
-  {
-    number: '01',
-    icon: LogIn,
-    title: 'Faça Login',
-    desc: 'Você precisa estar autenticado para enviar wallpapers. Entre pelo celular, desktop ou Xbox.',
-  },
-  {
-    number: '02',
-    icon: UploadCloud,
-    title: 'Acesse a Aba "Enviar"',
-    desc: 'No menu lateral ou inferior, clique em Enviar. Você verá a zona de upload e sua barra de cota disponível.',
-  },
-  {
-    number: '03',
-    icon: Image,
-    title: 'Selecione Suas Imagens',
-    desc: 'Arraste arquivos para a zona de upload ou clique para selecionar. Formatos aceitos: JPG, PNG e WebP em alta resolução (1080p, 2K ou 4K).',
-  },
-  {
-    number: '04',
-    icon: CheckCircle2,
-    title: 'Envio Concluído',
-    desc: 'As imagens ficam salvas na aba "Meus Wallpapers". Por padrão, elas começam como privadas — visíveis apenas para você.',
-  },
-];
-
-const XBOX_QR_STEPS = [
-  {
-    number: '01',
-    icon: Gamepad2,
-    title: 'Abra o Site no Xbox',
-    desc: 'No seu console Xbox, abra o navegador Microsoft Edge e acesse o site do Spartan Wallpapers.',
-  },
-  {
-    number: '02',
-    icon: QrCode,
-    title: 'QR Code Aparece Automaticamente',
-    desc: 'Como o console não suporta login tradicional facilmente, o sistema detecta o Xbox e exibe um QR Code com um código alfanumérico.',
-  },
-  {
-    number: '03',
-    icon: ScanLine,
-    title: 'Escaneie com o Celular',
-    desc: 'Use a câmera do seu smartphone para escanear o QR Code. Você será redirecionado para a página de autorização.',
-  },
-  {
-    number: '04',
-    icon: LogIn,
-    title: 'Faça Login no Celular',
-    desc: 'Na página aberta pelo QR Code, entre com sua conta (Microsoft ou Email). O código do console é preenchido automaticamente.',
-  },
-  {
-    number: '05',
-    icon: CheckCircle2,
-    title: 'Console Autorizado',
-    desc: 'Após autorizar, o Xbox recebe o login automaticamente em poucos segundos. Você já pode navegar logado no console.',
-  },
-];
 
 export default function Guide() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <div className={styles.headerBadge}>
-            <BookOpen size={16} />
-            <span>Guia do Usuário</span>
-          </div>
-          <h1 className={styles.title}>Como Usar o Spartan Wallpapers</h1>
+          <h1 className={styles.title}>Guia de Uso</h1>
           <p className={styles.subtitle}>
-            Um guia completo para aproveitar todos os recursos da plataforma: login em diferentes
-            dispositivos, envio de imagens, sistema de visibilidade e autenticação no Xbox.
+            Tudo o que você precisa saber para usar a plataforma no celular, computador ou
+            diretamente no console Xbox.
           </p>
           <div className={styles.divider} />
         </header>
 
         <nav className={styles.tocNav}>
-          <span className={styles.tocLabel}>Ir para:</span>
+          <span className={styles.tocLabel}>Navegação rápida</span>
           <div className={styles.tocLinks}>
-            <a href="#login-celular" className={styles.tocLink}>
-              <Smartphone size={14} />
-              Login no Celular
-            </a>
-            <a href="#login-desktop" className={styles.tocLink}>
-              <Laptop size={14} />
-              Login no Desktop
-            </a>
-            <a href="#upload" className={styles.tocLink}>
-              <UploadCloud size={14} />
-              Enviar Imagens
-            </a>
-            <a href="#visibilidade" className={styles.tocLink}>
-              <Eye size={14} />
-              Público e Privado
-            </a>
-            <a href="#xbox-qrcode" className={styles.tocLink}>
-              <Gamepad2 size={14} />
-              Login no Xbox
-            </a>
+            <a href="#login" className={styles.tocLink}>Login</a>
+            <a href="#upload" className={styles.tocLink}>Enviar Imagens</a>
+            <a href="#visibilidade" className={styles.tocLink}>Público e Privado</a>
+            <a href="#xbox" className={styles.tocLink}>Login no Xbox</a>
           </div>
         </nav>
 
-        <section id="login-celular" className={styles.section}>
+        <section id="login" className={styles.section}>
           <div className={styles.sectionHeader}>
-            <div className={styles.sectionBadge}>
-              <Smartphone size={14} />
-              <span>Dispositivo Móvel</span>
-            </div>
-            <h2 className={styles.sectionTitle}>Login pelo Celular</h2>
+            <h2 className={styles.sectionTitle}>Como Fazer Login</h2>
             <p className={styles.sectionSubtitle}>
-              Acesse sua conta diretamente pelo navegador do smartphone, sem precisar instalar
-              nenhum aplicativo.
+              Acesse pelo navegador do celular ou computador. Não é necessário instalar nada.
             </p>
           </div>
 
           <div className={styles.stepsGrid}>
-            {LOGIN_STEPS_MOBILE.map((step) => {
-              const StepIcon = step.icon;
-              return (
-                <div key={step.number} className={styles.stepCard}>
-                  <div className={styles.stepNumber}>{step.number}</div>
-                  <div className={styles.stepIconBox}>
-                    <StepIcon size={24} />
-                  </div>
-                  <h3 className={styles.stepTitle}>{step.title}</h3>
-                  <p className={styles.stepDesc}>{step.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className={styles.tipBox}>
-            <Info size={18} className={styles.tipIcon} />
-            <p className={styles.tipText}>
-              <strong>Dica:</strong> Adicione o site à tela inicial do seu celular para um acesso
-              rápido, como se fosse um aplicativo nativo.
-            </p>
-          </div>
-        </section>
-
-        <section id="login-desktop" className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionBadge}>
-              <Laptop size={14} />
-              <span>Computador</span>
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>01</div>
+              <div className={styles.stepIconBox}>
+                <Smartphone size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Acesse o site</h3>
+              <p className={styles.stepDesc}>
+                Abra o Spartan Wallpapers pelo navegador do celular ou computador.
+              </p>
             </div>
-            <h2 className={styles.sectionTitle}>Login pelo Desktop</h2>
-            <p className={styles.sectionSubtitle}>
-              A experiência completa no computador, com navegação pela barra lateral e suporte a
-              teclado e gamepad.
-            </p>
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>02</div>
+              <div className={styles.stepIconBox}>
+                <LogIn size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Toque em Entrar</h3>
+              <p className={styles.stepDesc}>
+                No celular, o botão fica no menu inferior. No desktop, na barra lateral.
+              </p>
+            </div>
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>03</div>
+              <div className={styles.stepIconBox}>
+                <Shield size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Escolha o método</h3>
+              <p className={styles.stepDesc}>
+                Microsoft, email com senha ou QR Code. Escolha o que preferir.
+              </p>
+            </div>
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>04</div>
+              <div className={styles.stepIconBox}>
+                <CheckCircle2 size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Pronto</h3>
+              <p className={styles.stepDesc}>
+                Com a sessão ativa, você pode favoritar, enviar e gerenciar wallpapers.
+              </p>
+            </div>
           </div>
 
-          <div className={styles.stepsGrid}>
-            {LOGIN_STEPS_DESKTOP.map((step) => {
-              const StepIcon = step.icon;
-              return (
-                <div key={step.number} className={styles.stepCard}>
-                  <div className={styles.stepNumber}>{step.number}</div>
-                  <div className={styles.stepIconBox}>
-                    <StepIcon size={24} />
-                  </div>
-                  <h3 className={styles.stepTitle}>{step.title}</h3>
-                  <p className={styles.stepDesc}>{step.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className={styles.authMethodsCard}>
-            <h3 className={styles.authMethodsTitle}>Métodos de Login Disponíveis</h3>
-            <div className={styles.authMethodsGrid}>
-              <div className={styles.authMethodItem}>
-                <div className={styles.authMethodIcon}>
-                  <svg width="20" height="20" viewBox="0 0 21 21" focusable="false">
+          <div className={styles.methodsCard}>
+            <h3 className={styles.methodsTitle}>Métodos disponíveis</h3>
+            <div className={styles.methodsGrid}>
+              <div className={styles.methodItem}>
+                <div className={styles.methodIcon}>
+                  <svg width="18" height="18" viewBox="0 0 21 21" focusable="false">
                     <rect x="1" y="1" width="9" height="9" fill="#f25022" />
                     <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
                     <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
                     <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
                   </svg>
                 </div>
-                <div className={styles.authMethodInfo}>
-                  <span className={styles.authMethodName}>Microsoft</span>
-                  <span className={styles.authMethodDesc}>
-                    Importa nome e foto do perfil automaticamente
+                <div className={styles.methodInfo}>
+                  <span className={styles.methodName}>Conta Microsoft</span>
+                  <span className={styles.methodDesc}>
+                    Importa nome e foto de perfil. Se você ainda não tem conta no Spartan Wallpapers,
+                    ela é criada automaticamente ao continuar com Microsoft.
                   </span>
                 </div>
               </div>
-              <div className={styles.authMethodItem}>
-                <div className={styles.authMethodIcon}>
-                  <Mail size={20} />
+              <div className={styles.methodItem}>
+                <div className={styles.methodIcon}>
+                  <Mail size={18} />
                 </div>
-                <div className={styles.authMethodInfo}>
-                  <span className={styles.authMethodName}>Email e Senha</span>
-                  <span className={styles.authMethodDesc}>
-                    Crie uma conta local com email e senha de sua escolha
+                <div className={styles.methodInfo}>
+                  <span className={styles.methodName}>Email e Senha</span>
+                  <span className={styles.methodDesc}>
+                    Crie uma conta local com email e senha. Ideal para quem não usa conta Microsoft.
                   </span>
                 </div>
               </div>
-              <div className={styles.authMethodItem}>
-                <div className={styles.authMethodIcon}>
-                  <QrCode size={20} />
+              <div className={styles.methodItem}>
+                <div className={styles.methodIcon}>
+                  <QrCode size={18} />
                 </div>
-                <div className={styles.authMethodInfo}>
-                  <span className={styles.authMethodName}>QR Code</span>
-                  <span className={styles.authMethodDesc}>
-                    Ideal para TVs e consoles — escaneie pelo celular
+                <div className={styles.methodInfo}>
+                  <span className={styles.methodName}>QR Code</span>
+                  <span className={styles.methodDesc}>
+                    Escaneie pelo celular para autenticar outro dispositivo, como o console Xbox.
                   </span>
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className={styles.tipBox}>
+            <Info size={16} className={styles.tipIcon} />
+            <p className={styles.tipText}>
+              No celular, adicione o site à tela inicial para acessar como um app nativo.
+            </p>
           </div>
         </section>
 
         <section id="upload" className={styles.section}>
           <div className={styles.sectionHeader}>
-            <div className={styles.sectionBadge}>
-              <UploadCloud size={14} />
-              <span>Envio de Imagens</span>
-            </div>
-            <h2 className={styles.sectionTitle}>Como Enviar Wallpapers</h2>
+            <h2 className={styles.sectionTitle}>Enviando Wallpapers</h2>
             <p className={styles.sectionSubtitle}>
-              Suba suas capturas de tela, artes e papéis de parede em alta resolução para usar no
-              seu console Xbox ou compartilhar com a comunidade.
+              Suba imagens em alta resolução para usar no console ou compartilhar com a comunidade.
             </p>
           </div>
 
           <div className={styles.stepsGrid}>
-            {UPLOAD_STEPS.map((step) => {
-              const StepIcon = step.icon;
-              return (
-                <div key={step.number} className={styles.stepCard}>
-                  <div className={styles.stepNumber}>{step.number}</div>
-                  <div className={styles.stepIconBox}>
-                    <StepIcon size={24} />
-                  </div>
-                  <h3 className={styles.stepTitle}>{step.title}</h3>
-                  <p className={styles.stepDesc}>{step.desc}</p>
-                </div>
-              );
-            })}
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>01</div>
+              <div className={styles.stepIconBox}>
+                <LogIn size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Faça login</h3>
+              <p className={styles.stepDesc}>
+                O envio de wallpapers requer uma conta ativa na plataforma.
+              </p>
+            </div>
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>02</div>
+              <div className={styles.stepIconBox}>
+                <UploadCloud size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Aba Enviar</h3>
+              <p className={styles.stepDesc}>
+                Acesse pelo menu e arraste as imagens ou selecione do dispositivo.
+              </p>
+            </div>
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>03</div>
+              <div className={styles.stepIconBox}>
+                <Image size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Resolução alta</h3>
+              <p className={styles.stepDesc}>
+                JPG, PNG ou WebP. Proporção 16:9. Mínimo 1920×1080, ideal 3840×2160.
+              </p>
+            </div>
+            <div className={styles.stepCard}>
+              <div className={styles.stepNumber}>04</div>
+              <div className={styles.stepIconBox}>
+                <CheckCircle2 size={22} />
+              </div>
+              <h3 className={styles.stepTitle}>Salvo</h3>
+              <p className={styles.stepDesc}>
+                A imagem vai para Meus Wallpapers como privada. Só você a vê até torná-la pública.
+              </p>
+            </div>
           </div>
 
-          <div className={styles.specsCard}>
-            <h3 className={styles.specsTitle}>Especificações Recomendadas</h3>
-            <div className={styles.specsGrid}>
-              <div className={styles.specItem}>
-                <span className={styles.specLabel}>Formatos</span>
-                <span className={styles.specValue}>JPG, PNG, WebP</span>
-              </div>
-              <div className={styles.specItem}>
-                <span className={styles.specLabel}>Proporção Ideal</span>
-                <span className={styles.specValue}>16:9 (widescreen)</span>
-              </div>
-              <div className={styles.specItem}>
-                <span className={styles.specLabel}>Resolução Mínima</span>
-                <span className={styles.specValue}>1920×1080 (Full HD)</span>
-              </div>
-              <div className={styles.specItem}>
-                <span className={styles.specLabel}>Resolução Ideal</span>
-                <span className={styles.specValue}>3840×2160 (4K UHD)</span>
-              </div>
+          <div className={styles.specsRow}>
+            <div className={styles.specItem}>
+              <span className={styles.specLabel}>Formatos</span>
+              <span className={styles.specValue}>JPG, PNG, WebP</span>
+            </div>
+            <div className={styles.specItem}>
+              <span className={styles.specLabel}>Proporção</span>
+              <span className={styles.specValue}>16:9</span>
+            </div>
+            <div className={styles.specItem}>
+              <span className={styles.specLabel}>Mínimo</span>
+              <span className={styles.specValue}>1920×1080</span>
+            </div>
+            <div className={styles.specItem}>
+              <span className={styles.specLabel}>Ideal</span>
+              <span className={styles.specValue}>3840×2160</span>
             </div>
           </div>
         </section>
 
         <section id="visibilidade" className={styles.section}>
           <div className={styles.sectionHeader}>
-            <div className={styles.sectionBadge}>
-              <Eye size={14} />
-              <span>Visibilidade</span>
-            </div>
-            <h2 className={styles.sectionTitle}>Sistema de Público e Privado</h2>
+            <h2 className={styles.sectionTitle}>Público e Privado</h2>
             <p className={styles.sectionSubtitle}>
-              Entenda como funciona a visibilidade dos seus wallpapers e o processo de moderação
-              para publicação na galeria comunitária.
+              Todo wallpaper começa como privado. Você decide quando e se quer compartilhar
+              com a comunidade.
             </p>
           </div>
 
           <div className={styles.visibilityGrid}>
             <div className={`${styles.visibilityCard} ${styles.privateCard}`}>
-              <div className={styles.visibilityCardHeader}>
+              <div className={styles.visibilityHeader}>
                 <div className={styles.visibilityIconBox}>
-                  <Lock size={28} />
+                  <Lock size={24} />
                 </div>
                 <div className={styles.visibilityBadge}>
-                  <EyeOff size={12} />
+                  <EyeOff size={11} />
                   <span>PRIVADO</span>
                 </div>
               </div>
-              <h3 className={styles.visibilityCardTitle}>Wallpaper Privado</h3>
-              <p className={styles.visibilityCardDesc}>
-                Visível <strong>apenas para você</strong> na aba "Meus Wallpapers". Outros
-                usuários não conseguem ver, buscar ou acessar a imagem.
+              <h3 className={styles.visibilityTitle}>Só você vê</h3>
+              <p className={styles.visibilityDesc}>
+                Visível apenas em Meus Wallpapers. Pode ser aplicado no console normalmente,
+                sem moderação.
               </p>
               <ul className={styles.visibilityList}>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Estado padrão de todo upload novo</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Pode ser aplicado direto no seu console Xbox</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Sem necessidade de moderação</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Você pode torná-lo público a qualquer momento</span>
-                </li>
+                <li><CheckCircle2 size={13} /><span>Estado padrão de todo upload</span></li>
+                <li><CheckCircle2 size={13} /><span>Sem fila de moderação</span></li>
+                <li><CheckCircle2 size={13} /><span>Pode ser tornado público a qualquer momento</span></li>
               </ul>
             </div>
 
             <div className={`${styles.visibilityCard} ${styles.publicCard}`}>
-              <div className={styles.visibilityCardHeader}>
-                <div className={styles.visibilityIconBox}>
-                  <Globe size={28} />
+              <div className={styles.visibilityHeader}>
+                <div className={`${styles.visibilityIconBox} ${styles.publicIconBox}`}>
+                  <Globe size={24} />
                 </div>
                 <div className={`${styles.visibilityBadge} ${styles.publicBadge}`}>
-                  <Eye size={12} />
+                  <Eye size={11} />
                   <span>PÚBLICO</span>
                 </div>
               </div>
-              <h3 className={styles.visibilityCardTitle}>Wallpaper Público</h3>
-              <p className={styles.visibilityCardDesc}>
-                Visível para <strong>toda a comunidade</strong> na galeria pública. Outros
-                jogadores podem favoritar e aplicar no console deles.
+              <h3 className={styles.visibilityTitle}>Visível para todos</h3>
+              <p className={styles.visibilityDesc}>
+                Aparece na galeria pública. Outros jogadores podem favoritar e usar no console
+                deles. Favoritos contam para sua patente.
               </p>
               <ul className={styles.visibilityList}>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Passa por moderação antes de aparecer</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Favoritos recebidos contam para sua patente</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Aparece na galeria, buscas e coleções</span>
-                </li>
-                <li>
-                  <CheckCircle2 size={14} />
-                  <span>Pode ser revertido para privado quando quiser</span>
-                </li>
+                <li><CheckCircle2 size={13} /><span>Passa por moderação antes de aparecer</span></li>
+                <li><CheckCircle2 size={13} /><span>Favoritos recebidos contam para a patente</span></li>
+                <li><CheckCircle2 size={13} /><span>Pode ser revertido para privado</span></li>
               </ul>
             </div>
           </div>
 
           <div className={styles.flowCard}>
-            <h3 className={styles.flowTitle}>Fluxo de Publicação</h3>
+            <span className={styles.flowLabel}>Fluxo de publicação</span>
             <div className={styles.flowSteps}>
               <div className={styles.flowStep}>
-                <div className={styles.flowStepIcon}>
-                  <UploadCloud size={18} />
-                </div>
-                <span className={styles.flowStepLabel}>Upload</span>
-                <span className={styles.flowStepSub}>Imagem enviada</span>
+                <div className={styles.flowIcon}><UploadCloud size={16} /></div>
+                <span className={styles.flowText}>Upload</span>
               </div>
-              <div className={styles.flowArrow}>
-                <ArrowRight size={16} />
-              </div>
+              <ArrowRight size={14} className={styles.flowArrow} />
               <div className={styles.flowStep}>
-                <div className={styles.flowStepIcon}>
-                  <Lock size={18} />
-                </div>
-                <span className={styles.flowStepLabel}>Privado</span>
-                <span className={styles.flowStepSub}>Só você vê</span>
+                <div className={styles.flowIcon}><Lock size={16} /></div>
+                <span className={styles.flowText}>Privado</span>
               </div>
-              <div className={styles.flowArrow}>
-                <ArrowRight size={16} />
-              </div>
+              <ArrowRight size={14} className={styles.flowArrow} />
               <div className={styles.flowStep}>
-                <div className={styles.flowStepIcon}>
-                  <Eye size={18} />
-                </div>
-                <span className={styles.flowStepLabel}>Solicitar</span>
-                <span className={styles.flowStepSub}>Tornar público</span>
+                <div className={styles.flowIcon}><Eye size={16} /></div>
+                <span className={styles.flowText}>Solicitar</span>
               </div>
-              <div className={styles.flowArrow}>
-                <ArrowRight size={16} />
-              </div>
+              <ArrowRight size={14} className={styles.flowArrow} />
               <div className={styles.flowStep}>
-                <div className={styles.flowStepIcon}>
-                  <Shield size={18} />
-                </div>
-                <span className={styles.flowStepLabel}>Moderação</span>
-                <span className={styles.flowStepSub}>Análise da equipe</span>
+                <div className={styles.flowIcon}><Shield size={16} /></div>
+                <span className={styles.flowText}>Moderação</span>
               </div>
-              <div className={styles.flowArrow}>
-                <ArrowRight size={16} />
-              </div>
+              <ArrowRight size={14} className={styles.flowArrow} />
               <div className={styles.flowStep}>
-                <div className={`${styles.flowStepIcon} ${styles.flowStepApproved}`}>
-                  <Globe size={18} />
-                </div>
-                <span className={styles.flowStepLabel}>Aprovado</span>
-                <span className={styles.flowStepSub}>Na galeria pública</span>
+                <div className={`${styles.flowIcon} ${styles.flowIconApproved}`}><Globe size={16} /></div>
+                <span className={styles.flowText}>Galeria</span>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="xbox-qrcode" className={styles.section}>
+        <section id="xbox" className={styles.section}>
           <div className={styles.sectionHeader}>
-            <div className={`${styles.sectionBadge} ${styles.xboxBadge}`}>
-              <Gamepad2 size={14} />
-              <span>Xbox Console</span>
-            </div>
             <h2 className={styles.sectionTitle}>Login no Xbox via QR Code</h2>
             <p className={styles.sectionSubtitle}>
-              Como o Xbox não oferece teclado físico de forma prática, criamos um sistema de
-              autenticação por QR Code que permite logar no console usando seu celular.
+              O navegador Edge do console Xbox possui um limite severo de memória RAM, o que impede
+              o carregamento do sistema de login da Microsoft diretamente na tela do console.
+              Para contornar isso, o Spartan Wallpapers usa um sistema de QR Code: você escaneia
+              pelo celular, faz login pelo método que preferir e o console é autorizado
+              automaticamente.
             </p>
           </div>
 
-          <div className={styles.xboxStepsGrid}>
-            {XBOX_QR_STEPS.map((step) => {
-              const StepIcon = step.icon;
-              return (
-                <div key={step.number} className={styles.xboxStepCard}>
-                  <div className={styles.xboxStepLeft}>
-                    <div className={styles.xboxStepNumber}>{step.number}</div>
-                    <div className={styles.xboxStepLine} />
-                  </div>
-                  <div className={styles.xboxStepContent}>
-                    <div className={styles.xboxStepIconBox}>
-                      <StepIcon size={20} />
-                    </div>
-                    <h3 className={styles.xboxStepTitle}>{step.title}</h3>
-                    <p className={styles.xboxStepDesc}>{step.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
+          <div className={styles.warningBox}>
+            <AlertTriangle size={16} className={styles.warningIcon} />
+            <p className={styles.warningText}>
+              O login por Microsoft ou Email não funciona diretamente no Edge do Xbox devido ao
+              limite de RAM do navegador do console. O QR Code é o único método disponível no Xbox.
+            </p>
+          </div>
+
+          <div className={styles.timelineGrid}>
+            <div className={styles.timelineItem}>
+              <div className={styles.timelineDot}>
+                <Gamepad2 size={16} />
+              </div>
+              <div className={styles.timelineContent}>
+                <h3 className={styles.timelineTitle}>Abra o site no Xbox</h3>
+                <p className={styles.timelineDesc}>
+                  No console, abra o Microsoft Edge e acesse o Spartan Wallpapers. O sistema
+                  detecta automaticamente que é um Xbox.
+                </p>
+              </div>
+            </div>
+            <div className={styles.timelineItem}>
+              <div className={styles.timelineDot}>
+                <QrCode size={16} />
+              </div>
+              <div className={styles.timelineContent}>
+                <h3 className={styles.timelineTitle}>QR Code na tela</h3>
+                <p className={styles.timelineDesc}>
+                  Um QR Code e um código alfanumérico (ex: XB-A1B2) aparecem na tela do console.
+                  O código expira em 5 minutos.
+                </p>
+              </div>
+            </div>
+            <div className={styles.timelineItem}>
+              <div className={styles.timelineDot}>
+                <ScanLine size={16} />
+              </div>
+              <div className={styles.timelineContent}>
+                <h3 className={styles.timelineTitle}>Escaneie pelo celular</h3>
+                <p className={styles.timelineDesc}>
+                  Use a câmera do smartphone para ler o QR Code. Você será direcionado para a
+                  página de autorização com o código já preenchido.
+                </p>
+              </div>
+            </div>
+            <div className={styles.timelineItem}>
+              <div className={styles.timelineDot}>
+                <LogIn size={16} />
+              </div>
+              <div className={styles.timelineContent}>
+                <h3 className={styles.timelineTitle}>Faça login no celular</h3>
+                <p className={styles.timelineDesc}>
+                  Na página aberta pelo QR Code, entre com Microsoft, email ou qualquer método
+                  disponível. Se não tiver conta, ao continuar com Microsoft ela será criada
+                  automaticamente.
+                </p>
+              </div>
+            </div>
+            <div className={styles.timelineItem}>
+              <div className={`${styles.timelineDot} ${styles.timelineDotDone}`}>
+                <CheckCircle2 size={16} />
+              </div>
+              <div className={styles.timelineContent}>
+                <h3 className={styles.timelineTitle}>Console autorizado</h3>
+                <p className={styles.timelineDesc}>
+                  Após autorizar, o Xbox recebe o login em poucos segundos. A partir daí, você
+                  navega logado no console normalmente.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className={styles.tipBox}>
-            <Info size={18} className={styles.tipIcon} />
+            <Info size={16} className={styles.tipIcon} />
             <p className={styles.tipText}>
-              <strong>Dica:</strong> Se o QR Code expirar, clique em "Gerar novo código" no
-              console. O processo é o mesmo — escaneie e autorize pelo celular novamente.
+              Se o código expirar, clique em "Gerar novo código" no console e repita o processo.
             </p>
           </div>
         </section>
 
-        <section className={styles.actionsSection}>
-          <div className={styles.actionsInner}>
-            <h2 className={styles.actionsTitle}>Pronto para começar?</h2>
-            <p className={styles.actionsDesc}>
-              Agora que você conhece todo o fluxo da plataforma, explore a galeria ou envie seus
-              primeiros wallpapers para o console.
-            </p>
-            <div className={styles.actionsButtonGroup}>
-              <Link to="/gallery" className={styles.btnPrimary} tabIndex={0}>
-                Explorar Galeria
-                <ArrowRight size={18} />
-              </Link>
-              <Link to="/upload" className={styles.btnSecondary} tabIndex={0}>
-                <UploadCloud size={18} />
-                Enviar Wallpaper
-              </Link>
-              <Link to="/levels" className={styles.btnGhost} tabIndex={0}>
-                <Layers size={18} />
-                Níveis &amp; Badges
-              </Link>
-            </div>
+        <section className={styles.ctaSection}>
+          <h2 className={styles.ctaTitle}>Pronto para começar?</h2>
+          <p className={styles.ctaDesc}>
+            Explore a galeria da comunidade ou envie seus primeiros wallpapers.
+          </p>
+          <div className={styles.ctaButtons}>
+            <Link to="/gallery" className={styles.btnPrimary} tabIndex={0}>
+              Explorar Galeria
+              <ArrowRight size={18} />
+            </Link>
+            <Link to="/upload" className={styles.btnSecondary} tabIndex={0}>
+              <UploadCloud size={18} />
+              Enviar Wallpaper
+            </Link>
+            <Link to="/levels" className={styles.btnGhost} tabIndex={0}>
+              Níveis &amp; Badges
+            </Link>
           </div>
         </section>
       </div>

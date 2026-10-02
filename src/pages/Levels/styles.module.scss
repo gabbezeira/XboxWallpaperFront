@@ -5,7 +5,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: $spacing-xl;
+  padding: $spacing-lg $spacing-md;
 
   @include respond-to(md) {
     padding: $spacing-2xl;
@@ -22,10 +22,14 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: $spacing-2xl;
+  gap: $spacing-xl;
+
+  @include respond-to(md) {
+    gap: $spacing-2xl;
+  }
 
   @include respond-to(2xl) {
-    max-width: 1200px;
+    max-width: 1180px;
   }
 }
 
@@ -39,7 +43,7 @@
   display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
-  padding: 4px 10px;
+  padding: 4px 12px;
   background-color: rgba($color-primary, 0.1);
   border: 1px solid rgba($color-primary, 0.25);
   border-radius: $radius-full;
@@ -160,10 +164,10 @@
 .tierBadge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
+  padding: 4px 10px;
   font-size: 10px;
   font-weight: $fw-bold;
-  border-radius: 4px;
+  border-radius: $radius-sm;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   line-height: 1;
@@ -208,11 +212,11 @@
 .favBadge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  padding: 3px 8px;
+  border-radius: $radius-sm;
+  padding: 4px 10px;
   font-size: 11px;
   font-weight: $fw-semibold;
   color: $color-text-primary;

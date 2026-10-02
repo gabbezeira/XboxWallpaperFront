@@ -5,7 +5,7 @@ import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
-import { Layers, Share2, UploadCloud, ArrowLeft, Check } from 'lucide-react';
+import { Layers, Share2, UploadCloud, ArrowLeft, Check, ExternalLink } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -53,6 +53,11 @@ export default function MyCollection() {
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleOpenPublicView = () => {
+    if (!collection?.slug) return;
+    navigate(`/collection/${collection.slug}`);
   };
 
   const handleViewDetails = (wallpaper) => {
@@ -140,17 +145,28 @@ export default function MyCollection() {
             <div className={styles.emptyIcon}>
               <Layers size={48} />
             </div>
-            <h2 className={styles.emptyTitle}>Coleção não atribuída</h2>
+            <h2 className={styles.emptyTitle}>Coleção Oficial Não Vinculada</h2>
             <p className={styles.emptyText}>
-              Você ainda não possui uma coleção oficial vinculada à sua conta de Criador. Entre em contato com a administração informando sua Tag para configurar sua Coleção oficial.
+              Você ainda não possui uma coleção oficial atribuída à sua conta de Criador. Entre em contato com a equipe informando sua Gamertag ou perfil para solicitar uma coleção dedicada.
             </p>
-            <button
-              type="button"
-              className={styles.btnPrimary}
-              onClick={() => navigate('/my-wallpapers')}
-            >
-              Ir para Meus Wallpapers
-            </button>
+            <div className={styles.emptyActions}>
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                onClick={() => navigate('/my-wallpapers')}
+                tabIndex={0}
+              >
+                Gerenciar Meus Wallpapers
+              </button>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => navigate('/levels')}
+                tabIndex={0}
+              >
+                Ver Requisitos de Patente
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -160,47 +176,83 @@ export default function MyCollection() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <div className={styles.header}>
-          <button
-            type="button"
-            className={styles.btnBack}
-            onClick={() => navigate(-1)}
-            aria-label="Voltar"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className={styles.headerInfo}>
-            <h1 className={styles.title}>{collection.name}</h1>
-            {collection.description && (
-              <p className={styles.subtitle}>{collection.description}</p>
-            )}
+        <header className={styles.header}>
+          <div className={styles.headerTop}>
+            <button
+              type="button"
+              className={styles.btnBack}
+              onClick={() => navigate(-1)}
+              aria-label="Voltar"
+              tabIndex={0}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className={styles.headerInfo}>
+              <div className={styles.headerBadgeRow}>
+                <span className={styles.collectionBadge}>Painel do Criador</span>
+                <span className={styles.slugBadge}>/{collection.slug}</span>
+              </div>
+              <h1 className={styles.title}>{collection.name}</h1>
+              {collection.description && (
+                <p className={styles.subtitle}>{collection.description}</p>
+              )}
+            </div>
           </div>
+
           <div className={styles.headerActions}>
+            <button
+              type="button"
+              className={styles.btnGhostAction}
+              onClick={handleOpenPublicView}
+              tabIndex={0}
+              title="Abrir página pública da coleção"
+            >
+              <ExternalLink size={16} />
+              <span>Ver Página Pública</span>
+            </button>
+
             <button
               type="button"
               className={styles.btnShare}
               onClick={handleShare}
+              tabIndex={0}
             >
               {copied ? <Check size={16} /> : <Share2 size={16} />}
-              <span>{copied ? 'Link Copiado!' : 'Compartilhar Coleção'}</span>
+              <span>{copied ? 'Link Copiado!' : 'Copiar Link'}</span>
             </button>
+
             <button
               type="button"
               className={styles.btnAdd}
               onClick={() => navigate('/upload')}
+              tabIndex={0}
             >
               <UploadCloud size={16} />
-              <span>Adicionar Wallpaper na Coleção</span>
+              <span>Novo Wallpaper</span>
             </button>
           </div>
-        </div>
+        </header>
 
-        <div className={styles.statsBar}>
-          <div className={styles.statItem}>
+        <section className={styles.dashboardStats}>
+          <div className={styles.statCard}>
             <span className={styles.statNumber}>{wallpapers.length}</span>
-            <span className={styles.statLabel}>Wallpapers na Coleção</span>
+            <span className={styles.statLabel}>Total na Coleção</span>
           </div>
-        </div>
+
+          <div className={styles.statCard}>
+            <span className={styles.statNumber}>
+              {wallpapers.filter((w) => w.status === 'approved' || w.isPublic).length}
+            </span>
+            <span className={styles.statLabel}>Públicos na Galeria</span>
+          </div>
+
+          <div className={styles.statCard}>
+            <span className={styles.statNumber}>
+              {wallpapers.filter((w) => w.status === 'pending').length}
+            </span>
+            <span className={styles.statLabel}>Em Moderação</span>
+          </div>
+        </section>
 
         <div className={styles.gridSection}>
           <WallpaperGrid
@@ -210,7 +262,7 @@ export default function MyCollection() {
             onToggleVisibility={promptToggleVisibility}
             showDelete={true}
             showStatus={true}
-            emptyMessage="Nenhum wallpaper adicionado a esta coleção ainda. Clique em 'Adicionar Wallpaper' para começar!"
+            emptyMessage="Nenhum wallpaper adicionado a esta coleção ainda. Clique em 'Novo Wallpaper' para começar."
             maxColumns={6}
           />
           <Pagination
@@ -224,7 +276,7 @@ export default function MyCollection() {
       <Modal
         isOpen={isModalOpen}
         title="Remover da Coleção"
-        message="Deseja desvincular este wallpaper da sua coleção? A imagem continuará no seu acervo pessoal."
+        message="Deseja desvincular este wallpaper da sua coleção? A imagem permanecerá na sua galeria pessoal de uploads."
         onConfirm={confirmDelete}
         onCancel={() => {
           setIsModalOpen(false);
@@ -244,8 +296,8 @@ export default function MyCollection() {
         }
         message={
           visibilityModal.nextIsPublic
-            ? 'Ao tornar público, seu wallpaper será enviado para moderação antes de aparecer na galeria pública para outros usuários.'
-            : 'Ao tornar privado, este wallpaper ficará visível somente para você nesta aba da sua Coleção.'
+            ? 'Ao tornar público, o wallpaper passará pela moderação comunitária antes de ser visível no catálogo geral.'
+            : 'Ao tornar privado, o wallpaper será visível apenas para você no seu acervo pessoal.'
         }
         onConfirm={confirmToggleVisibility}
         onCancel={cancelToggleVisibility}

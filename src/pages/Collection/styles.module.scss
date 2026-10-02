@@ -4,12 +4,12 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: $spacing-2xl;
-  animation: fadeIn 0.3s ease-out;
-  padding: 0 $spacing-xl;
+  gap: $spacing-xl;
+  padding: $spacing-md;
 
   @include respond-to(md) {
-    padding: 0;
+    padding: $spacing-xl;
+    gap: $spacing-2xl;
   }
 }
 
@@ -17,9 +17,11 @@
   position: relative;
   width: 100%;
   aspect-ratio: 21 / 7;
+  max-height: 320px;
   border-radius: $radius-xl;
   overflow: hidden;
   background: $color-bg-tertiary;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .bannerImg {
@@ -31,35 +33,44 @@
 .bannerGradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(3, 3, 3, 0.85) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(3, 3, 3, 0.9) 100%);
 }
 
 .header {
   display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.headerTop {
+  display: flex;
   align-items: flex-start;
-  gap: $spacing-lg;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+
+  @include respond-to(md) {
+    flex-wrap: nowrap;
+    gap: $spacing-lg;
+  }
 }
 
 .btnBack {
   @include flex-center;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: $radius-full;
-  background-color: $color-bg-tertiary;
+  background-color: $color-bg-secondary;
   color: $color-text-primary;
-  border: 1px solid rgba($color-text-primary, 0.1);
+  border: 1px solid $color-border;
   cursor: pointer;
   transition: all $transition-fast;
   flex-shrink: 0;
   @include gamepad-focus;
 
-  &:focus-visible {
-    transform: none;
-  }
-
   &:hover {
-    background-color: $color-primary;
-    border-color: $color-primary;
+    background-color: rgba($color-primary, 0.15);
+    border-color: rgba($color-primary, 0.4);
+    color: $color-primary;
   }
 }
 
@@ -67,47 +78,97 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
+  flex: 1;
+  min-width: 0;
 }
 
-.title {
-  font-size: $fs-title;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-  letter-spacing: 0.5px;
-}
-
-.metaRow {
+.badgeRow {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
+  gap: $spacing-xs;
+  flex-wrap: wrap;
 }
 
-.subtitle {
-  font-size: $fs-small;
+.categoryBadge {
+  font-size: 11px;
+  font-weight: $fw-bold;
   color: $color-primary;
+  background-color: rgba($color-primary, 0.1);
+  border: 1px solid rgba($color-primary, 0.25);
+  padding: 3px 10px;
+  border-radius: $radius-full;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-weight: $fw-semibold;
+  letter-spacing: 0.5px;
 }
 
 .creatorPill {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: $fs-small;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: $fw-medium;
   color: $color-text-secondary;
   background: rgba(255, 255, 255, 0.05);
-  padding: 0.15rem 0.5rem;
-  border-radius: $radius-xs;
+  padding: 3px 10px;
+  border-radius: $radius-full;
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.countPill {
+  font-size: 11px;
+  font-weight: $fw-medium;
+  color: $color-text-muted;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.title {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  letter-spacing: -0.5px;
+  word-break: break-word;
+
+  @include respond-to(md) {
+    font-size: $fs-title;
+  }
 }
 
 .description {
   font-size: $fs-body;
   color: $color-text-secondary;
-  line-height: 1.5;
-  max-width: 44rem;
-  margin-top: $spacing-xs;
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+
+  @include respond-to(md) {
+    width: auto;
+    margin-left: auto;
+    align-self: flex-start;
+  }
+}
+
+.btnShare {
+  @include btn-secondary;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  font-size: $fs-small;
+  padding: 10px 16px;
+  width: 100%;
+
+  @include respond-to(md) {
+    width: auto;
+  }
 }
 
 .gridSection {
@@ -118,16 +179,40 @@
 }
 
 .empty {
-  padding: $spacing-3xl 0;
+  padding: $spacing-3xl $spacing-md;
   text-align: center;
-  color: $color-text-muted;
-  font-size: $fs-body;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $spacing-md;
+  gap: $spacing-sm;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  max-width: 540px;
+  margin: $spacing-xl auto;
+  width: 100%;
 }
 
-.emptyIcon {
+.emptyIconBox {
+  width: 56px;
+  height: 56px;
+  border-radius: $radius-lg;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: $color-text-muted;
+}
+
+.emptyTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.emptyText {
+  font-size: $fs-small;
+  color: $color-text-muted;
+  line-height: 1.5;
 }

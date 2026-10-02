@@ -4,7 +4,7 @@ import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
-import { ArrowLeft, User, Layers } from 'lucide-react';
+import { ArrowLeft, User, Layers, Share2, Check } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -16,6 +16,7 @@ export default function Collection() {
   const [wallpapers, setWallpapers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -55,6 +56,12 @@ export default function Collection() {
     };
   }, [tag]);
 
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
   const handleViewDetails = (wallpaper) => {
     navigate(`/wallpaper/${wallpaper.id}`, { state: { wallpaper } });
   };
@@ -80,23 +87,52 @@ export default function Collection() {
       )}
 
       <div className={styles.header}>
-        <button type="button" className={styles.btnBack} onClick={() => navigate(-1)} aria-label="Voltar">
-          <ArrowLeft size={24} />
-        </button>
-        <div className={styles.titleArea}>
-          <h1 className={styles.title}>{collection?.name || tag}</h1>
-          <div className={styles.metaRow}>
-            <span className={styles.subtitle}>Coleção Oficial</span>
-            {collection?.creatorName && (
-              <span className={styles.creatorPill}>
-                <User size={12} />
-                <span>{collection.creatorName}</span>
-              </span>
+        <div className={styles.headerTop}>
+          <button
+            type="button"
+            className={styles.btnBack}
+            onClick={() => navigate(-1)}
+            aria-label="Voltar"
+            tabIndex={0}
+          >
+            <ArrowLeft size={20} />
+          </button>
+
+          <div className={styles.titleArea}>
+            <div className={styles.badgeRow}>
+              <span className={styles.categoryBadge}>Coleção Oficial</span>
+              {collection?.creatorName && (
+                <span className={styles.creatorPill}>
+                  <User size={13} />
+                  <span>{collection.creatorName}</span>
+                </span>
+              )}
+              {wallpapers.length > 0 && (
+                <span className={styles.countPill}>
+                  {wallpapers.length} {wallpapers.length === 1 ? 'wallpaper' : 'wallpapers'}
+                </span>
+              )}
+            </div>
+
+            <h1 className={styles.title}>{collection?.name || tag}</h1>
+
+            {collection?.description && (
+              <p className={styles.description}>{collection.description}</p>
             )}
           </div>
-          {collection?.description && (
-            <p className={styles.description}>{collection.description}</p>
-          )}
+
+          <div className={styles.headerActions}>
+            <button
+              type="button"
+              className={styles.btnShare}
+              onClick={handleShare}
+              tabIndex={0}
+              title="Compartilhar link desta coleção"
+            >
+              {copied ? <Check size={16} /> : <Share2 size={16} />}
+              <span>{copied ? 'Link Copiado!' : 'Compartilhar'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -113,8 +149,13 @@ export default function Collection() {
         </div>
       ) : (
         <div className={styles.empty}>
-          <Layers size={36} className={styles.emptyIcon} />
-          <p>Nenhum wallpaper encontrado nesta coleção.</p>
+          <div className={styles.emptyIconBox}>
+            <Layers size={32} />
+          </div>
+          <h2 className={styles.emptyTitle}>Nenhum wallpaper encontrado</h2>
+          <p className={styles.emptyText}>
+            Esta coleção ainda não possui imagens públicas associadas.
+          </p>
         </div>
       )}
     </div>

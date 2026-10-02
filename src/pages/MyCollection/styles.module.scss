@@ -3,11 +3,11 @@
 
 .page {
   flex: 1;
-  padding: $spacing-xl $spacing-md;
+  padding: $spacing-md;
   background-color: $color-bg-main;
 
   @include respond-to(md) {
-    padding: $spacing-2xl $spacing-xl;
+    padding: $spacing-xl;
   }
 }
 
@@ -24,50 +24,95 @@
   flex-direction: column;
   gap: $spacing-md;
 
-  @include respond-to(md) {
+  @include respond-to(lg) {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
   }
 }
 
-.btnBack {
-  @include btn-ghost;
-  padding: $spacing-sm;
-  color: $color-text-secondary;
-  border-radius: $radius-full;
+.headerTop {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
+  align-items: flex-start;
+  gap: $spacing-md;
+  flex: 1;
+}
+
+.btnBack {
+  @include flex-center;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-full;
+  background-color: $color-bg-secondary;
+  color: $color-text-primary;
+  border: 1px solid $color-border;
+  cursor: pointer;
+  transition: all $transition-fast;
   flex-shrink: 0;
+  @include gamepad-focus;
 
   &:hover {
-    color: $color-text-primary;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba($color-primary, 0.15);
+    border-color: rgba($color-primary, 0.4);
+    color: $color-primary;
   }
 }
 
 .headerInfo {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
+  flex: 1;
+}
+
+.headerBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-wrap: wrap;
+}
+
+.collectionBadge {
+  font-size: 11px;
+  font-weight: $fw-bold;
+  color: $color-primary;
+  background-color: rgba($color-primary, 0.1);
+  border: 1px solid rgba($color-primary, 0.25);
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.slugBadge {
+  font-size: 11px;
+  font-weight: $fw-medium;
+  color: $color-text-muted;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: monospace;
 }
 
 .title {
-  font-size: $fs-title;
+  font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
   margin: 0;
+  letter-spacing: -0.5px;
+
+  @include respond-to(md) {
+    font-size: $fs-title;
+  }
 }
 
 .subtitle {
   font-size: $fs-body;
   color: $color-text-secondary;
   margin: 0;
-  max-width: 700px;
+  max-width: 720px;
+  line-height: 1.5;
 }
 
 .headerActions {
@@ -75,40 +120,73 @@
   align-items: center;
   gap: $spacing-sm;
   flex-wrap: wrap;
+  width: 100%;
+
+  @include respond-to(lg) {
+    width: auto;
+  }
+}
+
+.btnGhostAction {
+  @include btn-ghost;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $fs-small;
+  padding: 10px 14px;
+  flex: 1;
+  justify-content: center;
+
+  @include respond-to(sm) {
+    flex: initial;
+  }
 }
 
 .btnShare {
   @include btn-secondary;
   display: inline-flex;
   align-items: center;
-  gap: $spacing-sm;
-  font-size: $fs-body;
-  white-space: nowrap;
+  gap: 6px;
+  font-size: $fs-small;
+  padding: 10px 14px;
+  flex: 1;
+  justify-content: center;
+
+  @include respond-to(sm) {
+    flex: initial;
+  }
 }
 
 .btnAdd {
   @include btn-primary;
   display: inline-flex;
   align-items: center;
-  gap: $spacing-sm;
-  font-size: $fs-body;
-  white-space: nowrap;
+  gap: 6px;
+  font-size: $fs-small;
+  padding: 10px 16px;
+  width: 100%;
+  justify-content: center;
+
+  @include respond-to(sm) {
+    width: auto;
+    flex: initial;
+  }
 }
 
-.statsBar {
-  display: flex;
-  gap: $spacing-xl;
-  padding: $spacing-md $spacing-lg;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: $radius-lg;
-  width: fit-content;
+.dashboardStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: $spacing-md;
 }
 
-.statItem {
+.statCard {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding: $spacing-md $spacing-lg;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
 }
 
 .statNumber {
@@ -120,6 +198,7 @@
 .statLabel {
   font-size: $fs-small;
   color: $color-text-muted;
+  font-weight: $fw-medium;
 }
 
 .gridSection {
@@ -132,19 +211,28 @@
   align-items: center;
   text-align: center;
   gap: $spacing-md;
-  padding: $spacing-4xl $spacing-xl;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: $spacing-3xl $spacing-lg;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
   border-radius: $radius-xl;
+  max-width: 600px;
+  margin: $spacing-2xl auto;
 }
 
 .emptyIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: $radius-xl;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: $color-text-muted;
-  margin-bottom: $spacing-xs;
 }
 
 .emptyTitle {
-  font-size: $fs-title;
+  font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
 }
@@ -152,12 +240,28 @@
 .emptyText {
   font-size: $fs-body;
   color: $color-text-secondary;
-  max-width: 500px;
+  line-height: 1.6;
+}
+
+.emptyActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: $spacing-sm;
 }
 
 .btnPrimary {
   @include btn-primary;
-  margin-top: $spacing-md;
+  font-size: $fs-small;
+  padding: 10px 16px;
+}
+
+.btnSecondary {
+  @include btn-secondary;
+  font-size: $fs-small;
+  padding: 10px 16px;
 }
 
 .overlayLoader {
@@ -168,5 +272,4 @@
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px) saturate(150%);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
-  animation: fadeIn $transition-base ease-out;
 }

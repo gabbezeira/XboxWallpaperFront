@@ -17,15 +17,14 @@
 }
 
 .inner {
-  max-width: 980px;
+  max-width: 820px;
   width: 100%;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: $spacing-2xl;
 
   @include respond-to(2xl) {
-    max-width: 1200px;
+    max-width: 1000px;
   }
 }
 
@@ -35,32 +34,16 @@
   gap: $spacing-sm;
 }
 
-.headerBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-xs;
-  padding: 4px 10px;
-  background-color: rgba($color-primary, 0.1);
-  border: 1px solid rgba($color-primary, 0.25);
-  border-radius: $radius-full;
-  color: $color-primary;
-  font-size: $fs-small;
-  font-weight: $fw-semibold;
-  width: fit-content;
-}
-
 .title {
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-text-primary;
-  letter-spacing: -0.5px;
 }
 
 .subtitle {
   font-size: $fs-body;
   color: $color-text-secondary;
   line-height: 1.6;
-  max-width: 780px;
 }
 
 .divider {
@@ -68,39 +51,31 @@
   height: 3px;
   background-color: $color-primary;
   border-radius: $radius-full;
-  margin-top: $spacing-xs;
+  margin-top: $spacing-sm;
 }
 
 .tocNav {
   display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-  padding: $spacing-lg;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
-  background-color: $color-bg-secondary;
+  align-items: center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
 }
 
 .tocLabel {
   font-size: $fs-small;
-  font-weight: $fw-semibold;
   color: $color-text-muted;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: $fw-medium;
 }
 
 .tocLinks {
   display: flex;
+  gap: $spacing-xs;
   flex-wrap: wrap;
-  gap: $spacing-sm;
 }
 
 .tocLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: $radius-md;
+  padding: 5px 12px;
+  border-radius: $radius-full;
   background-color: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: $color-text-secondary;
@@ -108,11 +83,16 @@
   font-weight: $fw-medium;
   text-decoration: none;
   transition: background-color $transition-fast, color $transition-fast, border-color $transition-fast;
+  @include gamepad-focus;
+
+  &:focus-visible {
+    transform: none;
+  }
 
   &:hover {
-    background-color: rgba($color-primary, 0.1);
-    border-color: rgba($color-primary, 0.25);
-    color: $color-primary;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: $color-text-primary;
+    border-color: rgba(255, 255, 255, 0.16);
   }
 }
 
@@ -126,30 +106,7 @@
 .sectionHeader {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.sectionBadge {
-  display: inline-flex;
-  align-items: center;
   gap: $spacing-xs;
-  padding: 3px 8px;
-  border-radius: $radius-full;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: $color-text-muted;
-  font-size: 10px;
-  font-weight: $fw-bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  width: fit-content;
-  margin-bottom: $spacing-xs;
-
-  &.xboxBadge {
-    background-color: rgba($color-primary, 0.1);
-    border-color: rgba($color-primary, 0.25);
-    color: $color-primary;
-  }
 }
 
 .sectionTitle {
@@ -161,7 +118,7 @@
 .sectionSubtitle {
   font-size: $fs-body;
   color: $color-text-secondary;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .stepsGrid {
@@ -187,12 +144,6 @@
   border: 1px solid $color-border;
   border-radius: $radius-xl;
   background-color: $color-bg-secondary;
-  transition: transform $transition-fast, border-color $transition-fast;
-
-  &:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
 }
 
 .stepNumber {
@@ -202,13 +153,13 @@
   font-size: 11px;
   font-weight: $fw-bold;
   color: $color-text-muted;
-  opacity: 0.6;
+  opacity: 0.5;
   letter-spacing: 1px;
 }
 
 .stepIconBox {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: $radius-md;
   background-color: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -230,11 +181,74 @@
   line-height: 1.5;
 }
 
-.tipBox {
+.methodsCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background-color: $color-bg-secondary;
+}
+
+.methodsTitle {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.methodsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.methodItem {
   display: flex;
   align-items: flex-start;
   gap: $spacing-md;
-  padding: $spacing-lg;
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.methodIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+}
+
+.methodInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.methodName {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.methodDesc {
+  font-size: $fs-small;
+  color: $color-text-muted;
+  line-height: 1.5;
+}
+
+.tipBox {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
   border-radius: $radius-lg;
   background-color: rgba($color-primary, 0.06);
   border: 1px solid rgba($color-primary, 0.15);
@@ -247,103 +261,37 @@
 }
 
 .tipText {
-  font-size: $fs-body;
-  line-height: 1.6;
-  color: $color-text-secondary;
-
-  strong {
-    color: $color-text-primary;
-    font-weight: $fw-semibold;
-  }
-}
-
-.authMethodsCard {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-xl;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
-  background-color: $color-bg-secondary;
-}
-
-.authMethodsTitle {
-  font-size: $fs-body;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-}
-
-.authMethodsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-md;
-
-  @include respond-to(md) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.authMethodItem {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  padding: $spacing-md;
-  border-radius: $radius-lg;
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.authMethodIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: $radius-md;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-text-secondary;
-  flex-shrink: 0;
-}
-
-.authMethodInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.authMethodName {
-  font-size: $fs-body;
-  font-weight: $fw-semibold;
-  color: $color-text-primary;
-}
-
-.authMethodDesc {
   font-size: $fs-small;
-  color: $color-text-muted;
-  line-height: 1.4;
+  line-height: 1.5;
+  color: $color-text-secondary;
 }
 
-.specsCard {
+.warningBox {
   display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-xl;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
-  background-color: $color-bg-secondary;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $radius-lg;
+  background-color: rgba($color-warning, 0.06);
+  border: 1px solid rgba($color-warning, 0.2);
 }
 
-.specsTitle {
-  font-size: $fs-body;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
+.warningIcon {
+  color: $color-warning;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.specsGrid {
+.warningText {
+  font-size: $fs-small;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.specsRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: $spacing-md;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
 
   @include respond-to(md) {
     grid-template-columns: repeat(4, 1fr);
@@ -353,11 +301,11 @@
 .specItem {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   padding: $spacing-md;
   border-radius: $radius-lg;
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
 }
 
 .specLabel {
@@ -377,7 +325,7 @@
 .visibilityGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-lg;
+  gap: $spacing-md;
 
   @include respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
@@ -391,34 +339,25 @@
   padding: $spacing-xl;
   border-radius: $radius-xl;
   background-color: $color-bg-secondary;
-  transition: border-color $transition-fast;
 
   &.privateCard {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-
-    &:hover {
-      border-color: rgba(255, 255, 255, 0.18);
-    }
+    border: 1px solid $color-border;
   }
 
   &.publicCard {
     border: 1px solid rgba($color-primary, 0.2);
-
-    &:hover {
-      border-color: rgba($color-primary, 0.4);
-    }
   }
 }
 
-.visibilityCardHeader {
+.visibilityHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .visibilityIconBox {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border-radius: $radius-lg;
   background-color: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -427,7 +366,7 @@
   justify-content: center;
   color: $color-text-secondary;
 
-  .publicCard & {
+  &.publicIconBox {
     background-color: rgba($color-primary, 0.1);
     border-color: rgba($color-primary, 0.25);
     color: $color-primary;
@@ -454,21 +393,16 @@
   }
 }
 
-.visibilityCardTitle {
-  font-size: $fs-subtitle;
+.visibilityTitle {
+  font-size: $fs-body;
   font-weight: $fw-bold;
   color: $color-text-primary;
 }
 
-.visibilityCardDesc {
-  font-size: $fs-body;
+.visibilityDesc {
+  font-size: $fs-small;
   color: $color-text-secondary;
   line-height: 1.6;
-
-  strong {
-    color: $color-text-primary;
-    font-weight: $fw-semibold;
-  }
 }
 
 .visibilityList {
@@ -479,11 +413,12 @@
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   list-style: none;
   padding-left: 0;
+  margin: 0;
 
   li {
     display: flex;
     align-items: flex-start;
-    gap: $spacing-xs;
+    gap: 6px;
     font-size: $fs-small;
     color: $color-text-secondary;
     line-height: 1.4;
@@ -499,29 +434,33 @@
 .flowCard {
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
-  padding: $spacing-xl;
+  gap: $spacing-md;
+  padding: $spacing-lg;
   border: 1px solid $color-border;
   border-radius: $radius-xl;
   background-color: $color-bg-secondary;
 }
 
-.flowTitle {
-  font-size: $fs-body;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
+.flowLabel {
+  font-size: $fs-small;
+  font-weight: $fw-semibold;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .flowSteps {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: $spacing-xs;
   overflow-x: auto;
-  padding-bottom: $spacing-sm;
+  padding-bottom: $spacing-xs;
 
-  @include respond-to(md) {
-    gap: $spacing-sm;
+  &::-webkit-scrollbar {
+    display: none;
   }
+
+  scrollbar-width: none;
 }
 
 .flowStep {
@@ -529,106 +468,12 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  min-width: 80px;
+  min-width: 64px;
   text-align: center;
   flex: 1;
 }
 
-.flowStepIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: $radius-md;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-text-secondary;
-
-  &.flowStepApproved {
-    background-color: rgba($color-primary, 0.1);
-    border-color: rgba($color-primary, 0.25);
-    color: $color-primary;
-  }
-}
-
-.flowStepLabel {
-  font-size: $fs-small;
-  font-weight: $fw-semibold;
-  color: $color-text-primary;
-}
-
-.flowStepSub {
-  font-size: 10px;
-  color: $color-text-muted;
-}
-
-.flowArrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-text-muted;
-  margin-top: 10px;
-  flex-shrink: 0;
-}
-
-.xboxStepsGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.xboxStepCard {
-  display: flex;
-  gap: $spacing-lg;
-}
-
-.xboxStepLeft {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-  width: 32px;
-}
-
-.xboxStepNumber {
-  width: 32px;
-  height: 32px;
-  border-radius: $radius-full;
-  background-color: rgba($color-primary, 0.1);
-  border: 1px solid rgba($color-primary, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-primary;
-  font-size: 11px;
-  font-weight: $fw-bold;
-  flex-shrink: 0;
-}
-
-.xboxStepLine {
-  width: 2px;
-  flex: 1;
-  background-color: rgba($color-primary, 0.15);
-  margin: 4px 0;
-
-  .xboxStepCard:last-child & {
-    display: none;
-  }
-}
-
-.xboxStepContent {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-  padding-bottom: $spacing-xl;
-
-  .xboxStepCard:last-child & {
-    padding-bottom: 0;
-  }
-}
-
-.xboxStepIconBox {
+.flowIcon {
   width: 36px;
   height: 36px;
   border-radius: $radius-md;
@@ -637,98 +482,103 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $color-primary;
-}
-
-.xboxStepTitle {
-  font-size: $fs-body;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-}
-
-.xboxStepDesc {
-  font-size: $fs-small;
   color: $color-text-secondary;
-  line-height: 1.5;
-  max-width: 560px;
-}
 
-.xboxInfoCard {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-xl;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
-  background-color: $color-bg-secondary;
-}
-
-.xboxInfoHeader {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  color: $color-text-primary;
-}
-
-.xboxInfoTitle {
-  font-size: $fs-body;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-}
-
-.xboxInfoGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-md;
-
-  @include respond-to(md) {
-    grid-template-columns: repeat(2, 1fr);
+  &.flowIconApproved {
+    background-color: rgba($color-primary, 0.1);
+    border-color: rgba($color-primary, 0.25);
+    color: $color-primary;
   }
 }
 
-.xboxInfoItem {
+.flowText {
+  font-size: 10px;
+  font-weight: $fw-semibold;
+  color: $color-text-muted;
+}
+
+.flowArrow {
+  color: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+.timelineGrid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: $spacing-md;
-  border-radius: $radius-lg;
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.xboxInfoLabel {
-  font-size: 10px;
-  font-weight: $fw-bold;
-  color: $color-primary;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.timelineItem {
+  display: flex;
+  gap: $spacing-md;
+  position: relative;
+  padding-bottom: $spacing-xl;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+
+  &:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    bottom: 0;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
 }
 
-.xboxInfoValue {
+.timelineDot {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+
+  &.timelineDotDone {
+    background-color: rgba($color-primary, 0.1);
+    border-color: rgba($color-primary, 0.3);
+    color: $color-primary;
+  }
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px;
+}
+
+.timelineTitle {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.timelineDesc {
   font-size: $fs-small;
   color: $color-text-secondary;
   line-height: 1.5;
 }
 
-.actionsSection {
+.ctaSection {
   padding: $spacing-2xl $spacing-xl;
   border: 1px solid rgba($color-primary, 0.25);
   border-radius: $radius-xl;
   background: linear-gradient(135deg, rgba(16, 124, 16, 0.08) 0%, rgba(7, 7, 7, 0.95) 100%);
   text-align: center;
   display: flex;
-  justify-content: center;
-}
-
-.actionsInner {
-  max-width: 640px;
-  display: flex;
   flex-direction: column;
   align-items: center;
   gap: $spacing-md;
 }
 
-.actionsTitle {
+.ctaTitle {
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
@@ -738,13 +588,12 @@
   }
 }
 
-.actionsDesc {
+.ctaDesc {
   font-size: $fs-body;
   color: $color-text-secondary;
-  line-height: 1.6;
 }
 
-.actionsButtonGroup {
+.ctaButtons {
   display: flex;
   align-items: center;
   justify-content: center;

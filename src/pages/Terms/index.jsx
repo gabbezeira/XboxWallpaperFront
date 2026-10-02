@@ -12,7 +12,6 @@ export default function Terms() {
           <p className={styles.subtitle}>
             Diretrizes legais, uso responsável dos recursos e compromisso com a privacidade dos membros da comunidade Spartan Wallpapers.
           </p>
-          <div className={styles.divider} />
         </header>
 
         <div className={styles.content}>

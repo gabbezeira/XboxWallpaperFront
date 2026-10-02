@@ -38,7 +38,6 @@ export default function Levels() {
           <p className={styles.subtitle}>
             Entenda como funciona o sistema de progressão por favoritos recebidos, limites de upload e desbloqueio de recursos para criadores.
           </p>
-          <div className={styles.divider} />
         </header>
 
         {user ? (

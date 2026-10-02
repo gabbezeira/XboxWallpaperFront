@@ -3,25 +3,27 @@
 
 .page {
   flex: 1;
+  padding: $spacing-xl 0;
   display: flex;
   flex-direction: column;
-  padding: $spacing-xl;
 
   @include respond-to(md) {
-    padding: $spacing-2xl;
-  }
-
-  @include respond-to(2xl) {
-    padding: $spacing-3xl;
+    padding: $spacing-2xl 0;
   }
 }
 
 .inner {
-  max-width: 820px;
+  max-width: 900px;
   width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: $spacing-2xl;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    padding: 0;
+  }
 
   @include respond-to(2xl) {
     max-width: 1000px;
@@ -31,27 +33,20 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-xs;
 }
 
 .title {
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
   font-size: $fs-body;
   color: $color-text-secondary;
   line-height: 1.6;
-}
-
-.divider {
-  width: 48px;
-  height: 3px;
-  background-color: $color-primary;
-  border-radius: $radius-full;
-  margin-top: $spacing-sm;
 }
 
 .tocNav {

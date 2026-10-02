@@ -32,7 +32,6 @@ export default function Guide() {
             Tudo o que você precisa saber para usar a plataforma no celular, computador ou
             diretamente no console Xbox.
           </p>
-          <div className={styles.divider} />
         </header>
 
         <nav className={styles.tocNav}>

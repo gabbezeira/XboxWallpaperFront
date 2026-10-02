@@ -1542,3 +1542,277 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   background-color: rgba(255, 255, 255, 0.015);
 }
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.counterBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  background-color: rgba(16, 124, 65, 0.2);
+  border: 1px solid rgba(16, 124, 65, 0.4);
+  color: #55d688;
+  font-size: 0.75rem;
+  font-weight: $fw-bold;
+  border-radius: $radius-full;
+}
+
+.liveIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  font-size: 0.75rem;
+  font-weight: $fw-semibold;
+  border-radius: $radius-full;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+  animation: livePulse 2s infinite ease-in-out;
+}
+
+@keyframes livePulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.autoRefreshToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: $color-text-secondary;
+  cursor: pointer;
+  padding: 6px 10px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-md;
+  user-select: none;
+
+  input {
+    cursor: pointer;
+    accent-color: $color-primary;
+  }
+}
+
+.successBanner {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  border-radius: $radius-md;
+  font-size: 0.85rem;
+  font-weight: $fw-medium;
+}
+
+.errorAlert {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  border-radius: $radius-md;
+}
+
+.errorAlertContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.errorAlertTitle {
+  font-size: 0.88rem;
+  font-weight: $fw-bold;
+  color: #ffffff;
+}
+
+.errorAlertMessage {
+  font-size: 0.8rem;
+  color: #fca5a5;
+}
+
+.quotaBarWrapper {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: $radius-full;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.quotaBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #107c41, #55d688);
+  border-radius: $radius-full;
+  transition: width 0.3s ease;
+}
+
+.debugSection {
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.debugSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  color: $color-text-primary;
+}
+
+.debugSectionTitle {
+  font-size: 1rem;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.cacheGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(xl) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.cacheCard {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.cacheCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $color-text-secondary;
+  font-size: 0.85rem;
+}
+
+.cacheCardTitle {
+  font-weight: $fw-medium;
+  color: $color-text-secondary;
+}
+
+.cacheCardValue {
+  font-size: 1.4rem;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.cacheCardSub {
+  font-size: 0.75rem;
+  color: $color-text-muted;
+}
+
+.endpointCode {
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.08);
+  padding: 3px 8px;
+  border-radius: $radius-sm;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+}
+
+.readsValue {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: $radius-full;
+  font-size: 0.72rem;
+  font-weight: $fw-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badgeZero {
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.badgeSuccess {
+  background-color: rgba(16, 124, 65, 0.15);
+  border: 1px solid rgba(16, 124, 65, 0.4);
+  color: #55d688;
+}
+
+.badgeInfo {
+  background-color: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: #60a5fa;
+}
+
+.badgeWarning {
+  background-color: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}

@@ -9,6 +9,7 @@ import {
   LogOut,
   Image as ImageIcon,
   CheckCircle2,
+  Activity,
 } from 'lucide-react';
 import { api } from '../../services/api';
 import ModerationQueue from './ModerationQueue';
@@ -17,6 +18,7 @@ import ManageCollections from './ManageCollections';
 import ManageUsers from './ManageUsers';
 import ManageWallpapers from './ManageWallpapers';
 import ManageHeroSlides from './ManageHeroSlides';
+import DebugMetrics from './DebugMetrics';
 import styles from './styles.module.scss';
 
 export default function Admin() {
@@ -139,6 +141,15 @@ export default function Admin() {
             <Images size={16} />
             <span>Acervo Geral</span>
           </button>
+
+          <button
+            type="button"
+            className={`${styles.navTab} ${activeTab === 'debug' ? styles.navTabActive : ''}`}
+            onClick={() => setActiveTab('debug')}
+          >
+            <Activity size={16} />
+            <span>Debug & Métricas</span>
+          </button>
         </nav>
       </header>
 
@@ -198,6 +209,8 @@ export default function Admin() {
         {activeTab === 'collections' && <ManageCollections />}
 
         {activeTab === 'users' && <ManageUsers />}
+
+        {activeTab === 'debug' && <DebugMetrics />}
 
         {activeTab === 'catalog' && (
           <div className={styles.viewContainer}>

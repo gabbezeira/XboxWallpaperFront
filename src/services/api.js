@@ -199,6 +199,9 @@ export const api = {
       }),
     deleteUser: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     deleteUserAccount: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+    getFirestoreMetrics: () => request('/api/admin/metrics/firestore'),
+    resetFirestoreMetrics: () => request('/api/admin/metrics/firestore/reset', { method: 'POST' }),
+    rebuildTagsMetadata: () => request('/api/admin/metadata/rebuild-tags', { method: 'POST' }),
   },
 
   favorites: {

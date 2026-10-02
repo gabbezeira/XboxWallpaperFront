@@ -13,6 +13,8 @@ import {
   Layers,
   Calendar,
   X,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 
@@ -35,6 +37,7 @@ export default function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState(null);
 
@@ -50,14 +53,16 @@ export default function ManageUsers() {
   const fetchUsers = async (q = '') => {
     try {
       setLoading(true);
+      setError(null);
       const [usersData, colsData] = await Promise.all([
-        api.admin.listUsers({ q, limit: 50 }),
+        api.admin.listUsers({ q, limit: 100 }),
         api.collections.list().catch(() => []),
       ]);
-      setUsers(usersData || []);
-      setCollections(colsData || []);
+      setUsers(Array.isArray(usersData) ? usersData : []);
+      setCollections(Array.isArray(colsData) ? colsData : []);
     } catch (err) {
-      console.error(err);
+      console.error('fetchUsers error:', err);
+      setError(err.message || 'Erro ao carregar lista de usuários');
     } finally {
       setLoading(false);
     }
@@ -149,7 +154,10 @@ export default function ManageUsers() {
     <div className={styles.viewContainer}>
       <div className={styles.sectionHeader}>
         <div className={styles.sectionTitleArea}>
-          <h2 className={styles.sectionTitle}>Gestão de Usuários & Criadores</h2>
+          <div className={styles.sectionTitleRow}>
+            <h2 className={styles.sectionTitle}>Gestão de Usuários & Criadores</h2>
+            <span className={styles.counterBadge}>{users.length}</span>
+          </div>
           <p className={styles.sectionSubtitle}>
             Controle de cargos, atribuição de selo de criador verificado e vinculação de coleções.
           </p>
@@ -166,10 +174,37 @@ export default function ManageUsers() {
               className={styles.searchInput}
             />
           </form>
+
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => fetchUsers(searchQuery)}
+            title="Atualizar lista de usuários"
+          >
+            <RefreshCw size={15} />
+            <span>Atualizar</span>
+          </button>
         </div>
       </div>
 
-      {users.length === 0 ? (
+      {error && (
+        <div className={styles.errorAlert}>
+          <AlertCircle size={18} />
+          <div className={styles.errorAlertContent}>
+            <span className={styles.errorAlertTitle}>Erro ao carregar dados</span>
+            <span className={styles.errorAlertMessage}>{error}</span>
+          </div>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => fetchUsers(searchQuery)}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      )}
+
+      {!error && users.length === 0 ? (
         <div className={styles.emptyState}>
           <Users size={44} className={styles.emptyIcon} />
           <h3 className={styles.emptyTitle}>Nenhum Usuário Encontrado</h3>
@@ -179,7 +214,7 @@ export default function ManageUsers() {
               : 'Nenhum usuário cadastrado no sistema.'}
           </p>
         </div>
-      ) : (
+      ) : !error && (
         <>
           <div className={`${styles.tableWrapper} ${styles.desktopTableOnly}`}>
             <table className={styles.dataTable}>

@@ -202,7 +202,14 @@ export const api = {
       }),
     deleteUser: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     deleteUserAccount: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
-    getFirestoreMetrics: () => request('/api/admin/metrics/firestore'),
+    getFirestoreMetrics: (params = {}) => {
+      const q = new URLSearchParams();
+      if (params.forceStorage) q.set('forceStorage', 'true');
+      if (params.forceStats) q.set('forceStats', 'true');
+      const qs = q.toString() ? `?${q.toString()}` : '';
+      return request(`/api/admin/metrics/firestore${qs}`);
+    },
+    refreshStorageMetrics: () => request('/api/admin/metrics/storage/refresh', { method: 'POST' }),
     resetFirestoreMetrics: () => request('/api/admin/metrics/firestore/reset', { method: 'POST' }),
     rebuildTagsMetadata: () => request('/api/admin/metadata/rebuild-tags', { method: 'POST' }),
     verifyAuth: () => request('/api/admin/auth/verify', { method: 'POST' }),

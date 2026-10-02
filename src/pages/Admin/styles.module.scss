@@ -2215,6 +2215,163 @@
   }
 }
 
+.endpointPath {
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: #55d688;
+}
+
+.relativeTime {
+  font-size: 0.72rem;
+  color: $color-text-muted;
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.liveIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: $radius-full;
+  background-color: rgba(16, 124, 16, 0.15);
+  border: 1px solid rgba(16, 124, 16, 0.35);
+  color: #55d688;
+  font-size: 0.72rem;
+  font-weight: $fw-semibold;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: $radius-full;
+  background-color: #107c10;
+  box-shadow: 0 0 8px #107c10;
+}
+
+.autoRefreshToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: $color-text-secondary;
+  cursor: pointer;
+  user-select: none;
+}
+
+.storageGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.storageMainCard {
+  background-color: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.storageProgressFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: $color-text-muted;
+  margin-top: 4px;
+}
+
+.breakdownGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.breakdownCard {
+  background-color: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: $radius-md;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.breakdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: $fw-medium;
+  color: $color-text-secondary;
+}
+
+.breakdownValue {
+  font-size: 1.15rem;
+  font-weight: $fw-bold;
+  color: #ffffff;
+}
+
+.breakdownSub {
+  font-size: 0.7rem;
+  color: $color-text-muted;
+}
+
+.firestoreStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.dbStatCard {
+  background-color: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: $radius-md;
+  padding: 12px $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dbStatLabel {
+  font-size: 0.7rem;
+  font-weight: $fw-semibold;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dbStatValue {
+  font-size: 1.4rem;
+  font-weight: $fw-bold;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.dbStatSub {
+  font-size: 0.7rem;
+  color: $color-text-muted;
+}
+
 .rebuildMetaBox {
   display: flex;
   flex-direction: column;

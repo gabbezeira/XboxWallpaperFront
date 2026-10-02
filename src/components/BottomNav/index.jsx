@@ -10,6 +10,7 @@ import {
   BookOpen,
   Award,
   ShieldCheck,
+  Layers,
   X,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -21,7 +22,7 @@ export default function BottomNav({ onLoginClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const isMoreActive = ['/guide', '/levels', '/terms'].includes(location.pathname);
+  const isMoreActive = ['/guide', '/levels', '/terms', '/collections'].includes(location.pathname);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -73,6 +74,23 @@ export default function BottomNav({ onLoginClick }) {
           </div>
 
           <div className={styles.popoverLinks}>
+            <NavLink
+              to="/collections"
+              className={({ isActive }) =>
+                `${styles.menuLink} ${isActive ? styles.menuLinkActive : ''}`
+              }
+              onClick={() => setIsMenuOpen(false)}
+              tabIndex={0}
+            >
+              <div className={styles.menuLinkIcon}>
+                <Layers size={18} />
+              </div>
+              <div className={styles.menuLinkText}>
+                <span className={styles.menuLinkLabel}>Coleções &amp; Códigos</span>
+                <span className={styles.menuLinkDesc}>Buscar por acervo ou código rápido</span>
+              </div>
+            </NavLink>
+
             <NavLink
               to="/guide"
               className={({ isActive }) =>

@@ -66,6 +66,7 @@ export default function ManageCollections() {
     setFormData({
       name: '',
       slug: '',
+      code: '',
       description: '',
       bannerUrl: '',
       creatorUid: '',
@@ -80,6 +81,7 @@ export default function ManageCollections() {
     setFormData({
       name: col.name || '',
       slug: col.slug || '',
+      code: col.code || '',
       description: col.description || '',
       bannerUrl: col.bannerUrl || '',
       creatorUid: col.creatorUid || '',
@@ -214,7 +216,9 @@ export default function ManageCollections() {
 
               <div className={styles.collectionCardBody}>
                 <h3 className={styles.collectionName}>{col.name}</h3>
-                <span className={styles.collectionSlug}>/{col.slug}</span>
+                <span className={styles.collectionSlug}>
+                  /{col.slug} • Código: {col.code || col.slug?.toUpperCase()}
+                </span>
                 {col.description && (
                   <p className={styles.collectionDesc}>{col.description}</p>
                 )}
@@ -304,6 +308,19 @@ export default function ManageCollections() {
                     placeholder="Ex: halo-infinite"
                     className={styles.fieldInput}
                     required
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Código de Busca Rápida (opcional)</label>
+                  <input
+                    type="text"
+                    value={formData.code}
+                    onChange={(e) =>
+                      setFormData({ ...formData, code: e.target.value.toUpperCase() })
+                    }
+                    placeholder="Ex: XB-HALO (gerado automaticamente do slug se vazio)"
+                    className={styles.fieldInput}
                   />
                 </div>
 

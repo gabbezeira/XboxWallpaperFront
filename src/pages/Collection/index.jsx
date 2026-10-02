@@ -4,7 +4,7 @@ import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
-import { ArrowLeft, User, Layers, Share2, Check } from 'lucide-react';
+import { ArrowLeft, User, Layers, Share2, Check, KeyRound, Copy } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -17,6 +17,7 @@ export default function Collection() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [copied, setCopied] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,10 +57,19 @@ export default function Collection() {
     };
   }, [tag]);
 
+  const collectionCode = collection?.code || collection?.slug?.toUpperCase() || tag?.toUpperCase();
+
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleCopyCode = () => {
+    if (!collectionCode) return;
+    navigator.clipboard.writeText(collectionCode);
+    setCodeCopied(true);
+    setTimeout(() => setCodeCopied(false), 2000);
   };
 
   const handleViewDetails = (wallpaper) => {
@@ -107,6 +117,18 @@ export default function Collection() {
                   <span>{collection.creatorName}</span>
                 </span>
               )}
+              {collectionCode && (
+                <button
+                  type="button"
+                  className={styles.codeBadgeBtn}
+                  onClick={handleCopyCode}
+                  title="Copiar código de acesso rápido"
+                  tabIndex={0}
+                >
+                  <KeyRound size={12} />
+                  <span>Código: {codeCopied ? 'Copiado!' : collectionCode}</span>
+                </button>
+              )}
               {wallpapers.length > 0 && (
                 <span className={styles.countPill}>
                   {wallpapers.length} {wallpapers.length === 1 ? 'wallpaper' : 'wallpapers'}
@@ -124,13 +146,35 @@ export default function Collection() {
           <div className={styles.headerActions}>
             <button
               type="button"
+              className={styles.btnGhostAction}
+              onClick={() => navigate('/collections')}
+              tabIndex={0}
+              title="Ver todas as coleções"
+            >
+              <Layers size={16} />
+              <span>Coleções</span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.btnCopyCode}
+              onClick={handleCopyCode}
+              tabIndex={0}
+              title="Copiar código desta coleção"
+            >
+              {codeCopied ? <Check size={16} /> : <Copy size={16} />}
+              <span>{codeCopied ? 'Código Copiado!' : 'Copiar Código'}</span>
+            </button>
+
+            <button
+              type="button"
               className={styles.btnShare}
               onClick={handleShare}
               tabIndex={0}
               title="Compartilhar link desta coleção"
             >
               {copied ? <Check size={16} /> : <Share2 size={16} />}
-              <span>{copied ? 'Link Copiado!' : 'Compartilhar'}</span>
+              <span>{copied ? 'Link Copiado!' : 'Compartilhar Link'}</span>
             </button>
           </div>
         </div>

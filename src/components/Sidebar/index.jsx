@@ -50,6 +50,10 @@ export default function Sidebar({ onLoginClick }) {
           <Compass size={20} />
           Explorar
         </NavLink>
+        <NavLink to="/collections" className={navClass}>
+          <Layers size={20} />
+          Coleções
+        </NavLink>
 
         {user ? (
           <NavLink to="/favorites" className={navClass}>

@@ -95,6 +95,28 @@
   font-family: monospace;
 }
 
+.codeBadgeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: $fw-bold;
+  font-family: monospace;
+  color: $color-primary;
+  background: rgba($color-primary, 0.12);
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  border: 1px solid rgba($color-primary, 0.3);
+  cursor: pointer;
+  transition: all $transition-fast;
+  @include gamepad-focus;
+
+  &:hover {
+    background: rgba($color-primary, 0.22);
+    border-color: $color-primary;
+  }
+}
+
 .title {
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
@@ -129,6 +151,21 @@
 
 .btnGhostAction {
   @include btn-ghost;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $fs-small;
+  padding: 10px 14px;
+  flex: 1;
+  justify-content: center;
+
+  @include respond-to(sm) {
+    flex: initial;
+  }
+}
+
+.btnCopyCode {
+  @include btn-secondary;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -193,6 +230,14 @@
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-primary;
+}
+
+.statCode {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  font-family: monospace;
+  color: $color-primary;
+  letter-spacing: 1px;
 }
 
 .statLabel {

@@ -12,6 +12,7 @@ import {
   SlidersHorizontal,
   Tag,
   ImageOff,
+  Layers,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 
@@ -254,6 +255,17 @@ export default function Gallery() {
                 onClick={() => handleSortToggle('popular')}
               >
                 <span>Populares</span>
+              </button>
+
+              <button
+                type="button"
+                className={styles.filterPillBtn}
+                onClick={() => navigate('/collections')}
+                title="Explorar coleções e códigos"
+                tabIndex={0}
+              >
+                <Layers size={14} />
+                <span>Coleções</span>
               </button>
             </div>
 

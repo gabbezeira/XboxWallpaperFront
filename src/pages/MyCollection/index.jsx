@@ -5,7 +5,7 @@ import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
-import { Layers, Share2, UploadCloud, ArrowLeft, Check, ExternalLink } from 'lucide-react';
+import { Layers, Share2, UploadCloud, ArrowLeft, Check, ExternalLink, KeyRound, Copy } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -19,6 +19,7 @@ export default function MyCollection() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [copied, setCopied] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const [wallpaperToDelete, setWallpaperToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -191,6 +192,25 @@ export default function MyCollection() {
               <div className={styles.headerBadgeRow}>
                 <span className={styles.collectionBadge}>Painel do Criador</span>
                 <span className={styles.slugBadge}>/{collection.slug}</span>
+                {Boolean(collection.code || collection.slug) && (
+                  <button
+                    type="button"
+                    className={styles.codeBadgeBtn}
+                    onClick={() => {
+                      const c = collection.code || collection.slug.toUpperCase();
+                      navigator.clipboard.writeText(c);
+                      setCodeCopied(true);
+                      setTimeout(() => setCodeCopied(false), 2000);
+                    }}
+                    title="Copiar código de acesso rápido"
+                    tabIndex={0}
+                  >
+                    <KeyRound size={12} />
+                    <span>
+                      Código: {codeCopied ? 'Copiado!' : collection.code || collection.slug.toUpperCase()}
+                    </span>
+                  </button>
+                )}
               </div>
               <h1 className={styles.title}>{collection.name}</h1>
               {collection.description && (
@@ -209,6 +229,22 @@ export default function MyCollection() {
             >
               <ExternalLink size={16} />
               <span>Ver Página Pública</span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.btnCopyCode}
+              onClick={() => {
+                const c = collection.code || collection.slug.toUpperCase();
+                navigator.clipboard.writeText(c);
+                setCodeCopied(true);
+                setTimeout(() => setCodeCopied(false), 2000);
+              }}
+              tabIndex={0}
+              title="Copiar código de busca no console e mobile"
+            >
+              {codeCopied ? <Check size={16} /> : <Copy size={16} />}
+              <span>{codeCopied ? 'Código Copiado!' : 'Copiar Código'}</span>
             </button>
 
             <button
@@ -251,6 +287,13 @@ export default function MyCollection() {
               {wallpapers.filter((w) => w.status === 'pending').length}
             </span>
             <span className={styles.statLabel}>Em Moderação</span>
+          </div>
+
+          <div className={styles.statCard}>
+            <span className={styles.statCode}>
+              {collection.code || collection.slug.toUpperCase()}
+            </span>
+            <span className={styles.statLabel}>Código de Busca Rápida</span>
           </div>
         </section>
 

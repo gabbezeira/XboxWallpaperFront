@@ -114,6 +114,28 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.codeBadgeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: $fw-bold;
+  font-family: monospace;
+  color: $color-primary;
+  background: rgba($color-primary, 0.12);
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  border: 1px solid rgba($color-primary, 0.3);
+  cursor: pointer;
+  transition: all $transition-fast;
+  @include gamepad-focus;
+
+  &:hover {
+    background: rgba($color-primary, 0.22);
+    border-color: $color-primary;
+  }
+}
+
 .countPill {
   font-size: 11px;
   font-weight: $fw-medium;
@@ -147,12 +169,43 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
+  flex-wrap: wrap;
   width: 100%;
 
   @include respond-to(md) {
     width: auto;
     margin-left: auto;
     align-self: flex-start;
+  }
+}
+
+.btnGhostAction {
+  @include btn-ghost;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  font-size: $fs-small;
+  padding: 10px 14px;
+  width: 100%;
+
+  @include respond-to(md) {
+    width: auto;
+  }
+}
+
+.btnCopyCode {
+  @include btn-secondary;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  font-size: $fs-small;
+  padding: 10px 14px;
+  width: 100%;
+
+  @include respond-to(md) {
+    width: auto;
   }
 }
 

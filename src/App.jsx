@@ -25,6 +25,7 @@ const Admin = lazy(() => import('./pages/Admin'));
 const AdminLogin = lazy(() => import('./pages/Admin/Login'));
 const LinkDevice = lazy(() => import('./pages/LinkDevice'));
 const Guide = lazy(() => import('./pages/Guide'));
+const Collections = lazy(() => import('./pages/Collections'));
 
 function AppRoutes() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -53,6 +54,7 @@ function AppRoutes() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/collections" element={<Collections />} />
                   <Route path="/wallpaper/:id" element={<WallpaperDetails />} />
                   <Route path="/wallpaper/:id/fullscreen" element={<FullscreenViewer />} />
                   <Route path="/collection/:tag" element={<Collection />} />

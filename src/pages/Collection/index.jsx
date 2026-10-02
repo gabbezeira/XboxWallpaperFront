@@ -58,6 +58,11 @@ export default function Collection() {
   }, [tag]);
 
   const collectionCode = collection?.code || collection?.slug?.toUpperCase() || tag?.toUpperCase();
+  const linkedUserName = collection?.linkedUserName || collection?.creatorName;
+  const linkedUserPhoto = collection?.linkedUserName ? collection?.linkedUserPhoto : collection?.creatorPhoto;
+  const linkedUserVerified = collection?.linkedUserName
+    ? collection?.linkedUserVerified
+    : collection?.creatorVerified;
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -116,11 +121,15 @@ export default function Collection() {
             )}
 
             <div className={styles.badgeRow}>
-              {collection?.creatorName && (
+              {linkedUserName && (
                 <span className={styles.creatorPill}>
-                  <User size={13} />
-                  <span>{collection.creatorName}</span>
-                  {collection.creatorVerified && <CheckCircle2 size={13} className={styles.verifiedBadge} />}
+                  {linkedUserPhoto ? (
+                    <img src={linkedUserPhoto} alt="" className={styles.creatorAvatar} />
+                  ) : (
+                    <User size={13} />
+                  )}
+                  <span>Por {linkedUserName}</span>
+                  {linkedUserVerified && <CheckCircle2 size={13} className={styles.verifiedBadge} />}
                 </span>
               )}
               {wallpapers.length > 0 && (

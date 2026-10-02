@@ -140,40 +140,42 @@
 }
 
 .collectionCard {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   background-color: $color-bg-secondary;
   border: 1px solid $color-border;
-  border-radius: $radius-xl;
+  border-radius: $radius-lg;
   overflow: hidden;
   cursor: pointer;
-  transition: transform $transition-fast, border-color $transition-fast, box-shadow $transition-fast;
+  transition: transform $transition-base, border-color $transition-base;
   @include gamepad-focus;
 
   &:hover {
-    transform: translateY(-3px);
-    border-color: rgba($color-primary, 0.4);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+    border-color: rgba($color-primary, 0.45);
+
+    .cardBannerImg {
+      transform: scale(1.05);
+    }
+
+    .cardOverlay {
+      background: linear-gradient(to top, rgba($color-bg-main, 0.96), rgba($color-bg-main, 0.15) 82%);
+    }
   }
 }
 
 .cardBannerArea {
-  position: relative;
-  width: 100%;
-  height: 140px;
+  position: absolute;
+  inset: 0;
   background-color: $color-bg-tertiary;
-  overflow: hidden;
 }
 
 .cardBannerImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-
-  .collectionCard:hover & {
-    transform: scale(1.04);
-  }
+  transition: transform $transition-slow;
 }
 
 .cardBannerFallback {
@@ -183,64 +185,91 @@
   align-items: center;
   justify-content: center;
   color: rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.4) 100%);
+  background: $gradient-card;
 }
 
 .cardBannerGradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(13, 13, 13, 0.95) 100%);
+  background: linear-gradient(to top, rgba($color-bg-main, 0.92), transparent 86%);
+}
+
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  background: linear-gradient(to top, rgba($color-bg-main, 0.92), rgba($color-bg-main, 0.05) 86%);
+  transition: background $transition-base;
 }
 
 .btnCopyCardCode {
+  position: absolute;
+  z-index: 2;
+  top: $spacing-sm;
+  right: $spacing-sm;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
+  gap: $spacing-xs;
+  min-height: 32px;
+  font-size: 0.7rem;
   font-weight: $fw-bold;
   font-family: monospace;
-  color: $color-text-secondary;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 3px 10px;
+  color: $color-text-primary;
+  background-color: rgba($color-bg-main, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 4px 10px;
   border-radius: $radius-full;
   cursor: pointer;
-  transition: all $transition-fast;
-  margin-left: auto;
+  backdrop-filter: blur(8px);
+  transition: background-color $transition-fast, border-color $transition-fast;
   @include gamepad-focus;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: $color-text-primary;
+    background-color: rgba($color-primary, 0.85);
+    border-color: $color-primary;
   }
-}
-
-.cardBody {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-  padding: $spacing-md $spacing-lg $spacing-lg;
-  flex: 1;
-}
-
-.cardMetaRow {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
 }
 
 .creatorPill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: $fw-medium;
-  color: $color-text-secondary;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 2px 8px;
+  gap: 6px;
+  min-width: 0;
+  font-size: $fs-small;
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+}
+
+.creatorAvatar,
+.creatorAvatarFallback {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
   border-radius: $radius-full;
+}
+
+.creatorAvatar {
+  object-fit: cover;
+}
+
+.creatorAvatarFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-secondary;
+  background: $color-bg-tertiary;
+}
+
+.creatorName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 11rem;
 }
 
 .verifiedBadge {
@@ -249,40 +278,44 @@
 }
 
 .cardTitle {
-  font-size: $fs-subtitle;
+  font-size: $fs-body;
   font-weight: $fw-bold;
   color: $color-text-primary;
   letter-spacing: -0.3px;
-  margin-top: 2px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cardDesc {
-  font-size: $fs-small;
-  color: $color-text-secondary;
-  line-height: 1.5;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.4;
+  margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  flex: 1;
 }
 
 .cardFooter {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding-top: $spacing-sm;
-  margin-top: $spacing-xs;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  justify-content: space-between;
+  gap: $spacing-sm;
+  min-width: 0;
+  padding-top: 2px;
 }
 
 .viewLink {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: $fs-small;
+  font-size: 0.75rem;
   font-weight: $fw-semibold;
   color: $color-primary;
+  flex-shrink: 0;
 }
 
 .emptyState {

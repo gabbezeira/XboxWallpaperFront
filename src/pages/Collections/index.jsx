@@ -6,7 +6,6 @@ import {
   Layers,
   Search,
   ArrowRight,
-  User,
   Copy,
   Check,
   Compass,
@@ -74,7 +73,8 @@ export default function Collections() {
       const nameMatch = c.name?.toLowerCase().includes(q);
       const slugMatch = c.slug?.toLowerCase().includes(q);
       const codeMatch = c.code?.toLowerCase().includes(q);
-      const creatorMatch = c.creatorName?.toLowerCase().includes(q);
+      const linkedName = c.linkedUserName || c.creatorName;
+      const creatorMatch = linkedName?.toLowerCase().includes(q);
       const descMatch = c.description?.toLowerCase().includes(q);
       return nameMatch || slugMatch || codeMatch || creatorMatch || descMatch;
     });
@@ -121,6 +121,8 @@ export default function Collections() {
             {filteredCollections.map((col) => {
               const displayCode = col.code || col.slug?.toUpperCase() || `COL-${col.id.slice(0, 5).toUpperCase()}`;
               const isCopied = copiedCode === displayCode;
+              const linkedUserName = col.linkedUserName || col.creatorName;
+              const linkedUserVerified = col.linkedUserName ? col.linkedUserVerified : col.creatorVerified;
 
               return (
                 <div
@@ -138,48 +140,44 @@ export default function Collections() {
                 >
                   <div className={styles.cardBannerArea}>
                     {col.bannerUrl ? (
-                      <img src={col.bannerUrl} alt={col.name} className={styles.cardBannerImg} />
+                      <img src={col.bannerUrl} alt="" className={styles.cardBannerImg} loading="lazy" />
                     ) : (
                       <div className={styles.cardBannerFallback}>
                         <Layers size={36} />
                       </div>
                     )}
                     <div className={styles.cardBannerGradient} />
-                  </div>
-
-                  <div className={styles.cardBody}>
-                    <div className={styles.cardMetaRow}>
-                      {col.creatorName && (
-                        <span className={styles.creatorPill}>
-                          <User size={12} />
-                          <span>{col.creatorName}</span>
-                          {col.creatorVerified && <CheckCircle2 size={12} className={styles.verifiedBadge} />}
+                    <button
+                      type="button"
+                      className={styles.btnCopyCardCode}
+                      onClick={(e) => handleCopyCode(e, displayCode)}
+                      onKeyDown={(e) => e.stopPropagation()}
+                      title="Copiar código da coleção"
+                      aria-label={`Copiar código ${displayCode}`}
+                      tabIndex={0}
+                    >
+                      {isCopied ? <Check size={12} /> : <Copy size={12} />}
+                      <span>{isCopied ? 'Copiado!' : displayCode}</span>
+                    </button>
+                    <div className={styles.cardOverlay}>
+                      <h3 className={styles.cardTitle}>{col.name}</h3>
+                      {col.description && <p className={styles.cardDesc}>{col.description}</p>}
+                      <div className={styles.cardFooter}>
+                        {linkedUserName ? (
+                          <span className={styles.creatorPill} title={`Vinculada a ${linkedUserName}`}>
+                            {col.linkedUserPhoto ? (
+                              <img src={col.linkedUserPhoto} alt="" className={styles.creatorAvatar} loading="lazy" />
+                            ) : (
+                              <span className={styles.creatorAvatarFallback}><Layers size={11} /></span>
+                            )}
+                            <span className={styles.creatorName}>{linkedUserName}</span>
+                            {linkedUserVerified && <CheckCircle2 size={12} className={styles.verifiedBadge} />}
+                          </span>
+                        ) : <span />}
+                        <span className={styles.viewLink}>
+                          Explorar <ArrowRight size={14} />
                         </span>
-                      )}
-                      
-                      <button
-                        type="button"
-                        className={styles.btnCopyCardCode}
-                        onClick={(e) => handleCopyCode(e, displayCode)}
-                        title="Copiar código da coleção"
-                        tabIndex={0}
-                      >
-                        {isCopied ? <Check size={12} /> : <Copy size={12} />}
-                        <span>{isCopied ? 'Copiado!' : displayCode}</span>
-                      </button>
-                    </div>
-
-                    <h3 className={styles.cardTitle}>{col.name}</h3>
-
-                    {col.description && (
-                      <p className={styles.cardDesc}>{col.description}</p>
-                    )}
-
-                    <div className={styles.cardFooter}>
-                      <span className={styles.viewLink}>
-                        Explorar
-                        <ArrowRight size={14} />
-                      </span>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -107,6 +107,14 @@
   border: 1px solid #333333;
 }
 
+.creatorAvatar {
+  width: 20px;
+  height: 20px;
+  border-radius: $radius-full;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 
 
 .countPill {

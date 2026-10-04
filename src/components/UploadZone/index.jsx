@@ -1,7 +1,6 @@
 import {
   AlertCircle,
   Ban,
-  Check,
   Globe,
   Image as ImageIcon,
   Layers,
@@ -17,9 +16,13 @@ import { useUpload } from '../../hooks/useUpload';
 import { suggestTags, detectGameFromText } from '../../utils/tagSuggester';
 import styles from './styles.module.scss';
 
+const CUTOFF_TS = Date.parse('2026-10-04T12:00:00Z');
+const GRACE_END_TS = Date.parse('2026-10-18T23:59:59Z');
+
 export default function UploadZone({ onUploadComplete }) {
   const { upload, uploading, progress, error } = useUpload();
   const { profile, needsEmailVerification, user } = useAuth();
+  const [currentTimestamp] = useState(() => Date.now());
   const [dragging, setDragging] = useState(false);
   const [localError, setLocalError] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -47,13 +50,11 @@ export default function UploadZone({ onUploadComplete }) {
     };
   }, []);
 
-  const CUTOFF_TS = Date.parse('2026-10-04T12:00:00Z');
-  const GRACE_END_TS = Date.parse('2026-10-18T23:59:59Z');
   const userCreationTs = user?.metadata?.creationTime
     ? Date.parse(user.metadata.creationTime)
-    : Date.now();
+    : currentTimestamp;
   const isExistingAccountInGrace =
-    userCreationTs <= CUTOFF_TS && Date.now() < GRACE_END_TS;
+    userCreationTs <= CUTOFF_TS && currentTimestamp < GRACE_END_TS;
 
   const mustBlockVerification =
     needsEmailVerification && !isExistingAccountInGrace;

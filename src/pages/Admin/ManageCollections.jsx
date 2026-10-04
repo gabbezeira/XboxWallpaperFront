@@ -9,7 +9,6 @@ import {
   ExternalLink,
   Search,
   Star,
-  X,
 } from 'lucide-react';
 import AdminHeader from './components/AdminHeader';
 import AdminModal from './components/AdminModal';

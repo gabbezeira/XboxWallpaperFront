@@ -462,9 +462,11 @@ export default function ManageHeroSlides() {
                       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
                         const droppedFile = e.dataTransfer.files[0];
                         if (droppedFile.type.startsWith('image/')) {
-                          setFile(droppedFile);
+                          setSelectedFile(droppedFile);
                           setPreviewUrl(URL.createObjectURL(droppedFile));
                           setFormError('');
+                        } else {
+                          setFormError('Selecione um arquivo de imagem válido (JPG, PNG, WebP).');
                         }
                       }
                     }}
@@ -479,7 +481,7 @@ export default function ManageHeroSlides() {
                       </div>
                     ) : (
                       <div className={styles.heroDropPrompt}>
-                        <UploadCloud size={32} />
+                        <UploadCloud size={22} />
                         <span className={styles.dropMainText}>Clique ou arraste a imagem do banner</span>
                         <span className={styles.dropSubText}>Proporção 16:9 (1920x1080 ou superior em JPG/PNG/WebP)</span>
                       </div>

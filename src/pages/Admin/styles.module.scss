@@ -2004,6 +2004,14 @@
   animation: scaleIn $transition-fast;
   max-height: 90vh;
   overflow: hidden;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
 }
 
 .modalHeader {
@@ -2012,6 +2020,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .modalTitle {
@@ -2022,11 +2031,13 @@
 }
 
 .modalBody {
-  padding: $spacing-lg;
+  padding: $spacing-md $spacing-lg;
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: $spacing-sm;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .modalFooter {
@@ -2037,6 +2048,7 @@
   justify-content: flex-end;
   gap: $spacing-sm;
   background-color: rgba(255, 255, 255, 0.01);
+  flex-shrink: 0;
 }
 
 .formGrid {
@@ -2169,9 +2181,7 @@
   transition: all $transition-fast;
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 7;
-  min-height: 150px;
-  max-height: 200px;
+  height: 105px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2223,19 +2233,24 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: $spacing-md;
-  gap: 6px;
+  padding: $spacing-xs $spacing-sm;
+  gap: 4px;
   color: $color-text-muted;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .dropMainText {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: $fw-semibold;
   color: $color-text-primary;
 }
 
 .dropSubText {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: $color-text-muted;
 }
 

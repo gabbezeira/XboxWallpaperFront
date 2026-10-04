@@ -46,7 +46,7 @@ const ModerationImage = ({ src, alt }) => {
           setBlobUrl(URL.createObjectURL(blob));
           setError(false);
         }
-      } catch (err) {
+      } catch {
         if (active) setError(true);
       } finally {
         if (active) setImgLoading(false);

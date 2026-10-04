@@ -17,7 +17,6 @@ import {
   ExternalLink,
   Sparkles,
   RefreshCw,
-  Server,
   ArrowRight,
 } from 'lucide-react';
 import horizontalLogo from '../../assets/horizontal-logo.png';

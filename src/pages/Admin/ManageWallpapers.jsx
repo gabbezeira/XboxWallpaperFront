@@ -6,7 +6,6 @@ import {
   ChevronDown,
   CheckSquare,
   Square,
-  X,
   Search,
   Tag,
 } from 'lucide-react';

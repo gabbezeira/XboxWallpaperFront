@@ -314,7 +314,7 @@ export default function OfficialPublish({ onPublishComplete }) {
           });
         } catch (netErr) {
           if (netErr.message === 'Failed to fetch') {
-            throw new Error('Falha de conexão com a API ou tamanho da requisição excedido');
+            throw new Error('Falha de conexão com a API ou tamanho da requisição excedido', { cause: netErr });
           }
           throw netErr;
         }

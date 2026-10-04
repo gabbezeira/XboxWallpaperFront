@@ -60,6 +60,7 @@ export const signUpWithEmail = async (email, password, displayName) => {
 export const logOut = async () => {
   try {
     localStorage.removeItem('spartan_user_profile');
+    localStorage.removeItem('spartan_favorite_ids');
   } catch {}
   clearAllCache();
   await signOut(auth);

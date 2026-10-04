@@ -16,6 +16,7 @@ const HIDE_SEARCH_ROUTES = [
   '/my-collection',
   '/terms',
   '/levels',
+  '/guide',
 ];
 
 const HIDE_SEARCH_PREFIXES = ['/wallpaper/'];

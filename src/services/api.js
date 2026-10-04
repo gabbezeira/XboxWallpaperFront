@@ -263,14 +263,22 @@ export const api = {
   },
 
   favorites: {
-    list: () => request('/api/favorites'),
+    list: async () => {
+      const cached = getCached('/api/favorites');
+      if (cached) return cached;
+      const data = await request('/api/favorites');
+      setCache('/api/favorites', data, 2 * 60 * 1000);
+      return data;
+    },
     add: async (wallpaperId) => {
       const result = await request(`/api/favorites/${wallpaperId}`, { method: 'POST' });
+      invalidateCache('/api/favorites');
       invalidateCache('/api/wallpapers');
       return result;
     },
     remove: async (wallpaperId) => {
       const result = await request(`/api/favorites/${wallpaperId}`, { method: 'DELETE' });
+      invalidateCache('/api/favorites');
       invalidateCache('/api/wallpapers');
       return result;
     },

@@ -162,10 +162,7 @@ export default function DebugMetrics() {
         title="Métricas do Sistema"
         subtitle="Uso real do Firebase Storage, contagem do Firestore, consumo de leituras e estado dos caches em memória."
         badge={
-          <span className={styles.liveIndicator}>
-            <span className={styles.liveDot} />
-            <span>Tempo Real</span>
-          </span>
+          <span>Tempo Real</span>
         }
       >
         <button
@@ -579,10 +576,10 @@ export default function DebugMetrics() {
                       method === 'GET'
                         ? styles.methodGet
                         : method === 'POST'
-                        ? styles.methodPost
-                        : method === 'PATCH'
-                        ? styles.methodPatch
-                        : styles.methodDelete;
+                          ? styles.methodPost
+                          : method === 'PATCH'
+                            ? styles.methodPatch
+                            : styles.methodDelete;
 
                     return (
                       <tr key={row.endpoint}>

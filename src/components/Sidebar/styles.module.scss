@@ -246,6 +246,12 @@
   }
 }
 
+.levelBadgeLink {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
 .profileStatsRow {
   display: flex;
   align-items: center;
@@ -267,7 +273,6 @@
 
   svg {
     color: #ef4444;
-    /* red heart */
     fill: #ef4444;
   }
 }

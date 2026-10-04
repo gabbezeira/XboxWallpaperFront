@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Heart, Monitor, HardDrive, Download, Layers } from 'lucide-react';
 import NavButton from '../../components/NavButton';
 import VerifiedBadge from '../../components/VerifiedBadge';
+import TierBadge from '../../components/TierBadge';
 import UserAvatar from '../../components/UserAvatar';
 import { useLocation, useNavigate, Navigate, useParams, Link } from 'react-router-dom';
 import { useFavorites } from '../../hooks/useFavorites';
@@ -303,12 +304,7 @@ export default function WallpaperDetailsPage() {
                   )}
                 </div>
                 {authorInfo.tier && (
-                  <span className={`${styles.tierBadge} ${styles[getTierCssClass(authorInfo.tier)]}`}>
-                    {authorInfo.tier.icon && (
-                      <authorInfo.tier.icon size={11} className={styles.badgeIcon} />
-                    )}
-                    <span>{authorInfo.tier.label}</span>
-                  </span>
+                  <TierBadge tier={authorInfo.tier} size="small" />
                 )}
               </div>
             </div>

@@ -107,10 +107,10 @@
   flex-direction: column;
   gap: $spacing-lg;
   padding: $spacing-xl;
-  background: linear-gradient(180deg, #18181d 0%, #121215 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, #0e0e0f 0%, #080809 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: $radius-lg;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .userProfileRow {
@@ -184,159 +184,7 @@
   gap: $spacing-sm;
 }
 
-.tierBadge {
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  font-size: 10px;
-  font-weight: $fw-bold;
-  border-radius: $radius-sm;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  line-height: 1;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 
-  .badgeIcon {
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-  }
-
-  .badgeLabel {
-    position: relative;
-    z-index: 2;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.45) 50%,
-      transparent 100%
-    );
-    z-index: 1;
-    pointer-events: none;
-    transform: translateX(-160%) skewX(-20deg);
-  }
-
-  &.level_1 {
-    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
-    color: #f9fafb;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-
-    .badgeIcon {
-      color: #f9fafb;
-    }
-
-    &:hover::after {
-      animation: badgeShimmer 2s ease-in-out infinite;
-    }
-  }
-
-  &.level_2 {
-    background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-
-    .badgeIcon {
-      color: #ffffff;
-    }
-
-    &::after {
-      animation: badgeShimmer 4.2s ease-in-out infinite;
-    }
-  }
-
-  &.level_3 {
-    background: linear-gradient(135deg, #0284c7 0%, #1e3a8a 100%);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-
-    .badgeIcon {
-      color: #ffffff;
-    }
-
-    &::after {
-      animation: badgeShimmer 3.5s ease-in-out infinite;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(224, 242, 254, 0.6) 50%,
-        transparent 100%
-      );
-    }
-  }
-
-  &.level_4 {
-    background: linear-gradient(135deg, #e11d48 0%, #881337 100%);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-
-    .badgeIcon {
-      color: #ffffff;
-    }
-
-    &::after {
-      animation: badgeShimmer 2.8s ease-in-out infinite;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(254, 205, 211, 0.7) 50%,
-        transparent 100%
-      );
-    }
-  }
-
-  &.level_5 {
-    background: linear-gradient(135deg, #d97706 0%, #78350f 100%);
-    color: #ffffff;
-    border: 1px solid rgba(254, 240, 138, 0.45);
-
-    .badgeIcon {
-      color: #fef08a;
-    }
-
-    &::after {
-      animation: badgeShimmer 2.2s ease-in-out infinite;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(254, 240, 138, 0.8) 50%,
-        transparent 100%
-      );
-    }
-  }
-
-  &.level_6 {
-    background: linear-gradient(135deg, #107c10 0%, #052e16 100%);
-    color: #ffffff;
-    border: 1px solid rgba(74, 222, 128, 0.55);
-
-    .badgeIcon {
-      color: #86efac;
-    }
-
-    &::after {
-      animation: badgeShimmer 1.7s ease-in-out infinite;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(220, 252, 231, 0.9) 50%,
-        transparent 100%
-      );
-    }
-  }
-}
 
 
 .userMetricsGrid {
@@ -354,8 +202,8 @@
   flex-direction: column;
   gap: 4px;
   padding: $spacing-md $spacing-lg;
-  background-color: $color-bg-tertiary;
-  border: 1px solid $color-border;
+  background-color: #0c0c0d;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: $radius-md;
 }
 
@@ -561,7 +409,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-color: #141418;
+    background-color: #0b0b0c;
     border-radius: $radius-lg;
     z-index: 0;
     transition: background-color $transition-fast;
@@ -580,13 +428,13 @@
     transform: translateY(-3px);
 
     &::before {
-      background-color: #18181e;
+      background-color: #111112;
     }
   }
 
   &.activeTierCard {
     &::before {
-      background-color: #121914;
+      background-color: #0c110d;
     }
 
     &::after {
@@ -674,11 +522,11 @@
   &::after {
     background-image: linear-gradient(
       135deg,
-      rgba(69, 26, 3, 0.4) 10%,
-      rgba(180, 83, 9, 0.9) 30%,
-      rgba(251, 191, 36, 1) 50%,
-      rgba(254, 240, 138, 0.9) 65%,
-      rgba(217, 119, 6, 0.9) 85%
+      rgba(109, 40, 217, 0.45) 10%,
+      rgba(147, 51, 234, 0.9) 30%,
+      rgba(192, 132, 252, 1) 50%,
+      rgba(232, 121, 249, 0.95) 65%,
+      rgba(126, 34, 206, 0.9) 85%
     );
     animation: borderSlide 3.2s linear infinite;
   }
@@ -767,8 +615,8 @@
   grid-template-columns: repeat(2, 1fr);
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
-  background-color: $color-bg-tertiary;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #0b0b0c;
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: $radius-md;
 }
 

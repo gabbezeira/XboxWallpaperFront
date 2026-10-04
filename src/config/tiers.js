@@ -95,7 +95,7 @@ export const TIERS = [
     icon: Crown,
     desc: 'Prestígio concedido aos principais contribuidores da plataforma, com acervo de grande impacto visual, centenas de favoritos e relevância comprovada.',
     benefits: [
-      'Insígnia dourada imperial com reflexo contínuo de liderança',
+      'Insígnia mítica ametista em roxo imperial com borda cinética',
       'Expansão de armazenamento para 16 slots (+2 slots)',
       'Criação de coleções públicas dedicadas com slug customizado',
       'Candidatura preferencial para inclusão no Carrossel Hero da Home',

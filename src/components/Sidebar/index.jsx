@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Home, Compass, UploadCloud, Heart, LogOut, Images, Layers, Copy, Check } from 'lucide-react';
 import VerifiedBadge from '../VerifiedBadge';
+import TierBadge from '../TierBadge';
 import UserAvatar from '../UserAvatar';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
-import { getUserLevel, getTierCssClass } from '../../config/tiers';
+import { getUserLevel } from '../../config/tiers';
 import horizontalLogo from '../../assets/horizontal-logo.png';
 import styles from './styles.module.scss';
 
@@ -118,10 +119,10 @@ export default function Sidebar({ onLoginClick }) {
                 <div className={styles.profileStatsRow}>
                   <Link
                     to="/levels"
-                    className={`${styles.badge} ${styles[getTierCssClass(userLevel)]}`}
+                    className={styles.levelBadgeLink}
                     title="Ver sistema de níveis e conquistas"
                   >
-                    {userLevel.label}
+                    <TierBadge tier={userLevel} size="small" />
                   </Link>
                   <div className={styles.profileFavBadge} title="Total de Favoritos Recebidos">
                     <Heart size={10} fill="currentColor" />

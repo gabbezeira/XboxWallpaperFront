@@ -11,10 +11,11 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
+import TierBadge from '../../components/TierBadge';
 import PageHeader from '../../components/PageHeader';
 import UserAvatar from '../../components/UserAvatar';
 import { useAuth } from '../../hooks/useAuth';
-import { TIERS, getUserTier, getNextTier, getTierCssClass } from '../../config/tiers';
+import { TIERS, getUserTier, getNextTier } from '../../config/tiers';
 import styles from './styles.module.scss';
 
 export default function Levels() {
@@ -68,10 +69,7 @@ export default function Levels() {
               </div>
 
               <div className={styles.userBadgeWrapper}>
-                <div className={`${styles.tierBadge} ${styles[getTierCssClass(currentTier)]}`}>
-                  <currentTier.icon size={14} className={styles.badgeIcon} />
-                  <span className={styles.badgeLabel}>{currentTier.badgeLabel}</span>
-                </div>
+                <TierBadge tier={currentTier} size="large" />
               </div>
             </div>
 
@@ -156,10 +154,7 @@ export default function Levels() {
                   className={`${styles.tierCard} ${styles[`cardTier_${tier.level}`]} ${isCurrent ? styles.activeTierCard : ''}`}
                 >
                   <div className={styles.tierCardHeader}>
-                    <div className={`${styles.tierBadge} ${styles[getTierCssClass(tier)]}`}>
-                      <TierIcon size={14} className={styles.badgeIcon} />
-                      <span className={styles.badgeLabel}>{tier.badgeLabel}</span>
-                    </div>
+                    <TierBadge tier={tier} />
                     {isCurrent ? (
                       <span className={styles.activeTag}>
                         <Check size={12} />

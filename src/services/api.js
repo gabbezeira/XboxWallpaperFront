@@ -59,12 +59,38 @@ async function executeRequest(path, options = {}, retries = 3) {
 
 export const api = {
   heroSlides: {
-    list: () => request('/api/hero-slides'),
+    list: async () => {
+      const cached = getCached('/api/hero-slides');
+      if (cached) return cached;
+      const data = await request('/api/hero-slides');
+      setCache('/api/hero-slides', null, data, 5 * 60 * 1000);
+      return data;
+    },
     listManage: () => request('/api/hero-slides/manage'),
-    upload: (formData) => request('/api/hero-slides/upload', { method: 'POST', body: formData }),
-    update: (id, data) => request(`/api/hero-slides/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
-    reorder: (orders) => request('/api/hero-slides/reorder', { method: 'PATCH', body: JSON.stringify({ orders }) }),
-    remove: (id) => request(`/api/hero-slides/${id}`, { method: 'DELETE' }),
+    upload: async (formData) => {
+      const res = await request('/api/hero-slides/upload', { method: 'POST', body: formData });
+      invalidateCache('/api/hero-slides');
+      try { sessionStorage.removeItem('xboxwall_hero_slides_v2'); } catch {}
+      return res;
+    },
+    update: async (id, data) => {
+      const res = await request(`/api/hero-slides/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+      invalidateCache('/api/hero-slides');
+      try { sessionStorage.removeItem('xboxwall_hero_slides_v2'); } catch {}
+      return res;
+    },
+    reorder: async (orders) => {
+      const res = await request('/api/hero-slides/reorder', { method: 'PATCH', body: JSON.stringify({ orders }) });
+      invalidateCache('/api/hero-slides');
+      try { sessionStorage.removeItem('xboxwall_hero_slides_v2'); } catch {}
+      return res;
+    },
+    remove: async (id) => {
+      const res = await request(`/api/hero-slides/${id}`, { method: 'DELETE' });
+      invalidateCache('/api/hero-slides');
+      try { sessionStorage.removeItem('xboxwall_hero_slides_v2'); } catch {}
+      return res;
+    },
   },
 
   wallpapers: {

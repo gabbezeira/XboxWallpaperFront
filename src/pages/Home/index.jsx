@@ -71,13 +71,16 @@ export default function Home() {
     let isMounted = true;
     const fetchHero = async () => {
       const cached = readHeroCache();
-      if (cached?.length && isMounted) {
-        setHeroSlides(cached);
-        setLoadingHero(false);
+      if (cached?.length) {
+        if (isMounted) {
+          setHeroSlides(cached);
+          setLoadingHero(false);
+        }
+        return;
       }
       try {
         const data = await api.heroSlides.list();
-        if (data.length > 0 && isMounted) {
+        if (data?.length > 0 && isMounted) {
           setHeroSlides(data);
           writeHeroCache(data);
         }

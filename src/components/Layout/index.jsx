@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, LogOut, User } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Search, LogOut } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
+import { getUserLevel } from '../../config/tiers';
 import Sidebar from '../Sidebar';
 import BottomNav from '../BottomNav';
 import UserAvatar from '../UserAvatar';
@@ -49,7 +50,11 @@ function isNotFoundRoute(pathname) {
 }
 
 export default function Layout({ children, onLoginClick }) {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
+  const displayName =
+    profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Usuário';
+  const photoURL = profile?.photoURL || user?.photoURL;
+  const userLevel = getUserLevel(profile?.totalFavoritesReceived || 0);
   const location = useLocation();
   const is404 = isNotFoundRoute(location.pathname);
   const shouldHideSearch =
@@ -130,42 +135,55 @@ export default function Layout({ children, onLoginClick }) {
               />
             ) : (
               <div className={styles.mobileUserSection}>
-                {(user || loading) ? (
+                {user ? (
                   <>
-                    <UserAvatar
-                      photoUrl={user?.photoURL}
-                      name={user?.displayName || user?.email}
-                      size="medium"
-                    />
-                    {user && (
-                      <div className={styles.mobileUserInfo}>
-                        <span className={styles.mobileUserName}>
-                          {user?.displayName || user?.email?.split('@')[0] || 'Usuário'}
-                        </span>
-                      </div>
+                    <Link
+                      to="/levels"
+                      className={`${styles.mobileAvatarWrapper} ${styles[`tier_${userLevel?.level || 1}`]}`}
+                      title={`Nível: ${userLevel?.name || 'Cadete'}`}
+                    >
+                      <UserAvatar
+                        photoUrl={photoURL}
+                        name={displayName}
+                        size="medium"
+                      />
+                    </Link>
+                    <div className={styles.mobileUserInfo}>
+                      <span className={styles.mobileUserName}>
+                        {displayName}
+                      </span>
+                    </div>
+                    {!shouldHideSearch && (
+                      <button
+                        className={styles.mobileActionBtn}
+                        onClick={() => setMobileSearchOpen(true)}
+                        aria-label="Buscar Wallpaper"
+                      >
+                        <Search size={18} />
+                      </button>
                     )}
+                    <button className={styles.mobileActionBtn} onClick={logOut} aria-label="Sair">
+                      <LogOut size={18} />
+                    </button>
                   </>
-                ) : (
+                ) : !loading ? (
                   <>
                     <UserAvatar size="medium" />
                     <button className={styles.mobileLoginBtn} onClick={onLoginClick}>
                       Entrar
                     </button>
+                    {!shouldHideSearch && (
+                      <button
+                        className={styles.mobileActionBtn}
+                        onClick={() => setMobileSearchOpen(true)}
+                        aria-label="Buscar Wallpaper"
+                      >
+                        <Search size={18} />
+                      </button>
+                    )}
                   </>
-                )}
-                {!shouldHideSearch && (
-                  <button
-                    className={styles.mobileActionBtn}
-                    onClick={() => setMobileSearchOpen(true)}
-                    aria-label="Buscar Wallpaper"
-                  >
-                    <Search size={18} />
-                  </button>
-                )}
-                {user && (
-                  <button className={styles.mobileActionBtn} onClick={logOut} aria-label="Sair">
-                    <LogOut size={18} />
-                  </button>
+                ) : (
+                  <div className={styles.mobileUserSkeleton} />
                 )}
               </div>
             )}

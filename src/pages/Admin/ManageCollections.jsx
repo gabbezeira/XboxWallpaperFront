@@ -11,6 +11,9 @@ import {
   Star,
   X,
 } from 'lucide-react';
+import AdminHeader from './components/AdminHeader';
+import AdminModal from './components/AdminModal';
+import AdminBadge from './components/AdminBadge';
 import styles from './styles.module.scss';
 
 function generateSlug(text) {
@@ -153,14 +156,11 @@ export default function ManageCollections() {
 
   return (
     <div className={styles.viewContainer}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitleArea}>
-          <h2 className={styles.sectionTitle}>Gestão de Coleções</h2>
-          <p className={styles.sectionSubtitle}>
-            Organize os wallpapers oficiais por jogos, franquias e coleções de criadores.
-          </p>
-        </div>
-
+      <AdminHeader
+        title="Gestão de Coleções"
+        subtitle="Organize os wallpapers oficiais por jogos, franquias e coleções de criadores."
+        badge={collections.length > 0 ? `${collections.length} coleções` : null}
+      >
         <div className={styles.toolbarActions}>
           <div className={styles.searchBox}>
             <Search size={16} className={styles.searchIcon} />
@@ -182,7 +182,7 @@ export default function ManageCollections() {
             <span>Nova Coleção</span>
           </button>
         </div>
-      </div>
+      </AdminHeader>
 
       {filteredCollections.length === 0 ? (
         <div className={styles.emptyState}>
@@ -207,10 +207,9 @@ export default function ManageCollections() {
                   </div>
                 )}
                 {col.featuredInHero && (
-                  <span className={styles.heroFeaturedPill}>
-                    <Star size={11} />
-                    <span>Destaque Hero</span>
-                  </span>
+                  <div className={styles.heroBadgeWrapper}>
+                    <AdminBadge variant="xbox" icon={Star}>Destaque Hero</AdminBadge>
+                  </div>
                 )}
               </div>
 
@@ -262,168 +261,148 @@ export default function ManageCollections() {
       )}
 
       {modalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setModalOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>
-                {editingId ? 'Editar Coleção' : 'Nova Coleção'}
-              </h3>
-              <button
-                type="button"
-                className={styles.btnIconSmall}
-                onClick={() => setModalOpen(false)}
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSave}>
-              <div className={styles.modalBody}>
-                {formError && (
-                  <div className={styles.batchActionText}>
-                    <span>{formError}</span>
-                  </div>
-                )}
-
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>Nome da Coleção</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    placeholder="Ex: Halo Infinite Collection"
-                    className={styles.fieldInput}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>Slug (URL amigável)</label>
-                  <input
-                    type="text"
-                    value={formData.slug}
-                    onChange={(e) =>
-                      setFormData({ ...formData, slug: generateSlug(e.target.value) })
-                    }
-                    placeholder="Ex: halo-infinite"
-                    className={styles.fieldInput}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>Código de Busca Rápida (opcional)</label>
-                  <input
-                    type="text"
-                    value={formData.code}
-                    onChange={(e) =>
-                      setFormData({ ...formData, code: e.target.value.toUpperCase() })
-                    }
-                    placeholder="Ex: XB-HALO (gerado automaticamente do slug se vazio)"
-                    className={styles.fieldInput}
-                  />
-                </div>
-
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>Descrição</label>
-                  <input
-                    type="text"
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    placeholder="Descrição para a comunidade..."
-                    className={styles.fieldInput}
-                  />
-                </div>
-
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>URL do Banner (16:9)</label>
-                  <input
-                    type="url"
-                    value={formData.bannerUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, bannerUrl: e.target.value })
-                    }
-                    placeholder="https://..."
-                    className={styles.fieldInput}
-                  />
-                </div>
-
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>Creator UID (opcional)</label>
-                  <input
-                    type="text"
-                    value={formData.creatorUid}
-                    onChange={(e) =>
-                      setFormData({ ...formData, creatorUid: e.target.value })
-                    }
-                    placeholder="UID do usuário criador da coleção..."
-                    className={styles.fieldInput}
-                  />
-                </div>
-              </div>
-
-              <div className={styles.modalFooter}>
-                <button
-                  type="button"
-                  className={styles.btnSecondary}
-                  onClick={() => setModalOpen(false)}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className={styles.btnPrimary}
-                  disabled={saving}
-                >
-                  {saving ? 'Salvando...' : editingId ? 'Salvar Alterações' : 'Criar Coleção'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {deleteConfirmOpen && (
-        <div className={styles.modalOverlay} onClick={() => setDeleteConfirmOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Excluir Coleção</h3>
-              <button
-                type="button"
-                className={styles.btnIconSmall}
-                onClick={() => setDeleteConfirmOpen(false)}
-              >
-                <X size={16} />
-              </button>
-            </div>
-
+        <AdminModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title={editingId ? 'Editar Coleção' : 'Nova Coleção'}
+        >
+          <form onSubmit={handleSave}>
             <div className={styles.modalBody}>
-              <p className={styles.emptyText}>
-                Tem certeza que deseja excluir a coleção &quot;{collectionToDelete?.name}&quot;? Todos os wallpapers associados a ela também serão excluídos definitivamente do acervo e do armazenamento.
-              </p>
+              {formError && (
+                <div className={styles.batchActionText}>
+                  <span>{formError}</span>
+                </div>
+              )}
+
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>Nome da Coleção</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  placeholder="Ex: Halo Infinite Collection"
+                  className={styles.fieldInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>Slug (URL amigável)</label>
+                <input
+                  type="text"
+                  value={formData.slug}
+                  onChange={(e) =>
+                    setFormData({ ...formData, slug: generateSlug(e.target.value) })
+                  }
+                  placeholder="Ex: halo-infinite"
+                  className={styles.fieldInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>Código de Busca Rápida (opcional)</label>
+                <input
+                  type="text"
+                  value={formData.code}
+                  onChange={(e) =>
+                    setFormData({ ...formData, code: e.target.value.toUpperCase() })
+                  }
+                  placeholder="Ex: XB-HALO (gerado automaticamente do slug se vazio)"
+                  className={styles.fieldInput}
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>Descrição</label>
+                <input
+                  type="text"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                  placeholder="Descrição para a comunidade..."
+                  className={styles.fieldInput}
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>URL do Banner (16:9)</label>
+                <input
+                  type="url"
+                  value={formData.bannerUrl}
+                  onChange={(e) =>
+                    setFormData({ ...formData, bannerUrl: e.target.value })
+                  }
+                  placeholder="https://..."
+                  className={styles.fieldInput}
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>Creator UID (opcional)</label>
+                <input
+                  type="text"
+                  value={formData.creatorUid}
+                  onChange={(e) =>
+                    setFormData({ ...formData, creatorUid: e.target.value })
+                  }
+                  placeholder="UID do usuário criador da coleção..."
+                  className={styles.fieldInput}
+                />
+              </div>
             </div>
 
             <div className={styles.modalFooter}>
               <button
                 type="button"
                 className={styles.btnSecondary}
-                onClick={() => setDeleteConfirmOpen(false)}
+                onClick={() => setModalOpen(false)}
               >
                 Cancelar
               </button>
               <button
-                type="button"
-                className={styles.btnDanger}
-                onClick={handleDelete}
-                disabled={deleting}
+                type="submit"
+                className={styles.btnPrimary}
+                disabled={saving}
               >
-                {deleting ? 'Excluindo...' : 'Excluir Coleção'}
+                {saving ? 'Salvando...' : editingId ? 'Salvar Alterações' : 'Criar Coleção'}
               </button>
             </div>
+          </form>
+        </AdminModal>
+      )}
+
+      {deleteConfirmOpen && (
+        <AdminModal
+          isOpen={deleteConfirmOpen}
+          onClose={() => setDeleteConfirmOpen(false)}
+          title="Excluir Coleção"
+        >
+          <div className={styles.modalBody}>
+            <p className={styles.emptyText}>
+              Tem certeza que deseja excluir a coleção &quot;{collectionToDelete?.name}&quot;? Todos os wallpapers associados a ela também serão excluídos definitivamente do acervo e do armazenamento.
+            </p>
           </div>
-        </div>
+
+          <div className={styles.modalFooter}>
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={() => setDeleteConfirmOpen(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className={styles.btnDanger}
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? 'Excluindo...' : 'Excluir Coleção'}
+            </button>
+          </div>
+        </AdminModal>
       )}
     </div>
   );

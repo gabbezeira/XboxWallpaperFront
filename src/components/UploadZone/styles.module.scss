@@ -4,7 +4,7 @@
 .zone {
   border: 2px dashed rgba(255, 255, 255, 0.12);
   border-radius: $radius-xl;
-  padding: $spacing-2xl $spacing-xl;
+  padding: $spacing-3xl $spacing-xl;
   @include flex-center;
   flex-direction: column;
   gap: $spacing-md;
@@ -13,23 +13,23 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  background: #090909;
+  background-color: #070707;
   outline: none;
 
   &:hover {
-    border-color: rgba(16, 124, 16, 0.6);
-    background-color: #0c0c0c;
+    border-color: #107c10;
+    background-color: #0b0b0b;
   }
 
   &:focus-visible {
     outline: none;
-    border-color: $color-primary;
+    border-color: #107c10;
   }
 }
 
 .zoneDragging {
-  border-color: $color-primary;
-  background-color: #0f0f0f;
+  border-color: #107c10;
+  background-color: #0f140f;
 }
 
 .zoneDisabled {
@@ -39,94 +39,100 @@
 }
 
 .icon {
-  width: 76px;
-  height: 76px;
+  width: 68px;
+  height: 68px;
   border-radius: $radius-full;
-  background: rgba(16, 124, 16, 0.12);
+  background-color: rgba(16, 124, 16, 0.12);
   border: 1px solid rgba(16, 124, 16, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $color-primary;
+  color: #55d688;
   transition: all $transition-base;
 
   .zone:hover &,
   .zone:focus-visible & {
-    transform: scale(1.06);
-    background: rgba(16, 124, 16, 0.2);
+    transform: scale(1.05);
+    background-color: rgba(16, 124, 16, 0.2);
     border-color: rgba(16, 124, 16, 0.5);
   }
 }
 
 .title {
-  font-size: $fs-subtitle;
+  font-size: 1.15rem;
   font-weight: $fw-semibold;
   color: $color-text-primary;
   letter-spacing: -0.01em;
 }
 
 .subtitle {
-  font-size: $fs-body;
+  font-size: 0.88rem;
   color: $color-text-muted;
   max-width: 480px;
+  line-height: 1.5;
 }
 
 .formats {
   display: flex;
-  gap: $spacing-sm;
+  gap: $spacing-xs;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: $spacing-xs;
 }
 
 .badge {
-  padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 4px 10px;
+  background-color: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-full;
-  font-size: $fs-small;
+  font-size: 0.72rem;
   font-weight: $fw-semibold;
   color: $color-text-secondary;
   letter-spacing: 0.02em;
 }
 
-.input {
+.hiddenInput {
   position: absolute;
   inset: 0;
   opacity: 0;
   cursor: pointer;
+  width: 0;
+  height: 0;
 }
 
 .uploading {
   @include flex-center;
   flex-direction: column;
   gap: $spacing-md;
-  padding: $spacing-2xl;
+  padding: $spacing-3xl;
 }
 
 .spinner {
-  width: 48px;
-  height: 48px;
-  border: 3px solid rgba($color-text-primary, 0.1);
-  border-top-color: $color-primary;
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-top-color: #107c10;
   border-radius: $radius-full;
   animation: spin 0.8s linear infinite;
 }
 
 .progressText {
-  font-size: $fs-body;
-  color: $color-primary;
+  font-size: 1rem;
+  color: #ffffff;
   font-weight: $fw-semibold;
 }
 
-.error {
-  margin-top: $spacing-sm;
-  padding: $spacing-sm $spacing-md;
-  background: rgba($color-danger, 0.1);
-  border: 1px solid rgba($color-danger, 0.2);
+.errorAlert {
+  margin-top: $spacing-md;
+  padding: 10px 14px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   border-radius: $radius-md;
-  color: $color-danger;
-  font-size: $fs-body;
+  color: #f87171;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 @keyframes spin {
@@ -138,15 +144,59 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xl;
-  background: #090909;
+  background-color: #070707;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-xl;
-  padding: $spacing-xl $spacing-xl $spacing-2xl;
+  padding: $spacing-lg;
   outline: none;
 
   @include respond-to(md) {
-    padding: $spacing-2xl $spacing-2xl $spacing-3xl;
+    padding: $spacing-2xl;
   }
+}
+
+.formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.formHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.formHeaderIcon {
+  color: #55d688;
+  width: 20px;
+  height: 20px;
+}
+
+.formTitle {
+  font-size: 1.05rem;
+  font-weight: $fw-semibold;
+  color: #ffffff;
+  margin: 0;
+}
+
+.formSubtitle {
+  font-size: 0.8rem;
+  color: $color-text-muted;
+  margin: 2px 0 0 0;
+}
+
+.btnSecondarySmall {
+  @include btn-secondary;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  border-radius: $radius-md;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .previewRow {
@@ -154,31 +204,143 @@
   flex-direction: column;
   gap: $spacing-xl;
 
-  @include respond-to(md) {
+  @include respond-to(lg) {
     flex-direction: row;
     align-items: flex-start;
   }
 }
 
-.preview {
+.previewCol {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: $radius-lg;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 
-  @include respond-to(md) {
+  @include respond-to(lg) {
     width: 320px;
-    aspect-ratio: 16 / 9;
     flex-shrink: 0;
   }
+}
+
+.previewWrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background-color: #030303;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.previewSpecs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #0c0c0c;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: $radius-md;
+  padding: 12px;
+}
+
+.specRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.specLabel {
+  color: $color-text-muted;
+}
+
+.specValue {
+  color: #ffffff;
+  font-weight: $fw-semibold;
+  font-family: monospace;
+}
+
+.specBadgesRow {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.specBadgeHighlight {
+  padding: 2px 8px;
+  border-radius: $radius-xs;
+  background-color: rgba(16, 124, 16, 0.2);
+  color: #55d688;
+  border: 1px solid rgba(16, 124, 16, 0.4);
+  font-size: 0.7rem;
+  font-weight: $fw-bold;
+}
+
+.specBadgeNeutral {
+  padding: 2px 8px;
+  border-radius: $radius-xs;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: $color-text-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+  font-weight: $fw-semibold;
+}
+
+.specBadgeWarning {
+  padding: 2px 8px;
+  border-radius: $radius-xs;
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  font-size: 0.7rem;
+  font-weight: $fw-semibold;
 }
 
 .formFields {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: $spacing-lg;
   flex: 1;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 0.84rem;
+  font-weight: $fw-semibold;
+  color: #ffffff;
+}
+
+.fieldLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fieldCounter {
+  font-size: 0.75rem;
+  color: $color-text-muted;
+}
+
+.requiredMark {
+  color: #55d688;
+}
+
+.fieldHint {
+  font-size: 0.75rem;
+  color: $color-text-muted;
 }
 
 .inputWrapper {
@@ -188,12 +350,12 @@
 
 .fieldInput {
   width: 100%;
-  padding: 12px $spacing-md;
+  padding: 10px 14px;
   background-color: #030303;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: $radius-lg;
+  border-radius: $radius-md;
   color: $color-text-primary;
-  font-size: $fs-body;
+  font-size: 0.88rem;
   font-family: $font-primary;
   transition: all $transition-fast;
 
@@ -203,8 +365,13 @@
 
   &:focus {
     outline: none;
-    border-color: $color-primary;
+    border-color: #107c10;
     background-color: #000000;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
@@ -213,11 +380,11 @@
   top: 100%;
   left: 0;
   right: 0;
-  margin-top: 6px;
+  margin-top: 4px;
   background-color: #0e0e0e;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: $radius-lg;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9);
+  border-radius: $radius-md;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
   z-index: 50;
   overflow: hidden;
   display: flex;
@@ -225,95 +392,89 @@
 }
 
 .dropdownItem {
-  padding: $spacing-sm $spacing-md;
+  padding: 8px 12px;
   color: $color-text-primary;
-  font-size: $fs-body;
+  font-size: 0.82rem;
   cursor: pointer;
   text-align: left;
   background: transparent;
   border: none;
   width: 100%;
-  transition: background $transition-fast, color $transition-fast;
-
-  &:hover,
-  &:focus-visible {
-    background-color: rgba($color-primary, 0.15);
-    color: $color-primary;
-    outline: none;
-  }
+  transition: background $transition-fast;
 }
 
 .dropdownCreateItem {
-  color: $color-primary;
+  color: #55d688;
   font-weight: $fw-semibold;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 8px;
 
-  &:hover,
-  &:focus-visible {
-    background-color: rgba($color-primary, 0.2);
-    color: #ffffff;
+  &:hover {
+    background-color: rgba(16, 124, 16, 0.15);
   }
 }
 
-.tagSection {
+.quickTagsContainer {
   display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-}
-
-.tagInputRow {
-  display: flex;
-  gap: $spacing-sm;
-}
-
-.suggestedTags {
-  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
-  gap: $spacing-xs;
+  margin-top: 4px;
 }
 
-.suggestedTag {
-  padding: 6px $spacing-md;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid $color-border;
+.quickTagsPrompt {
+  font-size: 0.72rem;
+  color: $color-text-muted;
+}
+
+.quickTagsList {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quickTagBtn {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-full;
+  padding: 2px 8px;
+  font-size: 0.72rem;
   color: $color-text-secondary;
-  font-size: $fs-small;
   cursor: pointer;
   transition: all $transition-fast;
 
   &:hover {
-    background: rgba($color-primary, 0.15);
-    border-color: $color-primary;
-    color: $color-primary;
+    background-color: rgba(16, 124, 16, 0.15);
+    border-color: rgba(16, 124, 16, 0.4);
+    color: #ffffff;
   }
 }
 
 .selectedTags {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-xs;
+  gap: 6px;
+  margin-top: 4px;
 }
 
 .tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  background: rgba(16, 124, 16, 0.16);
+  padding: 4px 10px;
+  background-color: rgba(16, 124, 16, 0.12);
   border: 1px solid rgba(16, 124, 16, 0.35);
   border-radius: $radius-full;
-  color: #ffffff;
-  font-size: $fs-small;
+  color: #55d688;
+  font-size: 0.76rem;
   font-weight: $fw-semibold;
 }
 
 .tagRemove {
   @include flex-center;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: $radius-full;
   background: transparent;
   border: none;
@@ -322,29 +483,27 @@
   transition: background $transition-fast;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
   }
-}
-
-.visibilitySection {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-  margin-top: $spacing-xs;
 }
 
 .visibilityOptions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: $spacing-sm;
+
+  @include respond-to(sm) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .visibilityOption {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: $spacing-md;
-  padding: 14px $spacing-md;
-  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 14px;
+  background-color: #030303;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-lg;
   color: $color-text-secondary;
@@ -353,22 +512,38 @@
   transition: all $transition-fast;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background-color: #0a0a0a;
     border-color: rgba(255, 255, 255, 0.15);
   }
-
-  @include gamepad-focus;
 }
 
 .visibilityActive {
-  background: rgba(16, 124, 16, 0.14);
-  border-color: $color-primary;
+  background-color: rgba(16, 124, 16, 0.08);
+  border-color: #107c10;
   color: #ffffff;
 
   &:hover {
-    background: rgba(16, 124, 16, 0.2);
-    border-color: $color-primary;
+    background-color: rgba(16, 124, 16, 0.12);
+    border-color: #107c10;
   }
+
+  .visibilityIconBox {
+    background-color: #107c10;
+    color: #ffffff;
+  }
+}
+
+.visibilityIconBox {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: $color-text-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all $transition-fast;
 }
 
 .visibilityText {
@@ -378,22 +553,22 @@
 }
 
 .visibilityTitle {
-  font-size: $fs-body;
+  font-size: 0.88rem;
   font-weight: $fw-semibold;
-  color: $color-text-primary;
+  color: #ffffff;
 }
 
 .visibilityDesc {
-  font-size: $fs-small;
+  font-size: 0.74rem;
   color: $color-text-muted;
+  line-height: 1.35;
 }
 
 .creatorCollectionSection {
-  margin-top: $spacing-xs;
-  padding: 14px $spacing-md;
-  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 14px;
+  background-color: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: $radius-lg;
+  border-radius: $radius-md;
 }
 
 .checkboxLabel {
@@ -401,57 +576,43 @@
   align-items: center;
   gap: $spacing-sm;
   cursor: pointer;
-  font-size: $fs-body;
+  font-size: 0.84rem;
   color: $color-text-primary;
 }
 
 .checkboxInput {
   width: 16px;
   height: 16px;
-  accent-color: $color-primary;
+  accent-color: #107c10;
   cursor: pointer;
 }
 
 .formActions {
   display: flex;
-  flex-direction: column;
   gap: $spacing-md;
   justify-content: flex-end;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: $spacing-xl;
-  padding-bottom: $spacing-xs;
-  margin-top: $spacing-xs;
-
-  @include respond-to(md) {
-    flex-direction: row;
-  }
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: $spacing-lg;
 }
 
 .btnCancel {
   @include btn-ghost;
-  flex: 1;
+  padding: 10px 20px;
+  font-size: 0.86rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: $radius-lg;
-  padding: 12px $spacing-xl;
-
-  @include respond-to(md) {
-    flex: none;
-  }
+  border-radius: $radius-md;
 }
 
 .btnSubmit {
   @include btn-primary;
-  flex: 1;
-  background: $color-primary;
-  border-radius: $radius-lg;
-  padding: 12px $spacing-xl;
+  padding: 10px 24px;
+  font-size: 0.86rem;
   font-weight: $fw-bold;
+  border-radius: $radius-md;
+  gap: 8px;
 
-  &:hover:not(:disabled) {
-    background-color: $color-primary-hover;
-  }
-
-  @include respond-to(md) {
-    flex: none;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }

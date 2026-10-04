@@ -11,6 +11,8 @@ import VerifiedBadge from '../../components/VerifiedBadge';
 import { formatFileSize } from '../../utils/format.js';
 import { auth } from '../../services/firebase';
 import Pagination from '../../components/Pagination';
+import AdminHeader from './components/AdminHeader';
+import AdminModal from './components/AdminModal';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -204,20 +206,16 @@ export default function ModerationQueue({ onApprovedCountChange }) {
 
   return (
     <div className={styles.viewContainer}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitleArea}>
-          <h2 className={styles.sectionTitle}>Fila de Moderação</h2>
-          <p className={styles.sectionSubtitle}>
-            {wallpapers.length} {wallpapers.length === 1 ? 'wallpaper pendente' : 'wallpapers pendentes'} para avaliação da comunidade.
-          </p>
-        </div>
-        <div className={styles.toolbarActions}>
-          <button type="button" className={styles.btnSecondary} onClick={fetchQueue}>
-            <RefreshCw size={14} />
-            <span>Atualizar</span>
-          </button>
-        </div>
-      </div>
+      <AdminHeader
+        title="Fila de Moderação"
+        subtitle={`${wallpapers.length} ${wallpapers.length === 1 ? 'wallpaper pendente' : 'wallpapers pendentes'} para avaliação da comunidade.`}
+        badge={wallpapers.length > 0 ? `${wallpapers.length} pendentes` : null}
+      >
+        <button type="button" className={styles.btnSecondary} onClick={fetchQueue}>
+          <RefreshCw size={14} />
+          <span>Atualizar</span>
+        </button>
+      </AdminHeader>
 
       <div className={styles.moderationGrid}>
         {paginatedWallpapers.map((w) => {
@@ -339,75 +337,60 @@ export default function ModerationQueue({ onApprovedCountChange }) {
       )}
 
       {rejectModalOpen && (
-        <div
-          className={styles.modalOverlay}
-          onClick={() => setRejectModalOpen(false)}
+        <AdminModal
+          isOpen={rejectModalOpen}
+          onClose={() => setRejectModalOpen(false)}
+          title="Recusar Wallpaper"
         >
-          <div
-            className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Recusar Wallpaper</h3>
-              <button
-                type="button"
-                className={styles.btnIconSmall}
-                onClick={() => setRejectModalOpen(false)}
+          <div className={styles.modalBody}>
+            <div className={styles.formField}>
+              <label className={styles.fieldLabel}>Motivo da recusa</label>
+              <select
+                value={selectedReason}
+                onChange={(e) => setSelectedReason(e.target.value)}
+                className={styles.fieldSelect}
               >
-                <X size={16} />
-              </button>
+                {REJECTION_REASONS.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div className={styles.modalBody}>
+            {selectedReason === 'Outro' && (
               <div className={styles.formField}>
-                <label className={styles.fieldLabel}>Motivo da recusa</label>
-                <select
-                  value={selectedReason}
-                  onChange={(e) => setSelectedReason(e.target.value)}
-                  className={styles.fieldSelect}
-                >
-                  {REJECTION_REASONS.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
-                  ))}
-                </select>
+                <label className={styles.fieldLabel}>Descreva o motivo</label>
+                <input
+                  type="text"
+                  placeholder="Explique o motivo para o criador..."
+                  value={customReason}
+                  onChange={(e) => setCustomReason(e.target.value)}
+                  className={styles.fieldInput}
+                  autoFocus
+                />
               </div>
-
-              {selectedReason === 'Outro' && (
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>Descreva o motivo</label>
-                  <input
-                    type="text"
-                    placeholder="Explique o motivo para o criador..."
-                    value={customReason}
-                    onChange={(e) => setCustomReason(e.target.value)}
-                    className={styles.fieldInput}
-                    autoFocus
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button
-                type="button"
-                className={styles.btnSecondary}
-                onClick={() => setRejectModalOpen(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className={styles.btnDanger}
-                onClick={confirmReject}
-                disabled={actionLoading}
-              >
-                Confirmar Recusa
-              </button>
-            </div>
+            )}
           </div>
-        </div>
+
+          <div className={styles.modalFooter}>
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={() => setRejectModalOpen(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className={styles.btnDanger}
+              onClick={confirmReject}
+              disabled={actionLoading}
+            >
+              Confirmar Recusa
+            </button>
+          </div>
+        </AdminModal>
       )}
     </div>
   );

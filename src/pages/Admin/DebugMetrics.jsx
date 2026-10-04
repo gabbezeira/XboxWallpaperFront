@@ -20,6 +20,7 @@ import {
   Users,
   Sparkles,
 } from 'lucide-react';
+import AdminHeader from './components/AdminHeader';
 import styles from './styles.module.scss';
 
 const DAILY_FREE_READS_LIMIT = 50000;
@@ -157,66 +158,60 @@ export default function DebugMetrics() {
 
   return (
     <div className={styles.viewContainer}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitleArea}>
-          <div className={styles.sectionTitleRow}>
-            <h2 className={styles.sectionTitle}>Observabilidade & Métricas do Sistema</h2>
-            <span className={styles.liveIndicator}>
-              <span className={styles.liveDot} />
-              <span>Tempo Real</span>
-            </span>
-          </div>
-          <p className={styles.sectionSubtitle}>
-            Uso real do Firebase Storage, contagem do Firestore, consumo de leituras e estado dos caches em memória.
-          </p>
-        </div>
+      <AdminHeader
+        title="Métricas do Sistema"
+        subtitle="Uso real do Firebase Storage, contagem do Firestore, consumo de leituras e estado dos caches em memória."
+        badge={
+          <span className={styles.liveIndicator}>
+            <span className={styles.liveDot} />
+            <span>Tempo Real</span>
+          </span>
+        }
+      >
+        <button
+          type="button"
+          className={styles.btnSecondary}
+          onClick={() => fetchMetrics(false, false, true)}
+          disabled={refreshing}
+          title="Atualizar dados do painel"
+        >
+          <RefreshCw size={14} className={refreshing ? styles.spinIcon : ''} />
+          <span>{refreshing ? 'Atualizando...' : 'Atualizar'}</span>
+        </button>
 
-        <div className={styles.toolbarActions}>
-          <button
-            type="button"
-            className={styles.btnSecondary}
-            onClick={() => fetchMetrics(false, false, true)}
-            disabled={refreshing}
-            title="Atualizar dados do painel"
-          >
-            <RefreshCw size={14} className={refreshing ? styles.spinIcon : ''} />
-            <span>{refreshing ? 'Atualizando...' : 'Atualizar'}</span>
-          </button>
+        <button
+          type="button"
+          className={styles.btnSecondary}
+          onClick={handleRefreshStorage}
+          disabled={recalculatingStorage}
+          title="Escanear e recalcular espaço do bucket do Firebase Storage"
+        >
+          <Cloud size={14} className={recalculatingStorage ? styles.spinIcon : ''} />
+          <span>{recalculatingStorage ? 'Escaneando...' : 'Recalcular Storage'}</span>
+        </button>
 
-          <button
-            type="button"
-            className={styles.btnSecondary}
-            onClick={handleRefreshStorage}
-            disabled={recalculatingStorage}
-            title="Escanear e recalcular espaço do bucket do Firebase Storage"
-          >
-            <Cloud size={14} className={recalculatingStorage ? styles.spinIcon : ''} />
-            <span>{recalculatingStorage ? 'Escaneando...' : 'Recalcular Storage'}</span>
-          </button>
+        <button
+          type="button"
+          className={styles.btnSecondary}
+          onClick={handleRebuildTags}
+          disabled={rebuilding}
+          title="Forçar agregação de tags no Firestore"
+        >
+          <Database size={14} />
+          <span>{rebuilding ? 'Reconstruindo...' : 'Reconstruir Tags'}</span>
+        </button>
 
-          <button
-            type="button"
-            className={styles.btnSecondary}
-            onClick={handleRebuildTags}
-            disabled={rebuilding}
-            title="Forçar agregação de tags no Firestore"
-          >
-            <Database size={14} />
-            <span>{rebuilding ? 'Reconstruindo...' : 'Reconstruir Tags'}</span>
-          </button>
-
-          <button
-            type="button"
-            className={styles.btnSecondary}
-            onClick={handleReset}
-            disabled={resetting}
-            title="Zerar contadores desta instância"
-          >
-            <RotateCcw size={14} />
-            <span>{resetting ? 'Zerando...' : 'Zerar Contadores'}</span>
-          </button>
-        </div>
-      </div>
+        <button
+          type="button"
+          className={styles.btnSecondary}
+          onClick={handleReset}
+          disabled={resetting}
+          title="Zerar contadores desta instância"
+        >
+          <RotateCcw size={14} />
+          <span>{resetting ? 'Zerando...' : 'Zerar Contadores'}</span>
+        </button>
+      </AdminHeader>
 
       {actionMessage && (
         <div className={styles.actionSuccessToast}>

@@ -132,7 +132,7 @@ export default function Guide() {
             <div className={styles.specCard}>
               <span className={styles.specLabel}>Formatos de Arquivo</span>
               <span className={styles.specHighlight}>WebP, JPG e PNG</span>
-              <span className={styles.specDetail}>Compressão otimizada sem artefatos visuais ou ruído térmico</span>
+              <span className={styles.specDetail}>Compressão de alta fidelidade sem artefatos visuais ou perda de resolução</span>
             </div>
 
             <div className={styles.specCard}>

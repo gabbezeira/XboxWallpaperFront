@@ -10,6 +10,8 @@ import {
   Search,
   Tag,
 } from 'lucide-react';
+import AdminHeader from './components/AdminHeader';
+import AdminModal from './components/AdminModal';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -132,36 +134,31 @@ export default function ManageWallpapers() {
 
   return (
     <div className={styles.viewContainer}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitleArea}>
-          <h2 className={styles.sectionTitle}>Acervo Público de Wallpapers</h2>
-          <p className={styles.sectionSubtitle}>
-            Navegue pelo catálogo público e realize exclusões individuais ou em lote.
-          </p>
-        </div>
-
-        <div className={styles.toolbarActions}>
-          {wallpapers.length > 0 && (
-            <button
-              type="button"
-              className={styles.btnSecondary}
-              onClick={toggleSelectAll}
-            >
-              {selectedIds.size === wallpapers.length ? (
-                <>
-                  <CheckSquare size={15} />
-                  <span>Desmarcar Todos ({wallpapers.length})</span>
-                </>
-              ) : (
-                <>
-                  <Square size={15} />
-                  <span>Selecionar Todos ({wallpapers.length})</span>
-                </>
-              )}
-            </button>
-          )}
-        </div>
-      </div>
+      <AdminHeader
+        title="Acervo Público de Wallpapers"
+        subtitle="Navegue pelo catálogo público e realize exclusões individuais ou em lote."
+        badge={wallpapers.length > 0 ? `${wallpapers.length} carregados` : null}
+      >
+        {wallpapers.length > 0 && (
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={toggleSelectAll}
+          >
+            {selectedIds.size === wallpapers.length ? (
+              <>
+                <CheckSquare size={15} />
+                <span>Desmarcar Todos ({wallpapers.length})</span>
+              </>
+            ) : (
+              <>
+                <Square size={15} />
+                <span>Selecionar Todos ({wallpapers.length})</span>
+              </>
+            )}
+          </button>
+        )}
+      </AdminHeader>
 
       <form onSubmit={handleSearch} className={styles.filterToolbar}>
         <div className={styles.searchBox}>
@@ -290,81 +287,65 @@ export default function ManageWallpapers() {
       )}
 
       {confirmModal.open && (
-        <div className={styles.modalOverlay} onClick={() => setConfirmModal({ open: false, id: null })}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Excluir Wallpaper</h3>
-              <button
-                type="button"
-                className={styles.btnIconSmall}
-                onClick={() => setConfirmModal({ open: false, id: null })}
-              >
-                <X size={16} />
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              <p className={styles.emptyText}>
-                Tem certeza que deseja excluir este wallpaper do acervo público? Esta ação não pode ser desfeita.
-              </p>
-            </div>
-            <div className={styles.modalFooter}>
-              <button
-                type="button"
-                className={styles.btnSecondary}
-                onClick={() => setConfirmModal({ open: false, id: null })}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className={styles.btnDanger}
-                onClick={confirmSingleDelete}
-                disabled={Boolean(deletingId)}
-              >
-                {deletingId ? 'Excluindo...' : 'Excluir'}
-              </button>
-            </div>
+        <AdminModal
+          isOpen={confirmModal.open}
+          onClose={() => setConfirmModal({ open: false, id: null })}
+          title="Excluir Wallpaper"
+        >
+          <div className={styles.modalBody}>
+            <p className={styles.emptyText}>
+              Tem certeza que deseja excluir este wallpaper do acervo público? Esta ação não pode ser desfeita.
+            </p>
           </div>
-        </div>
+          <div className={styles.modalFooter}>
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={() => setConfirmModal({ open: false, id: null })}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className={styles.btnDanger}
+              onClick={confirmSingleDelete}
+              disabled={Boolean(deletingId)}
+            >
+              {deletingId ? 'Excluindo...' : 'Excluir'}
+            </button>
+          </div>
+        </AdminModal>
       )}
 
       {batchModalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setBatchModalOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Excluir Wallpapers em Lote</h3>
-              <button
-                type="button"
-                className={styles.btnIconSmall}
-                onClick={() => setBatchModalOpen(false)}
-              >
-                <X size={16} />
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              <p className={styles.emptyText}>
-                Você selecionou <strong>{selectedIds.size} wallpapers</strong> para exclusão definitiva. Deseja prosseguir?
-              </p>
-            </div>
-            <div className={styles.modalFooter}>
-              <button
-                type="button"
-                className={styles.btnSecondary}
-                onClick={() => setBatchModalOpen(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className={styles.btnDanger}
-                onClick={confirmBatchDelete}
-                disabled={deletingBatch}
-              >
-                {deletingBatch ? 'Excluindo lote...' : `Confirmar Exclusão (${selectedIds.size})`}
-              </button>
-            </div>
+        <AdminModal
+          isOpen={batchModalOpen}
+          onClose={() => setBatchModalOpen(false)}
+          title="Excluir Wallpapers em Lote"
+        >
+          <div className={styles.modalBody}>
+            <p className={styles.emptyText}>
+              Você selecionou <strong>{selectedIds.size} wallpapers</strong> para exclusão definitiva. Deseja prosseguir?
+            </p>
           </div>
-        </div>
+          <div className={styles.modalFooter}>
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={() => setBatchModalOpen(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className={styles.btnDanger}
+              onClick={confirmBatchDelete}
+              disabled={deletingBatch}
+            >
+              {deletingBatch ? 'Excluindo lote...' : `Confirmar Exclusão (${selectedIds.size})`}
+            </button>
+          </div>
+        </AdminModal>
       )}
     </div>
   );

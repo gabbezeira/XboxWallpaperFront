@@ -15,6 +15,7 @@ import {
   RefreshCw,
   ExternalLink,
 } from 'lucide-react';
+import AdminHeader from './components/AdminHeader';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -242,38 +243,30 @@ export default function ManageHeroSlides() {
 
   return (
     <div className={styles.viewContainer}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitleArea}>
-          <div className={styles.sectionTitleRow}>
-            <h2 className={styles.sectionTitle}>Gestão Avançada de Hero Slides</h2>
-            <span className={styles.counterBadge}>{slides.length} slides ({activeCount} ativos)</span>
-          </div>
-          <p className={styles.sectionSubtitle}>
-            Configure os banners principais da Home, defina a ordem exata de transição, títulos, tags e botões de chamada.
-          </p>
-        </div>
+      <AdminHeader
+        title="Gestão de Hero Slides"
+        subtitle="Configure os banners principais da Home, defina a ordem exata de transição, títulos, tags e botões de chamada."
+        badge={`${slides.length} slides (${activeCount} ativos)`}
+      >
+        <button
+          type="button"
+          className={styles.btnSecondary}
+          onClick={fetchSlides}
+          title="Atualizar lista"
+        >
+          <RefreshCw size={14} />
+          <span>Atualizar</span>
+        </button>
 
-        <div className={styles.toolbarActions}>
-          <button
-            type="button"
-            className={styles.btnSecondary}
-            onClick={fetchSlides}
-            title="Atualizar lista"
-          >
-            <RefreshCw size={14} />
-            <span>Atualizar</span>
-          </button>
-
-          <button
-            type="button"
-            className={styles.btnPrimary}
-            onClick={openCreateModal}
-          >
-            <Plus size={16} />
-            <span>Novo Hero Slide</span>
-          </button>
-        </div>
-      </div>
+        <button
+          type="button"
+          className={styles.btnPrimary}
+          onClick={openCreateModal}
+        >
+          <Plus size={16} />
+          <span>Novo Hero Slide</span>
+        </button>
+      </AdminHeader>
 
       {actionSuccess && (
         <div className={styles.successBanner}>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   ShieldCheck,
   UploadCloud,
@@ -17,10 +17,11 @@ import {
   ExternalLink,
   Sparkles,
   RefreshCw,
-  SlidersHorizontal,
   Server,
   ArrowRight,
 } from 'lucide-react';
+import horizontalLogo from '../../assets/horizontal-logo.png';
+import PageHeader from '../../components/PageHeader';
 import { api } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
 import ModerationQueue from './ModerationQueue';
@@ -35,12 +36,12 @@ import styles from './styles.module.scss';
 const TAB_CONFIG = {
   overview: { label: 'Visão Geral', section: 'Painel', icon: LayoutDashboard },
   moderation: { label: 'Moderação', section: 'Operações', icon: ShieldCheck },
-  publish: { label: 'Upload & Lote', section: 'Operações', icon: UploadCloud },
+  publish: { label: 'Upload em Lote', section: 'Operações', icon: UploadCloud },
   wallpapers: { label: 'Wallpapers', section: 'Catálogo', icon: Images },
   hero: { label: 'Destaques Hero', section: 'Catálogo', icon: ImageIcon },
   collections: { label: 'Coleções', section: 'Catálogo', icon: Layers },
   users: { label: 'Usuários & Criadores', section: 'Comunidade', icon: Users },
-  debug: { label: 'Debug & Observabilidade', section: 'Sistema', icon: Activity },
+  debug: { label: 'Métricas do Sistema', section: 'Sistema', icon: Activity },
 };
 
 export default function Admin() {
@@ -127,14 +128,9 @@ export default function Admin() {
 
       <aside className={`${styles.sidebar} ${mobileMenuOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.sidebarHeader}>
-          <div className={styles.brandContainer}>
-            <div className={styles.brandIconWrapper}>
-              <SlidersHorizontal size={18} />
-            </div>
-            <div className={styles.brandInfo}>
-              <span className={styles.brandMainTitle}>Xbox Admin</span>
-            </div>
-          </div>
+          <Link to="/" className={styles.brandLink}>
+            <img src={horizontalLogo} alt="Spartan Wallpapers" className={styles.brandLogo} />
+          </Link>
           <button
             type="button"
             className={styles.mobileCloseBtn}
@@ -167,10 +163,8 @@ export default function Admin() {
             >
               <ShieldCheck size={18} />
               <span>Moderação</span>
-              {stats.pending > 0 ? (
-                <span className={styles.pendingBadge}>{stats.pending}</span>
-              ) : (
-                <span className={styles.cleanBadge}>0</span>
+              {stats.pending > 0 && (
+                <span className={styles.navBadgeAlert}>{stats.pending}</span>
               )}
             </button>
 
@@ -193,7 +187,9 @@ export default function Admin() {
             >
               <Images size={18} />
               <span>Wallpapers</span>
-              <span className={styles.countBadge}>{stats.totalWallpapers}</span>
+              {stats.totalWallpapers > 0 && (
+                <span className={styles.navBadgeCount}>{stats.totalWallpapers}</span>
+              )}
             </button>
 
             <button
@@ -212,7 +208,9 @@ export default function Admin() {
             >
               <Layers size={18} />
               <span>Coleções</span>
-              <span className={styles.countBadge}>{stats.collectionsCount}</span>
+              {stats.collectionsCount > 0 && (
+                <span className={styles.navBadgeCount}>{stats.collectionsCount}</span>
+              )}
             </button>
           </div>
 
@@ -287,13 +285,11 @@ export default function Admin() {
               <Menu size={20} />
             </button>
 
-            <nav className={styles.breadcrumbNav} aria-label="Navegação em trilha">
-              <span className={styles.breadcrumbRoot}>Admin</span>
-              <ChevronRight size={14} className={styles.breadcrumbSeparator} />
-              <span className={styles.breadcrumbSection}>{currentTabMeta.section}</span>
-              <ChevronRight size={14} className={styles.breadcrumbSeparator} />
-              <span className={styles.breadcrumbCurrent}>{currentTabMeta.label}</span>
-            </nav>
+            <div className={styles.topHeaderTitleArea}>
+              <span className={styles.topHeaderSection}>{currentTabMeta.section}</span>
+              <span className={styles.topHeaderDivider}>/</span>
+              <span className={styles.topHeaderCurrent}>{currentTabMeta.label}</span>
+            </div>
           </div>
 
           <div className={styles.topHeaderActions}>
@@ -301,7 +297,7 @@ export default function Admin() {
               <button
                 type="button"
                 onClick={() => fetchOverallStats(true)}
-                className={styles.headerExitBtn}
+                className={styles.headerActionBtn}
                 title="Atualizar métricas da visão geral"
                 disabled={refreshing}
               >
@@ -319,7 +315,7 @@ export default function Admin() {
               title="Ver plataforma pública"
             >
               <ExternalLink size={15} />
-              <span className={styles.headerActionLabel}>Ver App</span>
+              <span className={styles.headerActionLabel}>Ver Galeria</span>
             </button>
           </div>
         </header>
@@ -327,107 +323,108 @@ export default function Admin() {
         <main className={styles.mainViewport}>
           {activeTab === 'overview' && (
             <div className={styles.overviewContainer}>
-              <div className={styles.overviewHero}>
-                <div className={styles.overviewHeroText}>
-                  <h1 className={styles.overviewTitle}>Painel de Controle</h1>
-                  <p className={styles.overviewSubtitle}>
-                    Gerencie a curadoria de wallpapers, acompanhe o tráfego e configure a experiência da comunidade.
-                  </p>
-                </div>
-                <div className={styles.overviewHeroActions}>
-                  <button
-                    type="button"
-                    className={styles.btnPrimary}
-                    onClick={() => handleSelectTab('publish')}
-                  >
-                    <UploadCloud size={16} />
-                    <span>Upload em Lote</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.btnSecondary}
-                    onClick={() => handleSelectTab('moderation')}
-                  >
-                    <ShieldCheck size={16} />
-                    <span>Revisar Fila ({stats.pending})</span>
-                  </button>
-                </div>
-              </div>
+              <PageHeader
+                kicker="PAINEL ADMINISTRATIVO"
+                title="Visão Geral"
+                subtitle="Gerencie a curadoria de wallpapers, acompanhe o tráfego e configure a experiência da comunidade."
+                action={
+                  <div className={styles.overviewHeaderActions}>
+                    <button
+                      type="button"
+                      className={styles.btnPrimary}
+                      onClick={() => handleSelectTab('publish')}
+                    >
+                      <UploadCloud size={16} />
+                      <span>Upload em Lote</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.btnSecondary}
+                      onClick={() => handleSelectTab('moderation')}
+                    >
+                      <ShieldCheck size={16} />
+                      <span>Fila de Moderação {stats.pending > 0 ? `(${stats.pending})` : ''}</span>
+                    </button>
+                  </div>
+                }
+              />
 
               <section className={styles.kpiGrid}>
                 <div
-                  className={`${styles.kpiCard} ${styles.kpiInteractive}`}
+                  className={styles.kpiCard}
                   onClick={() => handleSelectTab('moderation')}
+                  role="button"
+                  tabIndex={0}
                 >
                   <div className={styles.kpiHeader}>
                     <span className={styles.kpiLabel}>Fila de Moderação</span>
-                    <div className={styles.kpiIconBox}>
-                      <ShieldCheck size={18} />
-                    </div>
+                    <ShieldCheck size={18} className={stats.pending > 0 ? styles.kpiIconAlert : styles.kpiIconSuccess} />
                   </div>
-                  <div className={`${styles.kpiValue} ${stats.pending > 0 ? styles.kpiHighlightDanger : styles.kpiHighlightSuccess}`}>
+                  <div className={styles.kpiValue}>
                     {stats.pending}
                   </div>
                   <div className={styles.kpiFooter}>
-                    <span>{stats.pending === 0 ? 'Fila 100% revisada' : 'Envios aguardando aprovação'}</span>
-                    <ArrowRight size={14} />
+                    <span className={stats.pending > 0 ? styles.kpiStatusAlert : styles.kpiStatusClean}>
+                      {stats.pending === 0 ? 'Fila zerada' : 'Aguardando aprovação'}
+                    </span>
+                    <ArrowRight size={14} className={styles.kpiArrow} />
                   </div>
                 </div>
 
                 <div
-                  className={`${styles.kpiCard} ${styles.kpiInteractive}`}
+                  className={styles.kpiCard}
                   onClick={() => handleSelectTab('wallpapers')}
+                  role="button"
+                  tabIndex={0}
                 >
                   <div className={styles.kpiHeader}>
                     <span className={styles.kpiLabel}>Acervo Público</span>
-                    <div className={styles.kpiIconBox}>
-                      <Images size={18} />
-                    </div>
+                    <Images size={18} className={styles.kpiIconNeutral} />
                   </div>
                   <div className={styles.kpiValue}>
                     {stats.totalWallpapers.toLocaleString('pt-BR')}
                   </div>
                   <div className={styles.kpiFooter}>
-                    <span>Disponíveis na galeria pública</span>
-                    <ArrowRight size={14} />
+                    <span>Wallpapers publicados</span>
+                    <ArrowRight size={14} className={styles.kpiArrow} />
                   </div>
                 </div>
 
                 <div
-                  className={`${styles.kpiCard} ${styles.kpiInteractive}`}
+                  className={styles.kpiCard}
                   onClick={() => handleSelectTab('collections')}
+                  role="button"
+                  tabIndex={0}
                 >
                   <div className={styles.kpiHeader}>
                     <span className={styles.kpiLabel}>Coleções Ativas</span>
-                    <div className={styles.kpiIconBox}>
-                      <Layers size={18} />
-                    </div>
+                    <Layers size={18} className={styles.kpiIconNeutral} />
                   </div>
                   <div className={styles.kpiValue}>
                     {stats.collectionsCount}
                   </div>
                   <div className={styles.kpiFooter}>
                     <span>Coleções temáticas e jogos</span>
-                    <ArrowRight size={14} />
+                    <ArrowRight size={14} className={styles.kpiArrow} />
                   </div>
                 </div>
 
                 <div
-                  className={`${styles.kpiCard} ${styles.kpiInteractive}`}
+                  className={styles.kpiCard}
                   onClick={() => handleSelectTab('users')}
+                  role="button"
+                  tabIndex={0}
                 >
                   <div className={styles.kpiHeader}>
                     <span className={styles.kpiLabel}>Criadores Verificados</span>
-                    <div className={styles.kpiIconBox}>
-                      <CheckCircle2 size={18} />
-                    </div>
+                    <CheckCircle2 size={18} className={styles.kpiIconSuccess} />
                   </div>
                   <div className={styles.kpiValue}>
                     {stats.creatorsCount}
                   </div>
                   <div className={styles.kpiFooter}>
                     <span>Comunidade com selo verificado</span>
-                    <ArrowRight size={14} />
+                    <ArrowRight size={14} className={styles.kpiArrow} />
                   </div>
                 </div>
               </section>
@@ -442,6 +439,8 @@ export default function Admin() {
                     <div
                       className={styles.moduleActionItem}
                       onClick={() => handleSelectTab('hero')}
+                      role="button"
+                      tabIndex={0}
                     >
                       <div className={styles.actionItemIcon}>
                         <ImageIcon size={16} />
@@ -456,12 +455,14 @@ export default function Admin() {
                     <div
                       className={styles.moduleActionItem}
                       onClick={() => handleSelectTab('publish')}
+                      role="button"
+                      tabIndex={0}
                     >
                       <div className={styles.actionItemIcon}>
                         <UploadCloud size={16} />
                       </div>
                       <div className={styles.actionItemText}>
-                        <span className={styles.actionItemTitle}>Ingestão em Lote</span>
+                        <span className={styles.actionItemTitle}>Upload em Lote</span>
                         <span className={styles.actionItemSub}>Carregar pacotes de imagens para uma coleção</span>
                       </div>
                       <ChevronRight size={16} />
@@ -470,6 +471,8 @@ export default function Admin() {
                     <div
                       className={styles.moduleActionItem}
                       onClick={() => handleSelectTab('collections')}
+                      role="button"
+                      tabIndex={0}
                     >
                       <div className={styles.actionItemIcon}>
                         <Layers size={16} />
@@ -498,8 +501,8 @@ export default function Admin() {
                       <span className={styles.badgeSuccess}>Ativos (5 camadas)</span>
                     </div>
                     <div className={styles.healthRow}>
-                      <span className={styles.healthLabel}>Otimizador de Leituras</span>
-                      <span className={styles.badgeXbox}>Fase 7 Ativa</span>
+                      <span className={styles.healthLabel}>Armazenamento Firebase Storage</span>
+                      <span className={styles.badgeSuccess}>Operacional</span>
                     </div>
                     <div className={styles.healthRow}>
                       <span className={styles.healthLabel}>Cota Diária Spark</span>
@@ -512,7 +515,7 @@ export default function Admin() {
                     onClick={() => handleSelectTab('debug')}
                   >
                     <Activity size={15} />
-                    <span>Abrir Painel de Observabilidade</span>
+                    <span>Ver Métricas do Sistema</span>
                   </button>
                 </div>
               </div>

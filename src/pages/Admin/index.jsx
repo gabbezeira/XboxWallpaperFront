@@ -67,22 +67,24 @@ export default function Admin() {
         api.admin.pendingWallpapers(),
         api.wallpapers.list({ limit: 1 }),
         api.collections.list(),
-        api.admin.listUsers({ limit: 100 }),
+        api.admin.listUsers({ page: 1, limit: 1 }),
       ]);
 
       const pendingList = pendingRes.status === 'fulfilled' ? pendingRes.value : [];
       const galleryData = galleryRes.status === 'fulfilled' ? galleryRes.value : {};
       const colsList = colsRes.status === 'fulfilled' ? colsRes.value : [];
-      const usersList = usersRes.status === 'fulfilled' ? usersRes.value : [];
+      const usersData = usersRes.status === 'fulfilled' ? usersRes.value : {};
 
-      const verifiedCount = Array.isArray(usersList)
-        ? usersList.filter((u) => u.isVerified || u.role === 'creator').length
-        : 0;
+      const verifiedCount = usersData?.verifiedCount ?? (
+        Array.isArray(usersData)
+          ? usersData.filter((u) => u.isVerified || u.role === 'creator').length
+          : (usersData?.users?.filter((u) => u.isVerified || u.role === 'creator').length || 0)
+      );
 
       setStats({
-        pending: pendingList?.length || 0,
+        pending: Array.isArray(pendingList) ? pendingList.length : 0,
         totalWallpapers: galleryData?.totalItems || 0,
-        collectionsCount: colsList?.length || 0,
+        collectionsCount: Array.isArray(colsList) ? colsList.length : 0,
         creatorsCount: verifiedCount,
       });
     } catch {

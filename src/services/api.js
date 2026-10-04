@@ -237,61 +237,138 @@ export const api = {
   },
 
   admin: {
-    pendingWallpapers: () => request('/api/admin/moderation/pending'),
-    approveWallpaper: (id, { collectionId } = {}) =>
-      request(`/api/admin/moderation/${id}/approve`, {
+    pendingWallpapers: async () => {
+      const cached = getCached('/api/admin/moderation/pending');
+      if (cached) return cached;
+      const data = await request('/api/admin/moderation/pending');
+      setCache('/api/admin/moderation/pending', null, data, 60 * 1000);
+      return data;
+    },
+    approveWallpaper: async (id, { collectionId } = {}) => {
+      const res = await request(`/api/admin/moderation/${id}/approve`, {
         method: 'PATCH',
         body: JSON.stringify({ collectionId }),
-      }),
-    rejectWallpaper: (id, { reason } = {}) =>
-      request(`/api/admin/moderation/${id}/reject`, {
+      });
+      invalidateCache('/api/admin/moderation');
+      invalidateCache('/api/wallpapers');
+      return res;
+    },
+    rejectWallpaper: async (id, { reason } = {}) => {
+      const res = await request(`/api/admin/moderation/${id}/reject`, {
         method: 'PATCH',
         body: JSON.stringify({ reason }),
-      }),
-    listUsers: ({ q = '', limit = 50 } = {}) =>
-      request(`/api/admin/users?q=${encodeURIComponent(q)}&limit=${limit}`),
-    updateRole: (id, role) =>
-      request(`/api/admin/users/${encodeURIComponent(id)}/role`, {
-        method: 'PATCH',
-        body: JSON.stringify({ role }),
-      }),
-    updateUserRole: (id, role) =>
-      request(`/api/admin/users/${encodeURIComponent(id)}/role`, {
-        method: 'PATCH',
-        body: JSON.stringify({ role }),
-      }),
-    updateVerification: (id, isVerified) =>
-      request(`/api/admin/users/${encodeURIComponent(id)}/verify`, {
-        method: 'PATCH',
-        body: JSON.stringify({ isVerified }),
-      }),
-    updateUserVerification: (id, isVerified) =>
-      request(`/api/admin/users/${encodeURIComponent(id)}/verify`, {
-        method: 'PATCH',
-        body: JSON.stringify({ isVerified }),
-      }),
-    assignCollection: (id, collectionId) =>
-      request(`/api/admin/users/${encodeURIComponent(id)}/collection`, {
-        method: 'PATCH',
-        body: JSON.stringify({ collectionId }),
-      }),
-    assignUserCollection: (id, collectionId) =>
-      request(`/api/admin/users/${encodeURIComponent(id)}/collection`, {
-        method: 'PATCH',
-        body: JSON.stringify({ collectionId }),
-      }),
-    deleteUser: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
-    deleteUserAccount: (id) => request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' }),
-    getFirestoreMetrics: (params = {}) => {
-      const q = new URLSearchParams();
-      if (params.forceStorage) q.set('forceStorage', 'true');
-      if (params.forceStats) q.set('forceStats', 'true');
-      const qs = q.toString() ? `?${q.toString()}` : '';
-      return request(`/api/admin/metrics/firestore${qs}`);
+      });
+      invalidateCache('/api/admin/moderation');
+      invalidateCache('/api/wallpapers');
+      return res;
     },
-    refreshStorageMetrics: () => request('/api/admin/metrics/storage/refresh', { method: 'POST' }),
-    resetFirestoreMetrics: () => request('/api/admin/metrics/firestore/reset', { method: 'POST' }),
-    rebuildTagsMetadata: () => request('/api/admin/metadata/rebuild-tags', { method: 'POST' }),
+    listUsers: async ({ q = '', page = 1, limit = 15 } = {}) => {
+      const params = { q: q ? q.trim() : '', page, limit };
+      const cached = getCached('/api/admin/users', params);
+      if (cached) return cached;
+      const qs = new URLSearchParams();
+      if (q && q.trim()) qs.set('q', q.trim());
+      qs.set('page', page);
+      qs.set('limit', limit);
+      const data = await request(`/api/admin/users?${qs.toString()}`);
+      setCache('/api/admin/users', params, data, 60 * 1000);
+      return data;
+    },
+    updateRole: async (id, role) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}/role`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role }),
+      });
+      invalidateCache('/api/admin/users');
+      return res;
+    },
+    updateUserRole: async (id, role) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}/role`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role }),
+      });
+      invalidateCache('/api/admin/users');
+      return res;
+    },
+    updateVerification: async (id, isVerified) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}/verify`, {
+        method: 'PATCH',
+        body: JSON.stringify({ isVerified }),
+      });
+      invalidateCache('/api/admin/users');
+      invalidateCache('/api/wallpapers');
+      return res;
+    },
+    updateUserVerification: async (id, isVerified) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}/verify`, {
+        method: 'PATCH',
+        body: JSON.stringify({ isVerified }),
+      });
+      invalidateCache('/api/admin/users');
+      invalidateCache('/api/wallpapers');
+      return res;
+    },
+    assignCollection: async (id, collectionId) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}/collection`, {
+        method: 'PATCH',
+        body: JSON.stringify({ collectionId }),
+      });
+      invalidateCache('/api/admin/users');
+      invalidateCache('/api/collections');
+      return res;
+    },
+    assignUserCollection: async (id, collectionId) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}/collection`, {
+        method: 'PATCH',
+        body: JSON.stringify({ collectionId }),
+      });
+      invalidateCache('/api/admin/users');
+      invalidateCache('/api/collections');
+      return res;
+    },
+    deleteUser: async (id) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      invalidateCache('/api/admin/users');
+      invalidateCache('/api/wallpapers');
+      return res;
+    },
+    deleteUserAccount: async (id) => {
+      const res = await request(`/api/admin/users/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      invalidateCache('/api/admin/users');
+      invalidateCache('/api/wallpapers');
+      return res;
+    },
+    getFirestoreMetrics: async (params = {}) => {
+      const qs = new URLSearchParams();
+      if (params.forceStorage) qs.set('forceStorage', 'true');
+      if (params.forceStats) qs.set('forceStats', 'true');
+      const queryString = qs.toString() ? `?${qs.toString()}` : '';
+      if (!params.forceStorage && !params.forceStats) {
+        const cached = getCached('/api/admin/metrics/firestore');
+        if (cached) return cached;
+        const data = await request(`/api/admin/metrics/firestore${queryString}`);
+        setCache('/api/admin/metrics/firestore', null, data, 30 * 1000);
+        return data;
+      }
+      const data = await request(`/api/admin/metrics/firestore${queryString}`);
+      setCache('/api/admin/metrics/firestore', null, data, 30 * 1000);
+      return data;
+    },
+    refreshStorageMetrics: async () => {
+      const res = await request('/api/admin/metrics/storage/refresh', { method: 'POST' });
+      invalidateCache('/api/admin/metrics');
+      return res;
+    },
+    resetFirestoreMetrics: async () => {
+      const res = await request('/api/admin/metrics/firestore/reset', { method: 'POST' });
+      invalidateCache('/api/admin/metrics');
+      return res;
+    },
+    rebuildTagsMetadata: async () => {
+      const res = await request('/api/admin/metadata/rebuild-tags', { method: 'POST' });
+      invalidateCache('/api/wallpapers');
+      return res;
+    },
     verifyAuth: async () => {
       if (auth.currentUser) {
         await auth.currentUser.getIdToken(true).catch(() => {});

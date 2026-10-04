@@ -1,0 +1,44 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: 0 $spacing-md;
+  height: 38px;
+  width: 100%;
+  max-width: 320px;
+  transition: border-color $transition-fast;
+
+  &:focus-within {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+}
+
+.icon {
+  color: $color-text-muted;
+  flex-shrink: 0;
+}
+
+.input {
+  background: transparent;
+  border: none;
+  color: $color-text-primary;
+  font-family: $font-primary;
+  font-size: 0.85rem;
+  width: 100%;
+  outline: none;
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

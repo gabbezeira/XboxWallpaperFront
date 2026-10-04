@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, Check, AlertCircle } from 'lucide-react';
+import { Mail, Check, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { resendVerificationEmail } from '../../services/auth';
 import styles from './styles.module.scss';
@@ -42,13 +42,19 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
     setFeedback(null);
     try {
       await resendVerificationEmail();
-      setFeedback('Link enviado!');
+      setFeedback({
+        type: 'success',
+        text: 'Link de confirmação enviado para o seu e-mail.',
+      });
       setCooldown(60);
-      setTimeout(() => setFeedback(null), 4000);
+      setTimeout(() => setFeedback(null), 6000);
     } catch {
-      setFeedback('Aguarde antes de reenviar');
+      setFeedback({
+        type: 'warning',
+        text: 'Aguarde antes de solicitar outro envio.',
+      });
       setCooldown(30);
-      setTimeout(() => setFeedback(null), 4000);
+      setTimeout(() => setFeedback(null), 5000);
     } finally {
       setLoading(false);
     }
@@ -64,49 +70,106 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
       if (user.emailVerified) {
         await user.getIdToken(true);
         await refreshProfile();
+        setFeedback({
+          type: 'success',
+          text: 'E-mail confirmado com sucesso!',
+        });
       } else {
-        setFeedback('Ainda não confirmado');
-        setTimeout(() => setFeedback(null), 3000);
+        setFeedback({
+          type: 'warning',
+          text: 'Ainda não confirmado. Acesse sua caixa de entrada e clique no link de confirmação.',
+        });
+        setTimeout(() => setFeedback(null), 5000);
       }
     } catch {
-      setFeedback('Erro ao checar');
-      setTimeout(() => setFeedback(null), 3000);
+      setFeedback({
+        type: 'error',
+        text: 'Erro ao verificar status. Tente novamente em instantes.',
+      });
+      setTimeout(() => setFeedback(null), 4000);
     } finally {
       setChecking(false);
     }
   };
 
+  const renderFeedback = () => {
+    if (!feedback) return null;
+    const isSuccess = feedback.type === 'success';
+    const isError = feedback.type === 'error';
+    const Icon = isSuccess ? CheckCircle2 : AlertCircle;
+    const alertClass = isSuccess
+      ? styles.feedbackSuccess
+      : isError
+      ? styles.feedbackError
+      : styles.feedbackWarning;
+
+    return (
+      <div className={`${styles.feedbackBox} ${alertClass}`} role="status">
+        <Icon size={14} className={styles.feedbackIcon} />
+        <span className={styles.feedbackText}>{feedback.text}</span>
+      </div>
+    );
+  };
+
   if (variant === 'mobile') {
     return (
-      <aside className={styles.mobileRibbon} role="alert">
-        <div className={styles.ribbonLeft}>
-          <span className={styles.ribbonPulse} />
-          <span className={styles.ribbonText}>
-            {isExistingAccount && isWithinGrace
-              ? `Confirme seu email (${daysLeft}d restantes)`
-              : 'Confirme seu email para liberar envios'}
-          </span>
+      <aside className={styles.mobileContainer} role="alert">
+        <div className={styles.mobileTopRow}>
+          <div className={styles.mobileHeaderLeft}>
+            <Mail size={15} className={styles.mobileIcon} />
+            <span className={styles.mobileTitle}>Confirmação de e-mail</span>
+          </div>
+          {isExistingAccount && isWithinGrace ? (
+            <span className={styles.badgeWarning}>
+              <Clock size={11} />
+              <span>{daysLeft}d restantes</span>
+            </span>
+          ) : (
+            <span className={styles.badgeDanger}>Ação necessária</span>
+          )}
         </div>
 
-        <div className={styles.ribbonRight}>
-          {feedback && <span className={styles.ribbonFeedback}>{feedback}</span>}
+        <p className={styles.mobileDesc}>
+          {isExistingAccount && isWithinGrace
+            ? 'Confirme seu endereço para continuar publicando wallpapers após o período de carência.'
+            : 'Confirme seu endereço para liberar o envio de wallpapers e recursos de criador.'}
+        </p>
+
+        {renderFeedback()}
+
+        <div className={styles.mobileActions}>
           <button
             type="button"
-            className={styles.ribbonBtn}
+            className={styles.btnCheck}
+            onClick={handleCheckNow}
+            disabled={checking}
+          >
+            {checking ? (
+              <span className={styles.buttonSpinner} />
+            ) : (
+              <Check size={14} />
+            )}
+            <span>{checking ? 'Verificando...' : 'Já confirmei'}</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.btnResend}
             onClick={handleResend}
             disabled={loading || cooldown > 0}
           >
-            {loading ? '...' : cooldown > 0 ? `${cooldown}s` : 'Reenviar'}
-          </button>
-          <button
-            type="button"
-            className={styles.ribbonCheckBtn}
-            onClick={handleCheckNow}
-            disabled={checking}
-            title="Já confirmei"
-            aria-label="Já confirmei"
-          >
-            {checking ? <span className={styles.microSpinner} /> : <Check size={13} />}
+            {loading ? (
+              <span className={styles.buttonSpinner} />
+            ) : (
+              <Mail size={14} />
+            )}
+            <span>
+              {loading
+                ? 'Enviando...'
+                : cooldown > 0
+                ? `Reenviar (${cooldown}s)`
+                : 'Reenviar link'}
+            </span>
           </button>
         </div>
       </aside>
@@ -114,50 +177,72 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
   }
 
   return (
-    <div className={styles.sidebarCard} role="alert">
-      <div className={styles.cardHeader}>
-        <div className={styles.iconBadge}>
-          <Mail size={14} />
+    <div className={styles.sidebarContainer} role="alert">
+      <div className={styles.sidebarHeader}>
+        <div className={styles.iconBox}>
+          <Mail size={16} />
         </div>
-        <div className={styles.titleCol}>
-          <span className={styles.cardTitle}>Verificação pendente</span>
-          {isExistingAccount && isWithinGrace ? (
-            <span className={styles.graceTag}>{daysLeft} {daysLeft === 1 ? 'dia restante' : 'dias restantes'}</span>
-          ) : (
-            <span className={styles.urgentTag}>Ação necessária</span>
+        <div className={styles.headerMeta}>
+          <div className={styles.headerTitleRow}>
+            <span className={styles.sidebarTitle}>Confirme seu e-mail</span>
+            {isExistingAccount && isWithinGrace ? (
+              <span className={styles.badgeWarning}>
+                <Clock size={11} />
+                <span>{daysLeft}d</span>
+              </span>
+            ) : (
+              <span className={styles.badgeDanger}>Pendente</span>
+            )}
+          </div>
+          {user.email && (
+            <span className={styles.targetEmail} title={user.email}>
+              {user.email}
+            </span>
           )}
         </div>
       </div>
 
-      <p className={styles.cardDesc}>
+      <p className={styles.sidebarDesc}>
         {isExistingAccount && isWithinGrace
-          ? 'Confirme seu email para continuar publicando e gerenciando coleções.'
-          : 'Confirme seu email para desbloquear envios e coleções.'}
+          ? 'Confirme seu endereço para continuar publicando wallpapers após a carência.'
+          : 'Confirme seu endereço para liberar uploads e coleções.'}
       </p>
 
-      {feedback && <div className={styles.feedbackMsg}>{feedback}</div>}
+      {renderFeedback()}
 
-      <div className={styles.cardActions}>
+      <div className={styles.sidebarActions}>
+        <button
+          type="button"
+          className={styles.btnCheck}
+          onClick={handleCheckNow}
+          disabled={checking}
+        >
+          {checking ? (
+            <span className={styles.buttonSpinner} />
+          ) : (
+            <Check size={14} />
+          )}
+          <span>{checking ? 'Verificando...' : 'Já confirmei'}</span>
+        </button>
+
         <button
           type="button"
           className={styles.btnResend}
           onClick={handleResend}
           disabled={loading || cooldown > 0}
         >
-          {loading
-            ? 'Enviando...'
-            : cooldown > 0
-            ? `Reenviar (${cooldown}s)`
-            : 'Reenviar link'}
-        </button>
-        <button
-          type="button"
-          className={styles.btnCheck}
-          onClick={handleCheckNow}
-          disabled={checking}
-          title="Verificar agora"
-        >
-          {checking ? 'Checando...' : 'Já confirmei'}
+          {loading ? (
+            <span className={styles.buttonSpinner} />
+          ) : (
+            <Mail size={14} />
+          )}
+          <span>
+            {loading
+              ? 'Enviando...'
+              : cooldown > 0
+              ? `${cooldown}s`
+              : 'Reenviar'}
+          </span>
         </button>
       </div>
     </div>

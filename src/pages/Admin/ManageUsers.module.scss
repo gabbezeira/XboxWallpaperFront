@@ -1,0 +1,371 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.refreshBtn {
+  @include btn-secondary;
+  height: 38px;
+  padding: 0 $spacing-md;
+  font-size: 0.82rem;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  gap: 6px;
+}
+
+.errorAlert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  background-color: #290b0b;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  margin-bottom: $spacing-lg;
+  font-size: 0.88rem;
+}
+
+.errorAlertContent {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  background-color: $color-bg-secondary;
+  display: none;
+
+  @include respond-to(lg) {
+    display: block;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+
+  th {
+    padding: $spacing-md $spacing-lg;
+    background-color: $color-bg-main;
+    color: $color-text-muted;
+    font-weight: $fw-semibold;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid $color-border;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: $spacing-md $spacing-lg;
+    border-bottom: 1px solid $color-border;
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr {
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $color-bg-tertiary;
+    }
+  }
+}
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userName {
+  font-weight: $fw-semibold;
+  color: $color-text-primary;
+  line-height: 1.2;
+}
+
+.userEmail {
+  font-size: 0.78rem;
+  color: $color-text-muted;
+  line-height: 1.2;
+}
+
+.copyTagBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: $radius-sm;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
+  color: $color-text-secondary;
+  font-size: 0.75rem;
+  font-family: monospace;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: color-mix(in srgb, $color-bg-tertiary, white 5%);
+    color: $color-text-primary;
+  }
+}
+
+.roleSelect {
+  padding: 5px 8px;
+  border-radius: $radius-sm;
+  background-color: $color-bg-main;
+  border: 1px solid $color-border;
+  color: $color-text-primary;
+  font-size: 0.78rem;
+  font-family: $font-primary;
+  outline: none;
+  cursor: pointer;
+  transition: border-color $transition-fast;
+
+  &:hover, &:focus {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+}
+
+.verifyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: $radius-sm;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
+  color: $color-text-muted;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-text-primary;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.verifyBtnActive {
+  background-color: #0d260d;
+  border-color: rgba(16, 124, 16, 0.4);
+  color: #55d688;
+
+  &:hover {
+    background-color: #123312;
+    border-color: rgba(16, 124, 16, 0.6);
+  }
+}
+
+.assignBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: $radius-sm;
+  background-color: $color-bg-tertiary;
+  border: 1px dashed $color-border;
+  color: $color-text-secondary;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-text-primary;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+}
+
+.metricsCell {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-sm;
+  background: transparent;
+  border: 1px solid transparent;
+  color: $color-text-muted;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: #290b0b;
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+}
+
+.mobileCards {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  @include respond-to(lg) {
+    display: none;
+  }
+}
+
+.mobileCard {
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.mobileCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobileCardBody {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  padding-top: $spacing-sm;
+  border-top: 1px solid $color-border;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: $spacing-4xl $spacing-xl;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  gap: $spacing-sm;
+}
+
+.emptyIcon {
+  color: $color-text-muted;
+  margin-bottom: $spacing-xs;
+}
+
+.emptyTitle {
+  font-size: 1.15rem;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.emptySubtitle {
+  font-size: 0.85rem;
+  color: $color-text-muted;
+  margin: 0;
+  max-width: 440px;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: $spacing-md;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+}
+
+.fieldLabel {
+  font-size: 0.78rem;
+  font-weight: $fw-medium;
+  color: $color-text-secondary;
+}
+
+.select {
+  padding: 8px 12px;
+  border-radius: $radius-md;
+  background-color: $color-bg-main;
+  border: 1px solid $color-border;
+  color: $color-text-primary;
+  font-size: 0.85rem;
+  font-family: $font-primary;
+  outline: none;
+  width: 100%;
+
+  &:focus {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+}
+
+.modalText {
+  font-size: 0.88rem;
+  color: $color-text-secondary;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.btnSecondary {
+  @include btn-secondary;
+  height: 36px;
+  padding: 0 $spacing-md;
+  font-size: 0.82rem;
+  border-radius: $radius-md;
+}
+
+.btnPrimary {
+  @include btn-primary;
+  height: 36px;
+  padding: 0 $spacing-md;
+  font-size: 0.82rem;
+  border-radius: $radius-md;
+}
+
+.btnDanger {
+  @include btn-base;
+  height: 36px;
+  padding: 0 $spacing-md;
+  font-size: 0.82rem;
+  border-radius: $radius-md;
+  background-color: $color-danger;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background-color: $color-danger-hover;
+  }
+}

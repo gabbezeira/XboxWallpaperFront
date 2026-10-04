@@ -1,0 +1,77 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-md;
+}
+
+.modal {
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1px solid $color-border;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: $color-text-muted;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-sm;
+  transition: color $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    color: $color-text-primary;
+    background-color: $color-bg-tertiary;
+  }
+}
+
+.body {
+  padding: $spacing-lg;
+  overflow-y: auto;
+  font-size: 0.88rem;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  border-top: 1px solid $color-border;
+  background-color: $color-bg-main;
+}

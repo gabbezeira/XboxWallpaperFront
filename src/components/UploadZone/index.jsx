@@ -11,7 +11,7 @@ import {
   UploadCloud,
   X,
 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUpload } from '../../hooks/useUpload';
 import styles from './styles.module.scss';
@@ -34,6 +34,19 @@ export default function UploadZone({ onUploadComplete }) {
   const [addToCollection, setAddToCollection] = useState(false);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const inputRef = useRef(null);
+  const previewUrlRef = useRef(null);
+
+  useEffect(() => {
+    previewUrlRef.current = previewUrl;
+  }, [previewUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
 
   const CUTOFF_TS = Date.parse('2026-10-04T12:00:00Z');
   const GRACE_END_TS = Date.parse('2026-10-18T23:59:59Z');
@@ -70,6 +83,9 @@ export default function UploadZone({ onUploadComplete }) {
       return;
     }
 
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
     setSelectedFile(file);
     setImageDims(null);
     setPreviewUrl(URL.createObjectURL(file));
@@ -106,6 +122,9 @@ export default function UploadZone({ onUploadComplete }) {
         collectionId:
           addToCollection && profile?.assignedCollectionId ? profile.assignedCollectionId : null,
       });
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
       setSelectedFile(null);
       setPreviewUrl(null);
       setImageDims(null);

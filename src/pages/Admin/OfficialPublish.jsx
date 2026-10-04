@@ -45,6 +45,19 @@ export default function OfficialPublish({ onPublishComplete }) {
   const [completedSummary, setCompletedSummary] = useState(null);
 
   const fileInputRef = useRef(null);
+  const batchFilesRef = useRef(batchFiles);
+
+  useEffect(() => {
+    batchFilesRef.current = batchFiles;
+  }, [batchFiles]);
+
+  useEffect(() => {
+    return () => {
+      batchFilesRef.current.forEach((item) => {
+        if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+      });
+    };
+  }, []);
 
   useEffect(() => {
     api.collections.list().then((res) => {

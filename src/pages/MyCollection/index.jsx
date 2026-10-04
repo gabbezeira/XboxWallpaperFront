@@ -59,7 +59,8 @@ export default function MyCollection() {
   };
 
   const handleCopyCode = () => {
-    const c = collection.code || collection.slug.toUpperCase();
+    const c = collection?.code || (collection?.slug ? collection.slug.toUpperCase() : '');
+    if (!c) return;
     navigator.clipboard.writeText(c);
     setCodeCopied(true);
     setTimeout(() => setCodeCopied(false), 2000);

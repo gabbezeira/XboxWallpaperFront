@@ -177,7 +177,11 @@ export function AuthProvider({ children }) {
         await user.reload();
         if (auth.currentUser?.emailVerified && isMountedRef.current) {
           await auth.currentUser.getIdToken(true);
-          setUser(auth.currentUser);
+          const freshUser = Object.assign(
+            Object.create(Object.getPrototypeOf(auth.currentUser)),
+            auth.currentUser
+          );
+          setUser(freshUser);
           await refreshProfile();
         } else {
           checkCountRef.current += 1;

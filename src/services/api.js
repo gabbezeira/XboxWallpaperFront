@@ -51,6 +51,15 @@ async function executeRequest(path, options = {}, retries = 3) {
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Erro desconhecido' }));
+    if (res.status === 403 && error.code === 'EMAIL_NOT_VERIFIED' && auth.currentUser && retries > 0) {
+      try {
+        await auth.currentUser.reload();
+        if (auth.currentUser.emailVerified) {
+          await auth.currentUser.getIdToken(true);
+          return executeRequest(path, options, 0);
+        }
+      } catch {}
+    }
     const err = new Error(error.error || `HTTP ${res.status}`);
     err.code = error.code;
     err.status = res.status;

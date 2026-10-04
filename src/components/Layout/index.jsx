@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import Sidebar from '../Sidebar';
 import BottomNav from '../BottomNav';
+import UserAvatar from '../UserAvatar';
 import styles from './styles.module.scss';
 
 const MOBILE_MAX = 768;
@@ -139,26 +140,11 @@ export default function Layout({ children, onLoginClick }) {
               <div className={styles.mobileUserSection}>
                 {(user || loading) ? (
                   <>
-                    <div
-                      className={`${styles.mobileAvatar} ${!user?.photoURL ? styles.mobileAvatarFallback : ''}`}
-                    >
-                      {user?.photoURL ? (
-                        <img
-                          src={user.photoURL}
-                          alt="User"
-                          referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.insertAdjacentText(
-                              'afterend',
-                              (user?.displayName || user?.email || 'U').charAt(0).toUpperCase(),
-                            );
-                          }}
-                        />
-                      ) : (
-                        (user?.displayName || user?.email || 'U').charAt(0).toUpperCase()
-                      )}
-                    </div>
+                    <UserAvatar
+                      photoUrl={user?.photoURL}
+                      name={user?.displayName || user?.email}
+                      size="medium"
+                    />
                     {user && (
                       <div className={styles.mobileUserInfo}>
                         <span className={styles.mobileUserName}>
@@ -169,9 +155,7 @@ export default function Layout({ children, onLoginClick }) {
                   </>
                 ) : (
                   <>
-                    <div className={`${styles.mobileAvatar} ${styles.mobileAvatarFallback}`}>
-                      <User size={18} />
-                    </div>
+                    <UserAvatar size="medium" />
                     <button className={styles.mobileLoginBtn} onClick={onLoginClick}>
                       Entrar
                     </button>

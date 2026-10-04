@@ -57,7 +57,7 @@ export default function RowSlider({ title, items, loading, onVerTudo, onView }) 
         <h2 className={styles.title}>{title}</h2>
         {onVerTudo && (
           <button className={styles.btnVerTudo} onClick={onVerTudo}>
-            VER TUDO
+            Ver tudo
           </button>
         )}
       </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Home, Compass, UploadCloud, Heart, LogOut, Images, Layers, Copy, Check } from 'lucide-react';
 import VerifiedBadge from '../VerifiedBadge';
+import UserAvatar from '../UserAvatar';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import { getUserLevel, getTierCssClass } from '../../config/tiers';
@@ -95,25 +96,7 @@ export default function Sidebar({ onLoginClick }) {
         {user ? (
           <>
             <div className={styles.userInfo}>
-              <div className={`${styles.avatar} ${!photoURL ? styles.avatarWithColor : ''}`}>
-                {photoURL ? (
-                  <img
-                    src={photoURL}
-                    alt={displayName}
-                    className={styles.avatarImg}
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.insertAdjacentText(
-                        'afterend',
-                        displayName.charAt(0).toUpperCase(),
-                      );
-                    }}
-                  />
-                ) : (
-                  displayName.charAt(0).toUpperCase()
-                )}
-              </div>
+              <UserAvatar photoUrl={photoURL} name={displayName} size="medium" />
               <div className={styles.userDetails}>
                 <div className={styles.userNameRow}>
                   <span className={styles.userName}>{displayName}</span>

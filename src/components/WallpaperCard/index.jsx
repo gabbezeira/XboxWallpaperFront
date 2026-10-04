@@ -42,6 +42,10 @@ const WallpaperCard = memo(function WallpaperCard({
     ? wallpaper.thumbUrl
     : `${API_URL}${wallpaper.thumbUrl || wallpaper.storageUrl}`;
 
+  const previewSrc = wallpaper.previewUrl
+    ? (wallpaper.previewUrl.startsWith('http') ? wallpaper.previewUrl : `${API_URL}${wallpaper.previewUrl}`)
+    : (wallpaper.storageUrl?.startsWith('http') ? wallpaper.storageUrl : `${API_URL}${wallpaper.storageUrl}`);
+
   const currentStatus = wallpaper.status || (wallpaper.isPublic ? 'approved' : 'private');
 
   return (
@@ -56,6 +60,8 @@ const WallpaperCard = memo(function WallpaperCard({
       <img
         className={`${styles.image} ${loaded ? styles.loaded : ''}`}
         src={thumbSrc}
+        srcSet={previewSrc && previewSrc !== thumbSrc ? `${thumbSrc} 600w, ${previewSrc} 1440w` : undefined}
+        sizes="(max-width: 768px) 100vw, (max-width: 1440px) 33vw, (max-width: 2560px) 25vw, 20vw"
         alt={wallpaper.title || 'Wallpaper'}
         loading="lazy"
         onLoad={() => setLoaded(true)}

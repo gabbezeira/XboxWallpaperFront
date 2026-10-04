@@ -6,6 +6,7 @@ import { getCached } from '../../services/apiCache';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
+import EmptyState from '../../components/EmptyState';
 import {
   Search,
   X,
@@ -332,9 +333,11 @@ export default function Gallery() {
             />
           </>
         ) : (
-          <div className={styles.empty}>
-            <ImageOff size={42} className={styles.emptyIcon} />
-            <p>Nenhum wallpaper encontrado para os filtros selecionados.</p>
+          <EmptyState
+            icon={ImageOff}
+            title="Nenhum wallpaper encontrado"
+            message="Nenhum wallpaper encontrado para os filtros selecionados."
+          >
             {hasActiveFilters && (
               <button
                 type="button"
@@ -344,7 +347,7 @@ export default function Gallery() {
                 Limpar filtros e ver catálogo completo
               </button>
             )}
-          </div>
+          </EmptyState>
         )}
       </div>
 

@@ -5,6 +5,7 @@ import { useFavorites } from '../../hooks/useFavorites';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import EmptyState from '../../components/EmptyState';
+import PageHeader from '../../components/PageHeader';
 import Loader from '../../components/Loader';
 import styles from './styles.module.scss';
 
@@ -22,7 +23,6 @@ export default function Favorites() {
 
   const totalPages = Math.ceil(favorites.length / ITEMS_PER_PAGE);
 
-  // Proteção: se excluir o último item da última página, volta uma página
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages);
@@ -40,12 +40,11 @@ export default function Favorites() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <header className={styles.header}>
-          <div className={styles.titleArea}>
-            <h1 className={styles.title}>Favoritos</h1>
-            <p className={styles.subtitle}>Sua coleção pessoal de papéis de parede preferidos.</p>
-          </div>
-        </header>
+        <PageHeader
+          kicker="Galeria Pessoal"
+          title="Favoritos"
+          subtitle="Sua coleção pessoal de papéis de parede preferidos."
+        />
 
         {loading ? (
           <Loader text="Carregando favoritos..." />

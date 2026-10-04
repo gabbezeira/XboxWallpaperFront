@@ -331,11 +331,11 @@ export default function WallpaperDetailsPage() {
 
           <div className={styles.actions}>
             <button type="button" className={styles.btnSetWallpaper} onClick={handleSetWallpaper}>
-              DEFINIR COMO WALLPAPER
+              Definir como wallpaper
             </button>
             <div className={styles.secondaryActions}>
               <button type="button" className={styles.btnAddFav} onClick={handleToggleFavorite}>
-                {fav ? 'REMOVER DOS FAVORITOS' : 'ADICIONAR AOS FAVORITOS'}
+                {fav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
               </button>
               <button type="button" className={styles.btnExtra} onClick={handleDownload} aria-label="Baixar wallpaper">
                 <Download size={20} />

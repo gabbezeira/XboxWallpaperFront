@@ -13,6 +13,8 @@ import {
 import VerifiedBadge from '../../components/VerifiedBadge';
 import UserAvatar from '../../components/UserAvatar';
 import Pagination from '../../components/Pagination';
+import PageHeader from '../../components/PageHeader';
+import EmptyState from '../../components/EmptyState';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 12;
@@ -103,14 +105,11 @@ export default function Collections() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <div className={styles.header}>
-          <div className={styles.titleArea}>
-            <h1 className={styles.title}>Coleções</h1>
-            <p className={styles.subtitle}>
-              Explore coleções temáticas ou busque pelo código de acesso
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          kicker="Curadoria & Comunidade"
+          title="Coleções"
+          subtitle="Explore coleções temáticas ou busque pelo código de acesso"
+        />
 
         <div className={styles.toolbarSection}>
           <form className={styles.searchBox} onSubmit={handleSearchSubmit}>
@@ -216,15 +215,11 @@ export default function Collections() {
             )}
           </>
         ) : (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIconBox}>
-              <Compass size={32} />
-            </div>
-            <h3 className={styles.emptyTitle}>Nenhuma coleção encontrada</h3>
-            <p className={styles.emptyDesc}>
-              Não localizamos nenhuma coleção com os termos digitados. Tente buscar por outro nome ou código.
-            </p>
-          </div>
+          <EmptyState
+            icon={Compass}
+            title="Nenhuma coleção encontrada"
+            message="Não localizamos nenhuma coleção com os termos digitados. Tente buscar por outro nome ou código."
+          />
         )}
       </div>
     </div>

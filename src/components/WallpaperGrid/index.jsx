@@ -1,5 +1,6 @@
 import { ImageOff } from 'lucide-react';
 import WallpaperCard from '../WallpaperCard';
+import EmptyState from '../EmptyState';
 import styles from './styles.module.scss';
 
 export default function WallpaperGrid({
@@ -14,15 +15,11 @@ export default function WallpaperGrid({
 }) {
   if (wallpapers.length === 0) {
     return (
-      <div className={styles.grid} data-max-columns={maxColumns || 6}>
-        <div className={styles.empty}>
-          <div className={styles.emptyIcon}>
-            <ImageOff size={48} strokeWidth={1.5} />
-          </div>
-          <h3 className={styles.emptyTitle}>Nenhum wallpaper</h3>
-          <p className={styles.emptyText}>{emptyMessage || 'Nenhum wallpaper encontrado.'}</p>
-        </div>
-      </div>
+      <EmptyState
+        icon={ImageOff}
+        title="Nenhum wallpaper"
+        message={emptyMessage || 'Nenhum wallpaper encontrado.'}
+      />
     );
   }
 

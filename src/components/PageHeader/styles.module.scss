@@ -1,0 +1,78 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  width: 100%;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  @include respond-to(4k) {
+    gap: $spacing-xl;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  max-width: 820px;
+
+  @include respond-to(4k) {
+    max-width: 1400px;
+    gap: $spacing-sm;
+  }
+}
+
+.kicker {
+  font-size: 11px;
+  font-weight: $fw-bold;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: $color-primary;
+
+  @include respond-to(4k) {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin: 0;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.subtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 720px;
+
+  @include respond-to(4k) {
+    max-width: 1200px;
+    line-height: 1.7;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-shrink: 0;
+  margin-top: $spacing-xs;
+
+  @include respond-to(md) {
+    margin-top: 0;
+  }
+}

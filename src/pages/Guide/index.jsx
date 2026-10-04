@@ -14,29 +14,25 @@ import {
   Layers,
   AlertTriangle,
   Monitor,
-  Sparkles,
 } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 import styles from './styles.module.scss';
 
 export default function Guide() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <span className={styles.kicker}>Central de Ajuda</span>
-            <h1 className={styles.title}>Guia de Uso</h1>
-            <p className={styles.subtitle}>
-              Aprenda a utilizar o Spartan Wallpapers no celular, computador ou diretamente no navegador do seu console Xbox com sincronização em tempo real.
-            </p>
-          </div>
-          <div className={styles.headerActions}>
+        <PageHeader
+          kicker="Central de Ajuda"
+          title="Guia de Uso"
+          subtitle="Aprenda a utilizar o Spartan Wallpapers no celular, computador ou diretamente no navegador do seu console Xbox com sincronização em tempo real."
+          action={
             <Link to="/upload" className={styles.btnHeaderAction} tabIndex={0}>
               <UploadCloud size={16} />
               <span>Enviar Wallpaper</span>
             </Link>
-          </div>
-        </header>
+          }
+        />
 
         <nav className={styles.tocNav}>
           <span className={styles.tocLabel}>Navegação rápida:</span>

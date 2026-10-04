@@ -8,17 +8,17 @@ import {
   ArrowRight,
   Trophy,
   HardDrive,
-  Sparkles,
   ShieldCheck,
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
+import PageHeader from '../../components/PageHeader';
+import UserAvatar from '../../components/UserAvatar';
 import { useAuth } from '../../hooks/useAuth';
 import { TIERS, getUserTier, getNextTier, getTierCssClass } from '../../config/tiers';
 import styles from './styles.module.scss';
 
 export default function Levels() {
   const { user, profile } = useAuth();
-  const [avatarError, setAvatarError] = useState(false);
 
   const totalFavs = profile?.totalFavoritesReceived || 0;
   const currentTier = useMemo(() => getUserTier(totalFavs), [totalFavs]);
@@ -35,41 +35,25 @@ export default function Levels() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <span className={styles.kicker}>Ecossistema de Criadores</span>
-            <h1 className={styles.title}>Níveis e Conquistas</h1>
-            <p className={styles.subtitle}>
-              Conquiste patentes oficiais de acordo com os favoritos recebidos em seus wallpapers. Cada nível desbloqueia mais slots de armazenamento e maior visibilidade na plataforma.
-            </p>
-          </div>
-          {user && (
-            <div className={styles.headerActions}>
+        <PageHeader
+          kicker="Ecossistema de Criadores"
+          title="Níveis e Conquistas"
+          subtitle="Conquiste patentes oficiais de acordo com os favoritos recebidos em seus wallpapers. Cada nível desbloqueia mais slots de armazenamento e maior visibilidade na plataforma."
+          action={
+            user && (
               <Link to="/upload" className={styles.btnHeaderAction} tabIndex={0}>
                 <UploadCloud size={16} />
                 <span>Enviar Wallpaper</span>
               </Link>
-            </div>
-          )}
-        </header>
+            )
+          }
+        />
 
         {user ? (
           <section className={styles.userDashboard}>
             <div className={styles.userProfileRow}>
               <div className={styles.userIdentity}>
-                <div className={`${styles.avatar} ${!photoURL || avatarError ? styles.avatarFallback : ''}`}>
-                  {photoURL && !avatarError ? (
-                    <img
-                      src={photoURL}
-                      alt={displayName}
-                      className={styles.avatarImg}
-                      referrerPolicy="no-referrer"
-                      onError={() => setAvatarError(true)}
-                    />
-                  ) : (
-                    displayName.charAt(0).toUpperCase()
-                  )}
-                </div>
+                <UserAvatar photoUrl={photoURL} name={displayName} size="large" />
                 <div className={styles.userInfo}>
                   <div className={styles.userNameRow}>
                     <span className={styles.userName}>{displayName}</span>
@@ -253,7 +237,7 @@ export default function Levels() {
                   Página temática dedicada com slug personalizado, código de busca direta para console e celular, e gerenciamento prioritário no painel Minha Coleção.
                 </p>
                 <div className={styles.highlightFooter}>
-                  <Sparkles size={14} className={styles.highlightFooterIcon} />
+                  <ShieldCheck size={14} className={styles.highlightFooterIcon} />
                   <span>Disponível para criadores a partir da patente COG</span>
                 </div>
               </div>

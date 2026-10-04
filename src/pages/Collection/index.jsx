@@ -7,6 +7,7 @@ import Loader from '../../components/Loader';
 import { ArrowLeft, Layers, Share2, Check, Copy } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import UserAvatar from '../../components/UserAvatar';
+import EmptyState from '../../components/EmptyState';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -177,15 +178,11 @@ export default function Collection() {
           />
         </div>
       ) : (
-        <div className={styles.empty}>
-          <div className={styles.emptyIconBox}>
-            <Layers size={32} />
-          </div>
-          <h2 className={styles.emptyTitle}>Nenhum wallpaper encontrado</h2>
-          <p className={styles.emptyText}>
-            Esta coleção ainda não possui imagens públicas associadas.
-          </p>
-        </div>
+        <EmptyState
+          icon={Layers}
+          title="Nenhum wallpaper encontrado"
+          message="Esta coleção ainda não possui imagens públicas associadas."
+        />
       )}
     </div>
   );

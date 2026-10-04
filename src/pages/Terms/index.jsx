@@ -9,6 +9,7 @@ import {
   Award,
   ArrowRight,
 } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 import avatar from '../../assets/avatar.jpeg';
 import styles from './styles.module.scss';
 
@@ -16,15 +17,11 @@ export default function Terms() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <span className={styles.kicker}>Transparência &amp; Conformidade</span>
-            <h1 className={styles.title}>Termos de Uso e Privacidade</h1>
-            <p className={styles.subtitle}>
-              Diretrizes de utilização responsável dos recursos, proteção de dados e respeito integral à propriedade intelectual no Spartan Wallpapers.
-            </p>
-          </div>
-        </header>
+        <PageHeader
+          kicker="Transparência & Conformidade"
+          title="Termos de Uso e Privacidade"
+          subtitle="Diretrizes de utilização responsável dos recursos, proteção de dados e respeito integral à propriedade intelectual no Spartan Wallpapers."
+        />
 
         <section className={styles.disclaimerCard}>
           <div className={styles.disclaimerIconBox}>

@@ -5,6 +5,7 @@ import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
+import EmptyState from '../../components/EmptyState';
 import { Layers, Share2, UploadCloud, ArrowLeft, Check, ExternalLink, Copy, Heart } from 'lucide-react';
 import styles from './styles.module.scss';
 
@@ -165,33 +166,28 @@ export default function MyCollection() {
     return (
       <div className={styles.page}>
         <div className={styles.inner}>
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>
-              <Layers size={48} />
-            </div>
-            <h2 className={styles.emptyTitle}>Coleção Oficial Não Vinculada</h2>
-            <p className={styles.emptyText}>
-              Você ainda não possui uma coleção oficial atribuída à sua conta de Criador. Entre em contato com a equipe informando sua Gamertag ou perfil para solicitar uma coleção dedicada.
-            </p>
-            <div className={styles.emptyActions}>
-              <button
-                type="button"
-                className={styles.btnPrimary}
-                onClick={() => navigate('/my-wallpapers')}
-                tabIndex={0}
-              >
-                Gerenciar Meus Wallpapers
-              </button>
-              <button
-                type="button"
-                className={styles.btnSecondary}
-                onClick={() => navigate('/levels')}
-                tabIndex={0}
-              >
-                Ver Requisitos de Patente
-              </button>
-            </div>
-          </div>
+          <EmptyState
+            icon={Layers}
+            title="Coleção Oficial Não Vinculada"
+            message="Você ainda não possui uma coleção oficial atribuída à sua conta de Criador. Entre em contato com a equipe informando sua Gamertag ou perfil para solicitar uma coleção dedicada."
+          >
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={() => navigate('/my-wallpapers')}
+              tabIndex={0}
+            >
+              Gerenciar Meus Wallpapers
+            </button>
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={() => navigate('/levels')}
+              tabIndex={0}
+            >
+              Ver Requisitos de Patente
+            </button>
+          </EmptyState>
         </div>
       </div>
     );

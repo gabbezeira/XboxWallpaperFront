@@ -18,6 +18,11 @@
     max-width: 480px;
     padding: $spacing-3xl;
   }
+
+  @include respond-to(4k) {
+    max-width: 640px;
+    padding: $spacing-4xl;
+  }
 }
 
 .iconWrapper {
@@ -34,6 +39,11 @@
     width: 96px;
     height: 96px;
   }
+
+  @include respond-to(4k) {
+    width: 120px;
+    height: 120px;
+  }
 }
 
 .title {
@@ -46,6 +56,19 @@
 .message {
   font-size: $fs-body;
   color: $color-text-muted;
-  max-width: 300px;
+  max-width: 420px;
   line-height: 1.5;
+
+  @include respond-to(4k) {
+    max-width: 580px;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+  flex-wrap: wrap;
+  justify-content: center;
 }

@@ -1,7 +1,7 @@
 import { PackageOpen } from 'lucide-react';
 import styles from './styles.module.scss';
 
-export default function EmptyState({ title, message, icon: Icon = PackageOpen }) {
+export default function EmptyState({ title, message, icon: Icon = PackageOpen, children }) {
   return (
     <div className={styles.emptyState}>
       <div className={styles.iconWrapper}>
@@ -9,6 +9,7 @@ export default function EmptyState({ title, message, icon: Icon = PackageOpen })
       </div>
       <h3 className={styles.title}>{title}</h3>
       {message && <p className={styles.message}>{message}</p>}
+      {children && <div className={styles.actions}>{children}</div>}
     </div>
   );
 }

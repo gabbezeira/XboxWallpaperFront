@@ -7,6 +7,7 @@ import WallpaperGrid from '../../components/WallpaperGrid';
 import QuotaBar from '../../components/QuotaBar';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
+import PageHeader from '../../components/PageHeader';
 import { UploadCloud } from 'lucide-react';
 import styles from './styles.module.scss';
 
@@ -114,23 +115,24 @@ export default function MyWallpapers() {
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <div className={styles.header}>
-          <div>
-            <h1 className={styles.title}>Meus Wallpapers</h1>
-            <p className={styles.subtitle}>Gerencie suas imagens para usar no Xbox</p>
-          </div>
-          <div className={styles.headerRight}>
-            <button
-              type="button"
-              className={styles.btnUpload}
-              onClick={() => navigate('/upload')}
-            >
-              <UploadCloud size={18} />
-              <span>Enviar Wallpaper</span>
-            </button>
-            <QuotaBar />
-          </div>
-        </div>
+        <PageHeader
+          kicker="Armazenamento do Criador"
+          title="Meus Wallpapers"
+          subtitle="Gerencie suas imagens para usar no Xbox"
+          action={
+            <div className={styles.headerRight}>
+              <button
+                type="button"
+                className={styles.btnUpload}
+                onClick={() => navigate('/upload')}
+              >
+                <UploadCloud size={18} />
+                <span>Enviar Wallpaper</span>
+              </button>
+              <QuotaBar />
+            </div>
+          }
+        />
 
         {loading ? (
           <Loader text="Carregando seus wallpapers..." />

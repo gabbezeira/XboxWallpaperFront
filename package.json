@@ -1,5 +1,5 @@
 {
-  "name": "thexboxapp",
+  "name": "Spartan Wallpapers",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,8 @@
     "format": "biome format --write ."
   },
   "dependencies": {
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2",
     "@vercel/analytics": "^2.0.1",
     "firebase": "^12.12.1",
     "lucide-react": "^1.11.0",
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.13",
+    "@capacitor/cli": "^8.5.2",
     "@eslint/js": "^10.0.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

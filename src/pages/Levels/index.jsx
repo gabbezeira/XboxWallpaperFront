@@ -38,7 +38,7 @@ export default function Levels() {
         <PageHeader
           kicker="Ecossistema de Criadores"
           title="Níveis e Conquistas"
-          subtitle="Conquiste patentes oficiais de acordo com os favoritos recebidos em seus wallpapers. Cada nível desbloqueia mais slots de armazenamento e maior visibilidade na plataforma."
+          subtitle="Evolua sua patente de acordo com os favoritos recebidos em suas publicações. Cada nível desbloqueia mais capacidade de armazenamento, insígnias dinâmicas e maior visibilidade na plataforma."
           action={
             user && (
               <Link to="/upload" className={styles.btnHeaderAction} tabIndex={0}>
@@ -70,7 +70,7 @@ export default function Levels() {
               <div className={styles.userBadgeWrapper}>
                 <div className={`${styles.tierBadge} ${styles[getTierCssClass(currentTier)]}`}>
                   <currentTier.icon size={14} className={styles.badgeIcon} />
-                  <span>{currentTier.badgeLabel}</span>
+                  <span className={styles.badgeLabel}>{currentTier.badgeLabel}</span>
                 </div>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function Levels() {
               ) : (
                 <div className={styles.maxTierContainer}>
                   <Trophy size={18} className={styles.maxTierIcon} />
-                  <span>Você atingiu a patente máxima: Spartan Mythic 117. Obrigado pela dedicação à comunidade!</span>
+                  <span>Você atingiu a patente máxima: Spartan 117. Obrigado pela dedicação à comunidade!</span>
                 </div>
               )}
             </div>
@@ -141,7 +141,7 @@ export default function Levels() {
           <div className={styles.sectionHeading}>
             <h2 className={styles.sectionTitle}>Tabela de Patentes Oficiais</h2>
             <p className={styles.sectionDescription}>
-              Seis estágios inspirados nos universos mais icônicos do Xbox. Conquiste novos patamares aumentando o engajamento da comunidade.
+              Seis patentes inspiradas nos universos mais consagrados do Xbox. Seu avanço reflete o impacto e a qualidade das suas capturas para os jogadores.
             </p>
           </div>
 
@@ -153,18 +153,20 @@ export default function Levels() {
               return (
                 <article
                   key={tier.key}
-                  className={`${styles.tierCard} ${isCurrent ? styles.activeTierCard : ''}`}
+                  className={`${styles.tierCard} ${styles[`cardTier_${tier.level}`]} ${isCurrent ? styles.activeTierCard : ''}`}
                 >
                   <div className={styles.tierCardHeader}>
                     <div className={`${styles.tierBadge} ${styles[getTierCssClass(tier)]}`}>
                       <TierIcon size={14} className={styles.badgeIcon} />
-                      <span>{tier.badgeLabel}</span>
+                      <span className={styles.badgeLabel}>{tier.badgeLabel}</span>
                     </div>
-                    {isCurrent && (
+                    {isCurrent ? (
                       <span className={styles.activeTag}>
                         <Check size={12} />
                         Sua Patente
                       </span>
+                    ) : (
+                      <span className={styles.levelIndicator}>Nível {tier.level}</span>
                     )}
                   </div>
 
@@ -204,7 +206,7 @@ export default function Levels() {
           <div className={styles.sectionHeading}>
             <h2 className={styles.sectionTitle}>Distintivos Especiais da Comunidade</h2>
             <p className={styles.sectionDescription}>
-              Condecorações concedidas pela equipe de curadoria para criadores com presença e qualidade excepcionais.
+              Condecorações editoriais concedidas pela moderação aos criadores que mantêm padrões excepcionais de qualidade e frequência.
             </p>
           </div>
 

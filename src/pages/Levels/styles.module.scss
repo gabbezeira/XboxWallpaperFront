@@ -1,6 +1,28 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+@keyframes borderSlide {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes badgeShimmer {
+  0% {
+    transform: translateX(-160%) skewX(-20deg);
+  }
+  30%,
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+
 .page {
   flex: 1;
   padding: $spacing-xl 0 $spacing-2xl;
@@ -85,9 +107,10 @@
   flex-direction: column;
   gap: $spacing-lg;
   padding: $spacing-xl;
-  background-color: $color-bg-secondary;
-  border: 1px solid $color-border;
+  background: linear-gradient(180deg, #18181d 0%, #121215 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-lg;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .userProfileRow {
@@ -162,83 +185,159 @@
 }
 
 .tierBadge {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 5px 11px;
   font-size: 10px;
   font-weight: $fw-bold;
   border-radius: $radius-sm;
   letter-spacing: 0.6px;
   text-transform: uppercase;
   line-height: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 
   .badgeIcon {
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .badgeLabel {
+    position: relative;
+    z-index: 2;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+    transform: translateX(-160%) skewX(-20deg);
   }
 
   &.level_1 {
-    background-color: #374151;
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
     color: #f9fafb;
     border: 1px solid rgba(255, 255, 255, 0.14);
 
     .badgeIcon {
       color: #f9fafb;
     }
+
+    &:hover::after {
+      animation: badgeShimmer 2s ease-in-out infinite;
+    }
   }
 
   &.level_2 {
-    background-color: #c2410c;
+    background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%);
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.22);
 
     .badgeIcon {
       color: #ffffff;
+    }
+
+    &::after {
+      animation: badgeShimmer 4.2s ease-in-out infinite;
     }
   }
 
   &.level_3 {
-    background-color: #1e40af;
+    background: linear-gradient(135deg, #0284c7 0%, #1e3a8a 100%);
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
 
     .badgeIcon {
       color: #ffffff;
+    }
+
+    &::after {
+      animation: badgeShimmer 3.5s ease-in-out infinite;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(224, 242, 254, 0.6) 50%,
+        transparent 100%
+      );
     }
   }
 
   &.level_4 {
-    background-color: #7c3aed;
+    background: linear-gradient(135deg, #e11d48 0%, #881337 100%);
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.28);
 
     .badgeIcon {
       color: #ffffff;
+    }
+
+    &::after {
+      animation: badgeShimmer 2.8s ease-in-out infinite;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(254, 205, 211, 0.7) 50%,
+        transparent 100%
+      );
     }
   }
 
   &.level_5 {
-    background-color: #b45309;
+    background: linear-gradient(135deg, #d97706 0%, #78350f 100%);
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(254, 240, 138, 0.45);
 
     .badgeIcon {
-      color: #ffffff;
+      color: #fef08a;
+    }
+
+    &::after {
+      animation: badgeShimmer 2.2s ease-in-out infinite;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(254, 240, 138, 0.8) 50%,
+        transparent 100%
+      );
     }
   }
 
   &.level_6 {
-    background-color: #107c10;
+    background: linear-gradient(135deg, #107c10 0%, #052e16 100%);
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(74, 222, 128, 0.55);
 
     .badgeIcon {
-      color: #ffffff;
+      color: #86efac;
+    }
+
+    &::after {
+      animation: badgeShimmer 1.7s ease-in-out infinite;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(220, 252, 231, 0.9) 50%,
+        transparent 100%
+      );
     }
   }
 }
+
 
 .userMetricsGrid {
   display: grid;
@@ -449,18 +548,162 @@
   flex-direction: column;
   gap: $spacing-md;
   padding: $spacing-xl;
-  background-color: $color-bg-secondary;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background-color: transparent;
   border-radius: $radius-lg;
-  transition: border-color $transition-fast;
+  transition: transform $transition-fast;
+
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #141418;
+    border-radius: $radius-lg;
+    z-index: 0;
+    transition: background-color $transition-fast;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    border-radius: calc(#{$radius-lg} + 1.5px);
+    z-index: -1;
+    background-size: 200% 200%;
+  }
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-3px);
+
+    &::before {
+      background-color: #18181e;
+    }
   }
 
   &.activeTierCard {
-    border-color: $color-primary;
-    box-shadow: 0 0 0 1px $color-primary;
+    &::before {
+      background-color: #121914;
+    }
+
+    &::after {
+      inset: -2px;
+      border-radius: calc(#{$radius-lg} + 2px);
+    }
+  }
+}
+
+.cardTier_1 {
+  &::after {
+    background-image: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(113, 113, 122, 0.4) 50%,
+      rgba(255, 255, 255, 0.08) 100%
+    );
+  }
+
+  &:hover::after {
+    background-image: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(161, 161, 170, 0.6) 50%,
+      rgba(255, 255, 255, 0.16) 100%
+    );
+  }
+}
+
+.cardTier_2 {
+  &::after {
+    background-image: linear-gradient(
+      135deg,
+      rgba(124, 45, 18, 0.3) 10%,
+      rgba(234, 88, 12, 0.8) 30%,
+      rgba(251, 146, 60, 0.95) 50%,
+      rgba(28, 25, 23, 0.4) 70%,
+      rgba(234, 88, 12, 0.8) 90%
+    );
+    animation: borderSlide 7s linear infinite;
+  }
+
+  &:hover::after {
+    animation-duration: 3.5s;
+  }
+}
+
+.cardTier_3 {
+  &::after {
+    background-image: linear-gradient(
+      135deg,
+      rgba(12, 74, 110, 0.35) 10%,
+      rgba(2, 132, 199, 0.85) 30%,
+      rgba(56, 189, 248, 0.95) 50%,
+      rgba(99, 102, 241, 0.8) 70%,
+      rgba(3, 105, 161, 0.85) 90%
+    );
+    animation: borderSlide 5.5s linear infinite;
+  }
+
+  &:hover::after {
+    animation-duration: 2.8s;
+  }
+}
+
+.cardTier_4 {
+  &::after {
+    background-image: linear-gradient(
+      135deg,
+      rgba(76, 5, 25, 0.4) 10%,
+      rgba(190, 18, 60, 0.9) 30%,
+      rgba(244, 63, 94, 1) 50%,
+      rgba(253, 164, 175, 0.8) 65%,
+      rgba(136, 19, 55, 0.9) 85%
+    );
+    animation: borderSlide 4.2s linear infinite;
+  }
+
+  &:hover::after {
+    animation-duration: 2s;
+  }
+}
+
+.cardTier_5 {
+  &::after {
+    background-image: linear-gradient(
+      135deg,
+      rgba(69, 26, 3, 0.4) 10%,
+      rgba(180, 83, 9, 0.9) 30%,
+      rgba(251, 191, 36, 1) 50%,
+      rgba(254, 240, 138, 0.9) 65%,
+      rgba(217, 119, 6, 0.9) 85%
+    );
+    animation: borderSlide 3.2s linear infinite;
+  }
+
+  &:hover::after {
+    animation-duration: 1.6s;
+  }
+}
+
+.cardTier_6 {
+  &::after {
+    background-image: linear-gradient(
+      135deg,
+      rgba(5, 46, 22, 0.45) 10%,
+      rgba(22, 163, 74, 0.9) 28%,
+      rgba(74, 222, 128, 1) 48%,
+      rgba(255, 255, 255, 0.95) 60%,
+      rgba(0, 255, 136, 1) 78%,
+      rgba(21, 128, 61, 0.95) 92%
+    );
+    animation: borderSlide 2.2s linear infinite;
+  }
+
+  &:hover::after {
+    animation-duration: 1.2s;
   }
 }
 
@@ -478,8 +721,24 @@
   font-size: 10px;
   font-weight: $fw-bold;
   text-transform: uppercase;
-  color: $color-primary;
+  color: #4ade80;
   letter-spacing: 0.5px;
+  padding: 4px 8px;
+  background-color: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: $radius-sm;
+}
+
+.levelIndicator {
+  font-size: 10px;
+  font-weight: $fw-bold;
+  text-transform: uppercase;
+  color: $color-text-muted;
+  letter-spacing: 0.6px;
+  padding: 3px 8px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: $radius-sm;
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .tierNameBlock {

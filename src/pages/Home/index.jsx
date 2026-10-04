@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowRight } from 'lucide-react';
-import NavButton from '../../components/NavButton';
+import { ArrowRight } from 'lucide-react';
 import RowSlider from '../../components/RowSlider';
 import { api } from '../../services/api';
 import { getCached } from '../../services/apiCache';
@@ -163,10 +162,6 @@ export default function Home() {
               })}
 
               <div className={styles.heroContent}>
-                <div className={styles.heroKicker}>
-                  <Sparkles size={12} className={styles.kickerIcon} />
-                  <span>Destaque Oficial</span>
-                </div>
                 <h1 className={styles.heroTitle}>
                   {currentBanner.title?.split('\n').map((line, i) => (
                     <span key={i}>
@@ -207,24 +202,6 @@ export default function Home() {
                 ))}
               </div>
 
-              {heroSlides.length > 1 && (
-                <div className={styles.sliderArrows}>
-                  <NavButton
-                    direction="prev"
-                    iconType="chevron"
-                    className={styles.heroNavPrev}
-                    onClick={() => setActiveBanner((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
-                    aria-label="Slide anterior"
-                  />
-                  <NavButton
-                    direction="next"
-                    iconType="chevron"
-                    className={styles.heroNavNext}
-                    onClick={() => setActiveBanner((prev) => (prev + 1) % heroSlides.length)}
-                    aria-label="Próximo slide"
-                  />
-                </div>
-              )}
             </>
           ) : (
             <div className={styles.heroEmptyState}>

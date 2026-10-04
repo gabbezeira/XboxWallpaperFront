@@ -24,6 +24,7 @@ import {
   saveQueueMetaDb,
   loadQueueFromDb,
 } from '../../utils/uploadQueueDb';
+import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -251,12 +252,23 @@ export default function OfficialPublish({ onPublishComplete }) {
       saveQueueItemDb({ ...item, status: 'uploading' });
 
       try {
+        let fileToSend = item.file;
+        if (fileToSend.size > 3.5 * 1024 * 1024) {
+          setBatchProgress({
+            total: queue.length,
+            completed: completedCount,
+            failed: failedCount,
+            current: `Otimizando (${i + 1}/${queue.length}): ${item.title}...`,
+          });
+          fileToSend = await optimizeImageForUpload(fileToSend);
+        }
+
         const user = auth.currentUser;
         if (!user) throw new Error('Não autenticado');
         const token = await user.getIdToken();
 
         const formData = new FormData();
-        formData.append('image', item.file);
+        formData.append('image', fileToSend);
         formData.append('title', item.title || 'Sem título');
         if (globalGame.trim()) formData.append('game', globalGame.trim());
         if (targetCollectionId) formData.append('collectionId', targetCollectionId);
@@ -264,11 +276,19 @@ export default function OfficialPublish({ onPublishComplete }) {
         formData.append('isPublic', 'true');
         formData.append('publishAsAdmin', 'true');
 
-        const res = await fetch(`${API_URL}/api/wallpapers/upload`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        });
+        let res;
+        try {
+          res = await fetch(`${API_URL}/api/wallpapers/upload`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          });
+        } catch (netErr) {
+          if (netErr.message === 'Failed to fetch') {
+            throw new Error('Falha de conexão com a API ou tamanho da requisição excedido');
+          }
+          throw netErr;
+        }
 
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
@@ -282,12 +302,15 @@ export default function OfficialPublish({ onPublishComplete }) {
         saveQueueItemDb({ ...item, status: 'success' });
       } catch (err) {
         failedCount++;
+        const message = err.message === 'Failed to fetch'
+          ? 'Falha de conexão com a API'
+          : err.message;
         setBatchFiles((prev) =>
           prev.map((f) =>
-            f.id === item.id ? { ...f, status: 'error', error: err.message } : f
+            f.id === item.id ? { ...f, status: 'error', error: message } : f
           )
         );
-        saveQueueItemDb({ ...item, status: 'error', error: err.message });
+        saveQueueItemDb({ ...item, status: 'error', error: message });
       }
     }
 

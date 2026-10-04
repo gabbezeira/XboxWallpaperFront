@@ -1,5 +1,6 @@
 import { auth } from './firebase';
 import { getCached, setCache, invalidateCache } from './apiCache';
+import { optimizeImageForUpload } from '../utils/imageOptimizer';
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
 async function getToken() {
@@ -39,10 +40,18 @@ async function executeRequest(path, options = {}, retries = 3) {
     headers['Content-Type'] = 'application/json';
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (netErr) {
+    if (netErr.message === 'Failed to fetch') {
+      throw new Error('Falha de conexão com a API ou tamanho da requisição excedido');
+    }
+    throw netErr;
+  }
 
   if (res.status === 429 && retries > 0) {
     await new Promise((resolve) => setTimeout(resolve, 1500 * (4 - retries)));
@@ -80,6 +89,11 @@ export const api = {
     },
     listManage: () => request('/api/hero-slides/manage'),
     upload: async (formData) => {
+      const rawImage = formData.get('image');
+      if (rawImage instanceof File && rawImage.size > 3.5 * 1024 * 1024) {
+        const optimized = await optimizeImageForUpload(rawImage);
+        formData.set('image', optimized);
+      }
       const res = await request('/api/hero-slides/upload', { method: 'POST', body: formData });
       invalidateCache('/api/hero-slides');
       try { sessionStorage.removeItem('xboxwall_hero_slides_v2'); } catch {}
@@ -142,14 +156,16 @@ export const api = {
       setCache('/api/wallpapers/mine', null, data, 10 * 60 * 1000);
       return data;
     },
-    upload: async (file, { title, game, tags, isPublic, collectionId } = {}) => {
+    upload: async (file, { title, game, tags, isPublic, collectionId, publishAsAdmin } = {}) => {
+      const preparedFile = await optimizeImageForUpload(file);
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('image', preparedFile);
       if (title) formData.append('title', title);
       if (game) formData.append('game', game);
       if (tags && tags.length) formData.append('tags', JSON.stringify(tags));
       if (isPublic !== undefined) formData.append('isPublic', String(isPublic));
       if (collectionId) formData.append('collectionId', collectionId);
+      if (publishAsAdmin) formData.append('publishAsAdmin', 'true');
       const result = await request('/api/wallpapers/upload', { method: 'POST', body: formData });
       invalidateCache('/api/wallpapers');
       invalidateCache('/api/collections');

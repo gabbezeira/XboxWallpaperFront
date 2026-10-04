@@ -13,8 +13,8 @@ export function useUpload() {
 
     try {
       setUploading(true);
-      setError(null);
-      setProgress('Enviando imagem...');
+      const isLarge = file && file.size > 3.5 * 1024 * 1024;
+      setProgress(isLarge ? 'Otimizando e enviando imagem...' : 'Enviando imagem...');
 
       const result = await api.wallpapers.upload(file, metadata);
 

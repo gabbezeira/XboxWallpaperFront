@@ -2958,6 +2958,35 @@
   gap: 8px;
 }
 
+.btnSecondarySmall {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-family: $font-primary;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .btnDangerSmall {
   display: inline-flex;
   align-items: center;
@@ -2971,6 +3000,7 @@
   font-family: $font-primary;
   font-weight: $fw-semibold;
   cursor: pointer;
+  white-space: nowrap;
   transition: all $transition-fast;
 
   &:hover:not(:disabled) {
@@ -2982,6 +3012,43 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+}
+
+.batchResumeBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  background-color: rgba(16, 124, 16, 0.08);
+  border: 1px solid rgba(16, 124, 16, 0.35);
+  border-radius: $radius-lg;
+  padding: 12px $spacing-lg;
+  margin-bottom: $spacing-xl;
+  flex-wrap: wrap;
+}
+
+.batchResumeLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.batchResumeIcon {
+  color: #55d688;
+  flex-shrink: 0;
+}
+
+.batchResumeTitle {
+  font-size: 0.88rem;
+  font-weight: $fw-semibold;
+  color: #ffffff;
+  margin: 0;
+}
+
+.batchResumeSub {
+  font-size: 0.76rem;
+  color: $color-text-secondary;
+  margin: 2px 0 0 0;
 }
 
 .batchFilesList {

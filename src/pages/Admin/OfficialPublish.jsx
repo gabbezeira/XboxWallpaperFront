@@ -13,8 +13,17 @@ import {
   Plus,
   Trash2,
   CheckCircle2,
+  RotateCcw,
 } from 'lucide-react';
 import AdminHeader from './components/AdminHeader';
+import {
+  saveQueueItemDb,
+  saveAllQueueItemsDb,
+  deleteQueueItemDb,
+  clearQueueDb,
+  saveQueueMetaDb,
+  loadQueueFromDb,
+} from '../../utils/uploadQueueDb';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
@@ -43,6 +52,7 @@ export default function OfficialPublish({ onPublishComplete }) {
   const [batchProgress, setBatchProgress] = useState({ total: 0, completed: 0, failed: 0, current: '' });
   const [dragging, setDragging] = useState(false);
   const [completedSummary, setCompletedSummary] = useState(null);
+  const [interruptedNotice, setInterruptedNotice] = useState(false);
 
   const fileInputRef = useRef(null);
   const batchFilesRef = useRef(batchFiles);
@@ -60,13 +70,46 @@ export default function OfficialPublish({ onPublishComplete }) {
   }, []);
 
   useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (uploadingBatch) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [uploadingBatch]);
+
+  useEffect(() => {
     api.collections.list().then((res) => {
       setCollections(res || []);
+    }).catch(() => {});
+
+    loadQueueFromDb().then(({ items, meta }) => {
+      if (items && items.length > 0) {
+        const restored = items.map((item) => ({
+          ...item,
+          previewUrl: URL.createObjectURL(item.file),
+          status: item.status === 'uploading' ? 'idle' : item.status,
+        }));
+        setBatchFiles(restored);
+        if (meta.targetCollectionId) setTargetCollectionId(meta.targetCollectionId);
+        if (meta.globalGame) setGlobalGame(meta.globalGame);
+        if (meta.globalTags) setGlobalTags(meta.globalTags);
+        if (meta.titlePrefix) setTitlePrefix(meta.titlePrefix);
+
+        const hasPending = restored.some((f) => f.status !== 'success');
+        if (hasPending) {
+          setInterruptedNotice(true);
+        }
+      }
     }).catch(() => {});
   }, []);
 
   const handleFilesSelected = (filesList) => {
     setCompletedSummary(null);
+    setInterruptedNotice(false);
     const valid = Array.from(filesList).filter((f) =>
       f.type.startsWith('image/') || f.name.match(/\.(jpg|jpeg|png|webp)$/i)
     );
@@ -82,10 +125,15 @@ export default function OfficialPublish({ onPublishComplete }) {
       error: null,
     }));
 
-    setBatchFiles((prev) => [...prev, ...mapped]);
+    setBatchFiles((prev) => {
+      const updated = [...prev, ...mapped];
+      saveAllQueueItemsDb(updated);
+      return updated;
+    });
   };
 
   const handleRemoveFile = (id) => {
+    deleteQueueItemDb(id);
     setBatchFiles((prev) => {
       const found = prev.find((item) => item.id === id);
       if (found?.previewUrl) URL.revokeObjectURL(found.previewUrl);
@@ -94,25 +142,43 @@ export default function OfficialPublish({ onPublishComplete }) {
   };
 
   const handleClearAll = () => {
+    clearQueueDb();
     batchFiles.forEach((item) => {
       if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
     });
     setBatchFiles([]);
     setCompletedSummary(null);
+    setInterruptedNotice(false);
+  };
+
+  const handleTitleChange = (id, newTitle) => {
+    setBatchFiles((prev) =>
+      prev.map((f) => {
+        if (f.id === id) {
+          const updated = { ...f, title: newTitle };
+          saveQueueItemDb(updated);
+          return updated;
+        }
+        return f;
+      })
+    );
   };
 
   const handleApplyPrefix = () => {
     if (!titlePrefix.trim()) return;
     const cleanPrefix = titlePrefix.trim();
-    setBatchFiles((prev) =>
-      prev.map((item) => {
+    setBatchFiles((prev) => {
+      const updated = prev.map((item) => {
         if (item.title.startsWith(cleanPrefix)) return item;
         return {
           ...item,
           title: `${cleanPrefix} - ${item.title}`,
         };
-      })
-    );
+      });
+      saveAllQueueItemsDb(updated);
+      return updated;
+    });
+    saveQueueMetaDb('titlePrefix', cleanPrefix);
   };
 
   const handleAddSuggestedTag = (tag) => {
@@ -124,7 +190,28 @@ export default function OfficialPublish({ onPublishComplete }) {
     if (!existing.includes(tag.toLowerCase())) {
       const updated = [...existing, tag.toLowerCase()].join(', ');
       setGlobalTags(updated);
+      saveQueueMetaDb('globalTags', updated);
     }
+  };
+
+  const handleCollectionChange = (val) => {
+    setTargetCollectionId(val);
+    saveQueueMetaDb('targetCollectionId', val);
+  };
+
+  const handleGameChange = (val) => {
+    setGlobalGame(val);
+    saveQueueMetaDb('globalGame', val);
+  };
+
+  const handleTagsChange = (val) => {
+    setGlobalTags(val);
+    saveQueueMetaDb('globalTags', val);
+  };
+
+  const handlePrefixChange = (val) => {
+    setTitlePrefix(val);
+    saveQueueMetaDb('titlePrefix', val);
   };
 
   const handleStartBatchUpload = async () => {
@@ -132,6 +219,7 @@ export default function OfficialPublish({ onPublishComplete }) {
 
     setUploadingBatch(true);
     setCompletedSummary(null);
+    setInterruptedNotice(false);
     setBatchProgress({ total: batchFiles.length, completed: 0, failed: 0, current: 'Iniciando upload...' });
 
     const tagsArray = globalTags
@@ -160,6 +248,7 @@ export default function OfficialPublish({ onPublishComplete }) {
       setBatchFiles((prev) =>
         prev.map((f) => (f.id === item.id ? { ...f, status: 'uploading' } : f))
       );
+      saveQueueItemDb({ ...item, status: 'uploading' });
 
       try {
         const user = auth.currentUser;
@@ -190,6 +279,7 @@ export default function OfficialPublish({ onPublishComplete }) {
         setBatchFiles((prev) =>
           prev.map((f) => (f.id === item.id ? { ...f, status: 'success' } : f))
         );
+        saveQueueItemDb({ ...item, status: 'success' });
       } catch (err) {
         failedCount++;
         setBatchFiles((prev) =>
@@ -197,6 +287,7 @@ export default function OfficialPublish({ onPublishComplete }) {
             f.id === item.id ? { ...f, status: 'error', error: err.message } : f
           )
         );
+        saveQueueItemDb({ ...item, status: 'error', error: err.message });
       }
     }
 
@@ -232,6 +323,27 @@ export default function OfficialPublish({ onPublishComplete }) {
           </span>
         }
       />
+
+      {interruptedNotice && pendingCount > 0 && (
+        <div className={styles.batchResumeBanner} role="status">
+          <div className={styles.batchResumeLeft}>
+            <RotateCcw size={18} className={styles.batchResumeIcon} />
+            <div>
+              <h4 className={styles.batchResumeTitle}>Fila persistente restaurada</h4>
+              <p className={styles.batchResumeSub}>
+                {batchFiles.length - pendingCount} já enviados, {pendingCount} {pendingCount === 1 ? 'pendente' : 'pendentes'}. Os arquivos foram preservados e você pode continuar o envio sem perda de dados.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className={styles.btnSecondarySmall}
+            onClick={() => setInterruptedNotice(false)}
+          >
+            Dispensar aviso
+          </button>
+        </div>
+      )}
 
       {completedSummary && (
         <div className={styles.batchSuccessBanner} role="status">
@@ -275,7 +387,7 @@ export default function OfficialPublish({ onPublishComplete }) {
               <select
                 id="batch-collection"
                 value={targetCollectionId}
-                onChange={(e) => setTargetCollectionId(e.target.value)}
+                onChange={(e) => handleCollectionChange(e.target.value)}
                 className={styles.fieldSelect}
               >
                 <option value="">Apenas Catálogo Geral Público</option>
@@ -299,7 +411,7 @@ export default function OfficialPublish({ onPublishComplete }) {
                 type="text"
                 placeholder="Ex: Halo Infinite, Forza Horizon 5"
                 value={globalGame}
-                onChange={(e) => setGlobalGame(e.target.value)}
+                onChange={(e) => handleGameChange(e.target.value)}
                 className={styles.fieldInput}
               />
               <span className={styles.fieldHelp}>
@@ -323,7 +435,7 @@ export default function OfficialPublish({ onPublishComplete }) {
                 type="text"
                 placeholder="Ex: 4k, oled, paisagem, hdr"
                 value={globalTags}
-                onChange={(e) => setGlobalTags(e.target.value)}
+                onChange={(e) => handleTagsChange(e.target.value)}
                 className={styles.fieldInput}
               />
               <div className={styles.suggestedTagsRow}>
@@ -354,7 +466,7 @@ export default function OfficialPublish({ onPublishComplete }) {
                   type="text"
                   placeholder="Ex: Forza Horizon"
                   value={titlePrefix}
-                  onChange={(e) => setTitlePrefix(e.target.value)}
+                  onChange={(e) => handlePrefixChange(e.target.value)}
                   className={styles.fieldInput}
                 />
                 <button
@@ -399,6 +511,8 @@ export default function OfficialPublish({ onPublishComplete }) {
                 <span>
                   {uploadingBatch
                     ? 'Processando Envio...'
+                    : pendingCount < batchFiles.length && pendingCount > 0
+                    ? `Continuar Envio (${pendingCount} restantes)`
                     : `Publicar ${pendingCount} ${pendingCount === 1 ? 'Wallpaper' : 'Wallpapers'}`}
                 </span>
               </button>
@@ -516,12 +630,7 @@ export default function OfficialPublish({ onPublishComplete }) {
                         <input
                           type="text"
                           value={item.title}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setBatchFiles((prev) =>
-                              prev.map((f) => (f.id === item.id ? { ...f, title: val } : f))
-                            );
-                          }}
+                          onChange={(e) => handleTitleChange(item.id, e.target.value)}
                           className={styles.batchTitleInput}
                           disabled={uploadingBatch}
                           placeholder="Título do wallpaper"

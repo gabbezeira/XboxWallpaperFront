@@ -388,17 +388,16 @@
 
 .btnPrimary {
   @include btn-base;
-  background-color: transparent;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #000000;
   border: 1px solid #ffffff;
-  border-radius: $radius-sm;
+  border-radius: $radius-md;
   width: fit-content;
   min-height: 2.75rem;
   padding: 0.6rem 1.35rem;
   font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+  font-weight: $fw-semibold;
   text-decoration: none;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   transition: all $transition-fast;
 
   @include respond-to(2xl) {
@@ -420,21 +419,23 @@
 
   .btnArrow {
     transition: transform $transition-fast;
-    color: #ffffff;
+    color: #000000;
   }
 
   &:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.12);
-    border-color: #ffffff;
-    color: #ffffff;
+    background-color: #e6e6e6;
+    border-color: #e6e6e6;
+    color: #000000;
 
     .btnArrow {
       transform: translateX(3px);
+      color: #000000;
     }
   }
 
   &:active:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.22);
+    background-color: #cccccc;
+    border-color: #cccccc;
   }
 }
 

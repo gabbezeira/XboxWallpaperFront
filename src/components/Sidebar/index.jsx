@@ -9,7 +9,7 @@ import horizontalLogo from '../../assets/horizontal-logo.png';
 import styles from './styles.module.scss';
 
 export default function Sidebar({ onLoginClick }) {
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [tagCopied, setTagCopied] = useState(false);
 
   const navClass = ({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`;
@@ -47,7 +47,7 @@ export default function Sidebar({ onLoginClick }) {
           Coleções
         </NavLink>
 
-        {user ? (
+        {(user || loading) ? (
           <NavLink to="/favorites" className={navClass}>
             <Heart size={20} />
             Favoritos
@@ -59,7 +59,7 @@ export default function Sidebar({ onLoginClick }) {
           </button>
         )}
 
-        {user ? (
+        {(user || loading) ? (
           <NavLink to="/upload" className={navClass}>
             <UploadCloud size={20} />
             Enviar
@@ -71,7 +71,7 @@ export default function Sidebar({ onLoginClick }) {
           </button>
         )}
 
-        {user ? (
+        {(user || loading) ? (
           <NavLink to="/my-wallpapers" className={navClass}>
             <Images size={20} />
             Meus Wallpapers
@@ -152,7 +152,7 @@ export default function Sidebar({ onLoginClick }) {
               Sair
             </button>
           </>
-        ) : (
+        ) : !loading && (
           <button className={styles.btnLogin} onClick={onLoginClick}>
             Entrar
           </button>

@@ -17,7 +17,7 @@ import { useAuth } from '../../hooks/useAuth';
 import styles from './styles.module.scss';
 
 export default function BottomNav({ onLoginClick }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -156,7 +156,7 @@ export default function BottomNav({ onLoginClick }) {
           <span>Explorar</span>
         </NavLink>
 
-        {user ? (
+        {(user || loading) ? (
           <NavLink to="/upload" className={navClass} tabIndex={0}>
             <UploadCloud size={19} />
             <span>Enviar</span>
@@ -168,7 +168,7 @@ export default function BottomNav({ onLoginClick }) {
           </button>
         )}
 
-        {user ? (
+        {(user || loading) ? (
           <NavLink to="/favorites" className={navClass} tabIndex={0}>
             <Heart size={19} />
             <span>Favoritos</span>
@@ -180,7 +180,7 @@ export default function BottomNav({ onLoginClick }) {
           </button>
         )}
 
-        {user ? (
+        {(user || loading) ? (
           <NavLink to="/my-wallpapers" className={navClass} tabIndex={0}>
             <Images size={19} />
             <span>Meus</span>

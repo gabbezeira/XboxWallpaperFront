@@ -22,7 +22,7 @@ const HIDE_SEARCH_PREFIXES = ['/wallpaper/'];
 const IMMERSIVE_PREFIXES = ['/wallpaper/'];
 
 export default function Layout({ children, onLoginClick }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
   const shouldHideSearch =
     HIDE_SEARCH_ROUTES.includes(location.pathname) ||
@@ -98,7 +98,7 @@ export default function Layout({ children, onLoginClick }) {
               </form>
             ) : (
               <div className={styles.mobileUserSection}>
-                {user ? (
+                {(user || loading) ? (
                   <>
                     <div
                       className={`${styles.mobileAvatar} ${!user?.photoURL ? styles.mobileAvatarFallback : ''}`}
@@ -120,11 +120,13 @@ export default function Layout({ children, onLoginClick }) {
                         (user?.displayName || user?.email || 'U').charAt(0).toUpperCase()
                       )}
                     </div>
-                    <div className={styles.mobileUserInfo}>
-                      <span className={styles.mobileUserName}>
-                        {user?.displayName || user?.email?.split('@')[0] || 'Usuário'}
-                      </span>
-                    </div>
+                    {user && (
+                      <div className={styles.mobileUserInfo}>
+                        <span className={styles.mobileUserName}>
+                          {user?.displayName || user?.email?.split('@')[0] || 'Usuário'}
+                        </span>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>

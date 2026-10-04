@@ -3,11 +3,11 @@
 
 .page {
   flex: 1;
-  padding: $spacing-md;
+  padding: $spacing-md $spacing-md $spacing-2xl;
   background-color: $color-bg-main;
 
   @include respond-to(md) {
-    padding: $spacing-xl;
+    padding: $spacing-xl $spacing-xl $spacing-3xl;
   }
 }
 

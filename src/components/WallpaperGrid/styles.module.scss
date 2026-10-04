@@ -5,11 +5,11 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: $spacing-md;
-  padding: 0 $spacing-xl;
+  padding: 0;
+  width: 100%;
 
   @include respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
-    padding: 0;
   }
 
   @include respond-to(lg) {

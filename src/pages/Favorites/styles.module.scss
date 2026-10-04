@@ -4,12 +4,12 @@
 .page {
   flex: 1;
   min-height: 0;
-  padding: $spacing-lg 0;
+  padding: $spacing-lg 0 $spacing-2xl;
   display: flex;
   flex-direction: column;
 
   @include respond-to(md) {
-    padding: $spacing-2xl 0;
+    padding: $spacing-2xl 0 $spacing-3xl;
   }
 }
 
@@ -18,41 +18,12 @@
   flex-direction: column;
   gap: $spacing-2xl;
   width: 100%;
-
-  @include respond-to(md) {
-    gap: $spacing-3xl;
-  }
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
   padding: 0 $spacing-xl;
 
   @include respond-to(md) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    gap: $spacing-3xl;
     padding: 0;
   }
-}
-
-.titleArea {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-}
-
-.title {
-  font-size: $fs-title;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-}
-
-.subtitle {
-  font-size: $fs-body;
-  color: $color-text-secondary;
 }
 
 .emptyContainer {

@@ -22,22 +22,24 @@
   min-width: 0;
 
   padding: 0;
-  padding-bottom: calc(#{$bottom-nav-height} + env(safe-area-inset-bottom) + #{$spacing-md});
+  padding-bottom: calc(#{$bottom-nav-height} + env(safe-area-inset-bottom) + #{$spacing-2xl});
   gap: $spacing-xl;
 
   -webkit-overflow-scrolling: touch;
 
   @include respond-to(md) {
     padding: $spacing-xl;
-    padding-bottom: $spacing-xl;
+    padding-bottom: $spacing-3xl;
   }
 
   @include respond-to(2xl) {
     padding: $spacing-2xl;
+    padding-bottom: $spacing-4xl;
   }
 
   @include respond-to(4k) {
     padding: $spacing-3xl;
+    padding-bottom: $spacing-4xl;
   }
 
   &.immersive {

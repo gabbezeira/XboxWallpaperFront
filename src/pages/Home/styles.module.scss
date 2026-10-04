@@ -7,9 +7,11 @@
   gap: clamp(1.5rem, 3vw, 2.5rem);
   position: relative;
   isolation: isolate;
+  padding-bottom: $spacing-2xl;
 
   @include respond-to(md) {
     gap: $spacing-2xl;
+    padding-bottom: $spacing-3xl;
   }
 
   @include respond-to(2xl) {

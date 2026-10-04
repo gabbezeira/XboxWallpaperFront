@@ -3,12 +3,12 @@
 
 .page {
   flex: 1;
-  padding: $spacing-xl 0;
+  padding: $spacing-xl 0 $spacing-2xl;
   display: flex;
   flex-direction: column;
 
   @include respond-to(md) {
-    padding: $spacing-2xl 0;
+    padding: $spacing-2xl 0 $spacing-3xl;
   }
 }
 

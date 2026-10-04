@@ -418,24 +418,25 @@
   }
 
   .btnArrow {
-    transition: transform $transition-fast;
-    color: #000000;
+    transition: transform $transition-fast, color $transition-fast;
+    color: currentColor;
   }
 
   &:hover:not(:disabled) {
-    background-color: #e6e6e6;
-    border-color: #e6e6e6;
-    color: #000000;
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: #ffffff;
 
     .btnArrow {
       transform: translateX(3px);
-      color: #000000;
+      color: #ffffff;
     }
   }
 
   &:active:not(:disabled) {
-    background-color: #cccccc;
-    border-color: #cccccc;
+    background-color: $color-primary-hover;
+    border-color: $color-primary-hover;
+    color: #ffffff;
   }
 }
 

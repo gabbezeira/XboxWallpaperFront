@@ -245,67 +245,70 @@
   text-transform: uppercase;
   line-height: 1;
 
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+
   .badgeIcon {
     flex-shrink: 0;
   }
 
   &.level_1 {
-    background-color: #141820;
-    color: #f8fafc;
-    border: 1px solid #334155;
+    background-color: #334155;
+    color: #ffffff;
+    border: 1px solid #475569;
 
     .badgeIcon {
-      color: #94a3b8;
+      color: #ffffff;
     }
   }
 
   &.level_2 {
-    background-color: #2b1404;
-    color: #fef3c7;
-    border: 1px solid #b45309;
+    background-color: #ea580c;
+    color: #ffffff;
+    border: 1px solid #fb923c;
 
     .badgeIcon {
-      color: #f59e0b;
+      color: #ffffff;
     }
   }
 
   &.level_3 {
-    background-color: #0b1d3a;
-    color: #eff6ff;
-    border: 1px solid #2563eb;
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border: 1px solid #3b82f6;
 
     .badgeIcon {
-      color: #60a5fa;
+      color: #ffffff;
     }
   }
 
   &.level_4 {
-    background-color: #2d0618;
-    color: #faf5ff;
-    border: 1px solid #9333ea;
+    background-color: #dc2626;
+    color: #ffffff;
+    border: 1px solid #ef4444;
 
     .badgeIcon {
-      color: #c084fc;
+      color: #ffffff;
     }
   }
 
   &.level_5 {
-    background-color: #2c1802;
-    color: #fefce8;
-    border: 1px solid #ca8a04;
+    background-color: #b45309;
+    color: #ffffff;
+    border: 1px solid #f59e0b;
 
     .badgeIcon {
-      color: #eab308;
+      color: #ffffff;
     }
   }
 
   &.level_6 {
-    background-color: #032512;
-    color: #4ade80;
-    border: 1px solid #107c10;
+    background-color: #107c10;
+    color: #ffffff;
+    border: 1px solid #22c55e;
 
     .badgeIcon {
-      color: #4ade80;
+      color: #ffffff;
     }
   }
 }

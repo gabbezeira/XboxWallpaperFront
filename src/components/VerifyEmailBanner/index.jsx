@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, Check, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
+import { Mail, Check, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { resendVerificationEmail } from '../../services/auth';
 import styles from './styles.module.scss';
@@ -44,14 +44,14 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
       await resendVerificationEmail();
       setFeedback({
         type: 'success',
-        text: 'Link de confirmação enviado para o seu e-mail.',
+        text: 'Link de confirmação enviado para sua caixa de entrada.',
       });
       setCooldown(60);
       setTimeout(() => setFeedback(null), 6000);
     } catch {
       setFeedback({
         type: 'warning',
-        text: 'Aguarde antes de solicitar outro envio.',
+        text: 'Aguarde alguns instantes antes de reenviar.',
       });
       setCooldown(30);
       setTimeout(() => setFeedback(null), 5000);
@@ -77,7 +77,7 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
       } else {
         setFeedback({
           type: 'warning',
-          text: 'Ainda não confirmado. Acesse sua caixa de entrada e clique no link de confirmação.',
+          text: 'Ainda não confirmado. Clique no link que enviamos ao seu e-mail.',
         });
         setTimeout(() => setFeedback(null), 5000);
       }
@@ -105,7 +105,7 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
 
     return (
       <div className={`${styles.feedbackBox} ${alertClass}`} role="status">
-        <Icon size={14} className={styles.feedbackIcon} />
+        <Icon size={13} className={styles.feedbackIcon} />
         <span className={styles.feedbackText}>{feedback.text}</span>
       </div>
     );
@@ -113,26 +113,29 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
 
   if (variant === 'mobile') {
     return (
-      <aside className={styles.mobileContainer} role="alert">
+      <aside className={styles.mobileBanner} role="alert">
         <div className={styles.mobileTopRow}>
           <div className={styles.mobileHeaderLeft}>
-            <Mail size={15} className={styles.mobileIcon} />
+            <Mail size={14} className={styles.mobileMailIcon} />
             <span className={styles.mobileTitle}>Confirmação de e-mail</span>
           </div>
-          {isExistingAccount && isWithinGrace ? (
-            <span className={styles.badgeWarning}>
-              <Clock size={11} />
-              <span>{daysLeft}d restantes</span>
-            </span>
-          ) : (
-            <span className={styles.badgeDanger}>Ação necessária</span>
-          )}
+          <span
+            className={
+              isExistingAccount && isWithinGrace
+                ? styles.mobileGraceTag
+                : styles.mobileUrgentTag
+            }
+          >
+            {isExistingAccount && isWithinGrace
+              ? `${daysLeft}d restantes`
+              : 'Pendente'}
+          </span>
         </div>
 
         <p className={styles.mobileDesc}>
           {isExistingAccount && isWithinGrace
-            ? 'Confirme seu endereço para continuar publicando wallpapers após o período de carência.'
-            : 'Confirme seu endereço para liberar o envio de wallpapers e recursos de criador.'}
+            ? 'Confirme seu endereço para continuar publicando wallpapers.'
+            : 'Confirme seu endereço para liberar o envio de novos wallpapers.'}
         </p>
 
         {renderFeedback()}
@@ -140,35 +143,31 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
         <div className={styles.mobileActions}>
           <button
             type="button"
-            className={styles.btnCheck}
+            className={styles.mobilePrimaryBtn}
             onClick={handleCheckNow}
             disabled={checking}
           >
-            {checking ? (
-              <span className={styles.buttonSpinner} />
-            ) : (
-              <Check size={14} />
-            )}
+            {checking ? <span className={styles.spinner} /> : <Check size={14} />}
             <span>{checking ? 'Verificando...' : 'Já confirmei'}</span>
           </button>
 
           <button
             type="button"
-            className={styles.btnResend}
+            className={styles.mobileSecondaryBtn}
             onClick={handleResend}
             disabled={loading || cooldown > 0}
           >
             {loading ? (
-              <span className={styles.buttonSpinner} />
+              <span className={styles.spinner} />
             ) : (
-              <Mail size={14} />
+              <Mail size={13} />
             )}
             <span>
               {loading
                 ? 'Enviando...'
                 : cooldown > 0
-                ? `Reenviar (${cooldown}s)`
-                : 'Reenviar link'}
+                ? `${cooldown}s`
+                : 'Reenviar'}
             </span>
           </button>
         </div>
@@ -177,71 +176,68 @@ export default function VerifyEmailBanner({ variant = 'sidebar' }) {
   }
 
   return (
-    <div className={styles.sidebarContainer} role="alert">
-      <div className={styles.sidebarHeader}>
-        <div className={styles.iconBox}>
-          <Mail size={16} />
+    <div className={styles.sidebarCard} role="alert">
+      <div className={styles.cardHeader}>
+        <div className={styles.headerIcon}>
+          <Mail size={15} />
         </div>
-        <div className={styles.headerMeta}>
-          <div className={styles.headerTitleRow}>
-            <span className={styles.sidebarTitle}>Confirme seu e-mail</span>
-            {isExistingAccount && isWithinGrace ? (
-              <span className={styles.badgeWarning}>
-                <Clock size={11} />
-                <span>{daysLeft}d</span>
-              </span>
-            ) : (
-              <span className={styles.badgeDanger}>Pendente</span>
-            )}
-          </div>
+        <div className={styles.headerInfo}>
+          <span
+            className={
+              isExistingAccount && isWithinGrace
+                ? styles.kickerGrace
+                : styles.kickerUrgent
+            }
+          >
+            {isExistingAccount && isWithinGrace
+              ? `${daysLeft} dias restantes`
+              : 'Ação necessária'}
+          </span>
+          <h4 className={styles.cardTitle}>Confirme seu e-mail</h4>
           {user.email && (
-            <span className={styles.targetEmail} title={user.email}>
+            <span className={styles.cardEmail} title={user.email}>
               {user.email}
             </span>
           )}
         </div>
       </div>
 
-      <p className={styles.sidebarDesc}>
+      <p className={styles.cardDesc}>
         {isExistingAccount && isWithinGrace
-          ? 'Confirme seu endereço para continuar publicando wallpapers após a carência.'
-          : 'Confirme seu endereço para liberar uploads e coleções.'}
+          ? 'Confirme para manter acesso total a uploads e criação de coleções.'
+          : 'Confirme seu endereço para liberar envios e coleções.'}
       </p>
 
       {renderFeedback()}
 
-      <div className={styles.sidebarActions}>
+      <div className={styles.cardActions}>
         <button
           type="button"
-          className={styles.btnCheck}
+          className={styles.btnPrimary}
           onClick={handleCheckNow}
           disabled={checking}
         >
-          {checking ? (
-            <span className={styles.buttonSpinner} />
-          ) : (
-            <Check size={14} />
-          )}
+          {checking ? <span className={styles.spinner} /> : <Check size={14} />}
           <span>{checking ? 'Verificando...' : 'Já confirmei'}</span>
         </button>
 
         <button
           type="button"
-          className={styles.btnResend}
+          className={styles.btnSecondary}
           onClick={handleResend}
           disabled={loading || cooldown > 0}
         >
           {loading ? (
-            <span className={styles.buttonSpinner} />
+            <span className={styles.spinner} />
           ) : (
-            <Mail size={14} />
+            <Mail size={13} />
           )}
           <span>
             {loading
               ? 'Enviando...'
               : cooldown > 0
-              ? `${cooldown}s`
-              : 'Reenviar'}
+              ? `Reenviar (${cooldown}s)`
+              : 'Reenviar link'}
           </span>
         </button>
       </div>

@@ -1,38 +1,39 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-.sidebarContainer {
+.sidebarCard {
   width: 100%;
   box-sizing: border-box;
-  background-color: $color-bg-secondary;
-  border: 1px solid $color-border;
+  background-color: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-lg;
-  padding: $spacing-md;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: 10px;
 }
 
-.sidebarHeader {
+.cardHeader {
   display: flex;
-  align-items: center;
-  gap: $spacing-sm;
+  align-items: flex-start;
+  gap: 10px;
 }
 
-.iconBox {
-  width: 32px;
-  height: 32px;
-  border-radius: $radius-md;
+.headerIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-sm;
   background-color: $color-bg-tertiary;
-  border: 1px solid $color-border;
-  color: $color-warning;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: $color-text-secondary;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.headerMeta {
+.headerInfo {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -40,60 +41,42 @@
   flex: 1;
 }
 
-.headerTitleRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: $spacing-xs;
-}
-
-.sidebarTitle {
-  font-size: 0.88rem;
+.kickerGrace {
+  font-size: 0.68rem;
   font-weight: $fw-bold;
-  color: $color-text-primary;
-  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fcd34d;
+  line-height: 1;
 }
 
-.targetEmail {
+.kickerUrgent {
+  font-size: 0.68rem;
+  font-weight: $fw-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #f87171;
+  line-height: 1;
+}
+
+.cardTitle {
+  font-size: 0.92rem;
+  font-weight: $fw-bold;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.cardEmail {
   font-size: 0.74rem;
   color: $color-text-muted;
-  font-family: monospace;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
-.badgeWarning {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  border-radius: $radius-xs;
-  background-color: #241808;
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #fcd34d;
-  font-size: 0.68rem;
-  font-weight: $fw-semibold;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.badgeDanger {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  border-radius: $radius-xs;
-  background-color: #290b0b;
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #f87171;
-  font-size: 0.68rem;
-  font-weight: $fw-semibold;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.sidebarDesc {
+.cardDesc {
   font-size: 0.78rem;
   color: $color-text-secondary;
   line-height: 1.4;
@@ -105,7 +88,7 @@
   align-items: flex-start;
   gap: 6px;
   padding: 8px 10px;
-  border-radius: $radius-sm;
+  border-radius: $radius-xs;
   font-size: 0.76rem;
   line-height: 1.35;
 }
@@ -137,29 +120,87 @@
   flex: 1;
 }
 
-.sidebarActions {
+.cardActions {
   display: flex;
-  align-items: center;
-  gap: $spacing-xs;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
 }
 
-.mobileContainer {
+.btnPrimary {
+  width: 100%;
+  height: 34px;
+  border-radius: $radius-sm;
+  background-color: $color-primary;
+  color: #ffffff;
+  border: none;
+  font-family: $font-primary;
+  font-size: 0.8rem;
+  font-weight: $fw-semibold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.btnSecondary {
+  width: 100%;
+  height: 30px;
+  border-radius: $radius-sm;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: $color-text-muted;
+  font-family: $font-primary;
+  font-size: 0.76rem;
+  font-weight: $fw-medium;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.mobileBanner {
   width: 100%;
   box-sizing: border-box;
-  background-color: $color-bg-secondary;
-  border-bottom: 1px solid $color-border;
-  padding: $spacing-sm $spacing-md;
+  background-color: #0d0d0d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
+  gap: 8px;
 }
 
 .mobileTopRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $spacing-sm;
+  gap: 8px;
 }
 
 .mobileHeaderLeft {
@@ -168,7 +209,7 @@
   gap: 6px;
 }
 
-.accentIcon {
+.mobileMailIcon {
   color: $color-warning;
   flex-shrink: 0;
 }
@@ -176,7 +217,33 @@
 .mobileTitle {
   font-size: 0.85rem;
   font-weight: $fw-bold;
-  color: $color-text-primary;
+  color: #ffffff;
+}
+
+.mobileGraceTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: $radius-xs;
+  background-color: #241808;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fcd34d;
+  font-size: 0.68rem;
+  font-weight: $fw-semibold;
+  white-space: nowrap;
+}
+
+.mobileUrgentTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: $radius-xs;
+  background-color: #290b0b;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  font-size: 0.68rem;
+  font-weight: $fw-semibold;
+  white-space: nowrap;
 }
 
 .mobileDesc {
@@ -189,38 +256,71 @@
 .mobileActions {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 8px;
   width: 100%;
-  margin-top: 2px;
 }
 
-.btnCheck {
-  @include btn-primary;
+.mobilePrimaryBtn {
   flex: 1;
-  height: 34px;
+  height: 36px;
+  border-radius: $radius-sm;
+  background-color: $color-primary;
+  color: #ffffff;
+  border: none;
+  font-family: $font-primary;
   font-size: 0.8rem;
   font-weight: $fw-semibold;
-  border-radius: $radius-sm;
-  padding: 0 $spacing-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
 }
 
-.btnResend {
-  @include btn-secondary;
+.mobileSecondaryBtn {
   flex: 1;
-  height: 34px;
-  font-size: 0.8rem;
-  font-weight: $fw-semibold;
+  height: 36px;
   border-radius: $radius-sm;
-  padding: 0 $spacing-sm;
-  border: 1px solid $color-border;
+  background-color: $color-bg-tertiary;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: $color-text-primary;
+  font-family: $font-primary;
+  font-size: 0.8rem;
+  font-weight: $fw-medium;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
 }
 
-.buttonSpinner {
-  width: 13px;
-  height: 13px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
   border-top-color: #ffffff;
   border-radius: $radius-full;
   animation: spin 0.7s linear infinite;

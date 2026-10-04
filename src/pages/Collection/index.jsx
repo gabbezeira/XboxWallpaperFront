@@ -94,12 +94,20 @@ export default function Collection() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const bannerSrc = useMemo(() => {
+    if (!collection?.bannerUrl) return null;
+    if (collection.bannerUrl.includes('thumb=true')) {
+      return collection.bannerUrl.replace('thumb=true', 'preview=true');
+    }
+    return collection.bannerUrl;
+  }, [collection?.bannerUrl]);
+
   return (
     <div className={styles.page}>
-      {collection?.bannerUrl && (
+      {bannerSrc && (
         <div className={styles.bannerContainer}>
           <img
-            src={collection.bannerUrl}
+            src={bannerSrc}
             alt={collection.name}
             className={styles.bannerImg}
             decoding="async"

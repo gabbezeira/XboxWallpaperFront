@@ -261,20 +261,25 @@
 }
 
 .btnClearFilters {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: $color-primary;
-  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: $color-text-primary;
+  font-size: $fs-small;
   font-family: $font-primary;
   font-weight: $fw-semibold;
   cursor: pointer;
-  padding: 6px 14px;
-  border-radius: 4px;
+  padding: 10px 20px;
+  border-radius: $radius-full;
   transition: all $transition-fast;
+  @include gamepad-focus;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: $color-primary;
+    background-color: $color-bg-tertiary;
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
   }
 }
 

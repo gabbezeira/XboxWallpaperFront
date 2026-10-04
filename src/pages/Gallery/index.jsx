@@ -8,6 +8,7 @@ import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import EmptyState from '../../components/EmptyState';
 import PageHeader from '../../components/PageHeader';
+import SearchBar from '../../components/SearchBar';
 import {
   Search,
   X,
@@ -219,32 +220,21 @@ export default function Gallery() {
           title="Explorar"
           subtitle="Encontre os melhores wallpapers para seu Xbox"
           action={
-            <form className={styles.mobileSearch} onSubmit={handleMobileSearch}>
-              <Search size={18} className={styles.searchIcon} />
-              <input
-                type="text"
-                placeholder="Buscar wallpapers..."
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                className={styles.searchInput}
-              />
-              {localSearch && (
-                <button
-                  type="button"
-                  className={styles.searchClear}
-                  onClick={() => {
-                    setLocalSearch('');
-                    const newParams = new URLSearchParams(searchParams);
-                    newParams.delete('q');
-                    newParams.set('page', '1');
-                    setSearchParams(newParams);
-                  }}
-                  aria-label="Limpar busca"
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </form>
+            <SearchBar
+              variant="mobile"
+              className={styles.mobileSearch}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              onSubmit={handleMobileSearch}
+              onClear={() => {
+                setLocalSearch('');
+                const newParams = new URLSearchParams(searchParams);
+                newParams.delete('q');
+                newParams.set('page', '1');
+                setSearchParams(newParams);
+              }}
+              placeholder="Buscar"
+            />
           }
         />
 

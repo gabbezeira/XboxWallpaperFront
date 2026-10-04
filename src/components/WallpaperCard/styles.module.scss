@@ -166,11 +166,11 @@
   font-weight: $fw-semibold;
   letter-spacing: 0.02em;
   font-family: $font-primary;
-  background: rgba(10, 12, 16, 0.75);
+  background: rgba(13, 13, 13, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
   color: #e4e4e7;
   cursor: pointer;
   transition: all $transition-fast;
@@ -184,24 +184,24 @@
   }
 
   &:hover {
-    background: rgba(18, 22, 30, 0.92);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: #1a1a1a;
+    border-color: rgba(255, 255, 255, 0.25);
     color: #ffffff;
   }
 
   &.triggerPublic {
-    background: rgba(16, 124, 16, 0.22);
-    border-color: rgba(16, 124, 16, 0.5);
+    background: rgba(14, 98, 38, 0.88);
+    border-color: rgba(34, 197, 94, 0.6);
     color: #ffffff;
 
     .statusIcon {
-      color: #22c55e;
+      color: #4ade80;
     }
   }
 
   &.triggerPending {
-    background: rgba(217, 119, 6, 0.22);
-    border-color: rgba(217, 119, 6, 0.5);
+    background: rgba(180, 83, 9, 0.82);
+    border-color: rgba(245, 158, 11, 0.6);
     color: #fef3c7;
 
     .statusIcon {
@@ -210,8 +210,8 @@
   }
 
   &.triggerRejected {
-    background: rgba(220, 38, 38, 0.22);
-    border-color: rgba(220, 38, 38, 0.5);
+    background: rgba(185, 28, 28, 0.82);
+    border-color: rgba(239, 68, 68, 0.6);
     color: #fee2e2;
 
     .statusIcon {
@@ -220,7 +220,7 @@
   }
 
   &.triggerPrivate {
-    background: rgba(20, 22, 28, 0.78);
+    background: rgba(18, 18, 18, 0.88);
     border-color: rgba(255, 255, 255, 0.12);
     color: #d4d4d8;
 
@@ -251,11 +251,11 @@
   top: calc(100% + 6px);
   left: 0;
   min-width: 130px;
-  background: rgba(14, 17, 23, 0.96);
+  background: #0d0d0d;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85);
   border-radius: $radius-md;
   padding: 5px;
   display: flex;
@@ -315,26 +315,26 @@
   font-weight: $fw-semibold;
   letter-spacing: 0.02em;
   font-family: $font-primary;
-  background: rgba(10, 12, 16, 0.75);
+  background: rgba(13, 13, 13, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
   color: #e4e4e7;
 
   &.approved {
-    background: rgba(16, 124, 16, 0.22);
-    border-color: rgba(16, 124, 16, 0.5);
+    background: rgba(14, 98, 38, 0.88);
+    border-color: rgba(34, 197, 94, 0.6);
     color: #ffffff;
 
     .statusIcon {
-      color: #22c55e;
+      color: #4ade80;
     }
   }
 
   &.pending {
-    background: rgba(217, 119, 6, 0.22);
-    border-color: rgba(217, 119, 6, 0.5);
+    background: rgba(180, 83, 9, 0.82);
+    border-color: rgba(245, 158, 11, 0.6);
     color: #fef3c7;
 
     .statusIcon {
@@ -343,8 +343,8 @@
   }
 
   &.rejected {
-    background: rgba(220, 38, 38, 0.22);
-    border-color: rgba(220, 38, 38, 0.5);
+    background: rgba(185, 28, 28, 0.82);
+    border-color: rgba(239, 68, 68, 0.6);
     color: #fee2e2;
 
     .statusIcon {
@@ -353,7 +353,7 @@
   }
 
   &.private {
-    background: rgba(20, 22, 28, 0.78);
+    background: rgba(18, 18, 18, 0.88);
     border-color: rgba(255, 255, 255, 0.12);
     color: #d4d4d8;
 

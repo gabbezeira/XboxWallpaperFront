@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, LogOut, User, X } from 'lucide-react';
+import { Search, LogOut, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import Sidebar from '../Sidebar';
 import BottomNav from '../BottomNav';
 import UserAvatar from '../UserAvatar';
+import SearchBar from '../SearchBar';
 import styles from './styles.module.scss';
 
 const MOBILE_MAX = 768;
@@ -114,28 +115,19 @@ export default function Layout({ children, onLoginClick }) {
         <>
           <header className={styles.mobileHeader}>
             {mobileSearchOpen ? (
-              <form className={styles.mobileSearchForm} onSubmit={handleSearchSubmit}>
-                <Search size={18} className={styles.searchIcon} />
-                <input
-                  ref={mobileSearchRef}
-                  type="text"
-                  placeholder="Buscar wallpapers..."
-                  className={styles.mobileSearchInput}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button
-                  type="button"
-                  className={styles.mobileSearchClose}
-                  onClick={() => {
-                    setMobileSearchOpen(false);
-                    setSearchQuery('');
-                  }}
-                  aria-label="Fechar busca"
-                >
-                  <X size={18} />
-                </button>
-              </form>
+              <SearchBar
+                inputRef={mobileSearchRef}
+                variant="mobile"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onSubmit={handleSearchSubmit}
+                onClear={() => {
+                  setMobileSearchOpen(false);
+                  setSearchQuery('');
+                }}
+                placeholder="Buscar"
+                autoFocus
+              />
             ) : (
               <div className={styles.mobileUserSection}>
                 {(user || loading) ? (
@@ -187,31 +179,19 @@ export default function Layout({ children, onLoginClick }) {
       <main className={`${styles.main} ${isImmersive ? styles.immersive : ''} ${is404 ? styles.fullCentered : ''}`}>
         {!isMobile && !shouldHideSearch && (
           <div className={styles.topBar}>
-            <form className={styles.searchForm} onSubmit={handleSearchSubmit}>
-              <Search size={20} className={styles.searchIcon} />
-              <input
-                type="text"
-                placeholder="Buscar wallpapers, jogos ou tags..."
-                className={styles.searchInput}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  className={styles.searchClear}
-                  onClick={() => {
-                    setSearchQuery('');
-                    if (location.pathname === '/gallery') {
-                      navigate('/gallery');
-                    }
-                  }}
-                  aria-label="Limpar busca"
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </form>
+            <SearchBar
+              variant="topbar"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onSubmit={handleSearchSubmit}
+              onClear={() => {
+                setSearchQuery('');
+                if (location.pathname === '/gallery') {
+                  navigate('/gallery');
+                }
+              }}
+              placeholder="Buscar"
+            />
           </div>
         )}
         {children}

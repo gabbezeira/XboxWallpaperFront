@@ -101,7 +101,7 @@ export const api = {
       const cached = getCached('/api/wallpapers/mine');
       if (cached) return cached;
       const data = await request('/api/wallpapers/mine');
-      setCache('/api/wallpapers/mine', null, data, 60 * 1000);
+      setCache('/api/wallpapers/mine', null, data, 10 * 60 * 1000);
       return data;
     },
     upload: async (file, { title, game, tags, isPublic, collectionId } = {}) => {
@@ -167,7 +167,7 @@ export const api = {
       const cached = getCached('/api/collections/mine');
       if (cached) return cached;
       const data = await request('/api/collections/mine');
-      setCache('/api/collections/mine', null, data, 60 * 1000);
+      setCache('/api/collections/mine', null, data, 10 * 60 * 1000);
       return data;
     },
     removeWallpaperFromMine: async (wallpaperId) => {
@@ -273,13 +273,11 @@ export const api = {
     add: async (wallpaperId) => {
       const result = await request(`/api/favorites/${wallpaperId}`, { method: 'POST' });
       invalidateCache('/api/favorites');
-      invalidateCache('/api/wallpapers');
       return result;
     },
     remove: async (wallpaperId) => {
       const result = await request(`/api/favorites/${wallpaperId}`, { method: 'DELETE' });
       invalidateCache('/api/favorites');
-      invalidateCache('/api/wallpapers');
       return result;
     },
   },

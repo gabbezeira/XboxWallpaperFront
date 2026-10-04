@@ -10,7 +10,7 @@ import {
   OAuthProvider,
 } from 'firebase/auth';
 import { auth } from './firebase';
-import { clearAllCache } from './apiCache';
+import { clearAllCache, setCache } from './apiCache';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
@@ -31,7 +31,7 @@ async function syncWithBackend(user) {
       photoURL = photoURL.replace(/s\d+(-c)/, 's400$1');
     }
 
-    await fetch(`${API_URL}/api/auth/sync`, {
+    const res = await fetch(`${API_URL}/api/auth/sync`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,6 +39,16 @@ async function syncWithBackend(user) {
       },
       body: JSON.stringify({ displayName, photoURL }),
     });
+
+    if (res.ok) {
+      const profile = await res.json();
+      if (profile && profile.uid) {
+        setCache('/api/wallpapers/profile', null, profile, 2 * 60 * 1000);
+        try {
+          localStorage.setItem('spartan_user_profile', JSON.stringify(profile));
+        } catch {}
+      }
+    }
   } catch (error) {
     console.warn('[Auth] Erro ao sincronizar com backend:', error);
   }

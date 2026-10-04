@@ -494,7 +494,7 @@ export default function DebugMetrics() {
 
           <div className={styles.cacheCard}>
             <div className={styles.cacheCardHeader}>
-              <Heart size={16} />
+              <Heart size={16} fill="currentColor" />
               <span className={styles.cacheCardTitle}>Favoritos por Usuário</span>
             </div>
             <div className={styles.cacheCardValue}>

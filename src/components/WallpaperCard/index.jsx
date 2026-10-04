@@ -200,7 +200,7 @@ const WallpaperCard = memo(function WallpaperCard({
         <div className={styles.actions}>
           {!showStatus && (
             <div className={styles.cardFavBadge}>
-              <Heart size={12} className={styles.cardFavIcon} />
+              <Heart size={12} className={styles.cardFavIcon} fill="currentColor" />
               <span>{wallpaper.favoriteCount || 0}</span>
             </div>
           )}

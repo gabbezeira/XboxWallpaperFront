@@ -170,12 +170,12 @@ export default function BottomNav({ onLoginClick }) {
 
         {user ? (
           <NavLink to="/favorites" className={navClass} tabIndex={0}>
-            <Heart size={19} />
+            <Heart size={19} fill="currentColor" />
             <span>Favoritos</span>
           </NavLink>
         ) : (
           <button className={styles.navItem} onClick={onLoginClick} tabIndex={0}>
-            <Heart size={19} />
+            <Heart size={19} fill="currentColor" />
             <span>Favoritos</span>
           </button>
         )}

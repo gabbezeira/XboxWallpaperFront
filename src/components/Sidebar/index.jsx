@@ -49,12 +49,12 @@ export default function Sidebar({ onLoginClick }) {
 
         {user ? (
           <NavLink to="/favorites" className={navClass}>
-            <Heart size={20} />
+            <Heart size={20} fill="currentColor" />
             Favoritos
           </NavLink>
         ) : (
           <button className={styles.navItem} onClick={onLoginClick}>
-            <Heart size={20} />
+            <Heart size={20} fill="currentColor" />
             Favoritos
           </button>
         )}
@@ -141,7 +141,7 @@ export default function Sidebar({ onLoginClick }) {
                     {userLevel.label}
                   </Link>
                   <div className={styles.profileFavBadge} title="Total de Favoritos Recebidos">
-                    <Heart size={10} />
+                    <Heart size={10} fill="currentColor" />
                     <span>{profile?.totalFavoritesReceived || 0}</span>
                   </div>
                 </div>

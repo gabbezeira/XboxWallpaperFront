@@ -1,5 +1,14 @@
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Scale, Lock, Image as ImageIcon, Mail, BookOpen, Award } from 'lucide-react';
+import {
+  ShieldCheck,
+  Scale,
+  Lock,
+  Image as ImageIcon,
+  Mail,
+  BookOpen,
+  Award,
+  ArrowRight,
+} from 'lucide-react';
 import avatar from '../../assets/avatar.jpeg';
 import styles from './styles.module.scss';
 
@@ -8,106 +17,118 @@ export default function Terms() {
     <div className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Termos de Uso e Privacidade</h1>
-          <p className={styles.subtitle}>
-            Diretrizes legais, uso responsável dos recursos e compromisso com a privacidade dos membros da comunidade Spartan Wallpapers.
-          </p>
+          <div className={styles.headerContent}>
+            <span className={styles.kicker}>Transparência &amp; Conformidade</span>
+            <h1 className={styles.title}>Termos de Uso e Privacidade</h1>
+            <p className={styles.subtitle}>
+              Diretrizes de utilização responsável dos recursos, proteção de dados e respeito integral à propriedade intelectual no Spartan Wallpapers.
+            </p>
+          </div>
         </header>
 
-        <div className={styles.content}>
-          <section className={styles.cardPrimary}>
-            <div className={styles.cardIconBox}>
-              <Scale size={24} />
-            </div>
-            <div className={styles.cardBody}>
-              <h2 className={styles.cardTitle}>Aviso Legal e Natureza do Projeto</h2>
-              <p className={styles.cardText}>
-                O <strong>Spartan Wallpapers</strong> é uma plataforma independente, gratuita e sem fins lucrativos, desenvolvida por entusiastas para a personalização de consoles da família Xbox.
-              </p>
-              <p className={styles.cardText}>
-                Este serviço <strong>não possui vínculo oficial</strong>, afiliação, autorização, patrocínio ou endosso da <strong>Microsoft Corporation</strong>, da divisão <strong>Xbox</strong> ou de qualquer uma de suas subsidiárias.
-              </p>
-            </div>
-          </section>
+        <section className={styles.disclaimerCard}>
+          <div className={styles.disclaimerIconBox}>
+            <Scale size={24} />
+          </div>
+          <div className={styles.disclaimerBody}>
+            <h2 className={styles.disclaimerTitle}>Aviso Legal e Natureza Independente</h2>
+            <p className={styles.disclaimerText}>
+              O <strong>Spartan Wallpapers</strong> é uma plataforma comunitária, independente, gratuita e sem fins lucrativos, criada exclusivamente por fãs para a personalização estética de consoles da família Xbox.
+            </p>
+            <p className={styles.disclaimerText}>
+              Este projeto <strong>não possui afiliação oficial</strong>, vínculo societário, patrocínio ou chancela da <strong>Microsoft Corporation</strong>, da divisão <strong>Xbox</strong> ou de qualquer um de seus estúdios subsidiários.
+            </p>
+          </div>
+        </section>
 
-          <div className={styles.sectionsGrid}>
-            <section className={styles.sectionCard}>
-              <div className={styles.sectionHeader}>
-                <div className={styles.sectionIcon}>
-                  <ShieldCheck size={20} />
-                </div>
-                <h2 className={styles.sectionTitle}>Marcas Registradas e Direitos</h2>
-              </div>
-              <p className={styles.sectionText}>
-                Os termos Xbox, Xbox Game Studios, marcas registradas, logotipos e identificadores visuais relacionados pertencem à Microsoft Corporation. Todas as franquias, personagens e materiais promocionais referenciados pertencem aos seus respectivos estúdios e publicadoras.
-              </p>
-              <p className={styles.sectionText}>
-                A exibição nesta plataforma tem caráter estritamente referencial e de catalogação estética sem qualquer intuito comercial.
-              </p>
-            </section>
-
-            <section className={styles.sectionCard}>
-              <div className={styles.sectionHeader}>
-                <div className={styles.sectionIcon}>
-                  <Lock size={20} />
-                </div>
-                <h2 className={styles.sectionTitle}>Privacidade e Dados de Conta</h2>
-              </div>
-              <p className={styles.sectionText}>
-                A autenticação via conta Microsoft ou e-mail obtém somente dados públicos essenciais (nome de exibição, e-mail e foto de perfil) para sincronizar seus favoritos, coleções e uploads na nuvem.
-              </p>
-              <p className={styles.sectionText}>
-                Não armazenamos senhas de contas externas, não solicitamos dados financeiros e não compartilhamos registros com terceiros.
-              </p>
-            </section>
-
-            <section className={styles.sectionCard}>
-              <div className={styles.sectionHeader}>
-                <div className={styles.sectionIcon}>
-                  <ImageIcon size={20} />
-                </div>
-                <h2 className={styles.sectionTitle}>Conteúdo Enviado pela Comunidade</h2>
-              </div>
-              <p className={styles.sectionText}>
-                Ao enviar papéis de parede para a plataforma, o usuário se compromete a disponibilizar capturas de tela legítimas, fan arts autorizadas ou materiais de domínio público sem violar direitos autorais de terceiros.
-              </p>
-              <p className={styles.sectionText}>
-                Envios com teor ofensivo, conteúdo adulto explícito, violência desmedida ou publicidade não solicitada serão sumariamente removidos.
-              </p>
-            </section>
-
-            <section className={styles.sectionCard}>
-              <div className={styles.sectionHeader}>
-                <div className={styles.sectionIcon}>
-                  <Mail size={20} />
-                </div>
-                <h2 className={styles.sectionTitle}>Moderação e Remoção (DMCA)</h2>
-              </div>
-              <p className={styles.sectionText}>
-                Detentores de direitos autorais ou artistas que identificarem obras suas publicadas sem autorização podem solicitar a despublicação ou exclusão imediata entrando em contato pelos canais do projeto.
-              </p>
-              <p className={styles.sectionText}>
-                A equipe atende a pedidos fundamentados com prioridade máxima e sem necessidade de litígio formal.
-              </p>
-            </section>
+        <section className={styles.mainSection}>
+          <div className={styles.sectionHeading}>
+            <h2 className={styles.sectionTitle}>Pilares de Operação</h2>
+            <p className={styles.sectionDescription}>
+              Diretrizes que regem o armazenamento, a moderação e o acesso às informações na plataforma.
+            </p>
           </div>
 
+          <div className={styles.pillarsGrid}>
+            <article className={styles.pillarCard}>
+              <div className={styles.pillarHeader}>
+                <div className={styles.pillarIconBox}>
+                  <ShieldCheck size={20} />
+                </div>
+                <h3 className={styles.pillarTitle}>Marcas e Propriedade Intelectual</h3>
+              </div>
+              <p className={styles.pillarText}>
+                As marcas nominais Xbox, Xbox Series X|S, Xbox One, logotipos e identificadores visuais relacionados pertencem à Microsoft Corporation. Personagens, títulos e artes de jogos citados pertencem aos seus respectivos estúdios e publicadoras.
+              </p>
+              <p className={styles.pillarText}>
+                A exibição de capturas e temas tem caráter estritamente artístico, informativo e de catalogação estética pessoal sem fins comerciais.
+              </p>
+            </article>
+
+            <article className={styles.pillarCard}>
+              <div className={styles.pillarHeader}>
+                <div className={styles.pillarIconBox}>
+                  <Lock size={20} />
+                </div>
+                <h3 className={styles.pillarTitle}>Privacidade e Dados de Conta</h3>
+              </div>
+              <p className={styles.pillarText}>
+                A autenticação via Microsoft ou e-mail obtém somente dados públicos essenciais (nome de exibição, e-mail e foto pública) para sincronizar seu acervo, favoritos e preferências no ecossistema de nuvem.
+              </p>
+              <p className={styles.pillarText}>
+                Não armazenamos senhas de contas externas, não solicitamos informações financeiras e não compartilhamos nem comercializamos seus dados com terceiros.
+              </p>
+            </article>
+
+            <article className={styles.pillarCard}>
+              <div className={styles.pillarHeader}>
+                <div className={styles.pillarIconBox}>
+                  <ImageIcon size={20} />
+                </div>
+                <h3 className={styles.pillarTitle}>Conteúdo Enviado pela Comunidade</h3>
+              </div>
+              <p className={styles.pillarText}>
+                Ao enviar papéis de parede, o autor declara disponibilizar capturas de tela in-game legítimas, fotografias virtuais autorais ou artes de uso permitido, respeitando a legislação de direitos autorais aplicável.
+              </p>
+              <p className={styles.pillarText}>
+                Conteúdos com teor ofensivo, material pornográfico, violência explícita gratuita ou mensagens promocionais não solicitadas são sumariamente excluídos pela moderação.
+              </p>
+            </article>
+
+            <article className={styles.pillarCard}>
+              <div className={styles.pillarHeader}>
+                <div className={styles.pillarIconBox}>
+                  <Mail size={20} />
+                </div>
+                <h3 className={styles.pillarTitle}>Canal de Remoção (DMCA)</h3>
+              </div>
+              <p className={styles.pillarText}>
+                Artistas, estúdios ou titulares de direitos que identificarem obras de sua autoria compartilhadas sem prévia autorização podem solicitar despublicação ou remoção imediata por meio dos canais oficiais do projeto.
+              </p>
+              <p className={styles.pillarText}>
+                A equipe atende a solicitações fundamentadas com máxima celeridade, atuando proativamente para preservar os direitos dos criadores originais.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section className={styles.authorSection}>
           <div className={styles.authorCard}>
             <img src={avatar} alt="Gabriel Alves" className={styles.authorAvatar} />
             <div className={styles.authorInfo}>
-              <div className={styles.authorNameRow}>
+              <div className={styles.authorTitleRow}>
                 <span className={styles.authorName}>Gabriel Alves</span>
-                <span className={styles.authorTag}>Criador &amp; Mantenedor</span>
+                <span className={styles.authorBadge}>Criador &amp; Mantenedor</span>
               </div>
               <p className={styles.authorBio}>
-                Desenvolvido de fã para fãs com foco em máxima compatibilidade técnica, navegabilidade fluida no console e respeito à comunidade.
+                Desenvolvido com carinho de fã para fãs, priorizando navegabilidade fluida no console, conformidade com os limites de hardware do Edge e respeito integral aos criadores de conteúdo do Xbox.
               </p>
               <div className={styles.authorLinks}>
                 <a
                   href="https://x.com/Gabbezeira"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.authorSocialLink}
+                  className={styles.authorLink}
                   title="Perfil no X (@Gabbezeira)"
                   tabIndex={0}
                 >
@@ -126,38 +147,40 @@ export default function Terms() {
               </div>
             </div>
           </div>
+        </section>
 
-          <div className={styles.navCards}>
-            <Link to="/guide" className={styles.navCard} tabIndex={0}>
-              <div className={styles.navCardIcon}>
-                <BookOpen size={20} />
-              </div>
-              <div className={styles.navCardContent}>
-                <span className={styles.navCardTitle}>Guia de Uso</span>
-                <span className={styles.navCardDesc}>Passo a passo completo de login no Xbox e envio</span>
-              </div>
-            </Link>
+        <section className={styles.navigationGrid}>
+          <Link to="/guide" className={styles.navCard} tabIndex={0}>
+            <div className={styles.navCardIconBox}>
+              <BookOpen size={20} />
+            </div>
+            <div className={styles.navCardBody}>
+              <h3 className={styles.navCardTitle}>Guia de Uso</h3>
+              <p className={styles.navCardDesc}>Instruções completas para login no Xbox via QR Code e especificações</p>
+            </div>
+            <ArrowRight size={16} className={styles.navCardArrow} />
+          </Link>
 
-            <Link to="/levels" className={styles.navCard} tabIndex={0}>
-              <div className={styles.navCardIcon}>
-                <Award size={20} />
-              </div>
-              <div className={styles.navCardContent}>
-                <span className={styles.navCardTitle}>Níveis &amp; Badges</span>
-                <span className={styles.navCardDesc}>Conheça as patentes e como desbloquear cotas de upload</span>
-              </div>
-            </Link>
-          </div>
+          <Link to="/levels" className={styles.navCard} tabIndex={0}>
+            <div className={styles.navCardIconBox}>
+              <Award size={20} />
+            </div>
+            <div className={styles.navCardBody}>
+              <h3 className={styles.navCardTitle}>Níveis &amp; Patentes</h3>
+              <p className={styles.navCardDesc}>Conheça as patentes temáticas e o desbloqueio de slots de upload</p>
+            </div>
+            <ArrowRight size={16} className={styles.navCardArrow} />
+          </Link>
+        </section>
 
-          <footer className={styles.footer}>
-            <p className={styles.footerText}>
-              © 2026 Spartan Wallpapers. Plataforma comunitária independente mantida sob diretrizes de uso leal (Fair Use).
-            </p>
-            <p className={styles.footerText}>
-              Xbox e Microsoft são marcas registradas da Microsoft Corporation.
-            </p>
-          </footer>
-        </div>
+        <footer className={styles.footer}>
+          <p className={styles.footerNote}>
+            © 2026 Spartan Wallpapers. Plataforma comunitária independente mantida sob diretrizes de uso leal (Fair Use).
+          </p>
+          <p className={styles.footerNote}>
+            Xbox e Microsoft são marcas registradas da Microsoft Corporation.
+          </p>
+        </footer>
       </div>
     </div>
   );

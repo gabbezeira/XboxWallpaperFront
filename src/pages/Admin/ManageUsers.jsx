@@ -325,7 +325,7 @@ export default function ManageUsers() {
                             <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 8}
                           </span>
                           <span title="Favoritos Recebidos" className={styles.statPill}>
-                            <Heart size={12} /> {u.totalFavoritesReceived || 0}
+                            <Heart size={12} fill="currentColor" /> {u.totalFavoritesReceived || 0}
                           </span>
                         </div>
                       </td>
@@ -440,7 +440,7 @@ export default function ManageUsers() {
                       <ImageIcon size={12} /> {u.imageCount || 0} / {u.maxImages || 8}
                     </span>
                     <span className={styles.statPill}>
-                      <Heart size={12} /> {u.totalFavoritesReceived || 0}
+                      <Heart size={12} fill="currentColor" /> {u.totalFavoritesReceived || 0}
                     </span>
                   </div>
                 </div>

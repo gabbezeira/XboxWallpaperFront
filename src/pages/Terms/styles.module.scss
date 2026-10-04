@@ -3,32 +3,20 @@
 
 .page {
   flex: 1;
-  padding: $spacing-xl 0;
-  display: flex;
-  flex-direction: column;
+  padding: $spacing-md;
+  background-color: $color-bg-main;
 
   @include respond-to(md) {
-    padding: $spacing-2xl 0;
+    padding: $spacing-xl;
   }
 }
 
 .inner {
-  max-width: 900px;
-  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: $spacing-xl;
-  padding: 0 $spacing-xl;
-
-  @include respond-to(md) {
-    padding: 0;
-    gap: $spacing-2xl;
-  }
-
-  @include respond-to(2xl) {
-    max-width: 1000px;
-  }
+  gap: $spacing-2xl;
 }
 
 .header {
@@ -37,48 +25,58 @@
   gap: $spacing-xs;
 }
 
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  max-width: 760px;
+}
+
+.kicker {
+  font-size: 11px;
+  font-weight: $fw-bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: $color-primary;
+}
+
 .title {
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
   letter-spacing: -0.5px;
 }
 
 .subtitle {
   font-size: $fs-body;
   color: $color-text-secondary;
-  line-height: 1.6;
+  margin: 0;
+  line-height: 1.5;
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xl;
-}
-
-.cardPrimary {
+.disclaimerCard {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  padding: $spacing-lg;
-  border-radius: $radius-xl;
+  padding: $spacing-xl;
   background-color: $color-bg-secondary;
-  border: 1px solid $color-border;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: $radius-lg;
 
   @include respond-to(md) {
     flex-direction: row;
     align-items: flex-start;
-    padding: $spacing-xl;
     gap: $spacing-lg;
   }
 }
 
-.cardIconBox {
+.disclaimerIconBox {
   width: 48px;
   height: 48px;
-  border-radius: $radius-lg;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+  border-radius: $radius-md;
+  background-color: $color-bg-tertiary;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,22 +84,25 @@
   flex-shrink: 0;
 }
 
-.cardBody {
+.disclaimerBody {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
+  flex: 1;
 }
 
-.cardTitle {
+.disclaimerTitle {
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 }
 
-.cardText {
+.disclaimerText {
   font-size: $fs-body;
-  line-height: 1.6;
   color: $color-text-secondary;
+  line-height: 1.6;
+  margin: 0;
 
   strong {
     color: $color-text-primary;
@@ -109,38 +110,68 @@
   }
 }
 
-.sectionsGrid {
+.mainSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.sectionHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.sectionDescription {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  margin: 0;
+}
+
+.pillarsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-lg;
+  gap: $spacing-md;
 
   @include respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.sectionCard {
+.pillarCard {
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
-  padding: $spacing-lg;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
+  padding: $spacing-xl;
   background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: $radius-lg;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
 }
 
-.sectionHeader {
+.pillarHeader {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
 }
 
-.sectionIcon {
-  width: 36px;
-  height: 36px;
+.pillarIconBox {
+  width: 40px;
+  height: 40px;
   border-radius: $radius-md;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+  background-color: $color-bg-tertiary;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,32 +179,37 @@
   flex-shrink: 0;
 }
 
-.sectionTitle {
+.pillarTitle {
   font-size: $fs-body;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 }
 
-.sectionText {
+.pillarText {
   font-size: $fs-small;
-  line-height: 1.6;
   color: $color-text-secondary;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.authorSection {
+  width: 100%;
 }
 
 .authorCard {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-lg;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
+  gap: $spacing-lg;
+  padding: $spacing-xl;
   background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: $radius-lg;
 
   @include respond-to(md) {
     flex-direction: row;
     align-items: center;
     gap: $spacing-xl;
-    padding: $spacing-xl;
   }
 }
 
@@ -193,7 +229,7 @@
   flex: 1;
 }
 
-.authorNameRow {
+.authorTitleRow {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
@@ -206,33 +242,35 @@
   color: $color-text-primary;
 }
 
-.authorTag {
-  font-size: $fs-small;
+.authorBadge {
+  font-size: 11px;
   color: $color-primary;
-  background-color: #1a1a1a;
+  background-color: $color-bg-tertiary;
   padding: 3px 10px;
   border-radius: $radius-full;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   font-weight: $fw-semibold;
+  letter-spacing: 0.5px;
 }
 
 .authorBio {
   font-size: $fs-small;
   color: $color-text-secondary;
   line-height: 1.5;
+  margin: 0;
 }
 
 .authorLinks {
   margin-top: $spacing-xs;
 }
 
-.authorSocialLink {
+.authorLink {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+  background-color: $color-bg-tertiary;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: $radius-md;
   color: $color-text-primary;
   text-decoration: none;
@@ -251,7 +289,7 @@
   flex-shrink: 0;
 }
 
-.navCards {
+.navigationGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: $spacing-md;
@@ -265,26 +303,31 @@
   display: flex;
   align-items: center;
   gap: $spacing-md;
-  padding: $spacing-lg;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
+  padding: $spacing-xl;
   background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: $radius-lg;
   text-decoration: none;
   transition: border-color $transition-fast, transform $transition-fast;
   @include gamepad-focus;
 
   &:hover {
-    border-color: $color-primary;
+    border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
+
+    .navCardArrow {
+      color: $color-primary;
+      transform: translateX(4px);
+    }
   }
 }
 
-.navCardIcon {
+.navCardIconBox {
   width: 44px;
   height: 44px;
   border-radius: $radius-md;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+  background-color: $color-bg-tertiary;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -292,33 +335,43 @@
   flex-shrink: 0;
 }
 
-.navCardContent {
+.navCardBody {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
 }
 
 .navCardTitle {
   font-size: $fs-body;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 }
 
 .navCardDesc {
   font-size: $fs-small;
   color: $color-text-secondary;
+  margin: 0;
+}
+
+.navCardArrow {
+  color: $color-text-muted;
+  transition: all $transition-fast;
+  flex-shrink: 0;
 }
 
 .footer {
   padding-top: $spacing-lg;
-  border-top: 1px solid $color-border;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.footerText {
+.footerNote {
   font-size: $fs-small;
   color: $color-text-muted;
   line-height: 1.5;
+  margin: 0;
 }

@@ -275,7 +275,7 @@ export default function WallpaperDetailsPage() {
               className={`${styles.btnFavIcon} ${fav ? styles.isFav : ''}`}
               onClick={handleToggleFavorite}
             >
-              <Heart size={24} fill={fav ? 'currentColor' : 'none'} />
+              <Heart size={24} fill="currentColor" />
             </button>
           </div>
 
@@ -309,7 +309,7 @@ export default function WallpaperDetailsPage() {
 
             <div className={styles.stats}>
               <div className={styles.statFav} title="Total de favoritos">
-                <Heart size={14} className={styles.statFavIcon} />
+                <Heart size={14} className={styles.statFavIcon} fill="currentColor" />
                 <span>{wallpaper.favoriteCount || 0}</span>
               </div>
               <div className={styles.stat}>

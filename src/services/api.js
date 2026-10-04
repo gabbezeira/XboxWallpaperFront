@@ -277,12 +277,21 @@ export const api = {
   },
 
   profile: {
-    get: () => request('/api/wallpapers/profile'),
-    updatePreferences: (preferences) =>
-      request('/api/wallpapers/preferences', {
+    get: async () => {
+      const cached = getCached('/api/wallpapers/profile');
+      if (cached) return cached;
+      const data = await request('/api/wallpapers/profile');
+      setCache('/api/wallpapers/profile', null, data, 2 * 60 * 1000);
+      return data;
+    },
+    updatePreferences: async (preferences) => {
+      const res = await request('/api/wallpapers/preferences', {
         method: 'PATCH',
         body: JSON.stringify({ preferences }),
-      }),
+      });
+      invalidateCache('/api/wallpapers/profile');
+      return res;
+    },
   },
 
   deviceAuth: {

@@ -2,15 +2,32 @@ import { createContext, useState, useEffect, useCallback, useMemo, useRef } from
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, authReady } from '../services/firebase';
 import { api } from '../services/api';
+import { invalidateCache } from '../services/apiCache';
 import { handleAuthRedirectResult } from '../services/auth';
+
+const CACHED_PROFILE_KEY = 'spartan_user_profile';
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const isMountedRef = useRef(true);
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [profile, setProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem(CACHED_PROFILE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isAdmin, setIsAdmin] = useState(() => {
+    try {
+      const saved = localStorage.getItem(CACHED_PROFILE_KEY);
+      return saved ? Boolean(JSON.parse(saved)?.isAdmin) : false;
+    } catch {
+      return false;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
 
@@ -23,6 +40,14 @@ export function AuthProvider({ children }) {
       const tokenResult = await firebaseUser.getIdTokenResult(forceRefresh);
       const adminStatus = Boolean(tokenResult.claims.admin);
       if (isMountedRef.current) setIsAdmin(adminStatus);
+      try {
+        const saved = localStorage.getItem(CACHED_PROFILE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          parsed.isAdmin = adminStatus;
+          localStorage.setItem(CACHED_PROFILE_KEY, JSON.stringify(parsed));
+        }
+      } catch {}
       return adminStatus;
     } catch {
       if (isMountedRef.current) setIsAdmin(false);
@@ -35,10 +60,15 @@ export function AuthProvider({ children }) {
     try {
       const data = await api.profile.get();
       if (isMountedRef.current) {
-        setProfile({
+        const fullProfile = {
           ...data,
+          uid: firebaseUser.uid,
           maxImages: data?.maxImages || 8,
-        });
+        };
+        setProfile(fullProfile);
+        try {
+          localStorage.setItem(CACHED_PROFILE_KEY, JSON.stringify(fullProfile));
+        } catch {}
       }
     } catch (error) {
       console.warn('[Auth] Erro ao buscar perfil:', error);
@@ -73,6 +103,14 @@ export function AuthProvider({ children }) {
         if (!isMountedRef.current) return;
         setUser(firebaseUser);
         if (firebaseUser) {
+          try {
+            const saved = localStorage.getItem(CACHED_PROFILE_KEY);
+            const parsed = saved ? JSON.parse(saved) : null;
+            if (parsed && parsed.uid && parsed.uid !== firebaseUser.uid) {
+              setProfile(null);
+              localStorage.removeItem(CACHED_PROFILE_KEY);
+            }
+          } catch {}
           await Promise.all([
             fetchProfile(firebaseUser),
             checkAdminClaim(firebaseUser),
@@ -80,6 +118,9 @@ export function AuthProvider({ children }) {
         } else {
           setProfile(null);
           setIsAdmin(false);
+          try {
+            localStorage.removeItem(CACHED_PROFILE_KEY);
+          } catch {}
         }
         setLoading(false);
       });
@@ -94,7 +135,10 @@ export function AuthProvider({ children }) {
   }, [fetchProfile, checkAdminClaim]);
 
   const refreshProfile = useCallback(async () => {
-    if (user) await fetchProfile(user);
+    if (user) {
+      invalidateCache('/api/wallpapers/profile');
+      await fetchProfile(user);
+    }
   }, [user, fetchProfile]);
 
   const refreshAdminStatus = useCallback(async () => {

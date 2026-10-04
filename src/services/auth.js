@@ -10,6 +10,7 @@ import {
   OAuthProvider,
 } from 'firebase/auth';
 import { auth } from './firebase';
+import { clearAllCache } from './apiCache';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
@@ -57,6 +58,10 @@ export const signUpWithEmail = async (email, password, displayName) => {
 };
 
 export const logOut = async () => {
+  try {
+    localStorage.removeItem('spartan_user_profile');
+  } catch {}
+  clearAllCache();
   await signOut(auth);
   sessionStorage.clear();
 };

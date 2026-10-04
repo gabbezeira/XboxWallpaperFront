@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import AdminRoute from './components/AdminRoute';
 import { Analytics } from '@vercel/analytics/react';
 import GlobalLoader from './components/GlobalLoader';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Gallery = lazy(() => import('./pages/Gallery'));
 const MyWallpapers = lazy(() => import('./pages/MyWallpapers'));
@@ -26,6 +27,7 @@ const AdminLogin = lazy(() => import('./pages/Admin/Login'));
 const LinkDevice = lazy(() => import('./pages/LinkDevice'));
 const Guide = lazy(() => import('./pages/Guide'));
 const Collections = lazy(() => import('./pages/Collections'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function AppRoutes() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -94,6 +96,7 @@ function AppRoutes() {
                       </ProtectedRoute>
                     }
                   />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </Layout>
             }
@@ -108,13 +111,15 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <FavoritesProvider>
-          <Analytics />
-          <AppRoutes />
-        </FavoritesProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <FavoritesProvider>
+            <Analytics />
+            <AppRoutes />
+          </FavoritesProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

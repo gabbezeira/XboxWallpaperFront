@@ -8,6 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import { formatFileSize } from '../../utils/format.js';
 import Loader from '../../components/Loader';
+import NotFound from '../NotFound';
 import { getTierByKey, getUserTier, getTierCssClass } from '../../config/tiers';
 import styles from './styles.module.scss';
 
@@ -205,7 +206,12 @@ export default function WallpaperDetailsPage() {
   }
 
   if (!wallpaper?.id) {
-    return <Navigate to="/" replace />;
+    return (
+      <NotFound
+        title="Wallpaper não encontrado"
+        description="O wallpaper que você está procurando pode ter sido removido, arquivado ou nunca existiu."
+      />
+    );
   }
 
   const fav = isFavorite(wallpaper.id);

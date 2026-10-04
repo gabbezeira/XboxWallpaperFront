@@ -71,7 +71,6 @@ export default function MyWallpapers() {
             : w
         )
       );
-      await refreshProfile();
     } catch (err) {
       setErrorModal({
         open: true,

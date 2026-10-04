@@ -59,12 +59,24 @@ export default function Layout({ children, onLoginClick }) {
     }
   }, [mobileSearchOpen]);
 
+  useEffect(() => {
+    if (location.pathname === '/gallery') {
+      const qParam = new URLSearchParams(location.search).get('q') || '';
+      setSearchQuery(qParam);
+    } else {
+      setSearchQuery('');
+    }
+  }, [location.pathname, location.search]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/gallery?q=${encodeURIComponent(searchQuery.trim())}`);
+    const trimmed = searchQuery.trim();
+    if (trimmed) {
+      navigate(`/gallery?q=${encodeURIComponent(trimmed)}`);
       setMobileSearchOpen(false);
-      setSearchQuery('');
+    } else if (location.pathname === '/gallery') {
+      navigate('/gallery');
+      setMobileSearchOpen(false);
     }
   };
 
@@ -173,6 +185,21 @@ export default function Layout({ children, onLoginClick }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  className={styles.searchClear}
+                  onClick={() => {
+                    setSearchQuery('');
+                    if (location.pathname === '/gallery') {
+                      navigate('/gallery');
+                    }
+                  }}
+                  aria-label="Limpar busca"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </form>
           </div>
         )}

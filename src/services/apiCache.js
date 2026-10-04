@@ -5,10 +5,11 @@ const cache = new Map();
 function buildKey(path, params) {
   if (!params || typeof params !== 'object') return path;
   const sorted = Object.keys(params)
+    .filter((k) => params[k] !== undefined && params[k] !== null && params[k] !== '')
     .sort()
     .map((k) => `${k}=${params[k]}`)
     .join('&');
-  return `${path}?${sorted}`;
+  return sorted ? `${path}?${sorted}` : path;
 }
 
 export function getCached(path, params) {

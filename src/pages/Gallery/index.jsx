@@ -227,6 +227,22 @@ export default function Gallery() {
               onChange={(e) => setLocalSearch(e.target.value)}
               className={styles.searchInput}
             />
+            {localSearch && (
+              <button
+                type="button"
+                className={styles.searchClear}
+                onClick={() => {
+                  setLocalSearch('');
+                  const newParams = new URLSearchParams(searchParams);
+                  newParams.delete('q');
+                  newParams.set('page', '1');
+                  setSearchParams(newParams);
+                }}
+                aria-label="Limpar busca"
+              >
+                <X size={16} />
+              </button>
+            )}
           </form>
         </div>
 

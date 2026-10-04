@@ -29,6 +29,7 @@ export default function TierBadge({
         <TierIcon size={size === 'small' ? 11 : size === 'large' ? 15 : 13} className={styles.badgeIcon} />
       )}
       <span className={styles.badgeLabel}>{label}</span>
+      <span className={styles.shimmerEffect} aria-hidden="true" />
     </div>
   );
 }

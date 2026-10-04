@@ -125,8 +125,16 @@
 
   .badgeLabel {
     position: relative;
-    overflow: hidden;
     display: inline-block;
+  }
+
+  .shimmerEffect {
+    position: absolute;
+    inset: 1.5px;
+    border-radius: calc(#{$radius-sm} - 1.5px);
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
 
     &::after {
       content: '';
@@ -138,10 +146,9 @@
       background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba(255, 255, 255, 0.7) 50%,
+        rgba(255, 255, 255, 0.4) 50%,
         transparent 100%
       );
-      pointer-events: none;
       transform: translateX(-160%) skewX(-20deg);
       animation: badgeShimmer 2.8s ease-in-out infinite;
     }
@@ -160,6 +167,11 @@
 
     &::after {
       border-radius: $radius-xs;
+    }
+
+    .shimmerEffect {
+      inset: 1px;
+      border-radius: calc(#{$radius-xs} - 1px);
     }
   }
 
@@ -195,12 +207,12 @@
     color: #ffffff;
 
     &::before {
-      background: linear-gradient(
+      background-image: linear-gradient(
         135deg,
-        rgba(234, 88, 12, 0.45) 0%,
-        rgba(194, 65, 12, 0.28) 50%,
-        rgba(26, 11, 4, 0.95) 100%
-      ), #140903;
+        #c2410c 0%,
+        #a2380f 45%,
+        #7c2d12 100%
+      );
     }
 
     &::after {
@@ -223,12 +235,12 @@
     color: #ffffff;
 
     &::before {
-      background: linear-gradient(
+      background-image: linear-gradient(
         135deg,
-        rgba(14, 165, 233, 0.42) 0%,
-        rgba(2, 132, 199, 0.26) 50%,
-        rgba(8, 22, 42, 0.95) 100%
-      ), #061120;
+        #0284c7 0%,
+        #0369a1 45%,
+        #075985 100%
+      );
     }
 
     &::after {
@@ -251,12 +263,12 @@
     color: #ffffff;
 
     &::before {
-      background: linear-gradient(
+      background-image: linear-gradient(
         135deg,
-        rgba(225, 29, 72, 0.45) 0%,
-        rgba(190, 18, 60, 0.28) 50%,
-        rgba(36, 5, 18, 0.95) 100%
-      ), #15030a;
+        #e11d48 0%,
+        #be123c 45%,
+        #881337 100%
+      );
     }
 
     &::after {
@@ -279,12 +291,12 @@
     color: #ffffff;
 
     &::before {
-      background: linear-gradient(
+      background-image: linear-gradient(
         135deg,
-        rgba(168, 85, 247, 0.48) 0%,
-        rgba(124, 58, 237, 0.3) 50%,
-        rgba(32, 7, 56, 0.95) 100%
-      ), #130322;
+        #7c3aed 0%,
+        #6d28d9 45%,
+        #4c1d95 100%
+      );
     }
 
     &::after {
@@ -308,12 +320,12 @@
     color: #ffffff;
 
     &::before {
-      background: linear-gradient(
+      background-image: linear-gradient(
         135deg,
-        rgba(0, 255, 136, 0.42) 0%,
-        rgba(16, 124, 16, 0.28) 50%,
-        rgba(4, 34, 16, 0.95) 100%
-      ), #02140a;
+        #107c10 0%,
+        #0d630d 45%,
+        #064006 100%
+      );
     }
 
     &::after {

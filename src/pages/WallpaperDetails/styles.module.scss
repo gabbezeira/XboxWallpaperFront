@@ -253,19 +253,19 @@
   }
 
   &.level_1 {
-    background-color: #334155;
-    color: #ffffff;
-    border: 1px solid #475569;
+    background-color: #374151;
+    color: #f9fafb;
+    border: 1px solid rgba(255, 255, 255, 0.14);
 
     .badgeIcon {
-      color: #ffffff;
+      color: #f9fafb;
     }
   }
 
   &.level_2 {
-    background-color: #ea580c;
+    background-color: #c2410c;
     color: #ffffff;
-    border: 1px solid #fb923c;
+    border: 1px solid rgba(255, 255, 255, 0.18);
 
     .badgeIcon {
       color: #ffffff;
@@ -273,9 +273,9 @@
   }
 
   &.level_3 {
-    background-color: #1d4ed8;
+    background-color: #1e40af;
     color: #ffffff;
-    border: 1px solid #3b82f6;
+    border: 1px solid rgba(255, 255, 255, 0.18);
 
     .badgeIcon {
       color: #ffffff;
@@ -283,9 +283,9 @@
   }
 
   &.level_4 {
-    background-color: #dc2626;
+    background-color: #7c3aed;
     color: #ffffff;
-    border: 1px solid #ef4444;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 
     .badgeIcon {
       color: #ffffff;
@@ -295,7 +295,7 @@
   &.level_5 {
     background-color: #b45309;
     color: #ffffff;
-    border: 1px solid #f59e0b;
+    border: 1px solid rgba(255, 255, 255, 0.18);
 
     .badgeIcon {
       color: #ffffff;
@@ -305,7 +305,7 @@
   &.level_6 {
     background-color: #107c10;
     color: #ffffff;
-    border: 1px solid #22c55e;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 
     .badgeIcon {
       color: #ffffff;

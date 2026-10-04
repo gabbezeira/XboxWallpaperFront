@@ -3,69 +3,89 @@
 
 .page {
   flex: 1;
-  padding: $spacing-xl 0;
-  display: flex;
-  flex-direction: column;
-
-  @include respond-to(md) {
-    padding: $spacing-2xl 0;
-  }
-}
-
-.inner {
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xl;
-  padding: 0 $spacing-xl;
-
-  @include respond-to(md) {
-    padding: 0;
-    gap: $spacing-2xl;
-  }
-
-  @include respond-to(2xl) {
-    max-width: 1200px;
-  }
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-}
-
-.title {
-  font-size: $fs-title;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-  letter-spacing: -0.5px;
-}
-
-.subtitle {
-  font-size: $fs-body;
-  color: $color-text-secondary;
-  line-height: 1.6;
-  max-width: 780px;
-}
-
-.userStatusCard {
-  background-color: $color-bg-secondary;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
-  padding: $spacing-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
+  padding: $spacing-md;
+  background-color: $color-bg-main;
 
   @include respond-to(md) {
     padding: $spacing-xl;
   }
 }
 
-.userStatusHeader {
+.inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  max-width: 760px;
+}
+
+.kicker {
+  font-size: 11px;
+  font-weight: $fw-bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: $color-primary;
+}
+
+.title {
+  font-size: $fs-title;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: $fs-body;
+  color: $color-text-secondary;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.btnHeaderAction {
+  @include btn-secondary;
+  text-decoration: none;
+  font-size: $fs-small;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.userDashboard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-xl;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+}
+
+.userProfileRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,7 +93,7 @@
   gap: $spacing-md;
 }
 
-.userStatusProfile {
+.userIdentity {
   display: flex;
   align-items: center;
   gap: $spacing-md;
@@ -84,19 +104,19 @@
   height: 48px;
   border-radius: $radius-full;
   overflow: hidden;
-  background-color: $color-primary;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: $fw-bold;
-  color: #000;
+  color: $color-text-primary;
   font-size: 1.1rem;
   flex-shrink: 0;
-  border: 2px solid $color-primary;
 
   &.avatarFallback {
-    background: linear-gradient(135deg, $color-primary 0%, #0d5f0d 100%);
-    color: #fff;
+    background-color: $color-primary;
+    color: #ffffff;
   }
 }
 
@@ -106,55 +126,53 @@
   object-fit: cover;
 }
 
-.userStatusMeta {
+.userInfo {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.userStatusNameRow {
+.userNameRow {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.userStatusName {
+.userName {
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
 }
 
-.userStatusTag {
+.userTag {
   font-size: $fs-small;
   color: $color-text-muted;
-  font-weight: $fw-medium;
+  font-family: monospace;
 }
 
-.userStatusBadges {
+.userBadgeWrapper {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  flex-wrap: wrap;
 }
 
 .tierBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
-  font-size: 11px;
+  padding: 4px 10px;
+  font-size: 10px;
   font-weight: $fw-bold;
   border-radius: $radius-sm;
   letter-spacing: 0.6px;
   text-transform: uppercase;
   line-height: 1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 
   .badgeIcon {
     flex-shrink: 0;
   }
-
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 
   &.level_1 {
     background-color: #334155;
@@ -217,57 +235,83 @@
   }
 }
 
-.favBadge {
-  display: inline-flex;
+.userMetricsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: $spacing-md $spacing-lg;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+}
+
+.metricValueWithIcon {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: $radius-sm;
-  padding: 5px 12px;
-  font-size: 11px;
-  font-weight: $fw-semibold;
+  gap: $spacing-xs;
+}
+
+.metricHeartIcon {
+  color: $color-favorite;
+}
+
+.metricStorageIcon {
+  color: $color-primary;
+}
+
+.metricValue {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
   color: $color-text-primary;
 }
 
-.favHeartIcon {
-  color: $color-danger;
-  fill: $color-danger;
+.metricLabel {
+  font-size: $fs-small;
+  color: $color-text-muted;
+  font-weight: $fw-medium;
 }
 
-.stepHeartIcon {
-  color: $color-danger;
-  fill: $color-danger;
-}
-
-.progressSection {
+.progressContainer {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
   padding-top: $spacing-md;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid $color-border;
 }
 
-.progressInfo {
+.progressHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: $fs-small;
-  color: $color-text-secondary;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: $spacing-xs;
+  font-size: $fs-small;
+}
+
+.progressTarget {
+  color: $color-text-secondary;
 
   strong {
     color: $color-text-primary;
   }
 }
 
-.progressLabel {
-  font-weight: $fw-medium;
-}
-
-.progressRemaining {
+.progressCount {
   color: $color-text-muted;
+
+  strong {
+    color: $color-primary;
+  }
 }
 
 .progressBar {
@@ -277,57 +321,56 @@
   -webkit-appearance: none;
   border: none;
   border-radius: $radius-full;
-  background-color: #1f1f1f;
+  background-color: $color-bg-tertiary;
   overflow: hidden;
 
   &::-webkit-progress-bar {
-    background-color: #1f1f1f;
+    background-color: $color-bg-tertiary;
     border-radius: $radius-full;
   }
 
   &::-webkit-progress-value {
-    background: $gradient-accent;
+    background-color: $color-primary;
     border-radius: $radius-full;
-    transition: width 0.3s ease;
+    transition: width $transition-base;
   }
 
   &::-moz-progress-bar {
-    background: $gradient-accent;
+    background-color: $color-primary;
     border-radius: $radius-full;
   }
 }
 
-.maxTierNotice {
+.maxTierContainer {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  color: #4ade80;
+  color: $color-primary;
   font-size: $fs-body;
   font-weight: $fw-semibold;
   padding: $spacing-xs 0;
 }
 
 .maxTierIcon {
-  color: #4ade80;
   flex-shrink: 0;
 }
 
-.guestStatusCard {
+.guestBanner {
   display: flex;
   align-items: center;
   gap: $spacing-lg;
   padding: $spacing-xl;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
   background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
 }
 
-.guestIconBox {
-  width: 56px;
-  height: 56px;
-  border-radius: $radius-lg;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+.guestIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-md;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -335,7 +378,7 @@
   flex-shrink: 0;
 }
 
-.guestContent {
+.guestInfo {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -345,21 +388,23 @@
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 }
 
 .guestText {
   font-size: $fs-body;
   color: $color-text-secondary;
+  margin: 0;
   line-height: 1.5;
 }
 
-.section {
+.mainSection {
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
 }
 
-.sectionHeader {
+.sectionHeading {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -369,82 +414,19 @@
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 }
 
-.sectionSubtitle {
+.sectionDescription {
   font-size: $fs-body;
   color: $color-text-secondary;
-}
-
-.stepsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-md;
-
-  @include respond-to(md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @include respond-to(xl) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.stepCard {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-  padding: $spacing-lg;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
-  background-color: $color-bg-secondary;
-  transition: transform $transition-fast, border-color $transition-fast;
-
-  &:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-}
-
-.stepNumber {
-  position: absolute;
-  top: $spacing-md;
-  right: $spacing-md;
-  font-size: 11px;
-  font-weight: $fw-bold;
-  color: $color-text-muted;
-  letter-spacing: 1px;
-}
-
-.stepIconBox {
-  width: 44px;
-  height: 44px;
-  border-radius: $radius-md;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-primary;
-}
-
-.stepTitle {
-  font-size: $fs-body;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-}
-
-.stepDesc {
-  font-size: $fs-small;
-  color: $color-text-secondary;
-  line-height: 1.5;
+  margin: 0;
 }
 
 .tiersGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-lg;
+  gap: $spacing-md;
 
   @include respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
@@ -461,146 +443,112 @@
   flex-direction: column;
   gap: $spacing-md;
   padding: $spacing-xl;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
   background-color: $color-bg-secondary;
-  transition: border-color $transition-fast, transform $transition-fast, box-shadow $transition-fast;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
 
   &.activeTierCard {
     border-color: $color-primary;
-    box-shadow: 0 0 20px rgba(16, 124, 16, 0.25);
-  }
-
-  &.card_level_1:hover {
-    border-color: #475569;
-  }
-
-  &.card_level_2:hover {
-    border-color: #d97706;
-  }
-
-  &.card_level_3:hover {
-    border-color: #3b82f6;
-  }
-
-  &.card_level_4:hover {
-    border-color: #dc2626;
-  }
-
-  &.card_level_5:hover {
-    border-color: #eab308;
-  }
-
-  &.card_level_6:hover {
-    border-color: #107c10;
   }
 }
 
-.currentTierMarker {
-  position: absolute;
-  top: -10px;
-  left: 16px;
+.tierCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-xs;
+}
+
+.activeTag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background-color: $color-primary;
-  color: #000;
   font-size: 10px;
   font-weight: $fw-bold;
-  padding: 3px 8px;
-  border-radius: $radius-full;
-  letter-spacing: 0.5px;
   text-transform: uppercase;
+  color: $color-primary;
+  letter-spacing: 0.5px;
 }
 
-.tierCardTop {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-}
-
-.tierIconContainer {
-  width: 48px;
-  height: 48px;
-  border-radius: $radius-lg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  &.icon_level_1 {
-    background-color: #334155;
-    color: #ffffff;
-    border: 1px solid #475569;
-  }
-
-  &.icon_level_2 {
-    background-color: #ea580c;
-    color: #ffffff;
-    border: 1px solid #fb923c;
-  }
-
-  &.icon_level_3 {
-    background-color: #1d4ed8;
-    color: #ffffff;
-    border: 1px solid #3b82f6;
-  }
-
-  &.icon_level_4 {
-    background-color: #dc2626;
-    color: #ffffff;
-    border: 1px solid #ef4444;
-  }
-
-  &.icon_level_5 {
-    background-color: #b45309;
-    color: #ffffff;
-    border: 1px solid #f59e0b;
-  }
-
-  &.icon_level_6 {
-    background-color: #107c10;
-    color: #ffffff;
-    border: 1px solid #22c55e;
-  }
-}
-
-.tierMeta {
+.tierNameBlock {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
-.tierFranchiseText {
-  font-size: 11px;
+.tierTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.tierFranchise {
+  font-size: $fs-small;
   font-weight: $fw-semibold;
   color: $color-primary;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.tierReqText {
-  font-size: $fs-small;
+.tierSpecs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+}
+
+.tierSpecItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.specLabel {
+  font-size: 11px;
   color: $color-text-muted;
   font-weight: $fw-medium;
 }
 
-.tierDescription {
+.specValue {
+  font-size: $fs-small;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+}
+
+.specValueHighlight {
+  font-size: $fs-small;
+  font-weight: $fw-bold;
+  color: $color-primary;
+}
+
+.tierSummary {
   font-size: $fs-small;
   color: $color-text-secondary;
-  line-height: 1.6;
+  line-height: 1.5;
+  margin: 0;
   flex: 1;
 }
 
-.tierBenefitsList {
+.tierPerks {
+  list-style: none;
+  margin: 0;
+  padding: $spacing-sm 0 0;
+  border-top: 1px solid $color-border;
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
-  padding-top: $spacing-sm;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.benefitItem {
+.tierPerkItem {
   display: flex;
   align-items: flex-start;
   gap: $spacing-xs;
@@ -609,103 +557,88 @@
   line-height: 1.4;
 }
 
-.benefitCheck {
+.perkIcon {
   color: $color-primary;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.badgesGrid {
+.highlightsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-lg;
+  gap: $spacing-md;
 
-  @include respond-to(lg) {
+  @include respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.badgeHighlightCard {
+.highlightCard {
   display: flex;
-  flex-direction: column;
   gap: $spacing-lg;
   padding: $spacing-xl;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
   background-color: $color-bg-secondary;
-
-  @include respond-to(md) {
-    flex-direction: row;
-    align-items: flex-start;
-  }
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  align-items: flex-start;
 }
 
-.badgeShowcase {
-  width: 64px;
-  height: 64px;
-  border-radius: $radius-lg;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+.highlightIconBox {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-md;
+  background-color: $color-bg-tertiary;
+  border: 1px solid $color-border;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.collectionIconBox {
-  color: #60a5fa;
+.collectionIconWrapper {
+  color: $color-primary;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.badgeCardContent {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-  flex: 1;
-}
-
-.badgeCardTitle {
-  font-size: $fs-subtitle;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-}
-
-.badgeCardDesc {
-  font-size: $fs-body;
-  color: $color-text-secondary;
-  line-height: 1.6;
-}
-
-.badgeCriteriaBox {
+.highlightContent {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
-  padding: $spacing-md;
-  background-color: #141414;
-  border: 1px solid #282828;
-  border-radius: $radius-md;
+  flex: 1;
 }
 
-.criteriaTitle {
-  font-size: $fs-small;
-  font-weight: $fw-semibold;
+.highlightTitle {
+  font-size: $fs-subtitle;
+  font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 }
 
-.criteriaList {
-  list-style: disc;
-  padding-left: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.highlightText {
   font-size: $fs-small;
   color: $color-text-secondary;
-  line-height: 1.4;
+  line-height: 1.6;
+  margin: 0;
 }
 
-.rulesGrid {
+.highlightFooter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: $spacing-xs;
+  font-size: $fs-small;
+  font-weight: $fw-medium;
+  color: $color-text-muted;
+}
+
+.highlightFooterIcon {
+  color: $color-primary;
+  flex-shrink: 0;
+}
+
+.guidelinesGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: $spacing-md;
@@ -715,83 +648,96 @@
   }
 }
 
-.ruleCard {
+.guidelineCard {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
   padding: $spacing-lg;
-  border: 1px solid $color-border;
-  border-radius: $radius-xl;
   background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
 }
 
-.ruleTitle {
+.guidelineTitle {
   font-size: $fs-body;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 }
 
-.ruleText {
+.guidelineText {
   font-size: $fs-small;
   color: $color-text-secondary;
   line-height: 1.5;
+  margin: 0;
 }
 
-.ctaSection {
-  padding: $spacing-2xl $spacing-xl;
-  border: 1px solid rgba($color-primary, 0.25);
-  border-radius: $radius-xl;
-  background: linear-gradient(135deg, rgba(16, 124, 16, 0.08) 0%, rgba(7, 7, 7, 0.95) 100%);
-  text-align: center;
+.ctaCard {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: $spacing-md;
+  gap: $spacing-lg;
+  padding: $spacing-2xl;
+  background-color: $color-bg-secondary;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.ctaContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  max-width: 640px;
 }
 
 .ctaTitle {
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
   color: $color-text-primary;
+  margin: 0;
 
   @include respond-to(md) {
     font-size: $fs-title;
   }
 }
 
-.ctaDesc {
+.ctaText {
   font-size: $fs-body;
   color: $color-text-secondary;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .ctaButtons {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: $spacing-md;
   flex-wrap: wrap;
-  margin-top: $spacing-sm;
 }
 
 .btnPrimary {
   @include btn-primary;
   text-decoration: none;
+  font-size: $fs-small;
+  padding: 10px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  white-space: nowrap;
 }
 
 .btnSecondary {
   @include btn-secondary;
   text-decoration: none;
-}
-
-.btnTertiary {
-  @include btn-base;
-  background-color: #1a1a1a;
-  color: $color-text-primary;
-  border: 1px solid #333333;
-  text-decoration: none;
-
-  &:hover:not(:disabled) {
-    background-color: #262626;
-    border-color: #4a4a4a;
-  }
+  font-size: $fs-small;
+  padding: 10px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  white-space: nowrap;
 }

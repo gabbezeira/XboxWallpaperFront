@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Heart,
   UploadCloud,
-  CheckCircle2,
+  Check,
   Layers,
   ArrowRight,
-  Check,
   Trophy,
+  HardDrive,
+  Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import { useAuth } from '../../hooks/useAuth';
@@ -19,31 +21,42 @@ export default function Levels() {
   const [avatarError, setAvatarError] = useState(false);
 
   const totalFavs = profile?.totalFavoritesReceived || 0;
-  const currentTier = getUserTier(totalFavs);
-  const nextTier = getNextTier(currentTier.key);
+  const currentTier = useMemo(() => getUserTier(totalFavs), [totalFavs]);
+  const nextTier = useMemo(() => getNextTier(currentTier.key), [currentTier.key]);
 
   const displayName =
-    profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Usuário';
+    profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Criador';
   const photoURL = profile?.photoURL || user?.photoURL;
 
   const favsInCurrentTier = totalFavs - currentTier.minFavs;
   const favsNeededForNext = nextTier ? nextTier.minFavs - currentTier.minFavs : 1;
-  const remainingFavs = nextTier ? nextTier.minFavs - totalFavs : 0;
+  const remainingFavs = nextTier ? Math.max(0, nextTier.minFavs - totalFavs) : 0;
 
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Níveis e Badges</h1>
-          <p className={styles.subtitle}>
-            Entenda como funciona o sistema de progressão por favoritos recebidos, limites de upload e desbloqueio de recursos para criadores.
-          </p>
+          <div className={styles.headerContent}>
+            <span className={styles.kicker}>Ecossistema de Criadores</span>
+            <h1 className={styles.title}>Níveis e Conquistas</h1>
+            <p className={styles.subtitle}>
+              Conquiste patentes oficiais de acordo com os favoritos recebidos em seus wallpapers. Cada nível desbloqueia mais slots de armazenamento e maior visibilidade na plataforma.
+            </p>
+          </div>
+          {user && (
+            <div className={styles.headerActions}>
+              <Link to="/upload" className={styles.btnHeaderAction} tabIndex={0}>
+                <UploadCloud size={16} />
+                <span>Enviar Wallpaper</span>
+              </Link>
+            </div>
+          )}
         </header>
 
         {user ? (
-          <section className={styles.userStatusCard}>
-            <div className={styles.userStatusHeader}>
-              <div className={styles.userStatusProfile}>
+          <section className={styles.userDashboard}>
+            <div className={styles.userProfileRow}>
+              <div className={styles.userIdentity}>
                 <div className={`${styles.avatar} ${!photoURL || avatarError ? styles.avatarFallback : ''}`}>
                   {photoURL && !avatarError ? (
                     <img
@@ -57,39 +70,58 @@ export default function Levels() {
                     displayName.charAt(0).toUpperCase()
                   )}
                 </div>
-                <div className={styles.userStatusMeta}>
-                  <div className={styles.userStatusNameRow}>
-                    <span className={styles.userStatusName}>{displayName}</span>
+                <div className={styles.userInfo}>
+                  <div className={styles.userNameRow}>
+                    <span className={styles.userName}>{displayName}</span>
                     {Boolean(profile?.isVerified) && (
                       <VerifiedBadge size={16} title="Criador Verificado" />
                     )}
                   </div>
                   {Boolean(profile?.userTag) && (
-                    <span className={styles.userStatusTag}>{profile.userTag}</span>
+                    <span className={styles.userTag}>{profile.userTag}</span>
                   )}
                 </div>
               </div>
 
-              <div className={styles.userStatusBadges}>
+              <div className={styles.userBadgeWrapper}>
                 <div className={`${styles.tierBadge} ${styles[getTierCssClass(currentTier)]}`}>
-                  <currentTier.icon size={13} className={styles.badgeIcon} />
+                  <currentTier.icon size={14} className={styles.badgeIcon} />
                   <span>{currentTier.badgeLabel}</span>
-                </div>
-                <div className={styles.favBadge} title="Total de Favoritos Recebidos">
-                  <Heart size={14} className={styles.favHeartIcon} />
-                  <span>{totalFavs} favoritos recebidos</span>
                 </div>
               </div>
             </div>
 
-            <div className={styles.progressSection}>
+            <div className={styles.userMetricsGrid}>
+              <div className={styles.metricCard}>
+                <span className={styles.metricValue}>{currentTier.name}</span>
+                <span className={styles.metricLabel}>Patente Atual ({currentTier.franchise})</span>
+              </div>
+
+              <div className={styles.metricCard}>
+                <div className={styles.metricValueWithIcon}>
+                  <Heart size={18} className={styles.metricHeartIcon} />
+                  <span className={styles.metricValue}>{totalFavs}</span>
+                </div>
+                <span className={styles.metricLabel}>Favoritos Conquistados</span>
+              </div>
+
+              <div className={styles.metricCard}>
+                <div className={styles.metricValueWithIcon}>
+                  <HardDrive size={18} className={styles.metricStorageIcon} />
+                  <span className={styles.metricValue}>{currentTier.maxImages} slots</span>
+                </div>
+                <span className={styles.metricLabel}>Capacidade de Armazenamento</span>
+              </div>
+            </div>
+
+            <div className={styles.progressContainer}>
               {nextTier ? (
                 <>
-                  <div className={styles.progressInfo}>
-                    <span className={styles.progressLabel}>
+                  <div className={styles.progressHeader}>
+                    <span className={styles.progressTarget}>
                       Próxima patente: <strong>{nextTier.name}</strong> ({nextTier.minFavs} favoritos)
                     </span>
-                    <span className={styles.progressRemaining}>
+                    <span className={styles.progressCount}>
                       Faltam <strong>{remainingFavs}</strong> {remainingFavs === 1 ? 'favorito' : 'favoritos'}
                     </span>
                   </div>
@@ -100,87 +132,32 @@ export default function Levels() {
                   />
                 </>
               ) : (
-                <div className={styles.maxTierNotice}>
+                <div className={styles.maxTierContainer}>
                   <Trophy size={18} className={styles.maxTierIcon} />
-                  <span>Patente máxima alcançada: Spartan Mythic.</span>
+                  <span>Você atingiu a patente máxima: Spartan Mythic 117. Obrigado pela dedicação à comunidade!</span>
                 </div>
               )}
             </div>
           </section>
         ) : (
-          <section className={styles.guestStatusCard}>
-            <div className={styles.guestIconBox}>
+          <section className={styles.guestBanner}>
+            <div className={styles.guestIcon}>
               <Trophy size={28} />
             </div>
-            <div className={styles.guestContent}>
-              <h2 className={styles.guestTitle}>Monitore seu Progresso</h2>
+            <div className={styles.guestInfo}>
+              <h2 className={styles.guestTitle}>Inicie sua jornada de criador</h2>
               <p className={styles.guestText}>
-                Faça login para acompanhar sua contagem de favoritos recebidos, sua patente atual e a quantidade restante para desbloquear novos slots de upload.
+                Entre com sua conta para monitorar suas patentes, acompanhar favoritos em tempo real e desbloquear mais slots de armazenamento.
               </p>
             </div>
           </section>
         )}
 
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Como Funciona a Progressão</h2>
-            <p className={styles.sectionSubtitle}>
-              O avanço de nível é automático e calculado com base nas curtidas que suas imagens públicas recebem de outros membros.
-            </p>
-          </div>
-
-          <div className={styles.stepsGrid}>
-            <div className={styles.stepCard}>
-              <div className={styles.stepNumber}>01</div>
-              <div className={styles.stepIconBox}>
-                <UploadCloud size={24} />
-              </div>
-              <h3 className={styles.stepTitle}>Envie seus Wallpapers</h3>
-              <p className={styles.stepDesc}>
-                Envie imagens de alta qualidade (1080p, 2K ou 4K) em formato JPG, PNG ou WebP na proporção 16:9.
-              </p>
-            </div>
-
-            <div className={styles.stepCard}>
-              <div className={styles.stepNumber}>02</div>
-              <div className={styles.stepIconBox}>
-                <Layers size={24} />
-              </div>
-              <h3 className={styles.stepTitle}>Solicite Publicação</h3>
-              <p className={styles.stepDesc}>
-                Na aba Meus Wallpapers, envie a imagem para a galeria comunitária para torná-la elegível a outros jogadores.
-              </p>
-            </div>
-
-            <div className={styles.stepCard}>
-              <div className={styles.stepNumber}>03</div>
-              <div className={styles.stepIconBox}>
-                <CheckCircle2 size={24} />
-              </div>
-              <h3 className={styles.stepTitle}>Análise da Moderação</h3>
-              <p className={styles.stepDesc}>
-                A curadoria avalia nitidez, ausência de artefatos de compressão e enquadramento na dashboard do console.
-              </p>
-            </div>
-
-            <div className={styles.stepCard}>
-              <div className={styles.stepNumber}>04</div>
-              <div className={styles.stepIconBox}>
-                <Heart size={24} className={styles.stepHeartIcon} />
-              </div>
-              <h3 className={styles.stepTitle}>Receba Favoritos</h3>
-              <p className={styles.stepDesc}>
-                Cada favorito recebido de outro usuário soma 1 ponto direto à sua pontuação global de patente.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Tabela Oficial de Patentes</h2>
-            <p className={styles.sectionSubtitle}>
-              Requisitos de favoritos necessários e privilégios desbloqueados em cada estágio.
+        <section className={styles.mainSection}>
+          <div className={styles.sectionHeading}>
+            <h2 className={styles.sectionTitle}>Tabela de Patentes Oficiais</h2>
+            <p className={styles.sectionDescription}>
+              Seis estágios inspirados nos universos mais icônicos do Xbox. Conquiste novos patamares aumentando o engajamento da comunidade.
             </p>
           </div>
 
@@ -190,150 +167,147 @@ export default function Levels() {
               const isCurrent = user && currentTier.key === tier.key;
 
               return (
-                <div
+                <article
                   key={tier.key}
-                  className={`${styles.tierCard} ${styles[`card_level_${tier.level}`]} ${isCurrent ? styles.activeTierCard : ''}`}
+                  className={`${styles.tierCard} ${isCurrent ? styles.activeTierCard : ''}`}
                 >
-                  {isCurrent && (
-                    <div className={styles.currentTierMarker}>
-                      <Check size={12} />
-                      <span>Patente Ativa</span>
+                  <div className={styles.tierCardHeader}>
+                    <div className={`${styles.tierBadge} ${styles[getTierCssClass(tier)]}`}>
+                      <TierIcon size={14} className={styles.badgeIcon} />
+                      <span>{tier.badgeLabel}</span>
                     </div>
-                  )}
-
-                  <div className={styles.tierCardTop}>
-                    <div className={`${styles.tierIconContainer} ${styles[`icon_level_${tier.level}`]}`}>
-                      <TierIcon size={24} />
-                    </div>
-                    <div className={styles.tierMeta}>
-                      <span className={`${styles.tierBadge} ${styles[getTierCssClass(tier)]}`}>
-                        <TierIcon size={13} className={styles.badgeIcon} />
-                        <span>{tier.badgeLabel}</span>
+                    {isCurrent && (
+                      <span className={styles.activeTag}>
+                        <Check size={12} />
+                        Sua Patente
                       </span>
-                      <span className={styles.tierFranchiseText}>{tier.franchise}</span>
-                      <span className={styles.tierReqText}>{tier.reqLabel}</span>
+                    )}
+                  </div>
+
+                  <div className={styles.tierNameBlock}>
+                    <h3 className={styles.tierTitle}>{tier.name}</h3>
+                    <span className={styles.tierFranchise}>{tier.franchise}</span>
+                  </div>
+
+                  <div className={styles.tierSpecs}>
+                    <div className={styles.tierSpecItem}>
+                      <span className={styles.specLabel}>Requisito</span>
+                      <span className={styles.specValue}>{tier.reqLabel}</span>
+                    </div>
+                    <div className={styles.tierSpecItem}>
+                      <span className={styles.specLabel}>Cota Máxima</span>
+                      <span className={styles.specValueHighlight}>{tier.maxImages} slots</span>
                     </div>
                   </div>
 
-                  <p className={styles.tierDescription}>{tier.desc}</p>
+                  <p className={styles.tierSummary}>{tier.desc}</p>
 
-                  <div className={styles.tierBenefitsList}>
-                    {tier.benefits.map((b) => (
-                      <div key={b} className={styles.benefitItem}>
-                        <CheckCircle2 size={14} className={styles.benefitCheck} />
-                        <span>{b}</span>
-                      </div>
+                  <ul className={styles.tierPerks}>
+                    {tier.benefits.map((benefit) => (
+                      <li key={benefit} className={styles.tierPerkItem}>
+                        <Check size={14} className={styles.perkIcon} />
+                        <span>{benefit}</span>
+                      </li>
                     ))}
-                  </div>
-                </div>
+                  </ul>
+                </article>
               );
             })}
           </div>
         </section>
 
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Reconhecimentos Especiais</h2>
-            <p className={styles.sectionSubtitle}>
-              Distintivos atribuídos manualmente pela moderação a criadores com presença e qualidade consistentes.
+        <section className={styles.mainSection}>
+          <div className={styles.sectionHeading}>
+            <h2 className={styles.sectionTitle}>Distintivos Especiais da Comunidade</h2>
+            <p className={styles.sectionDescription}>
+              Condecorações concedidas pela equipe de curadoria para criadores com presença e qualidade excepcionais.
             </p>
           </div>
 
-          <div className={styles.badgesGrid}>
-            <div className={styles.badgeHighlightCard}>
-              <div className={styles.badgeShowcase}>
-                <VerifiedBadge size={36} />
+          <div className={styles.highlightsGrid}>
+            <div className={styles.highlightCard}>
+              <div className={styles.highlightIconBox}>
+                <VerifiedBadge size={32} />
               </div>
-              <div className={styles.badgeCardContent}>
-                <h3 className={styles.badgeCardTitle}>Selo de Criador Verificado</h3>
-                <p className={styles.badgeCardDesc}>
-                  Concedido pela curadoria a autores que publicam regularmente wallpapers em alta fidelidade visual, com enquadramento perfeito para a interface do console.
+              <div className={styles.highlightContent}>
+                <h3 className={styles.highlightTitle}>Selo de Criador Verificado</h3>
+                <p className={styles.highlightText}>
+                  Atribuído a fotógrafos e designers virtuais que publicam regularmente capturas em resoluções nativas (1080p, 2K e 4K), com composição limpa e compatível com a dashboard do console.
                 </p>
-                <div className={styles.badgeCriteriaBox}>
-                  <span className={styles.criteriaTitle}>Critérios de Avaliação:</span>
-                  <ul className={styles.criteriaList}>
-                    <li>Resoluções nativas Full HD (1080p), 2K (1440p) ou 4K (2160p) nítidas.</li>
-                    <li>Composição visual limpa e compatível com a dashboard do Xbox.</li>
-                    <li>Sem marcas d&apos;água intrusivas, textos promocionais ou baixa resolução.</li>
-                    <li>Respeito contínuo às diretrizes da comunidade e termos de uso.</li>
-                  </ul>
+                <div className={styles.highlightFooter}>
+                  <ShieldCheck size={14} className={styles.highlightFooterIcon} />
+                  <span>Atribuição editorial pela curadoria oficial</span>
                 </div>
               </div>
             </div>
 
-            <div className={styles.badgeHighlightCard}>
-              <div className={styles.badgeShowcase}>
-                <div className={styles.collectionIconBox}>
-                  <Layers size={32} />
+            <div className={styles.highlightCard}>
+              <div className={styles.highlightIconBox}>
+                <div className={styles.collectionIconWrapper}>
+                  <Layers size={28} />
                 </div>
               </div>
-              <div className={styles.badgeCardContent}>
-                <h3 className={styles.badgeCardTitle}>Coleção Oficial do Criador</h3>
-                <p className={styles.badgeCardDesc}>
-                  Página de coleção temática com link compartilhável e código rápido dedicada a fotógrafos virtuais e artistas com acervos consolidados.
+              <div className={styles.highlightContent}>
+                <h3 className={styles.highlightTitle}>Coleção Oficial de Criador</h3>
+                <p className={styles.highlightText}>
+                  Página temática dedicada com slug personalizado, código de busca direta para console e celular, e gerenciamento prioritário no painel Minha Coleção.
                 </p>
-                <div className={styles.badgeCriteriaBox}>
-                  <span className={styles.criteriaTitle}>Critérios de Atribuição:</span>
-                  <ul className={styles.criteriaList}>
-                    <li>Disponível para usuários com patente Sentinela ou superior.</li>
-                    <li>Séries autorais consistentes (franquias, fotografia in-game temática).</li>
-                    <li>Acesso ao painel Minha Coleção para organização dos papéis de parede.</li>
-                    <li>Código de busca rápida exclusivo no catálogo oficial de coleções.</li>
-                  </ul>
+                <div className={styles.highlightFooter}>
+                  <Sparkles size={14} className={styles.highlightFooterIcon} />
+                  <span>Disponível para criadores a partir da patente COG</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Regras de Integridade</h2>
-            <p className={styles.sectionSubtitle}>
-              Mecanismos automáticos e diretrizes para garantir uma competição sadia e balanceada.
+        <section className={styles.mainSection}>
+          <div className={styles.sectionHeading}>
+            <h2 className={styles.sectionTitle}>Diretrizes do Sistema</h2>
+            <p className={styles.sectionDescription}>
+              Regras fundamentais para manter uma competição equilibrada e a integridade da galeria.
             </p>
           </div>
 
-          <div className={styles.rulesGrid}>
-            <div className={styles.ruleCard}>
-              <h3 className={styles.ruleTitle}>Prevenção Anti-Fraude</h3>
-              <p className={styles.ruleText}>
-                Favoritos dados pelo próprio autor aos seus wallpapers não são computados na contagem de patente. Apenas interações de outros usuários geram pontos.
+          <div className={styles.guidelinesGrid}>
+            <div className={styles.guidelineCard}>
+              <h3 className={styles.guidelineTitle}>Curtidas Orgânicas</h3>
+              <p className={styles.guidelineText}>
+                Apenas favoritos concedidos por outros membros contam pontos. Auto-favoritos e contas suspeitas são desconsiderados automaticamente.
               </p>
             </div>
 
-            <div className={styles.ruleCard}>
-              <h3 className={styles.ruleTitle}>Proporção Recomendada 16:9</h3>
-              <p className={styles.ruleText}>
-                Como a plataforma é pensada para monitores e TVs de Xbox, papéis de parede em 16:9 aproveitam 100% da tela sem cortes ou barras pretas.
+            <div className={styles.guidelineCard}>
+              <h3 className={styles.guidelineTitle}>Padrão 16:9 Nativo</h3>
+              <p className={styles.guidelineText}>
+                As imagens devem respeitar a proporção 16:9 em alta definição para garantir visualização perfeita em TVs e monitores Xbox sem distorção.
               </p>
             </div>
 
-            <div className={styles.ruleCard}>
-              <h3 className={styles.ruleTitle}>Fila de Moderação</h3>
-              <p className={styles.ruleText}>
-                Imagens enviadas passam por análise antes de serem listadas na galeria pública para manter o padrão estético e a conformidade das regras.
+            <div className={styles.guidelineCard}>
+              <h3 className={styles.guidelineTitle}>Curadoria de Qualidade</h3>
+              <p className={styles.guidelineText}>
+                Wallpapers públicos passam por avaliação de nitidez e enquadramento para manter a melhor experiência visual no ecossistema.
               </p>
             </div>
           </div>
         </section>
 
-        <section className={styles.ctaSection}>
-          <h2 className={styles.ctaTitle}>Pronto para começar?</h2>
-          <p className={styles.ctaDesc}>
-            Explore a galeria da comunidade ou envie seus primeiros wallpapers para o seu Xbox.
-          </p>
+        <section className={styles.ctaCard}>
+          <div className={styles.ctaContent}>
+            <h2 className={styles.ctaTitle}>Pronto para expandir seu acervo?</h2>
+            <p className={styles.ctaText}>
+              Navegue pela galeria comunitária para favoritar outros criadores ou faça o upload das suas melhores capturas.
+            </p>
+          </div>
           <div className={styles.ctaButtons}>
             <Link to="/gallery" className={styles.btnPrimary} tabIndex={0}>
-              Explorar Galeria
-              <ArrowRight size={18} />
+              <span>Explorar Galeria</span>
+              <ArrowRight size={16} />
             </Link>
             <Link to="/upload" className={styles.btnSecondary} tabIndex={0}>
-              <UploadCloud size={18} />
-              Enviar Wallpaper
-            </Link>
-            <Link to="/guide" className={styles.btnTertiary} tabIndex={0}>
-              Guia de Uso
+              <UploadCloud size={16} />
+              <span>Enviar Wallpaper</span>
             </Link>
           </div>
         </section>

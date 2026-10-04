@@ -55,11 +55,25 @@ export default function AdminLogin() {
     e.preventDefault();
     if (lockoutSeconds > 0) return;
 
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
+      setError('Informe seu email');
+      return;
+    }
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      setError('Informe um email válido');
+      return;
+    }
+    if (!password) {
+      setError('Informe sua senha');
+      return;
+    }
+
     setError('');
     setLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
 
       try {
         await api.admin.verifyAuth();
@@ -92,7 +106,24 @@ export default function AdminLogin() {
         setError('Muitas tentativas sem sucesso. Bloqueado por 60 segundos por segurança.');
       } else {
         const remaining = MAX_ATTEMPTS - currentAttempts;
-        setError(`Falha ao autenticar. Verifique seus dados. (${remaining} tentativa${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''})`);
+        const code =
+          err?.code ||
+          err?.error?.code ||
+          (typeof err?.message === 'string' && err.message.match(/auth\/[a-z0-9-]+/i)?.[0]) ||
+          '';
+
+        let baseMsg = 'Email ou senha incorretos.';
+        if (code === 'auth/invalid-email') {
+          baseMsg = 'Formato de email inválido.';
+        } else if (code === 'auth/user-disabled') {
+          baseMsg = 'Esta conta foi desativada.';
+        } else if (code === 'auth/network-request-failed') {
+          baseMsg = 'Falha de conexão. Verifique sua internet.';
+        } else if (code === 'auth/too-many-requests') {
+          baseMsg = 'Muitas tentativas sem sucesso. Aguarde alguns minutos.';
+        }
+
+        setError(`${baseMsg} (${remaining} tentativa${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''})`);
       }
       console.error(err);
     } finally {
@@ -116,7 +147,10 @@ export default function AdminLogin() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (error) setError('');
+              }}
               required
               autoComplete="email"
             />
@@ -127,7 +161,10 @@ export default function AdminLogin() {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (error) setError('');
+              }}
               required
               autoComplete="current-password"
             />

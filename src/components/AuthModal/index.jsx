@@ -75,15 +75,70 @@ export default function AuthModal({ onClose }) {
   const isStrongPassword = (pwd) =>
     pwd.length >= 8 && /[a-zA-Z]/.test(pwd) && /[0-9]/.test(pwd);
 
+  const getAuthErrorMessage = (err, mode = 'login') => {
+    const code =
+      err?.code ||
+      err?.error?.code ||
+      (typeof err?.message === 'string' && err.message.match(/auth\/[a-z0-9-]+/i)?.[0]) ||
+      '';
+
+    const messages = {
+      'auth/invalid-credential': 'Email ou senha incorretos',
+      'auth/invalid-login-credentials': 'Email ou senha incorretos',
+      'auth/wrong-password': 'Email ou senha incorretos',
+      'auth/user-not-found': mode === 'forgot' ? 'Nenhuma conta encontrada com este email' : 'Email ou senha incorretos',
+      'auth/invalid-email': 'Formato de email inválido',
+      'auth/missing-email': 'Informe seu email',
+      'auth/missing-password': 'Informe sua senha',
+      'auth/user-disabled': 'Esta conta foi desativada. Entre em contato com o suporte.',
+      'auth/too-many-requests': 'Muitas tentativas sem sucesso. Aguarde alguns minutos ou redefina sua senha.',
+      'auth/network-request-failed': 'Falha de conexão. Verifique sua internet e tente novamente.',
+      'auth/email-already-in-use': 'Este email já está cadastrado',
+      'auth/weak-password': 'A senha deve ter pelo menos 8 caracteres',
+      'auth/operation-not-allowed': 'Operação de autenticação não permitida no momento.',
+      'auth/internal-error': 'Erro no servidor de autenticação. Tente novamente.',
+    };
+
+    if (messages[code]) {
+      return messages[code];
+    }
+
+    if (mode === 'login') {
+      return 'Email ou senha incorretos. Verifique seus dados.';
+    }
+    if (mode === 'register') {
+      return 'Erro ao criar conta. Verifique seus dados e tente novamente.';
+    }
+    if (mode === 'forgot') {
+      return 'Erro ao enviar email de recuperação. Verifique o email informado.';
+    }
+    return 'Erro ao autenticar. Tente novamente.';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
+      setError('Informe seu email');
+      return;
+    }
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      setError('Informe um email válido');
+      return;
+    }
+    if (!password) {
+      setError('Informe sua senha');
+      return;
+    }
+
     setLoading(true);
 
     try {
       if (emailMode === 'login') {
-        const loggedUser = await signInWithEmail(email, password);
+        const loggedUser = await signInWithEmail(cleanEmail, password);
         if (loggedUser && !loggedUser.emailVerified) {
           setView('verify');
           setLoading(false);
@@ -111,21 +166,12 @@ export default function AuthModal({ onClose }) {
           setLoading(false);
           return;
         }
-        await signUpWithEmail(email, password, name.trim());
+        await signUpWithEmail(cleanEmail, password, name.trim());
         setCooldown(60);
         setView('verify');
       }
     } catch (err) {
-      const messages = {
-        'auth/user-not-found': 'Usuário não encontrado',
-        'auth/wrong-password': 'Senha incorreta',
-        'auth/email-already-in-use': 'Este email já está em uso',
-        'auth/weak-password': 'A senha deve ter pelo menos 8 caracteres',
-        'auth/invalid-email': 'Email inválido',
-        'auth/invalid-credential': 'Email ou senha incorretos',
-        'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
-      };
-      setError(messages[err.code] || 'Erro ao autenticar');
+      setError(getAuthErrorMessage(err, emailMode));
     } finally {
       setLoading(false);
     }
@@ -137,23 +183,19 @@ export default function AuthModal({ onClose }) {
     setError(null);
     setSuccess(null);
 
-    if (!email || !email.includes('@')) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
       setError('Informe um email válido');
       return;
     }
 
     setLoading(true);
     try {
-      await sendPasswordReset(email.trim());
+      await sendPasswordReset(cleanEmail);
       setSuccess('Email de recuperação enviado! Verifique sua caixa de entrada e spam.');
       setForgotCooldown(60);
     } catch (err) {
-      const messages = {
-        'auth/user-not-found': 'Nenhuma conta encontrada com este email',
-        'auth/invalid-email': 'Email inválido',
-        'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos.',
-      };
-      setError(messages[err.code] || 'Erro ao enviar email de recuperação');
+      setError(getAuthErrorMessage(err, 'forgot'));
     } finally {
       setLoading(false);
     }
@@ -309,7 +351,10 @@ export default function AuthModal({ onClose }) {
               type="text"
               placeholder="Seu nome"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (error) setError(null);
+              }}
               required
             />
           </div>
@@ -322,7 +367,10 @@ export default function AuthModal({ onClose }) {
             type="email"
             placeholder="seu@email.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (error) setError(null);
+            }}
             required
           />
         </div>
@@ -334,9 +382,12 @@ export default function AuthModal({ onClose }) {
             type="password"
             placeholder="••••••••"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (error) setError(null);
+            }}
             required
-            minLength={8}
+            minLength={emailMode === 'register' ? 8 : undefined}
           />
           {emailMode === 'register' && (
             <span className={styles.fieldHint}>
@@ -369,7 +420,10 @@ export default function AuthModal({ onClose }) {
               type="password"
               placeholder="••••••••"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                if (error) setError(null);
+              }}
               required
               minLength={8}
             />
@@ -450,7 +504,10 @@ export default function AuthModal({ onClose }) {
             type="email"
             placeholder="seu@email.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (error) setError(null);
+            }}
             required
           />
           <span className={styles.fieldHint}>

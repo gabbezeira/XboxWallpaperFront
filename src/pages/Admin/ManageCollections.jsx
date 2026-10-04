@@ -48,10 +48,10 @@ export default function ManageCollections() {
   const [collectionToDelete, setCollectionToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  const fetchCollections = async () => {
+  const fetchCollections = async (bypassCache = false) => {
     try {
       setLoading(true);
-      const data = await api.collections.list();
+      const data = await api.collections.list(bypassCache);
       setCollections(data || []);
     } catch (err) {
       console.error(err);
@@ -61,7 +61,7 @@ export default function ManageCollections() {
   };
 
   useEffect(() => {
-    fetchCollections();
+    fetchCollections(true);
   }, []);
 
   const handleOpenCreate = () => {
@@ -118,7 +118,7 @@ export default function ManageCollections() {
         await api.collections.create(formData);
       }
       setModalOpen(false);
-      fetchCollections();
+      fetchCollections(true);
     } catch (err) {
       setFormError(err.message || 'Erro ao salvar coleção.');
     } finally {
@@ -129,13 +129,22 @@ export default function ManageCollections() {
   const handleDelete = async () => {
     if (!collectionToDelete) return;
     setDeleting(true);
+    const targetId = collectionToDelete.id;
     try {
-      await api.collections.remove(collectionToDelete.id);
+      await api.collections.remove(targetId);
       setDeleteConfirmOpen(false);
       setCollectionToDelete(null);
-      fetchCollections();
+      setCollections((prev) => prev.filter((col) => col.id !== targetId));
+      fetchCollections(true);
     } catch (err) {
-      alert(`Erro ao excluir: ${err.message}`);
+      if (err.message?.includes('não encontrada') || err.message?.includes('404')) {
+        setDeleteConfirmOpen(false);
+        setCollectionToDelete(null);
+        setCollections((prev) => prev.filter((col) => col.id !== targetId));
+        fetchCollections(true);
+      } else {
+        alert(`Erro ao excluir: ${err.message}`);
+      }
     } finally {
       setDeleting(false);
     }

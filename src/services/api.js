@@ -186,10 +186,13 @@ export const api = {
   },
 
   collections: {
-    list: async () => {
-      const cached = getCached('/api/collections');
-      if (cached) return cached;
-      const data = await request('/api/collections');
+    list: async (bypassCache = false) => {
+      const endpoint = bypassCache ? '/api/collections?fresh=true' : '/api/collections';
+      if (!bypassCache) {
+        const cached = getCached('/api/collections');
+        if (cached) return cached;
+      }
+      const data = await request(endpoint);
       setCache('/api/collections', null, data, 5 * 60 * 1000);
       return data;
     },
@@ -230,9 +233,14 @@ export const api = {
       return result;
     },
     remove: async (id) => {
-      const result = await request(`/api/collections/${id}`, { method: 'DELETE' });
-      invalidateCache('/api/collections');
-      return result;
+      try {
+        const result = await request(`/api/collections/${id}`, { method: 'DELETE' });
+        invalidateCache('/api/collections');
+        return result;
+      } catch (err) {
+        invalidateCache('/api/collections');
+        throw err;
+      }
     },
   },
 

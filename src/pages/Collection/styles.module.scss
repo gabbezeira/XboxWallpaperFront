@@ -72,26 +72,6 @@
   }
 }
 
-.btnBack {
-  @include flex-center;
-  width: 44px;
-  height: 44px;
-  border-radius: $radius-full;
-  background-color: $color-bg-secondary;
-  color: $color-text-primary;
-  border: 1px solid $color-border;
-  cursor: pointer;
-  transition: all $transition-fast;
-  flex-shrink: 0;
-  @include gamepad-focus;
-
-  &:hover {
-    background-color: rgba($color-primary, 0.15);
-    border-color: rgba($color-primary, 0.4);
-    color: $color-primary;
-  }
-}
-
 .titleArea {
   display: flex;
   flex-direction: column;

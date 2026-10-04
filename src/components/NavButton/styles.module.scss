@@ -1,0 +1,69 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.navButton {
+  @include flex-center;
+  border-radius: $radius-full;
+  background-color: rgba(13, 13, 13, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: $color-text-primary;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+  outline: none;
+  box-sizing: border-box;
+  @include gamepad-focus;
+
+  &:hover:not(:disabled) {
+    background-color: #1f1f1f;
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    transform: scale(1.04);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  &.small {
+    width: 36px;
+    height: 36px;
+  }
+
+  &.medium {
+    width: 44px;
+    height: 44px;
+
+    @include respond-to(md) {
+      width: 48px;
+      height: 48px;
+    }
+
+    @include respond-to(4k) {
+      width: 56px;
+      height: 56px;
+    }
+  }
+
+  &.large {
+    width: 48px;
+    height: 48px;
+
+    @include respond-to(md) {
+      width: 52px;
+      height: 52px;
+    }
+
+    @include respond-to(4k) {
+      width: 64px;
+      height: 64px;
+    }
+  }
+}

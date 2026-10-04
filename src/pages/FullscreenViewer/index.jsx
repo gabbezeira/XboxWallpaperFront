@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import NavButton from '../../components/NavButton';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
@@ -94,14 +94,12 @@ export default function FullscreenViewer() {
 
   return (
     <div className={styles.page}>
-      <button
-        type="button"
+      <NavButton
+        direction="back"
+        iconType="arrow"
         className={styles.btnBack}
         onClick={() => navigate(-1)}
-        aria-label="Voltar"
-      >
-        <ArrowLeft size={24} />
-      </button>
+      />
 
       <img
         className={styles.image}

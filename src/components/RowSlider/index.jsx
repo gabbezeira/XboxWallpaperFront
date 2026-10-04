@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import NavButton from '../NavButton';
 import WallpaperCard from '../WallpaperCard';
 import styles from './styles.module.scss';
 
@@ -64,13 +64,14 @@ export default function RowSlider({ title, items, loading, onVerTudo, onView }) 
 
       <div className={styles.sliderWrapper}>
         {canScrollLeft && (
-          <button
+          <NavButton
+            direction="left"
+            iconType="chevron"
+            size="large"
             className={`${styles.navBtn} ${styles.prevBtn}`}
             onClick={() => scroll('left')}
-            aria-label="Anterior"
-          >
-            <ChevronLeft size={24} />
-          </button>
+            ariaLabel="Anterior"
+          />
         )}
 
         <div className={styles.grid} ref={scrollRef}>
@@ -94,13 +95,14 @@ export default function RowSlider({ title, items, loading, onVerTudo, onView }) 
         </div>
 
         {canScrollRight && (
-          <button
+          <NavButton
+            direction="right"
+            iconType="chevron"
+            size="large"
             className={`${styles.navBtn} ${styles.nextBtn}`}
             onClick={() => scroll('right')}
-            aria-label="Próximo"
-          >
-            <ChevronRight size={24} />
-          </button>
+            ariaLabel="Próximo"
+          />
         )}
       </div>
     </div>

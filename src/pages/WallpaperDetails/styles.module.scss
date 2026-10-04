@@ -112,34 +112,11 @@
   position: absolute;
   top: calc(#{$spacing-md} + env(safe-area-inset-top, 0px));
   left: calc(#{$spacing-md} + env(safe-area-inset-left, 0px));
-  width: 44px;
-  height: 44px;
-  border-radius: $radius-full;
-  background-color: rgba(#000, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  color: #fff;
-  border: none;
-  @include flex-center;
-  cursor: pointer;
   z-index: 10;
-  transition: background-color $transition-fast;
-  
-  &:focus-visible {
-    outline: 2px solid #ffffff;
-    outline-offset: -2px;
-    background-color: rgba(#000, 0.8);
-  }
-
-  &:hover {
-    background-color: rgba(#000, 0.8);
-  }
 
   @include respond-to(md) {
     top: $spacing-xl;
     left: $spacing-xl;
-    width: 48px;
-    height: 48px;
   }
 }
 

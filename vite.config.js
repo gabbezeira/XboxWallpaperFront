@@ -158,12 +158,40 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\/api\/(?:wallpapers|hero-slides|collections)(?:\?.*)?$/,
+            urlPattern: /^https:\/\/firebasestorage\.googleapis\.com\/.*/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'firebase-storage-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'all-images-cache',
+              expiration: {
+                maxEntries: 250,
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /\/api\/(?:wallpapers|hero-slides|collections)(?:\/.*|\?.*)?$/,
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'api-catalog-cache',
               expiration: {
-                maxEntries: 40,
+                maxEntries: 60,
                 maxAgeSeconds: 24 * 60 * 60,
               },
               cacheableResponse: {
@@ -179,6 +207,9 @@ export default defineConfig({
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
               },
             },
           },

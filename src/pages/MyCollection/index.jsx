@@ -6,7 +6,8 @@ import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
 import EmptyState from '../../components/EmptyState';
-import { Layers, Share2, UploadCloud, ArrowLeft, Check, ExternalLink, Copy, Heart } from 'lucide-react';
+import NavButton from '../../components/NavButton';
+import { Layers, Share2, UploadCloud, Check, ExternalLink, Copy, Heart } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -198,15 +199,11 @@ export default function MyCollection() {
       <div className={styles.inner}>
         <header className={styles.header}>
           <div className={styles.headerTop}>
-            <button
-              type="button"
-              className={styles.btnBack}
+            <NavButton
+              direction="back"
+              iconType="arrow"
               onClick={() => navigate(-1)}
-              aria-label="Voltar"
-              tabIndex={0}
-            >
-              <ArrowLeft size={20} />
-            </button>
+            />
             <div className={styles.headerInfo}>
               <h1 className={styles.title}>{collection.name}</h1>
               {collection.description && (

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Heart, Monitor, HardDrive, Download, Layers } from 'lucide-react';
+import { Heart, Monitor, HardDrive, Download, Layers } from 'lucide-react';
+import NavButton from '../../components/NavButton';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import UserAvatar from '../../components/UserAvatar';
 import { useLocation, useNavigate, Navigate, useParams, Link } from 'react-router-dom';
@@ -235,14 +236,12 @@ export default function WallpaperDetailsPage() {
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.imageSection}>
-          <button
-            type="button"
+          <NavButton
+            direction="back"
+            iconType="arrow"
             className={styles.btnBack}
             onClick={() => navigate(-1)}
-            aria-label="Voltar"
-          >
-            <ArrowLeft size={24} />
-          </button>
+          />
           <button
             type="button"
             className={styles.imageBtn}

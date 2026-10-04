@@ -7,7 +7,7 @@ export default function SearchBar({
   onChange,
   onSubmit,
   onClear,
-  placeholder = 'Buscar',
+  placeholder = 'Buscar Wallpaper',
   className = '',
   variant = 'default',
   autoFocus = false,

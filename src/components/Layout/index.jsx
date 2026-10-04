@@ -125,7 +125,7 @@ export default function Layout({ children, onLoginClick }) {
                   setMobileSearchOpen(false);
                   setSearchQuery('');
                 }}
-                placeholder="Buscar"
+                placeholder="Buscar Wallpaper"
                 autoFocus
               />
             ) : (
@@ -157,7 +157,7 @@ export default function Layout({ children, onLoginClick }) {
                   <button
                     className={styles.mobileActionBtn}
                     onClick={() => setMobileSearchOpen(true)}
-                    aria-label="Buscar"
+                    aria-label="Buscar Wallpaper"
                   >
                     <Search size={18} />
                   </button>
@@ -190,7 +190,7 @@ export default function Layout({ children, onLoginClick }) {
                   navigate('/gallery');
                 }
               }}
-              placeholder="Buscar"
+              placeholder="Buscar Wallpaper"
             />
           </div>
         )}

@@ -4,7 +4,8 @@ import { api } from '../../services/api';
 import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
-import { ArrowLeft, Layers, Share2, Check, Copy } from 'lucide-react';
+import NavButton from '../../components/NavButton';
+import { Layers, Share2, Check, Copy } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import UserAvatar from '../../components/UserAvatar';
 import EmptyState from '../../components/EmptyState';
@@ -119,15 +120,11 @@ export default function Collection() {
 
       <div className={styles.header}>
         <div className={styles.headerTop}>
-          <button
-            type="button"
-            className={styles.btnBack}
+          <NavButton
+            direction="back"
+            iconType="arrow"
             onClick={() => navigate(-1)}
-            aria-label="Voltar"
-            tabIndex={0}
-          >
-            <ArrowLeft size={20} />
-          </button>
+          />
 
           <div className={styles.titleArea}>
             <h1 className={styles.title}>{collection?.name || tag}</h1>

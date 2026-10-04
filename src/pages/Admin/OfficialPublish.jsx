@@ -8,7 +8,6 @@ import {
   Check,
   AlertCircle,
   FileImage,
-  Sparkles,
 } from 'lucide-react';
 import styles from './styles.module.scss';
 

@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import styles from './styles.module.scss';
 
 export default function AdminSearch({
@@ -13,6 +13,11 @@ export default function AdminSearch({
     if (onSubmit) onSubmit(value);
   };
 
+  const handleClear = () => {
+    onChange('');
+    if (onSubmit) onSubmit('');
+  };
+
   return (
     <form onSubmit={handleSubmit} className={styles.searchBox}>
       <Search size={16} className={styles.icon} />
@@ -24,6 +29,16 @@ export default function AdminSearch({
         disabled={disabled}
         className={styles.input}
       />
+      {value && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className={styles.clearBtn}
+          aria-label="Limpar busca"
+        >
+          <X size={14} />
+        </button>
+      )}
     </form>
   );
 }

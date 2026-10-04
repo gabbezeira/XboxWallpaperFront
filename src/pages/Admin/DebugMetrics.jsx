@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import Loader from '../../components/Loader';
 import {
@@ -18,7 +18,6 @@ import {
   Cloud,
   FileBox,
   Users,
-  Clock,
   Sparkles,
 } from 'lucide-react';
 import styles from './styles.module.scss';

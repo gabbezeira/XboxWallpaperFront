@@ -42,3 +42,21 @@
     cursor: not-allowed;
   }
 }
+
+.clearBtn {
+  background: transparent;
+  border: none;
+  color: $color-text-muted;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-xs;
+  flex-shrink: 0;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-text-primary;
+  }
+}

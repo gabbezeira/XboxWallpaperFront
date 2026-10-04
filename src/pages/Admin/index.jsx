@@ -19,7 +19,6 @@ import {
   RefreshCw,
   SlidersHorizontal,
   Server,
-  Database,
   ArrowRight,
 } from 'lucide-react';
 import { api } from '../../services/api';
@@ -60,14 +59,14 @@ export default function Admin() {
     creatorsCount: 0,
   });
 
-  const fetchOverallStats = async () => {
+  const fetchOverallStats = async (force = false) => {
     try {
       setRefreshing(true);
       const [pendingRes, galleryRes, colsRes, usersRes] = await Promise.allSettled([
         api.admin.pendingWallpapers(),
         api.wallpapers.list({ limit: 1 }),
         api.collections.list(),
-        api.admin.listUsers({ page: 1, limit: 1 }),
+        api.admin.listUsers({ page: 1, limit: 1, force }),
       ]);
 
       const pendingList = pendingRes.status === 'fulfilled' ? pendingRes.value : [];
@@ -87,7 +86,8 @@ export default function Admin() {
         collectionsCount: Array.isArray(colsList) ? colsList.length : 0,
         creatorsCount: verifiedCount,
       });
-    } catch {
+    } catch (err) {
+      console.error('fetchOverallStats error:', err);
     } finally {
       setRefreshing(false);
     }
@@ -297,6 +297,21 @@ export default function Admin() {
           </div>
 
           <div className={styles.topHeaderActions}>
+            {activeTab === 'overview' && (
+              <button
+                type="button"
+                onClick={() => fetchOverallStats(true)}
+                className={styles.headerExitBtn}
+                title="Atualizar métricas da visão geral"
+                disabled={refreshing}
+              >
+                <RefreshCw size={14} className={refreshing ? styles.spinIcon : ''} />
+                <span className={styles.headerActionLabel}>
+                  {refreshing ? 'Atualizando...' : 'Atualizar'}
+                </span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => navigate('/')}

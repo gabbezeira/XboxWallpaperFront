@@ -57,12 +57,12 @@ export default function ManageUsers() {
   const [selectedColId, setSelectedColId] = useState('');
   const [assigning, setAssigning] = useState(false);
 
-  const fetchUsers = useCallback(async (q = '', page = 1) => {
+  const fetchUsers = useCallback(async (q = '', page = 1, force = false) => {
     try {
       setLoading(true);
       setError(null);
       const [usersRes, colsRes] = await Promise.all([
-        api.admin.listUsers({ q, page, limit: 15 }),
+        api.admin.listUsers({ q, page, limit: 15, force }),
         api.collections.list().catch(() => []),
       ]);
       const list = usersRes?.users || (Array.isArray(usersRes) ? usersRes : []);
@@ -80,7 +80,7 @@ export default function ManageUsers() {
   }, []);
 
   useEffect(() => {
-    fetchUsers(searchQuery, 1);
+    fetchUsers('', 1);
   }, [fetchUsers]);
 
   const handlePageChange = (newPage) => {
@@ -92,7 +92,7 @@ export default function ManageUsers() {
   };
 
   const handleRefresh = () => {
-    fetchUsers(searchQuery, currentPage);
+    fetchUsers(searchQuery, currentPage, true);
   };
 
   const handleCopyTag = (text, id) => {

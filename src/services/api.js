@@ -262,14 +262,20 @@ export const api = {
       invalidateCache('/api/wallpapers');
       return res;
     },
-    listUsers: async ({ q = '', page = 1, limit = 15 } = {}) => {
+    listUsers: async ({ q = '', page = 1, limit = 15, force = false } = {}) => {
+      if (force) {
+        invalidateCache('/api/admin/users');
+      }
       const params = { q: q ? q.trim() : '', page, limit };
-      const cached = getCached('/api/admin/users', params);
-      if (cached) return cached;
+      if (!force) {
+        const cached = getCached('/api/admin/users', params);
+        if (cached) return cached;
+      }
       const qs = new URLSearchParams();
       if (q && q.trim()) qs.set('q', q.trim());
       qs.set('page', page);
       qs.set('limit', limit);
+      if (force) qs.set('force', 'true');
       const data = await request(`/api/admin/users?${qs.toString()}`);
       setCache('/api/admin/users', params, data, 60 * 1000);
       return data;

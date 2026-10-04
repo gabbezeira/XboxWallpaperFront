@@ -36,25 +36,30 @@
 }
 
 @mixin gamepad-focus {
-  transition: all $transition-base;
+  transition: outline-color $transition-fast, box-shadow $transition-fast;
   outline: none;
 
   &:focus-visible,
   &.force-focus {
-    outline: 2px solid #ffffff;
+    outline: 1px solid rgba(255, 255, 255, 0.65);
     outline-offset: 2px;
-    transform: scale(1.05);
-    z-index: 10;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+    z-index: 2;
 
     @include respond-to(2xl) {
-      outline-width: 3px;
-      outline-offset: 4px;
+      outline-width: 1.5px;
+      outline-offset: 2px;
     }
 
     @include respond-to(4k) {
-      outline-width: 4px;
-      outline-offset: 6px;
+      outline-width: 2px;
+      outline-offset: 3px;
     }
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
   }
 }
 

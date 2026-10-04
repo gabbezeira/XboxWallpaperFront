@@ -479,7 +479,7 @@
 
   &:focus-visible {
     transform: none;
-    outline-offset: 4px;
+    outline-offset: 2px;
   }
 
   @include respond-to(3xl) {

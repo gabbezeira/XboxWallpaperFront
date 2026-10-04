@@ -20,60 +20,6 @@
   gap: $spacing-xl;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-
-  @include respond-to(md) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-.titleGroup {
-  display: flex;
-  align-items: flex-start;
-  gap: $spacing-md;
-}
-
-.btnBack {
-  @include btn-ghost;
-  padding: $spacing-sm;
-  color: $color-text-secondary;
-  border-radius: $radius-full;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 2px;
-
-  &:hover {
-    color: $color-text-primary;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-}
-
-.title {
-  font-size: $fs-title;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-  margin: 0;
-}
-
-.subtitle {
-  font-size: $fs-body;
-  color: $color-text-muted;
-  margin: $spacing-xs 0 0;
-  max-width: 580px;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-}
-
 .btnMyWallpapers {
   @include btn-secondary;
   display: flex;

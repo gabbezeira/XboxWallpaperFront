@@ -158,16 +158,19 @@
 .visibilityDropdownTrigger {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 24px;
-  padding: 0 7px;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: $radius-full;
+  font-size: 0.72rem;
   font-weight: $fw-semibold;
   letter-spacing: 0.02em;
   font-family: $font-primary;
-  background: #111318;
-  border: 1px solid #27272a;
+  background: rgba(10, 12, 16, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
   color: #e4e4e7;
   cursor: pointer;
   transition: all $transition-fast;
@@ -181,30 +184,46 @@
   }
 
   &:hover {
-    background: #181a20;
-    border-color: #3f3f46;
+    background: rgba(18, 22, 30, 0.92);
+    border-color: rgba(255, 255, 255, 0.3);
     color: #ffffff;
   }
 
   &.triggerPublic {
+    background: rgba(16, 124, 16, 0.22);
+    border-color: rgba(16, 124, 16, 0.5);
+    color: #ffffff;
+
     .statusIcon {
-      color: #34d399;
+      color: #22c55e;
     }
   }
 
   &.triggerPending {
+    background: rgba(217, 119, 6, 0.22);
+    border-color: rgba(217, 119, 6, 0.5);
+    color: #fef3c7;
+
     .statusIcon {
       color: #fbbf24;
     }
   }
 
   &.triggerRejected {
+    background: rgba(220, 38, 38, 0.22);
+    border-color: rgba(220, 38, 38, 0.5);
+    color: #fee2e2;
+
     .statusIcon {
       color: #f87171;
     }
   }
 
   &.triggerPrivate {
+    background: rgba(20, 22, 28, 0.78);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #d4d4d8;
+
     .statusIcon {
       color: #a1a1aa;
     }
@@ -218,7 +237,7 @@
 .dropdownCaret {
   color: $color-text-muted;
   transition: transform $transition-fast;
-  margin-left: 2px;
+  margin-left: 1px;
   flex-shrink: 0;
 
   &.caretOpen {
@@ -229,16 +248,19 @@
 
 .visibilityDropdownMenu {
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 6px);
   left: 0;
-  min-width: 120px;
-  background: #111318;
-  border: 1px solid #27272a;
-  border-radius: 4px;
-  padding: 4px;
+  min-width: 130px;
+  background: rgba(14, 17, 23, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+  border-radius: $radius-md;
+  padding: 5px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   z-index: 30;
   animation: dropdownFade $transition-fast ease-out;
 }
@@ -248,12 +270,12 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 5px 8px;
-  border-radius: 3px;
+  padding: 7px 10px;
+  border-radius: $radius-sm;
   background: transparent;
   border: none;
   color: $color-text-secondary;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-family: $font-primary;
   font-weight: $fw-medium;
   cursor: pointer;
@@ -268,7 +290,7 @@
   &.active {
     color: #ffffff;
     font-weight: $fw-semibold;
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: rgba(16, 124, 16, 0.18);
   }
 }
 
@@ -285,37 +307,56 @@
   z-index: 5;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 24px;
-  padding: 0 7px;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: $radius-full;
+  font-size: 0.72rem;
   font-weight: $fw-semibold;
   letter-spacing: 0.02em;
   font-family: $font-primary;
-  background: #111318;
-  border: 1px solid #27272a;
+  background: rgba(10, 12, 16, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
   color: #e4e4e7;
 
   &.approved {
+    background: rgba(16, 124, 16, 0.22);
+    border-color: rgba(16, 124, 16, 0.5);
+    color: #ffffff;
+
     .statusIcon {
-      color: #34d399;
+      color: #22c55e;
     }
   }
 
   &.pending {
+    background: rgba(217, 119, 6, 0.22);
+    border-color: rgba(217, 119, 6, 0.5);
+    color: #fef3c7;
+
     .statusIcon {
       color: #fbbf24;
     }
   }
 
   &.rejected {
+    background: rgba(220, 38, 38, 0.22);
+    border-color: rgba(220, 38, 38, 0.5);
+    color: #fee2e2;
+
     .statusIcon {
       color: #f87171;
     }
   }
 
   &.private {
+    background: rgba(20, 22, 28, 0.78);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #d4d4d8;
+
     .statusIcon {
       color: #a1a1aa;
     }

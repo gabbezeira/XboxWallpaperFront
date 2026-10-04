@@ -4,23 +4,26 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 99999;
   @include flex-center;
-  animation: fadeIn $transition-base ease-out;
-  padding: $spacing-xl;
+  animation: fadeIn $transition-fast ease-out;
+  padding: $spacing-md;
 }
 
 .modal {
-  background-color: $color-bg-secondary;
-  border: 1px solid $color-border;
+  background: linear-gradient(180deg, rgba(24, 28, 36, 0.98) 0%, rgba(13, 16, 22, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-xl;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.04);
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
-  animation: slideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUp 280ms cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 
   @include respond-to(2xl) {
@@ -43,6 +46,7 @@
   font-size: $fs-subtitle;
   color: $color-text-primary;
   font-weight: $fw-bold;
+  letter-spacing: -0.01em;
 }
 
 .content {
@@ -56,12 +60,21 @@
   display: flex;
   gap: $spacing-md;
   padding: $spacing-lg $spacing-xl $spacing-xl;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .btnCancel {
   @include btn-ghost;
   flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-lg;
+  padding: 12px $spacing-lg;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
 }
 
 .btnConfirm {
@@ -69,15 +82,41 @@
   flex: 1;
   background-color: $color-danger;
   color: #fff;
+  border-radius: $radius-lg;
+  padding: 12px $spacing-lg;
+  font-weight: $fw-bold;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+  transition: all $transition-fast;
 
   &:hover:not(:disabled) {
     background-color: $color-danger-hover;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 }
 
 .btnSuccess {
   @include btn-primary;
   flex: 1;
+  border-radius: $radius-lg;
+  padding: 12px $spacing-lg;
+  font-weight: $fw-bold;
+  background: linear-gradient(135deg, $color-primary 0%, #159c15 100%);
+  box-shadow: 0 4px 16px rgba(16, 124, 16, 0.35);
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(16, 124, 16, 0.5);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {

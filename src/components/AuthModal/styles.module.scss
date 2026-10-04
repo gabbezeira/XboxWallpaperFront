@@ -5,9 +5,9 @@
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(#000, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   @include flex-center;
   animation: fadeIn $transition-fast forwards;
   padding: $spacing-md;
@@ -15,42 +15,43 @@
 
 .modal {
   width: 90%;
-  max-width: 380px;
+  max-width: 400px;
   max-height: calc(100dvh - $spacing-2xl);
   overflow-y: auto;
-  background-color: $color-bg-secondary;
-  border: 1px solid $color-border;
+  background: linear-gradient(180deg, rgba(24, 28, 36, 0.98) 0%, rgba(13, 16, 22, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-xl;
-  padding: $spacing-lg;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.04), 0 0 40px rgba(16, 124, 16, 0.06);
+  padding: $spacing-xl;
   animation: scaleIn $transition-base forwards;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: $spacing-lg;
 
   @include respond-to(md) {
-    padding: $spacing-xl;
-    max-width: 400px;
+    padding: $spacing-2xl;
+    max-width: 420px;
   }
 
   @include respond-to(2xl) {
-    max-width: 440px;
-    padding: $spacing-2xl;
+    max-width: 460px;
   }
 }
 
 .close {
   position: absolute;
-  top: $spacing-sm;
-  right: $spacing-sm;
+  top: $spacing-md;
+  right: $spacing-md;
   width: 36px;
   height: 36px;
   @include flex-center;
   color: $color-text-muted;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: $radius-full;
   @include gamepad-focus;
-  transition: background-color $transition-fast;
+  transition: all $transition-fast;
 
   &:focus-visible {
     transform: none;
@@ -59,7 +60,8 @@
 
   &:hover {
     color: $color-text-primary;
-    background-color: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
   }
 }
 
@@ -83,8 +85,8 @@
   flex-shrink: 0;
   @include flex-center;
   color: $color-text-secondary;
-  background: transparent;
-  border: 1px solid $color-border;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-md;
   @include gamepad-focus;
   transition: all $transition-fast;
@@ -95,18 +97,21 @@
 
   &:hover {
     color: $color-text-primary;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
   }
 }
 
 .logo {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
+  filter: drop-shadow(0 0 16px rgba(16, 124, 16, 0.35));
+  margin-bottom: 4px;
 
   @include respond-to(2xl) {
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
   }
 }
 
@@ -137,24 +142,27 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
+  gap: 6px;
 }
 
 .label {
-  font-size: $fs-small;
-  font-weight: $fw-semibold;
-  color: $color-text-secondary;
-  margin-left: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: $fw-bold;
+  color: $color-text-muted;
+  margin-left: 2px;
 }
 
 .input {
-  padding: $spacing-sm $spacing-md;
-  background-color: $color-bg-main;
-  border: 1px solid $color-border;
+  height: 44px;
+  padding: 0 $spacing-md;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: $radius-lg;
   color: $color-text-primary;
   font-size: $fs-body;
-  transition: border-color $transition-fast;
+  transition: all $transition-fast;
   font-family: $font-primary;
   @include touch-target;
   @include gamepad-focus;
@@ -166,6 +174,9 @@
 
   &:focus {
     border-color: $color-primary;
+    background-color: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 0 2px rgba(16, 124, 16, 0.3);
+    outline: none;
   }
 
   &::placeholder {
@@ -176,9 +187,22 @@
 .btnSubmit {
   @include btn-primary;
   width: 100%;
-  padding: $spacing-sm $spacing-md;
+  height: 44px;
   font-size: $fs-body;
+  font-weight: $fw-bold;
   border-radius: $radius-lg;
+  background: linear-gradient(135deg, $color-primary 0%, #159c15 100%);
+  box-shadow: 0 4px 16px rgba(16, 124, 16, 0.35);
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(16, 124, 16, 0.5);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
 }
 
 .btnLoading {
@@ -198,7 +222,7 @@
 .btnMicrosoft {
   @include btn-base;
   width: 100%;
-  padding: $spacing-sm $spacing-md;
+  padding: 12px $spacing-lg;
   background-color: #ffffff;
   border: 1px solid #ffffff;
   color: #000000;
@@ -206,39 +230,52 @@
   font-size: $fs-body;
   border-radius: $radius-lg;
   font-weight: $fw-bold;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   transition: all $transition-fast;
 
   &:hover {
-    background-color: #e6e6e6;
-    border-color: #e6e6e6;
+    background-color: #f0f0f0;
+    border-color: #f0f0f0;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
 .btnQrCode {
   @include btn-base;
   width: 100%;
-  padding: $spacing-sm $spacing-md;
-  background-color: $color-accent;
-  border: 1px solid $color-accent;
+  padding: 12px $spacing-lg;
+  background: rgba(16, 124, 16, 0.14);
+  border: 1px solid rgba(16, 124, 16, 0.4);
   color: #ffffff;
   gap: $spacing-md;
   font-size: $fs-body;
   border-radius: $radius-lg;
   font-weight: $fw-bold;
+  box-shadow: 0 4px 16px rgba(16, 124, 16, 0.15);
   transition: all $transition-fast;
 
   &:hover {
-    background-color: $color-primary;
+    background: rgba(16, 124, 16, 0.25);
     border-color: $color-primary;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(16, 124, 16, 0.25);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
 .btnEmail {
   @include btn-base;
   width: 100%;
-  padding: $spacing-sm $spacing-md;
-  background-color: $color-bg-tertiary;
-  border: 1px solid $color-border;
+  padding: 12px $spacing-lg;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: $color-text-primary;
   gap: $spacing-md;
   font-size: $fs-body;
@@ -247,7 +284,13 @@
   transition: all $transition-fast;
 
   &:hover {
-    background-color: color-mix(in srgb, $color-bg-tertiary, white 5%);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
@@ -280,11 +323,11 @@
 }
 
 .error {
-  padding: $spacing-sm $spacing-md;
-  background: rgba($color-danger, 0.1);
-  border: 1px solid rgba($color-danger, 0.2);
+  padding: 10px $spacing-md;
+  background: rgba($color-danger, 0.12);
+  border: 1px solid rgba($color-danger, 0.3);
   border-radius: $radius-md;
-  color: $color-danger;
+  color: #fca5a5;
   font-size: $fs-small;
   text-align: center;
   font-weight: $fw-medium;

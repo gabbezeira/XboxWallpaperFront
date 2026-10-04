@@ -111,7 +111,7 @@ export default function ModerationQueue({ onApprovedCountChange }) {
       const updated = wallpapers.filter((w) => w.id !== wallpaper.id);
       setWallpapers(updated);
       if (onApprovedCountChange) {
-        onApprovedCountChange(updated.length);
+        onApprovedCountChange(updated.length, 1);
       }
     } catch (err) {
       alert(`Erro ao aprovar: ${err.message}`);

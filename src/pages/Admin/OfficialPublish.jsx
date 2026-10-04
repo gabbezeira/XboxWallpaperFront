@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { api } from '../../services/api';
+import { invalidateCache } from '../../services/apiCache';
 import { auth } from '../../services/firebase';
 import {
   UploadCloud,
@@ -355,7 +356,8 @@ export default function OfficialPublish({ onPublishComplete }) {
       completed: completedCount,
       failed: failedCount,
     });
-    if (onPublishComplete) onPublishComplete();
+    invalidateCache('/api/wallpapers');
+    if (onPublishComplete) onPublishComplete(completedCount);
   };
 
   const totalSizeMB = batchFiles

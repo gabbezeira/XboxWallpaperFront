@@ -22,6 +22,7 @@ import {
 import horizontalLogo from '../../assets/horizontal-logo.png';
 import PageHeader from '../../components/PageHeader';
 import { api } from '../../services/api';
+import { invalidateCache } from '../../services/apiCache';
 import { useAuth } from '../../hooks/useAuth';
 import ModerationQueue from './ModerationQueue';
 import OfficialPublish from './OfficialPublish';
@@ -62,6 +63,12 @@ export default function Admin() {
   const fetchOverallStats = async (force = false) => {
     try {
       setRefreshing(true);
+      if (force) {
+        invalidateCache('/api/wallpapers');
+        invalidateCache('/api/admin/users');
+        invalidateCache('/api/collections');
+        invalidateCache('/api/admin/moderation');
+      }
       const [pendingRes, galleryRes, colsRes, usersRes] = await Promise.allSettled([
         api.admin.pendingWallpapers(),
         api.wallpapers.list({ limit: 1 }),
@@ -82,7 +89,7 @@ export default function Admin() {
 
       setStats({
         pending: Array.isArray(pendingList) ? pendingList.length : 0,
-        totalWallpapers: galleryData?.totalItems || 0,
+        totalWallpapers: typeof galleryData?.totalItems === 'number' ? galleryData.totalItems : 0,
         collectionsCount: Array.isArray(colsList) ? colsList.length : 0,
         creatorsCount: verifiedCount,
       });
@@ -92,6 +99,10 @@ export default function Admin() {
       setRefreshing(false);
     }
   };
+
+  useEffect(() => {
+    fetchOverallStats();
+  }, []);
 
   useEffect(() => {
     if (activeTab === 'overview') {
@@ -105,10 +116,13 @@ export default function Admin() {
     setMobileMenuOpen(false);
   };
 
-  const handlePendingCountUpdate = (newCount) => {
+  const handlePendingCountUpdate = (newCount, approvedDelta = 0) => {
     setStats((prev) => ({
       ...prev,
       pending: newCount,
+      totalWallpapers: typeof approvedDelta === 'number' && approvedDelta > 0
+        ? prev.totalWallpapers + approvedDelta
+        : prev.totalWallpapers,
     }));
   };
 
@@ -528,11 +542,28 @@ export default function Admin() {
           )}
 
           {activeTab === 'publish' && (
-            <OfficialPublish onPublishComplete={fetchOverallStats} />
+            <OfficialPublish
+              onPublishComplete={(addedCount) => {
+                invalidateCache('/api/wallpapers');
+                if (typeof addedCount === 'number' && addedCount > 0) {
+                  setStats((prev) => ({
+                    ...prev,
+                    totalWallpapers: prev.totalWallpapers + addedCount,
+                  }));
+                }
+                fetchOverallStats(true);
+              }}
+            />
           )}
 
           {activeTab === 'wallpapers' && (
-            <ManageWallpapers />
+            <ManageWallpapers
+              onWallpaperCountChange={(newTotal) => {
+                if (typeof newTotal === 'number') {
+                  setStats((prev) => ({ ...prev, totalWallpapers: newTotal }));
+                }
+              }}
+            />
           )}
 
           {activeTab === 'hero' && (

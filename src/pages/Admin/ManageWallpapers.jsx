@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
+import { invalidateCache } from '../../services/apiCache';
 import Loader from '../../components/Loader';
 import {
   Trash2,
@@ -15,8 +16,9 @@ import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
 
-export default function ManageWallpapers() {
+export default function ManageWallpapers({ onWallpaperCountChange }) {
   const [wallpapers, setWallpapers] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -46,6 +48,10 @@ export default function ManageWallpapers() {
         } else {
           setWallpapers(res.data);
           setSelectedIds(new Set());
+        }
+        if (typeof res.totalItems === 'number' && !currentQ && !currentTag) {
+          setTotalCount(res.totalItems);
+          if (onWallpaperCountChange) onWallpaperCountChange(res.totalItems);
         }
         setHasMore(res.data.length === 20);
       }
@@ -107,6 +113,12 @@ export default function ManageWallpapers() {
         next.delete(id);
         return next;
       });
+      setTotalCount((prev) => {
+        const next = Math.max(0, prev - 1);
+        if (onWallpaperCountChange) onWallpaperCountChange(next);
+        return next;
+      });
+      invalidateCache('/api/wallpapers');
     } catch (err) {
       alert(`Erro ao excluir: ${err.message}`);
     } finally {
@@ -122,8 +134,15 @@ export default function ManageWallpapers() {
     try {
       const res = await api.wallpapers.batchRemove(idsToDelete);
       const deletedSet = new Set(res.deleted || idsToDelete);
+      const countDeleted = deletedSet.size;
       setWallpapers((prev) => prev.filter((w) => !deletedSet.has(w.id)));
       setSelectedIds(new Set());
+      setTotalCount((prev) => {
+        const next = Math.max(0, prev - countDeleted);
+        if (onWallpaperCountChange) onWallpaperCountChange(next);
+        return next;
+      });
+      invalidateCache('/api/wallpapers');
     } catch (err) {
       alert(`Erro ao excluir wallpapers: ${err.message}`);
     } finally {
@@ -136,7 +155,13 @@ export default function ManageWallpapers() {
       <AdminHeader
         title="Acervo Público de Wallpapers"
         subtitle="Navegue pelo catálogo público e realize exclusões individuais ou em lote."
-        badge={wallpapers.length > 0 ? `${wallpapers.length} carregados` : null}
+        badge={
+          totalCount > 0
+            ? `${totalCount.toLocaleString('pt-BR')} no acervo (${wallpapers.length} carregados)`
+            : wallpapers.length > 0
+            ? `${wallpapers.length} carregados`
+            : null
+        }
       >
         {wallpapers.length > 0 && (
           <button

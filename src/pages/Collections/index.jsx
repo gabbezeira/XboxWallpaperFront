@@ -12,7 +12,10 @@ import {
 } from 'lucide-react';
 import VerifiedBadge from '../../components/VerifiedBadge';
 import UserAvatar from '../../components/UserAvatar';
+import Pagination from '../../components/Pagination';
 import styles from './styles.module.scss';
+
+const ITEMS_PER_PAGE = 12;
 
 export default function Collections() {
   const navigate = useNavigate();
@@ -20,6 +23,7 @@ export default function Collections() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedCode, setCopiedCode] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     let isMounted = true;
@@ -81,6 +85,21 @@ export default function Collections() {
     });
   }, [collections, searchQuery]);
 
+  const totalPages = useMemo(
+    () => Math.ceil(filteredCollections.length / ITEMS_PER_PAGE),
+    [filteredCollections.length]
+  );
+
+  const paginatedCollections = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredCollections.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredCollections, currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
@@ -100,7 +119,10 @@ export default function Collections() {
               type="text"
               placeholder="Buscar por nome, criador ou código..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               className={styles.searchInput}
             />
             {searchQuery.trim() && (
@@ -118,8 +140,9 @@ export default function Collections() {
         {loading ? (
           <Loader text="Carregando coleções..." />
         ) : filteredCollections.length > 0 ? (
-          <div className={styles.collectionsGrid}>
-            {filteredCollections.map((col) => {
+          <>
+            <div className={styles.collectionsGrid}>
+              {paginatedCollections.map((col) => {
               const displayCode = col.code || col.slug?.toUpperCase() || `COL-${col.id.slice(0, 5).toUpperCase()}`;
               const isCopied = copiedCode === displayCode;
               const hasLinkedUser = Boolean(col.linkedUserName);
@@ -184,6 +207,14 @@ export default function Collections() {
               );
             })}
           </div>
+          {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
         ) : (
           <div className={styles.emptyState}>
             <div className={styles.emptyIconBox}>

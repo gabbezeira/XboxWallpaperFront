@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Compass, Layers, Trophy, BookOpen, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Home, Compass, ArrowLeft } from 'lucide-react';
 import styles from './styles.module.scss';
 
 export default function NotFound({
@@ -16,33 +16,6 @@ export default function NotFound({
       navigate('/');
     }
   };
-
-  const shortcuts = [
-    {
-      to: '/gallery',
-      icon: <Compass size={20} />,
-      name: 'Galeria Completa',
-      desc: 'Navegue por todos os papéis de parede 4K',
-    },
-    {
-      to: '/collections',
-      icon: <Layers size={20} />,
-      name: 'Coleções Oficiais',
-      desc: 'Temas organizados por franquias e estúdios',
-    },
-    {
-      to: '/levels',
-      icon: <Trophy size={20} />,
-      name: 'Níveis e Conquistas',
-      desc: 'Evolução de patentes e cotas da comunidade',
-    },
-    {
-      to: '/guide',
-      icon: <BookOpen size={20} />,
-      name: 'Guia de Aplicação',
-      desc: 'Como configurar wallpapers direto no Xbox',
-    },
-  ];
 
   return (
     <main className={styles.page}>
@@ -78,32 +51,6 @@ export default function NotFound({
             <span>Voltar</span>
           </button>
         </nav>
-
-        <section className={styles.shortcutsWrapper} aria-label="Destinos sugeridos">
-          <h2 className={styles.shortcutsTitle}>Acesso rápido a seções do ecossistema</h2>
-
-          <div className={styles.shortcutsGrid}>
-            {shortcuts.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={styles.shortcutCard}
-                tabIndex={0}
-              >
-                <div className={styles.shortcutMain}>
-                  <div className={styles.shortcutIconBox} aria-hidden="true">
-                    {item.icon}
-                  </div>
-                  <div className={styles.shortcutInfo}>
-                    <span className={styles.shortcutName}>{item.name}</span>
-                    <span className={styles.shortcutDesc}>{item.desc}</span>
-                  </div>
-                </div>
-                <ArrowRight size={16} className={styles.shortcutArrow} aria-hidden="true" />
-              </Link>
-            ))}
-          </div>
-        </section>
       </div>
     </main>
   );

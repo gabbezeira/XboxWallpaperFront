@@ -22,10 +22,36 @@ const HIDE_SEARCH_ROUTES = [
 const HIDE_SEARCH_PREFIXES = ['/wallpaper/'];
 const IMMERSIVE_PREFIXES = ['/wallpaper/'];
 
+const KNOWN_ROUTES = [
+  '/',
+  '/gallery',
+  '/collections',
+  '/terms',
+  '/levels',
+  '/guide',
+  '/favorites',
+  '/my-wallpapers',
+  '/upload',
+  '/my-collection',
+];
+
+const KNOWN_PREFIXES = [
+  '/wallpaper/',
+  '/collection/',
+  '/c/',
+];
+
+function isNotFoundRoute(pathname) {
+  if (KNOWN_ROUTES.includes(pathname)) return false;
+  return !KNOWN_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
 export default function Layout({ children, onLoginClick }) {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const is404 = isNotFoundRoute(location.pathname);
   const shouldHideSearch =
+    is404 ||
     HIDE_SEARCH_ROUTES.includes(location.pathname) ||
     HIDE_SEARCH_PREFIXES.some((p) => location.pathname.startsWith(p));
   const isImmersive = IMMERSIVE_PREFIXES.some((p) => location.pathname.startsWith(p));
@@ -174,7 +200,7 @@ export default function Layout({ children, onLoginClick }) {
         <Sidebar onLoginClick={onLoginClick} />
       ))}
 
-      <main className={`${styles.main} ${isImmersive ? styles.immersive : ''}`}>
+      <main className={`${styles.main} ${isImmersive ? styles.immersive : ''} ${is404 ? styles.fullCentered : ''}`}>
         {!isMobile && !shouldHideSearch && (
           <div className={styles.topBar}>
             <form className={styles.searchForm} onSubmit={handleSearchSubmit}>

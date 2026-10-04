@@ -44,6 +44,12 @@
     padding: 0;
     gap: 0;
   }
+
+  &.fullCentered {
+    justify-content: center;
+    overflow: hidden;
+    gap: 0;
+  }
 }
 
 .topBar {

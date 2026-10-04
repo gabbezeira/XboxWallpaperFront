@@ -81,6 +81,9 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  width: fit-content;
+  align-self: flex-start;
+  max-width: fit-content;
   gap: 5px;
   padding: 4px 10px;
   font-size: 10px;
@@ -103,7 +106,6 @@
     content: '';
     position: absolute;
     inset: 1.5px;
-    background-color: #0c0c0e;
     border-radius: calc(#{$radius-sm} - 1.5px);
     z-index: 1;
   }
@@ -146,7 +148,7 @@
   }
 
   &.small {
-    padding: 3px 7px;
+    padding: 3px 8px;
     font-size: 9px;
     gap: 4px;
     border-radius: $radius-xs;
@@ -162,13 +164,17 @@
   }
 
   &.large {
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 11px;
     gap: 6px;
   }
 
   &.level_1 {
     color: #f3f4f6;
+
+    &::before {
+      background-color: #09090b;
+    }
 
     &::after {
       background-image: linear-gradient(
@@ -186,7 +192,16 @@
   }
 
   &.level_2 {
-    color: #fff7ed;
+    color: #ffffff;
+
+    &::before {
+      background: linear-gradient(
+        135deg,
+        rgba(234, 88, 12, 0.45) 0%,
+        rgba(194, 65, 12, 0.28) 50%,
+        rgba(26, 11, 4, 0.95) 100%
+      ), #140903;
+    }
 
     &::after {
       background-image: linear-gradient(
@@ -200,12 +215,21 @@
     }
 
     .badgeIcon {
-      color: #fdba74;
+      color: #fed7aa;
     }
   }
 
   &.level_3 {
-    color: #f0f9ff;
+    color: #ffffff;
+
+    &::before {
+      background: linear-gradient(
+        135deg,
+        rgba(14, 165, 233, 0.42) 0%,
+        rgba(2, 132, 199, 0.26) 50%,
+        rgba(8, 22, 42, 0.95) 100%
+      ), #061120;
+    }
 
     &::after {
       background-image: linear-gradient(
@@ -219,12 +243,21 @@
     }
 
     .badgeIcon {
-      color: #7dd3fc;
+      color: #bae6fd;
     }
   }
 
   &.level_4 {
-    color: #fff1f2;
+    color: #ffffff;
+
+    &::before {
+      background: linear-gradient(
+        135deg,
+        rgba(225, 29, 72, 0.45) 0%,
+        rgba(190, 18, 60, 0.28) 50%,
+        rgba(36, 5, 18, 0.95) 100%
+      ), #15030a;
+    }
 
     &::after {
       background-image: linear-gradient(
@@ -238,12 +271,21 @@
     }
 
     .badgeIcon {
-      color: #fda4af;
+      color: #fecdd3;
     }
   }
 
   &.level_5 {
-    color: #faf5ff;
+    color: #ffffff;
+
+    &::before {
+      background: linear-gradient(
+        135deg,
+        rgba(168, 85, 247, 0.48) 0%,
+        rgba(124, 58, 237, 0.3) 50%,
+        rgba(32, 7, 56, 0.95) 100%
+      ), #130322;
+    }
 
     &::after {
       background-image: linear-gradient(
@@ -258,12 +300,21 @@
     }
 
     .badgeIcon {
-      color: #e9d5ff;
+      color: #f3e8ff;
     }
   }
 
   &.level_6 {
     color: #ffffff;
+
+    &::before {
+      background: linear-gradient(
+        135deg,
+        rgba(0, 255, 136, 0.42) 0%,
+        rgba(16, 124, 16, 0.28) 50%,
+        rgba(4, 34, 16, 0.95) 100%
+      ), #02140a;
+    }
 
     &::after {
       background-image: linear-gradient(
@@ -278,7 +329,7 @@
     }
 
     .badgeIcon {
-      color: #86efac;
+      color: #bbf7d0;
     }
   }
 }

@@ -226,7 +226,8 @@
 .authorDetails {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .authorNameRow {

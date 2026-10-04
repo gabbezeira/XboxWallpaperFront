@@ -65,59 +65,6 @@
   flex: 1;
 }
 
-.headerBadgeRow {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
-  flex-wrap: wrap;
-}
-
-.collectionBadge {
-  font-size: 11px;
-  font-weight: $fw-bold;
-  color: #4ade80;
-  background-color: #0f291e;
-  border: 1px solid #107c10;
-  padding: 3px 10px;
-  border-radius: $radius-full;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.slugBadge {
-  font-size: 11px;
-  font-weight: $fw-medium;
-  color: $color-text-muted;
-  background: #181818;
-  padding: 3px 10px;
-  border-radius: $radius-full;
-  border: 1px solid #2a2a2a;
-  font-family: monospace;
-}
-
-.codeBadgeBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: $fw-bold;
-  font-family: monospace;
-  color: #4ade80;
-  background: #14281d;
-  padding: 3px 10px;
-  border-radius: $radius-full;
-  border: 1px solid #107c10;
-  cursor: pointer;
-  transition: all $transition-fast;
-  @include gamepad-focus;
-
-  &:hover {
-    background: #107c10;
-    color: #ffffff;
-    border-color: #22c55e;
-  }
-}
-
 .title {
   font-size: $fs-subtitle;
   font-weight: $fw-bold;
@@ -138,6 +85,13 @@
   line-height: 1.5;
 }
 
+.slugLabel {
+  font-size: $fs-small;
+  font-weight: $fw-medium;
+  color: $color-text-muted;
+  font-family: monospace;
+}
+
 .headerActions {
   display: flex;
   align-items: center;
@@ -150,22 +104,7 @@
   }
 }
 
-.btnGhostAction {
-  @include btn-ghost;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: $fs-small;
-  padding: 10px 14px;
-  flex: 1;
-  justify-content: center;
-
-  @include respond-to(sm) {
-    flex: initial;
-  }
-}
-
-.btnCopyCode {
+.btnAction {
   @include btn-secondary;
   display: inline-flex;
   align-items: center;
@@ -175,22 +114,7 @@
   flex: 1;
   justify-content: center;
 
-  @include respond-to(sm) {
-    flex: initial;
-  }
-}
-
-.btnShare {
-  @include btn-secondary;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: $fs-small;
-  padding: 10px 14px;
-  flex: 1;
-  justify-content: center;
-
-  @include respond-to(sm) {
+  @include respond-to(md) {
     flex: initial;
   }
 }
@@ -205,7 +129,7 @@
   width: 100%;
   justify-content: center;
 
-  @include respond-to(sm) {
+  @include respond-to(md) {
     width: auto;
     flex: initial;
   }
@@ -213,8 +137,12 @@
 
 .dashboardStats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .statCard {
@@ -225,20 +153,36 @@
   background-color: $color-bg-secondary;
   border: 1px solid $color-border;
   border-radius: $radius-lg;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.statCardFavorites {
+  border-color: rgba($color-favorite, 0.15);
+
+  &:hover {
+    border-color: rgba($color-favorite, 0.3);
+  }
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.statIconHeart {
+  color: $color-favorite;
+  opacity: 0.8;
 }
 
 .statNumber {
   font-size: $fs-title;
   font-weight: $fw-bold;
   color: $color-primary;
-}
-
-.statCode {
-  font-size: $fs-title;
-  font-weight: $fw-bold;
-  font-family: monospace;
-  color: $color-primary;
-  letter-spacing: 1px;
 }
 
 .statLabel {

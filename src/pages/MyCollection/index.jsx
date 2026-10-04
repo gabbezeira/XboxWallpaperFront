@@ -5,7 +5,7 @@ import WallpaperGrid from '../../components/WallpaperGrid';
 import Pagination from '../../components/Pagination';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
-import { Layers, Share2, UploadCloud, ArrowLeft, Check, ExternalLink, KeyRound, Copy } from 'lucide-react';
+import { Layers, Share2, UploadCloud, ArrowLeft, Check, ExternalLink, Copy, Heart } from 'lucide-react';
 import styles from './styles.module.scss';
 
 const ITEMS_PER_PAGE = 24;
@@ -54,6 +54,13 @@ export default function MyCollection() {
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleCopyCode = () => {
+    const c = collection.code || collection.slug.toUpperCase();
+    navigator.clipboard.writeText(c);
+    setCodeCopied(true);
+    setTimeout(() => setCodeCopied(false), 2000);
   };
 
   const handleOpenPublicView = () => {
@@ -136,6 +143,11 @@ export default function MyCollection() {
     return wallpapers.slice(start, start + ITEMS_PER_PAGE);
   }, [wallpapers, currentPage]);
 
+  const totalFavorites = useMemo(
+    () => wallpapers.reduce((sum, w) => sum + (w.favoriteCount || 0), 0),
+    [wallpapers]
+  );
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -204,68 +216,42 @@ export default function MyCollection() {
               {collection.description && (
                 <p className={styles.subtitle}>{collection.description}</p>
               )}
-              <div className={styles.headerBadgeRow}>
-                <span className={styles.collectionBadge}>Painel do Criador</span>
-                <span className={styles.slugBadge}>/{collection.slug}</span>
-                {Boolean(collection.code || collection.slug) && (
-                  <button
-                    type="button"
-                    className={styles.codeBadgeBtn}
-                    onClick={() => {
-                      const c = collection.code || collection.slug.toUpperCase();
-                      navigator.clipboard.writeText(c);
-                      setCodeCopied(true);
-                      setTimeout(() => setCodeCopied(false), 2000);
-                    }}
-                    title="Copiar código de acesso rápido"
-                    tabIndex={0}
-                  >
-                    <KeyRound size={12} />
-                    <span>
-                      Código: {codeCopied ? 'Copiado!' : collection.code || collection.slug.toUpperCase()}
-                    </span>
-                  </button>
-                )}
-              </div>
+              <span className={styles.slugLabel}>/{collection.slug}</span>
             </div>
           </div>
 
           <div className={styles.headerActions}>
             <button
               type="button"
-              className={styles.btnGhostAction}
+              className={styles.btnAction}
               onClick={handleOpenPublicView}
               tabIndex={0}
               title="Abrir página pública da coleção"
             >
               <ExternalLink size={16} />
-              <span>Ver Página Pública</span>
+              <span>Página Pública</span>
             </button>
 
             <button
               type="button"
-              className={styles.btnCopyCode}
-              onClick={() => {
-                const c = collection.code || collection.slug.toUpperCase();
-                navigator.clipboard.writeText(c);
-                setCodeCopied(true);
-                setTimeout(() => setCodeCopied(false), 2000);
-              }}
+              className={styles.btnAction}
+              onClick={handleCopyCode}
               tabIndex={0}
               title="Copiar código de busca no console e mobile"
             >
               {codeCopied ? <Check size={16} /> : <Copy size={16} />}
-              <span>{codeCopied ? 'Código Copiado!' : 'Copiar Código'}</span>
+              <span>{codeCopied ? 'Copiado!' : collection.code || collection.slug.toUpperCase()}</span>
             </button>
 
             <button
               type="button"
-              className={styles.btnShare}
+              className={styles.btnAction}
               onClick={handleShare}
               tabIndex={0}
+              title="Copiar link da coleção"
             >
               {copied ? <Check size={16} /> : <Share2 size={16} />}
-              <span>{copied ? 'Link Copiado!' : 'Copiar Link'}</span>
+              <span>{copied ? 'Link Copiado!' : 'Compartilhar'}</span>
             </button>
 
             <button
@@ -300,11 +286,12 @@ export default function MyCollection() {
             <span className={styles.statLabel}>Em Moderação</span>
           </div>
 
-          <div className={styles.statCard}>
-            <span className={styles.statCode}>
-              {collection.code || collection.slug.toUpperCase()}
-            </span>
-            <span className={styles.statLabel}>Código de Busca Rápida</span>
+          <div className={`${styles.statCard} ${styles.statCardFavorites}`}>
+            <div className={styles.statRow}>
+              <Heart size={18} className={styles.statIconHeart} />
+              <span className={styles.statNumber}>{totalFavorites}</span>
+            </div>
+            <span className={styles.statLabel}>Favoritos Totais</span>
           </div>
         </section>
 

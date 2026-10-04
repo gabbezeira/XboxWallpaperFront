@@ -152,29 +152,48 @@ export function AuthProvider({ children }) {
     !user.emailVerified
   );
 
-  useEffect(() => {
-    if (!user || user.emailVerified) return undefined;
+  const lastCheckTimeRef = useRef(0);
+  const checkCountRef = useRef(0);
+  const isCheckingRef = useRef(false);
 
-    const checkVerificationOnFocus = async () => {
-      if (document.visibilityState === 'visible') {
-        try {
-          await user.reload();
-          if (user.emailVerified && isMountedRef.current) {
-            setUser({ ...user });
-            await refreshProfile();
-          }
-        } catch {}
+  useEffect(() => {
+    if (!needsEmailVerification || !user) return undefined;
+
+    const MIN_CHECK_INTERVAL_MS = 25000;
+    const MAX_AUTO_CHECKS = 10;
+
+    const checkVerificationOnVisibility = async () => {
+      if (document.visibilityState !== 'visible') return;
+      if (isCheckingRef.current) return;
+      if (checkCountRef.current >= MAX_AUTO_CHECKS) return;
+
+      const now = Date.now();
+      if (now - lastCheckTimeRef.current < MIN_CHECK_INTERVAL_MS) return;
+
+      lastCheckTimeRef.current = now;
+      isCheckingRef.current = true;
+
+      try {
+        await user.reload();
+        if (auth.currentUser?.emailVerified && isMountedRef.current) {
+          await auth.currentUser.getIdToken(true);
+          setUser(auth.currentUser);
+          await refreshProfile();
+        } else {
+          checkCountRef.current += 1;
+        }
+      } catch {
+      } finally {
+        isCheckingRef.current = false;
       }
     };
 
-    document.addEventListener('visibilitychange', checkVerificationOnFocus);
-    window.addEventListener('focus', checkVerificationOnFocus);
+    document.addEventListener('visibilitychange', checkVerificationOnVisibility);
 
     return () => {
-      document.removeEventListener('visibilitychange', checkVerificationOnFocus);
-      window.removeEventListener('focus', checkVerificationOnFocus);
+      document.removeEventListener('visibilitychange', checkVerificationOnVisibility);
     };
-  }, [user, refreshProfile]);
+  }, [needsEmailVerification, user, refreshProfile]);
 
   const contextValue = useMemo(
     () => ({

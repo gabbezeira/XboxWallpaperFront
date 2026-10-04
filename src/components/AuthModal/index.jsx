@@ -28,6 +28,8 @@ export default function AuthModal({ onClose }) {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [forgotCooldown, setForgotCooldown] = useState(0);
+  const [checkCooldown, setCheckCooldown] = useState(0);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -47,12 +49,14 @@ export default function AuthModal({ onClose }) {
   }, [authError]);
 
   useEffect(() => {
-    if (cooldown <= 0) return undefined;
+    if (cooldown <= 0 && forgotCooldown <= 0 && checkCooldown <= 0) return undefined;
     const timer = setInterval(() => {
       setCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+      setForgotCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+      setCheckCooldown((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
-  }, [cooldown]);
+  }, [cooldown, forgotCooldown, checkCooldown]);
 
   const resetForm = () => {
     setEmail('');
@@ -80,7 +84,6 @@ export default function AuthModal({ onClose }) {
     try {
       if (emailMode === 'login') {
         const loggedUser = await signInWithEmail(email, password);
-        await refreshProfile();
         if (loggedUser && !loggedUser.emailVerified) {
           setView('verify');
           setLoading(false);
@@ -109,7 +112,6 @@ export default function AuthModal({ onClose }) {
           return;
         }
         await signUpWithEmail(email, password, name.trim());
-        await refreshProfile();
         setCooldown(60);
         setView('verify');
       }
@@ -131,6 +133,7 @@ export default function AuthModal({ onClose }) {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+    if (forgotCooldown > 0 || loading) return;
     setError(null);
     setSuccess(null);
 
@@ -143,6 +146,7 @@ export default function AuthModal({ onClose }) {
     try {
       await sendPasswordReset(email.trim());
       setSuccess('Email de recuperação enviado! Verifique sua caixa de entrada e spam.');
+      setForgotCooldown(60);
     } catch (err) {
       const messages = {
         'auth/user-not-found': 'Nenhuma conta encontrada com este email',
@@ -156,6 +160,7 @@ export default function AuthModal({ onClose }) {
   };
 
   const handleCheckVerified = async () => {
+    if (checkCooldown > 0 || loading) return;
     setError(null);
     setSuccess(null);
     setLoading(true);
@@ -164,13 +169,16 @@ export default function AuthModal({ onClose }) {
       if (auth.currentUser) {
         await auth.currentUser.reload();
         if (auth.currentUser.emailVerified) {
+          await auth.currentUser.getIdToken(true);
           await refreshProfile();
           onClose();
           return;
         }
       }
+      setCheckCooldown(4);
       setError('Email ainda não confirmado. Verifique sua caixa de entrada ou spam e clique no link de ativação.');
     } catch {
+      setCheckCooldown(4);
       setError('Não foi possível verificar no momento. Tente novamente em instantes.');
     } finally {
       setLoading(false);
@@ -450,12 +458,14 @@ export default function AuthModal({ onClose }) {
           </span>
         </div>
 
-        <button className={styles.btnSubmit} type="submit" disabled={loading}>
+        <button className={styles.btnSubmit} type="submit" disabled={loading || forgotCooldown > 0}>
           {loading ? (
             <span className={styles.btnLoading}>
               <span className={styles.btnSpinner} />
               Enviando...
             </span>
+          ) : forgotCooldown > 0 ? (
+            `Reenviar em ${forgotCooldown}s`
           ) : (
             'Enviar link de recuperação'
           )}
@@ -500,13 +510,15 @@ export default function AuthModal({ onClose }) {
           className={styles.btnSubmit}
           type="button"
           onClick={handleCheckVerified}
-          disabled={loading}
+          disabled={loading || checkCooldown > 0}
         >
           {loading ? (
             <span className={styles.btnLoading}>
               <span className={styles.btnSpinner} />
               Verificando...
             </span>
+          ) : checkCooldown > 0 ? (
+            `Aguarde ${checkCooldown}s`
           ) : (
             'Já confirmei meu email'
           )}

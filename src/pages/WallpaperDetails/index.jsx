@@ -89,6 +89,7 @@ export default function WallpaperDetailsPage() {
   const { user: authUser, profile } = useAuth();
 
   const pageRef = useRef(null);
+  const previewImgRef = useRef(null);
   const [wallpaper, setWallpaper] = useState(() => {
     const s = location.state?.wallpaper;
     return s?.id === id ? s : null;
@@ -112,10 +113,11 @@ export default function WallpaperDetailsPage() {
     if (seed) {
       setWallpaper(seed);
       setHydrating(false);
-    } else {
-      setHydrating(true);
-      setWallpaper(null);
+      return undefined;
     }
+
+    setHydrating(true);
+    setWallpaper(null);
 
     if (!id) return undefined;
 
@@ -124,9 +126,9 @@ export default function WallpaperDetailsPage() {
       try {
         const fresh = await api.wallpapers.getById(id);
         if (cancelled) return;
-        setWallpaper((prev) => ({ ...(seed || prev || {}), ...fresh }));
+        setWallpaper(fresh);
       } catch {
-        if (!cancelled && !seed) setWallpaper(null);
+        if (!cancelled) setWallpaper(null);
       } finally {
         if (!cancelled) setHydrating(false);
       }
@@ -135,7 +137,7 @@ export default function WallpaperDetailsPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, location.key, location.state]);
+  }, [id, location.state]);
 
   useEffect(() => {
     if (!authUser || !wallpaper?.id) {
@@ -152,15 +154,11 @@ export default function WallpaperDetailsPage() {
   }, [authUser, wallpaper?.id]);
 
   const imageSrc = useMemo(() => {
-    let raw = wallpaper?.previewUrl || wallpaper?.storageUrl || wallpaper?.thumbUrl || '';
-    if (!raw) return '';
-
-    if (raw.includes('thumb=true')) {
-      raw = raw.replace('thumb=true', 'preview=true');
-    } else if (!raw.includes('preview=true') && (raw.includes('/api/wallpapers/') || raw.startsWith('/'))) {
-      const sep = raw.includes('?') ? '&' : '?';
-      raw = `${raw}${sep}preview=true`;
+    let raw = wallpaper?.previewUrl || wallpaper?.storageUrl || '';
+    if (!raw && wallpaper?.id) {
+      raw = `/api/wallpapers/${wallpaper.id}/view?preview=true`;
     }
+    if (!raw) return '';
 
     const isHttp = raw.startsWith('http');
     const base = API_URL;
@@ -204,7 +202,11 @@ export default function WallpaperDetailsPage() {
   }, [wallpaper, authUser?.uid, mediaToken]);
 
   useEffect(() => {
-    setPreviewLoaded(false);
+    if (previewImgRef.current?.complete && previewImgRef.current?.naturalWidth > 0) {
+      setPreviewLoaded(true);
+    } else {
+      setPreviewLoaded(false);
+    }
   }, [imageSrc]);
 
   if (hydrating && !wallpaper) {
@@ -265,13 +267,18 @@ export default function WallpaperDetailsPage() {
                   alt=""
                   className={`${styles.thumbPlaceholder} ${previewLoaded ? styles.thumbHidden : ''}`}
                   aria-hidden="true"
+                  decoding="async"
                 />
               )}
               <img
+                ref={previewImgRef}
                 src={imageSrc}
                 alt={wallpaper.title || 'Wallpaper'}
                 className={`${styles.image} ${previewLoaded ? styles.loaded : ''}`}
+                decoding="async"
+                fetchPriority="high"
                 onLoad={() => setPreviewLoaded(true)}
+                onError={() => setPreviewLoaded(true)}
               />
             </div>
           </button>

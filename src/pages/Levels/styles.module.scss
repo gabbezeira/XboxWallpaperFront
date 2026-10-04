@@ -3,11 +3,11 @@
 
 .page {
   flex: 1;
-  padding: $spacing-md $spacing-md $spacing-2xl;
+  padding: $spacing-xl 0 $spacing-2xl;
   background-color: $color-bg-main;
 
   @include respond-to(md) {
-    padding: $spacing-xl $spacing-xl $spacing-3xl;
+    padding: $spacing-2xl 0 $spacing-3xl;
   }
 }
 
@@ -17,6 +17,11 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-2xl;
+  padding: 0 $spacing-xl;
+
+  @include respond-to(md) {
+    padding: 0;
+  }
 }
 
 .header {

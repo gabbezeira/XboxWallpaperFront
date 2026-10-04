@@ -4,11 +4,11 @@
 .page {
   flex: 1;
   min-height: 0;
-  padding: $spacing-xl $spacing-md $spacing-2xl;
+  padding: $spacing-xl 0 $spacing-3xl;
   background-color: $color-bg-main;
 
   @include respond-to(md) {
-    padding: $spacing-2xl $spacing-xl $spacing-3xl;
+    padding: $spacing-2xl 0 $spacing-4xl;
   }
 }
 
@@ -18,6 +18,11 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xl;
+  padding: 0 $spacing-xl $spacing-3xl;
+
+  @include respond-to(md) {
+    padding: 0 0 $spacing-4xl;
+  }
 }
 
 .btnMyWallpapers {
@@ -30,8 +35,8 @@
 }
 
 .quotaWrapper {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #090909;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-lg;
   padding: $spacing-md;
 }

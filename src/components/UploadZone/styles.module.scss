@@ -13,25 +13,23 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
+  background: #090909;
   outline: none;
 
   &:hover {
     border-color: rgba(16, 124, 16, 0.6);
-    background-color: rgba(16, 124, 16, 0.04);
+    background-color: #0c0c0c;
   }
 
   &:focus-visible {
     outline: none;
     border-color: $color-primary;
-    box-shadow: 0 0 0 2px rgba(16, 124, 16, 0.3);
   }
 }
 
 .zoneDragging {
   border-color: $color-primary;
-  background-color: rgba(16, 124, 16, 0.08);
-  box-shadow: inset 0 0 30px rgba(16, 124, 16, 0.15);
+  background-color: #0f0f0f;
 }
 
 .zoneDisabled {
@@ -44,21 +42,19 @@
   width: 76px;
   height: 76px;
   border-radius: $radius-full;
-  background: rgba(16, 124, 16, 0.1);
-  border: 1px solid rgba(16, 124, 16, 0.25);
+  background: rgba(16, 124, 16, 0.12);
+  border: 1px solid rgba(16, 124, 16, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   color: $color-primary;
-  box-shadow: 0 0 24px rgba(16, 124, 16, 0.18);
   transition: all $transition-base;
 
   .zone:hover &,
   .zone:focus-visible & {
-    transform: scale(1.08);
-    background: rgba(16, 124, 16, 0.18);
-    border-color: rgba(16, 124, 16, 0.45);
-    box-shadow: 0 0 32px rgba(16, 124, 16, 0.35);
+    transform: scale(1.06);
+    background: rgba(16, 124, 16, 0.2);
+    border-color: rgba(16, 124, 16, 0.5);
   }
 }
 
@@ -142,15 +138,14 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xl;
-  background: linear-gradient(180deg, rgba(24, 28, 36, 0.96) 0%, rgba(13, 16, 22, 0.98) 100%);
+  background: #090909;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-xl;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  padding: $spacing-xl;
+  padding: $spacing-xl $spacing-xl $spacing-2xl;
   outline: none;
 
   @include respond-to(md) {
-    padding: $spacing-2xl;
+    padding: $spacing-2xl $spacing-2xl $spacing-3xl;
   }
 }
 
@@ -170,8 +165,7 @@
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: $radius-lg;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 
   @include respond-to(md) {
     width: 320px;
@@ -195,7 +189,7 @@
 .fieldInput {
   width: 100%;
   padding: 12px $spacing-md;
-  background-color: rgba(0, 0, 0, 0.45);
+  background-color: #030303;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: $radius-lg;
   color: $color-text-primary;
@@ -210,8 +204,7 @@
   &:focus {
     outline: none;
     border-color: $color-primary;
-    background-color: rgba(0, 0, 0, 0.65);
-    box-shadow: 0 0 0 2px rgba(16, 124, 16, 0.25);
+    background-color: #000000;
   }
 }
 
@@ -221,10 +214,10 @@
   left: 0;
   right: 0;
   margin-top: 6px;
-  background-color: #12151c;
+  background-color: #0e0e0e;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: $radius-lg;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9);
   z-index: 50;
   overflow: hidden;
   display: flex;
@@ -351,7 +344,7 @@
   align-items: center;
   gap: $spacing-md;
   padding: 14px $spacing-md;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-lg;
   color: $color-text-secondary;
@@ -360,21 +353,20 @@
   transition: all $transition-fast;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
   }
 
   @include gamepad-focus;
 }
 
 .visibilityActive {
-  background: rgba(16, 124, 16, 0.16);
+  background: rgba(16, 124, 16, 0.14);
   border-color: $color-primary;
   color: #ffffff;
-  box-shadow: 0 0 20px rgba(16, 124, 16, 0.2);
 
   &:hover {
-    background: rgba(16, 124, 16, 0.22);
+    background: rgba(16, 124, 16, 0.2);
     border-color: $color-primary;
   }
 }
@@ -399,8 +391,8 @@
 .creatorCollectionSection {
   margin-top: $spacing-xs;
   padding: 14px $spacing-md;
-  background: rgba(16, 124, 16, 0.08);
-  border: 1px solid rgba(16, 124, 16, 0.25);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: $radius-lg;
 }
 
@@ -426,7 +418,9 @@
   gap: $spacing-md;
   justify-content: flex-end;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: $spacing-lg;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xs;
+  margin-top: $spacing-xs;
 
   @include respond-to(md) {
     flex-direction: row;
@@ -448,11 +442,14 @@
 .btnSubmit {
   @include btn-primary;
   flex: 1;
-  background: linear-gradient(135deg, $color-primary 0%, #159c15 100%);
-  box-shadow: 0 4px 16px rgba(16, 124, 16, 0.35);
+  background: $color-primary;
   border-radius: $radius-lg;
   padding: 12px $spacing-xl;
   font-weight: $fw-bold;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-hover;
+  }
 
   @include respond-to(md) {
     flex: none;

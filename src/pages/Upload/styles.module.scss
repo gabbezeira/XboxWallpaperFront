@@ -2,7 +2,8 @@
 @use '../../styles/mixins' as *;
 
 .page {
-  min-height: 100vh;
+  flex: 1;
+  min-height: 0;
   padding: $spacing-xl $spacing-md;
   background-color: $color-bg-main;
 

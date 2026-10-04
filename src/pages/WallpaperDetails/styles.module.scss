@@ -6,7 +6,9 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  height: 100%;
   background-color: $color-bg-secondary;
+  overflow: hidden;
 }
 
 .card {
@@ -16,28 +18,36 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  overflow-y: auto;
 
   @include respond-to(lg) {
     flex-direction: row;
     overflow: hidden;
+  }
+
+  @media (max-height: 560px) and (max-width: 1023px) {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
 .imageSection {
   position: relative;
   width: 100%;
-  height: 55vh;
-  min-height: 280px;
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  min-height: 180px;
+  max-height: 48vh;
 
   @include respond-to(md) {
-    height: 60vh;
+    height: 55vh;
+    max-height: none;
+    flex: none;
   }
 
   @include respond-to(lg) {
     width: 60%;
     height: 100%;
+    max-height: none;
+    flex: none;
   }
 
   @include respond-to(2xl) {
@@ -101,13 +111,14 @@
 
 .btnBack {
   position: absolute;
-  top: $spacing-xl;
-  left: $spacing-xl;
-  width: 48px;
-  height: 48px;
+  top: calc(#{$spacing-md} + env(safe-area-inset-top, 0px));
+  left: calc(#{$spacing-md} + env(safe-area-inset-left, 0px));
+  width: 44px;
+  height: 44px;
   border-radius: $radius-full;
   background-color: rgba(#000, 0.5);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   color: #fff;
   border: none;
   @include flex-center;
@@ -124,21 +135,37 @@
   &:hover {
     background-color: rgba(#000, 0.8);
   }
+
+  @include respond-to(md) {
+    top: $spacing-xl;
+    left: $spacing-xl;
+    width: 48px;
+    height: 48px;
+  }
 }
 
 .infoSection {
-  padding: $spacing-xl;
+  padding: $spacing-md $spacing-lg;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: $spacing-lg;
+  justify-content: flex-start;
+  gap: $spacing-sm;
   background-color: $color-bg-secondary;
   width: 100%;
-  flex: 1;
+  flex-shrink: 0;
+
+  @include respond-to(md) {
+    padding: $spacing-xl;
+    gap: $spacing-md;
+  }
 
   @include respond-to(lg) {
     width: 40%;
+    flex: 1;
+    flex-shrink: 1;
     padding: $spacing-2xl;
+    justify-content: center;
+    gap: $spacing-lg;
     overflow-y: auto;
   }
 
@@ -363,41 +390,62 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: $spacing-sm;
+
+  @include respond-to(md) {
+    gap: $spacing-md;
+  }
 }
 
 .btnSetWallpaper {
   @include btn-primary;
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   font-size: $fs-body;
   font-weight: $fw-bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+
+  @include respond-to(md) {
+    padding: 14px;
+    letter-spacing: 0.5px;
+  }
 }
 
 .secondaryActions {
   display: flex;
-  gap: $spacing-md;
+  gap: $spacing-sm;
+
+  @include respond-to(md) {
+    gap: $spacing-md;
+  }
 }
 
 .btnAddFav {
   @include btn-secondary;
   flex: 1;
-  padding: 14px;
+  padding: 12px;
   font-size: $fs-small;
   font-weight: $fw-bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+
+  @include respond-to(md) {
+    padding: 14px;
+    letter-spacing: 0.5px;
+  }
 }
 
 .btnExtra {
   @include btn-secondary;
   padding: 0;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
+  @include respond-to(md) {
+    width: 48px;
+    height: 48px;
+  }
 }

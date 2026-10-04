@@ -43,6 +43,9 @@
   &.immersive {
     padding: 0;
     gap: 0;
+    overflow: hidden;
+    height: 100%;
+    overscroll-behavior: none;
   }
 
   &.fullCentered {

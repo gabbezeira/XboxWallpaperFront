@@ -161,10 +161,19 @@
 }
 
 .statCardFavorites {
-  border-color: rgba($color-favorite, 0.15);
+  background-color: rgba($color-favorite, 0.1);
+  border-color: rgba($color-favorite, 0.3);
 
   &:hover {
-    border-color: rgba($color-favorite, 0.3);
+    border-color: rgba($color-favorite, 0.5);
+  }
+
+  .statNumber {
+    color: $color-favorite;
+  }
+
+  .statLabel {
+    color: rgba(255, 255, 255, 0.6);
   }
 }
 
@@ -176,13 +185,12 @@
 
 .statIconHeart {
   color: $color-favorite;
-  opacity: 0.8;
 }
 
 .statNumber {
   font-size: $fs-title;
   font-weight: $fw-bold;
-  color: $color-primary;
+  color: $color-text-primary;
 }
 
 .statLabel {

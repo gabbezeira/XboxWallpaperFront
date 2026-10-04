@@ -1,0 +1,95 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: 10px $spacing-md;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-md;
+  width: 100%;
+  box-sizing: border-box;
+  animation: fadeIn $transition-fast forwards;
+
+  @include respond-to(md) {
+    padding: 10px $spacing-lg;
+  }
+}
+
+.leftGroup {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.icon {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.text {
+  font-size: $fs-small;
+  color: #fef3c7;
+  line-height: 1.4;
+  margin: 0;
+
+  strong {
+    color: #ffffff;
+    font-weight: $fw-bold;
+  }
+}
+
+.rightGroup {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.btnAction {
+  @include btn-base;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: $fw-bold;
+  border-radius: $radius-md;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  white-space: nowrap;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background: rgba(245, 158, 11, 0.28);
+    border-color: rgba(245, 158, 11, 0.55);
+    color: #ffffff;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.feedback {
+  font-size: 12px;
+  color: #86efac;
+  font-weight: $fw-medium;
+  white-space: nowrap;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

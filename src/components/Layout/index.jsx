@@ -8,6 +8,7 @@ import Sidebar from '../Sidebar';
 import BottomNav from '../BottomNav';
 import UserAvatar from '../UserAvatar';
 import SearchBar from '../SearchBar';
+import VerifyEmailBanner from '../VerifyEmailBanner';
 import styles from './styles.module.scss';
 
 const MOBILE_MAX = 768;
@@ -195,6 +196,7 @@ export default function Layout({ children, onLoginClick }) {
       ))}
 
       <main className={`${styles.main} ${isImmersive ? styles.immersive : ''} ${is404 ? styles.fullCentered : ''}`}>
+        {!isImmersive && <VerifyEmailBanner />}
         {!isMobile && !shouldHideSearch && (
           <div className={styles.topBar}>
             <SearchBar

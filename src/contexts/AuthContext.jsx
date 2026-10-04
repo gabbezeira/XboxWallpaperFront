@@ -145,6 +145,37 @@ export function AuthProvider({ children }) {
     if (user) await checkAdminClaim(user, true);
   }, [user, checkAdminClaim]);
 
+  const emailVerified = Boolean(user?.emailVerified);
+  const needsEmailVerification = Boolean(
+    user &&
+    user.providerData?.some((p) => p.providerId === 'password') &&
+    !user.emailVerified
+  );
+
+  useEffect(() => {
+    if (!user || user.emailVerified) return undefined;
+
+    const checkVerificationOnFocus = async () => {
+      if (document.visibilityState === 'visible') {
+        try {
+          await user.reload();
+          if (user.emailVerified && isMountedRef.current) {
+            setUser({ ...user });
+            await refreshProfile();
+          }
+        } catch {}
+      }
+    };
+
+    document.addEventListener('visibilitychange', checkVerificationOnFocus);
+    window.addEventListener('focus', checkVerificationOnFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', checkVerificationOnFocus);
+      window.removeEventListener('focus', checkVerificationOnFocus);
+    };
+  }, [user, refreshProfile]);
+
   const contextValue = useMemo(
     () => ({
       user,
@@ -152,10 +183,22 @@ export function AuthProvider({ children }) {
       isAdmin,
       loading,
       authError,
+      emailVerified,
+      needsEmailVerification,
       refreshProfile,
       refreshAdminStatus,
     }),
-    [user, profile, isAdmin, loading, authError, refreshProfile, refreshAdminStatus],
+    [
+      user,
+      profile,
+      isAdmin,
+      loading,
+      authError,
+      emailVerified,
+      needsEmailVerification,
+      refreshProfile,
+      refreshAdminStatus,
+    ],
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
-import { X, QrCode, Mail, ArrowLeft } from 'lucide-react';
-import { signInWithMicrosoft, signInWithEmail, signUpWithEmail } from '../../services/auth';
+import { X, QrCode, Mail, ArrowLeft, CheckCircle2, Send } from 'lucide-react';
+import {
+  signInWithMicrosoft,
+  signInWithEmail,
+  signUpWithEmail,
+  resendVerificationEmail,
+  sendPasswordReset,
+} from '../../services/auth';
+import { auth } from '../../services/firebase';
 import { useAuth } from '../../hooks/useAuth';
 import { isXboxConsole } from '../../utils/device';
 import DeviceAuth from '../DeviceAuth';
@@ -14,10 +21,13 @@ export default function AuthModal({ onClose }) {
   const [emailMode, setEmailMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -27,18 +37,30 @@ export default function AuthModal({ onClose }) {
   }, []);
 
   useEffect(() => {
-    if (user) onClose();
-  }, [user, onClose]);
+    if (user && view !== 'verify') {
+      onClose();
+    }
+  }, [user, view, onClose]);
 
   useEffect(() => {
     if (authError) setError(authError);
   }, [authError]);
 
+  useEffect(() => {
+    if (cooldown <= 0) return undefined;
+    const timer = setInterval(() => {
+      setCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
   const resetForm = () => {
     setEmail('');
     setPassword('');
+    setConfirmPassword('');
     setName('');
     setError(null);
+    setSuccess(null);
   };
 
   const goBack = () => {
@@ -46,34 +68,130 @@ export default function AuthModal({ onClose }) {
     setView('main');
   };
 
+  const isStrongPassword = (pwd) =>
+    pwd.length >= 8 && /[a-zA-Z]/.test(pwd) && /[0-9]/.test(pwd);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     setLoading(true);
 
     try {
       if (emailMode === 'login') {
-        await signInWithEmail(email, password);
+        const loggedUser = await signInWithEmail(email, password);
+        await refreshProfile();
+        if (loggedUser && !loggedUser.emailVerified) {
+          setView('verify');
+          setLoading(false);
+          return;
+        }
+        onClose();
       } else {
         if (!name.trim()) {
           setError('Digite seu nome');
           setLoading(false);
           return;
         }
-        await signUpWithEmail(email, password, name);
+        if (password.length < 8) {
+          setError('A senha deve ter pelo menos 8 caracteres');
+          setLoading(false);
+          return;
+        }
+        if (!isStrongPassword(password)) {
+          setError('A senha deve conter letras e números');
+          setLoading(false);
+          return;
+        }
+        if (password !== confirmPassword) {
+          setError('As senhas não coincidem');
+          setLoading(false);
+          return;
+        }
+        await signUpWithEmail(email, password, name.trim());
+        await refreshProfile();
+        setCooldown(60);
+        setView('verify');
       }
-      await refreshProfile();
-      onClose();
     } catch (err) {
       const messages = {
         'auth/user-not-found': 'Usuário não encontrado',
         'auth/wrong-password': 'Senha incorreta',
         'auth/email-already-in-use': 'Este email já está em uso',
-        'auth/weak-password': 'A senha deve ter pelo menos 6 caracteres',
+        'auth/weak-password': 'A senha deve ter pelo menos 8 caracteres',
         'auth/invalid-email': 'Email inválido',
         'auth/invalid-credential': 'Email ou senha incorretos',
+        'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
       };
       setError(messages[err.code] || 'Erro ao autenticar');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (!email || !email.includes('@')) {
+      setError('Informe um email válido');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await sendPasswordReset(email.trim());
+      setSuccess('Email de recuperação enviado! Verifique sua caixa de entrada e spam.');
+    } catch (err) {
+      const messages = {
+        'auth/user-not-found': 'Nenhuma conta encontrada com este email',
+        'auth/invalid-email': 'Email inválido',
+        'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos.',
+      };
+      setError(messages[err.code] || 'Erro ao enviar email de recuperação');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCheckVerified = async () => {
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
+    try {
+      if (auth.currentUser) {
+        await auth.currentUser.reload();
+        if (auth.currentUser.emailVerified) {
+          await refreshProfile();
+          onClose();
+          return;
+        }
+      }
+      setError('Email ainda não confirmado. Verifique sua caixa de entrada ou spam e clique no link de ativação.');
+    } catch {
+      setError('Não foi possível verificar no momento. Tente novamente em instantes.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (cooldown > 0) return;
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
+    try {
+      await resendVerificationEmail();
+      setSuccess('Novo email de confirmação enviado com sucesso!');
+      setCooldown(60);
+    } catch (err) {
+      const messages = {
+        'auth/too-many-requests': 'Aguarde alguns instantes antes de reenviar.',
+      };
+      setError(messages[err.code] || 'Falha ao reenviar email. Tente novamente mais tarde.');
     } finally {
       setLoading(false);
     }
@@ -84,8 +202,8 @@ export default function AuthModal({ onClose }) {
     setError('');
 
     try {
-      const user = await signInWithMicrosoft();
-      if (user) {
+      const userResult = await signInWithMicrosoft();
+      if (userResult) {
         sessionStorage.removeItem('oauth_redirect');
         onClose();
       }
@@ -184,6 +302,7 @@ export default function AuthModal({ onClose }) {
               placeholder="Seu nome"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </div>
         )}
@@ -209,9 +328,45 @@ export default function AuthModal({ onClose }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            minLength={6}
+            minLength={8}
           />
+          {emailMode === 'register' && (
+            <span className={styles.fieldHint}>
+              Mínimo de 8 caracteres contendo letras e números
+            </span>
+          )}
         </div>
+
+        {emailMode === 'login' && (
+          <div className={styles.forgotRow}>
+            <button
+              type="button"
+              className={styles.btnForgotText}
+              onClick={() => {
+                setError(null);
+                setSuccess(null);
+                setView('forgot');
+              }}
+            >
+              Esqueceu sua senha?
+            </button>
+          </div>
+        )}
+
+        {emailMode === 'register' && (
+          <div className={styles.field}>
+            <label className={styles.label}>Confirmar senha</label>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={8}
+            />
+          </div>
+        )}
 
         <button className={styles.btnSubmit} type="submit" disabled={loading}>
           {loading ? (
@@ -235,6 +390,7 @@ export default function AuthModal({ onClose }) {
               onClick={() => {
                 setEmailMode('register');
                 setError(null);
+                setSuccess(null);
               }}
             >
               Criar conta
@@ -247,6 +403,7 @@ export default function AuthModal({ onClose }) {
               onClick={() => {
                 setEmailMode('login');
                 setError(null);
+                setSuccess(null);
               }}
             >
               Entrar
@@ -255,6 +412,126 @@ export default function AuthModal({ onClose }) {
         )}
       </div>
     </>
+  );
+
+  const renderForgotView = () => (
+    <>
+      <div className={styles.headerRow}>
+        <button
+          className={styles.btnBack}
+          onClick={() => {
+            setError(null);
+            setSuccess(null);
+            setView('email');
+          }}
+          aria-label="Voltar"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <h2 className={styles.title}>Recuperar senha</h2>
+      </div>
+
+      {error && <div className={styles.error}>{error}</div>}
+      {success && <div className={styles.success}>{success}</div>}
+
+      <form className={styles.form} onSubmit={handleForgotPassword}>
+        <div className={styles.field}>
+          <label className={styles.label}>Email cadastrado</label>
+          <input
+            className={styles.input}
+            type="email"
+            placeholder="seu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <span className={styles.fieldHint}>
+            Enviaremos um link seguro para você redefinir sua senha.
+          </span>
+        </div>
+
+        <button className={styles.btnSubmit} type="submit" disabled={loading}>
+          {loading ? (
+            <span className={styles.btnLoading}>
+              <span className={styles.btnSpinner} />
+              Enviando...
+            </span>
+          ) : (
+            'Enviar link de recuperação'
+          )}
+        </button>
+      </form>
+
+      <div className={styles.toggle}>
+        Lembrou da senha?
+        <button
+          onClick={() => {
+            setError(null);
+            setSuccess(null);
+            setView('email');
+            setEmailMode('login');
+          }}
+        >
+          Voltar ao login
+        </button>
+      </div>
+    </>
+  );
+
+  const renderVerifyView = () => (
+    <div className={styles.verifyContainer}>
+      <div className={styles.verifyIconBox}>
+        <Mail size={28} />
+      </div>
+
+      <h2 className={styles.title}>Confirme seu email</h2>
+
+      <p className={styles.verifyText}>
+        Enviamos um link de confirmação para{' '}
+        <span className={styles.verifyEmailHighlight}>{email || auth.currentUser?.email}</span>.
+        Acesse sua caixa de entrada ou spam e clique no link para ativar sua conta.
+      </p>
+
+      {error && <div className={styles.error}>{error}</div>}
+      {success && <div className={styles.success}>{success}</div>}
+
+      <div className={styles.verifyActions}>
+        <button
+          className={styles.btnSubmit}
+          type="button"
+          onClick={handleCheckVerified}
+          disabled={loading}
+        >
+          {loading ? (
+            <span className={styles.btnLoading}>
+              <span className={styles.btnSpinner} />
+              Verificando...
+            </span>
+          ) : (
+            'Já confirmei meu email'
+          )}
+        </button>
+
+        <button
+          className={styles.btnSecondaryAction}
+          type="button"
+          onClick={handleResendVerification}
+          disabled={loading || cooldown > 0}
+        >
+          {cooldown > 0
+            ? `Reenviar em ${cooldown}s`
+            : 'Reenviar email de confirmação'}
+        </button>
+
+        <button
+          className={styles.btnForgotText}
+          type="button"
+          onClick={onClose}
+        >
+          Continuar navegando
+        </button>
+      </div>
+    </div>
   );
 
   const renderQrCodeView = () => (
@@ -292,6 +569,8 @@ export default function AuthModal({ onClose }) {
 
         {view === 'main' && renderMainView()}
         {view === 'email' && renderEmailView()}
+        {view === 'forgot' && renderForgotView()}
+        {view === 'verify' && renderVerifyView()}
         {view === 'qrcode' && renderQrCodeView()}
       </div>
     </div>

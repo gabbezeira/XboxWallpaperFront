@@ -6,7 +6,7 @@ import styles from './styles.module.scss';
 
 export default function UploadZone({ onUploadComplete }) {
   const { upload, uploading, progress, error } = useUpload();
-  const { profile } = useAuth();
+  const { profile, needsEmailVerification, user } = useAuth();
   const [dragging, setDragging] = useState(false);
   const [localError, setLocalError] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -20,11 +20,28 @@ export default function UploadZone({ onUploadComplete }) {
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const inputRef = useRef(null);
 
+  const CUTOFF_TS = Date.parse('2026-10-04T12:00:00Z');
+  const GRACE_END_TS = Date.parse('2026-10-18T23:59:59Z');
+  const userCreationTs = user?.metadata?.creationTime
+    ? Date.parse(user.metadata.creationTime)
+    : Date.now();
+  const isExistingAccountInGrace =
+    userCreationTs <= CUTOFF_TS && Date.now() < GRACE_END_TS;
+
+  const mustBlockVerification =
+    needsEmailVerification && !isExistingAccountInGrace;
+
   const userMaxImages = profile?.maxImages || 8;
   const isQuotaFull = profile && (profile.imageCount || 0) >= userMaxImages;
+  const isUploadDisabled = Boolean(isQuotaFull || mustBlockVerification);
 
   const handleSelectFile = (file) => {
     setLocalError(null);
+
+    if (mustBlockVerification) {
+      setLocalError('Confirme seu email para poder enviar wallpapers');
+      return;
+    }
 
     const isImage =
       file.type?.startsWith('image/') || file.name?.match(/\.(jpg|jpeg|png|webp|gif)$/i);
@@ -262,26 +279,34 @@ export default function UploadZone({ onUploadComplete }) {
   return (
     <div>
       <div
-        className={`${styles.zone} ${dragging ? styles.zoneDragging : ''} ${isQuotaFull ? styles.zoneDisabled : ''}`}
+        className={`${styles.zone} ${dragging ? styles.zoneDragging : ''} ${isUploadDisabled ? styles.zoneDisabled : ''}`}
         onDragOver={(e) => {
           e.preventDefault();
-          setDragging(true);
+          if (!isUploadDisabled) setDragging(true);
         }}
         onDragLeave={() => setDragging(false)}
-        onDrop={handleDrop}
-        onClick={() => !isQuotaFull && inputRef.current?.click()}
+        onDrop={(e) => {
+          if (!isUploadDisabled) handleDrop(e);
+        }}
+        onClick={() => !isUploadDisabled && inputRef.current?.click()}
         role="button"
-        tabIndex={isQuotaFull ? -1 : 0}
-        onKeyDown={(e) => e.key === 'Enter' && !isQuotaFull && inputRef.current?.click()}
+        tabIndex={isUploadDisabled ? -1 : 0}
+        onKeyDown={(e) => e.key === 'Enter' && !isUploadDisabled && inputRef.current?.click()}
       >
         <div className={styles.icon}>
-          {isQuotaFull ? <Ban size={48} /> : <UploadCloud size={48} />}
+          {isUploadDisabled ? <Ban size={48} /> : <UploadCloud size={48} />}
         </div>
         <div className={styles.title}>
-          {isQuotaFull ? 'Limite de imagens atingido' : 'Arraste uma imagem ou clique para enviar'}
+          {mustBlockVerification
+            ? 'Confirmação de email obrigatória'
+            : isQuotaFull
+            ? 'Limite de imagens atingido'
+            : 'Arraste uma imagem ou clique para enviar'}
         </div>
         <div className={styles.subtitle}>
-          {isQuotaFull
+          {mustBlockVerification
+            ? 'Ative sua conta pelo link enviado para seu email antes de enviar papéis de parede.'
+            : isQuotaFull
             ? `Você já tem ${userMaxImages} imagens. Delete alguma para enviar novas.`
             : 'Sua imagem será processada para garantir a melhor qualidade (máx 20MB)'}
         </div>
@@ -301,7 +326,7 @@ export default function UploadZone({ onUploadComplete }) {
             e.stopPropagation();
             e.target.value = null;
           }}
-          disabled={isQuotaFull}
+          disabled={isUploadDisabled}
           tabIndex={-1}
         />
       </div>

@@ -8,6 +8,8 @@ import {
   getRedirectResult,
   signInWithCustomToken,
   OAuthProvider,
+  sendEmailVerification,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth } from './firebase';
 import { clearAllCache, setCache } from './apiCache';
@@ -63,8 +65,30 @@ export const signInWithEmail = async (email, password) => {
 export const signUpWithEmail = async (email, password, displayName) => {
   const result = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(result.user, { displayName });
+  try {
+    await sendEmailVerification(result.user, {
+      url: window.location.origin,
+    });
+  } catch (err) {
+    console.error(err);
+  }
   await syncWithBackend(result.user);
   return result.user;
+};
+
+export const resendVerificationEmail = async () => {
+  if (!auth.currentUser) {
+    throw new Error('Nenhum usuário logado');
+  }
+  await sendEmailVerification(auth.currentUser, {
+    url: window.location.origin,
+  });
+};
+
+export const sendPasswordReset = async (email) => {
+  await sendPasswordResetEmail(auth, email, {
+    url: window.location.origin,
+  });
 };
 
 export const logOut = async () => {
@@ -107,4 +131,3 @@ export const handleAuthRedirectResult = async () => {
   await syncWithBackend(result.user);
   return result.user;
 };
-

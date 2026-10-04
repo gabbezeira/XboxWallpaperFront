@@ -51,7 +51,10 @@ async function executeRequest(path, options = {}, retries = 3) {
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Erro desconhecido' }));
-    throw new Error(error.error || `HTTP ${res.status}`);
+    const err = new Error(error.error || `HTTP ${res.status}`);
+    err.code = error.code;
+    err.status = res.status;
+    throw err;
   }
 
   return res.json();

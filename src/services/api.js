@@ -267,7 +267,7 @@ export const api = {
       const cached = getCached('/api/favorites');
       if (cached) return cached;
       const data = await request('/api/favorites');
-      setCache('/api/favorites', data, 2 * 60 * 1000);
+      setCache('/api/favorites', null, data, 2 * 60 * 1000);
       return data;
     },
     add: async (wallpaperId) => {

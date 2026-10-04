@@ -57,14 +57,16 @@ export default function MyWallpapers() {
       const nextPublic = visibilityModal.nextIsPublic;
       setVisibilityModal({ open: false, wallpaper: null, nextIsPublic: false });
 
-      await api.wallpapers.updateVisibility(targetId, nextPublic);
+      const res = await api.wallpapers.updateVisibility(targetId, nextPublic);
       setWallpapers((prev) =>
         prev.map((w) =>
           w.id === targetId
             ? {
                 ...w,
-                isPublic: nextPublic,
-                status: nextPublic ? (w.status === 'rejected' ? 'pending' : (w.status || 'approved')) : 'private',
+                ...(res || {}),
+                isPublic: res?.isPublic !== undefined ? res.isPublic : nextPublic,
+                status: res?.status || (nextPublic ? 'pending' : 'private'),
+                visibility: res?.visibility || (nextPublic ? 'public' : 'private'),
               }
             : w
         )

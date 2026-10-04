@@ -47,6 +47,10 @@ const WallpaperCard = memo(function WallpaperCard({
     : (wallpaper.storageUrl?.startsWith('http') ? wallpaper.storageUrl : `${API_URL}${wallpaper.storageUrl}`);
 
   const currentStatus = wallpaper.status || (wallpaper.isPublic ? 'approved' : 'private');
+  const isPending = currentStatus === 'pending';
+  const isRejected = currentStatus === 'rejected';
+  const isApprovedPublic = !isPending && !isRejected && (wallpaper.isPublic === true || currentStatus === 'approved');
+  const isPrivate = !isPending && !isRejected && !isApprovedPublic;
 
   return (
     <div
@@ -78,12 +82,12 @@ const WallpaperCard = memo(function WallpaperCard({
           <button
             type="button"
             className={`${styles.visibilityDropdownTrigger} ${
-              wallpaper.isPublic
-                ? styles.triggerPublic
-                : currentStatus === 'pending'
+              isPending
                 ? styles.triggerPending
-                : currentStatus === 'rejected'
+                : isRejected
                 ? styles.triggerRejected
+                : isApprovedPublic
+                ? styles.triggerPublic
                 : styles.triggerPrivate
             }`}
             onClick={(e) => {
@@ -93,20 +97,20 @@ const WallpaperCard = memo(function WallpaperCard({
             aria-expanded={dropdownOpen}
             aria-label="Opções de visibilidade"
           >
-            {wallpaper.isPublic ? (
-              <>
-                <Globe size={12} className={styles.statusIcon} />
-                <span>Público</span>
-              </>
-            ) : currentStatus === 'pending' ? (
+            {isPending ? (
               <>
                 <Clock size={12} className={styles.statusIcon} />
-                <span>Em Análise</span>
+                <span>Em análise</span>
               </>
-            ) : currentStatus === 'rejected' ? (
+            ) : isRejected ? (
               <>
                 <AlertCircle size={12} className={styles.statusIcon} />
                 <span>Recusado</span>
+              </>
+            ) : isApprovedPublic ? (
+              <>
+                <Globe size={12} className={styles.statusIcon} />
+                <span>Público</span>
               </>
             ) : (
               <>
@@ -127,34 +131,34 @@ const WallpaperCard = memo(function WallpaperCard({
             >
               <button
                 type="button"
-                className={`${styles.dropdownItem} ${!wallpaper.isPublic ? styles.active : ''}`}
+                className={`${styles.dropdownItem} ${isPrivate ? styles.active : ''}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   setDropdownOpen(false);
-                  if (wallpaper.isPublic) {
+                  if (!isPrivate) {
                     onToggleVisibility(wallpaper, false);
                   }
                 }}
               >
                 <Lock size={13} />
                 <span>Privado</span>
-                {!wallpaper.isPublic && <Check size={13} className={styles.itemCheck} />}
+                {isPrivate && <Check size={13} className={styles.itemCheck} />}
               </button>
 
               <button
                 type="button"
-                className={`${styles.dropdownItem} ${wallpaper.isPublic ? styles.active : ''}`}
+                className={`${styles.dropdownItem} ${isApprovedPublic ? styles.active : ''}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   setDropdownOpen(false);
-                  if (!wallpaper.isPublic) {
+                  if (!isApprovedPublic && !isPending) {
                     onToggleVisibility(wallpaper, true);
                   }
                 }}
               >
                 <Globe size={13} />
                 <span>Público</span>
-                {wallpaper.isPublic && <Check size={13} className={styles.itemCheck} />}
+                {isApprovedPublic && <Check size={13} className={styles.itemCheck} />}
               </button>
             </div>
           )}
@@ -162,25 +166,29 @@ const WallpaperCard = memo(function WallpaperCard({
       ) : showStatus ? (
         <div
           className={`${styles.statusBadge} ${
-            wallpaper.isPublic || currentStatus === 'approved'
+            isPending
+              ? styles.pending
+              : isRejected
+              ? styles.rejected
+              : isApprovedPublic
               ? styles.approved
-              : styles[currentStatus] || styles.private
+              : styles.private
           }`}
         >
-          {wallpaper.isPublic || currentStatus === 'approved' ? (
-            <>
-              <Globe size={12} className={styles.statusIcon} />
-              <span>Público</span>
-            </>
-          ) : currentStatus === 'pending' ? (
+          {isPending ? (
             <>
               <Clock size={12} className={styles.statusIcon} />
-              <span>Em Análise</span>
+              <span>Em análise</span>
             </>
-          ) : currentStatus === 'rejected' ? (
+          ) : isRejected ? (
             <>
               <AlertCircle size={12} className={styles.statusIcon} />
               <span>Recusado</span>
+            </>
+          ) : isApprovedPublic ? (
+            <>
+              <Globe size={12} className={styles.statusIcon} />
+              <span>Público</span>
             </>
           ) : (
             <>

@@ -117,14 +117,16 @@ export default function MyCollection() {
       const nextPublic = visibilityModal.nextIsPublic;
       setVisibilityModal({ open: false, wallpaper: null, nextIsPublic: false });
 
-      await api.wallpapers.updateVisibility(targetId, nextPublic);
+      const res = await api.wallpapers.updateVisibility(targetId, nextPublic);
       setWallpapers((prev) =>
         prev.map((w) =>
           w.id === targetId
             ? {
                 ...w,
-                isPublic: nextPublic,
-                status: nextPublic ? (w.status === 'rejected' ? 'pending' : (w.status || 'approved')) : 'private',
+                ...(res || {}),
+                isPublic: res?.isPublic !== undefined ? res.isPublic : nextPublic,
+                status: res?.status || (nextPublic ? 'pending' : 'private'),
+                visibility: res?.visibility || (nextPublic ? 'public' : 'private'),
               }
             : w
         )
@@ -268,7 +270,7 @@ export default function MyCollection() {
 
           <div className={styles.statCard}>
             <span className={styles.statNumber}>
-              {wallpapers.filter((w) => w.status === 'approved' || w.isPublic).length}
+              {wallpapers.filter((w) => (w.status === 'approved' || w.isPublic) && w.status !== 'pending').length}
             </span>
             <span className={styles.statLabel}>Públicos na Galeria</span>
           </div>

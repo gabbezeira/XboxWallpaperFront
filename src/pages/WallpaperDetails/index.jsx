@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Heart, Monitor, HardDrive, Download, Layers } from 'lucide-react';
 import NavButton from '../../components/NavButton';
 import VerifiedBadge from '../../components/VerifiedBadge';
@@ -87,6 +87,7 @@ export default function WallpaperDetailsPage() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { user: authUser, profile } = useAuth();
 
+  const pageRef = useRef(null);
   const [wallpaper, setWallpaper] = useState(() => {
     const s = location.state?.wallpaper;
     return s?.id === id ? s : null;
@@ -97,6 +98,13 @@ export default function WallpaperDetailsPage() {
   });
   const [mediaToken, setMediaToken] = useState(null);
   const [previewLoaded, setPreviewLoaded] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (pageRef.current) {
+      pageRef.current.scrollTop = 0;
+    }
+  }, [id]);
 
   useEffect(() => {
     const seed = location.state?.wallpaper?.id === id ? location.state.wallpaper : null;
@@ -233,15 +241,15 @@ export default function WallpaperDetailsPage() {
   };
 
   return (
-    <div className={styles.page}>
+    <div ref={pageRef} className={styles.page}>
+      <NavButton
+        direction="back"
+        iconType="arrow"
+        className={styles.btnBack}
+        onClick={() => navigate(-1)}
+      />
       <div className={styles.card}>
         <div className={styles.imageSection}>
-          <NavButton
-            direction="back"
-            iconType="arrow"
-            className={styles.btnBack}
-            onClick={() => navigate(-1)}
-          />
           <button
             type="button"
             className={styles.imageBtn}

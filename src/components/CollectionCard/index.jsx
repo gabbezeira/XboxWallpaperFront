@@ -66,19 +66,6 @@ export default function CollectionCard({
           </div>
         )}
         <div className={styles.bannerGradient} />
-
-        <button
-          type="button"
-          className={`${styles.btnCode} ${isCopied ? styles.copied : ''}`}
-          onClick={handleCopyClick}
-          onKeyDown={(e) => e.stopPropagation()}
-          title="Copiar código de busca"
-          aria-label={`Copiar código ${displayCode}`}
-          tabIndex={0}
-        >
-          {isCopied ? <Check size={12} /> : <Copy size={12} />}
-          <span>{isCopied ? 'Copiado!' : displayCode}</span>
-        </button>
       </div>
 
       <div className={styles.content}>
@@ -100,10 +87,18 @@ export default function CollectionCard({
             {linkedUserVerified && <VerifiedBadge size={13} />}
           </div>
 
-          <div className={styles.viewBadge}>
-            <span>Ver</span>
-            <ArrowRight size={13} className={styles.viewArrow} />
-          </div>
+          <button
+            type="button"
+            className={`${styles.btnCodeBottom} ${isCopied ? styles.copied : ''}`}
+            onClick={handleCopyClick}
+            onKeyDown={(e) => e.stopPropagation()}
+            title="Copiar código de busca"
+            aria-label={`Copiar código ${displayCode}`}
+            tabIndex={0}
+          >
+            {isCopied ? <Check size={11} /> : <Copy size={11} />}
+            <span>{isCopied ? 'Copiado!' : displayCode}</span>
+          </button>
         </div>
       </div>
     </div>

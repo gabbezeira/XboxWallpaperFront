@@ -17,7 +17,7 @@
   flex-direction: column;
   gap: $spacing-xl;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 $spacing-xl;
 
@@ -128,14 +128,23 @@
 .collectionsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-lg;
+  gap: $spacing-md;
 
-  @include respond-to(md) {
+  @media (min-width: 520px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @include respond-to(xl) {
+  @include respond-to(md) {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to(xl) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-lg;
+  }
+
+  @include respond-to(2xl) {
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 

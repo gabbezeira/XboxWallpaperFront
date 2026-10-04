@@ -4,6 +4,7 @@ import { Home, Compass, UploadCloud, Heart, LogOut, Images, Layers, Copy, Check 
 import VerifiedBadge from '../VerifiedBadge';
 import TierBadge from '../TierBadge';
 import UserAvatar from '../UserAvatar';
+import VerifyEmailBanner from '../VerifyEmailBanner';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import { getUserLevel } from '../../config/tiers';
@@ -96,6 +97,7 @@ export default function Sidebar({ onLoginClick }) {
       <div className={styles.userSection}>
         {user ? (
           <>
+            <VerifyEmailBanner variant="sidebar" />
             <div className={styles.userInfo}>
               <UserAvatar photoUrl={photoURL} name={displayName} size="medium" />
               <div className={styles.userDetails}>

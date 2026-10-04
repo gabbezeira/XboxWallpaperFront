@@ -189,6 +189,7 @@ export default function Layout({ children, onLoginClick }) {
               </div>
             )}
           </header>
+          <VerifyEmailBanner variant="mobile" />
           <BottomNav onLoginClick={onLoginClick} />
         </>
       ) : (
@@ -196,7 +197,6 @@ export default function Layout({ children, onLoginClick }) {
       ))}
 
       <main className={`${styles.main} ${isImmersive ? styles.immersive : ''} ${is404 ? styles.fullCentered : ''}`}>
-        {!isImmersive && <VerifyEmailBanner />}
         {!isMobile && !shouldHideSearch && (
           <div className={styles.topBar}>
             <SearchBar

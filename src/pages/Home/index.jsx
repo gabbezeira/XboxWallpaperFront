@@ -186,7 +186,14 @@ export default function Home() {
                 <button
                   type="button"
                   className={styles.btnPrimary}
-                  onClick={() => navigate(`/collection/${currentBanner.targetTag}`)}
+                  onClick={() => {
+                    const tag = currentBanner.targetTag?.trim();
+                    if (tag) {
+                      navigate(`/collection/${encodeURIComponent(tag)}`);
+                    } else {
+                      navigate('/collections');
+                    }
+                  }}
                 >
                   <span>{currentBanner.buttonText || 'Ver Coleção'}</span>
                   <ArrowRight size={15} className={styles.btnArrow} />

@@ -129,10 +129,12 @@ export default function ManageHeroSlides() {
       setSaving(true);
 
       if (editingSlide) {
+        const cleanTargetTag = formTargetTag ? formTargetTag.trim() : '';
+
         await api.heroSlides.update(editingSlide.id, {
           title: formTitle,
           subtitle: formSubtitle,
-          targetTag: formTargetTag,
+          targetTag: cleanTargetTag,
           buttonText: formButtonText,
           order: Number(formOrder) || 1,
           isActive: formIsActive,
@@ -140,11 +142,12 @@ export default function ManageHeroSlides() {
 
         setActionSuccess('Slide atualizado com sucesso.');
       } else {
+        const cleanTargetTag = formTargetTag ? formTargetTag.trim() : '';
         const formData = new FormData();
         formData.append('image', selectedFile);
         formData.append('title', formTitle);
         formData.append('subtitle', formSubtitle);
-        formData.append('targetTag', formTargetTag);
+        formData.append('targetTag', cleanTargetTag);
         formData.append('buttonText', formButtonText);
         formData.append('order', String(Number(formOrder) || 1));
         formData.append('isActive', String(formIsActive));
@@ -464,13 +467,13 @@ export default function ManageHeroSlides() {
 
                     <div className={styles.formRowTwo}>
                       <div className={styles.formField}>
-                        <label className={styles.fieldLabel}>Coleção / Tag de Destino</label>
+                        <label className={styles.fieldLabel}>Coleção Rápida</label>
                         <select
-                          value={formTargetTag}
+                          value={collections.some((c) => (c.slug || c.name.toLowerCase()) === formTargetTag) ? formTargetTag : ''}
                           onChange={(e) => setFormTargetTag(e.target.value)}
                           className={styles.fieldSelect}
                         >
-                          <option value="">Nenhuma (Geral)</option>
+                          <option value="">Personalizada / Nenhuma</option>
                           {collections.map((c) => (
                             <option key={c.id} value={c.slug || c.name.toLowerCase()}>
                               Coleção: {c.name} ({c.slug})
@@ -480,12 +483,12 @@ export default function ManageHeroSlides() {
                       </div>
 
                       <div className={styles.formField}>
-                        <label className={styles.fieldLabel}>Tag Manual (Opcional)</label>
+                        <label className={styles.fieldLabel}>Tag ou Destino Manual</label>
                         <input
                           type="text"
                           value={formTargetTag}
-                          onChange={(e) => setFormTargetTag(e.target.value.toLowerCase().trim())}
-                          placeholder="Ex: halo, starfield"
+                          onChange={(e) => setFormTargetTag(e.target.value)}
+                          placeholder="Ex: Forza Horizon, Halo, Cyberpunk 2077"
                           className={styles.fieldInput}
                         />
                       </div>

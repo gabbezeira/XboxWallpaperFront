@@ -98,7 +98,13 @@ export default function Collection() {
     <div className={styles.page}>
       {collection?.bannerUrl && (
         <div className={styles.bannerContainer}>
-          <img src={collection.bannerUrl} alt={collection.name} className={styles.bannerImg} />
+          <img
+            src={collection.bannerUrl}
+            alt={collection.name}
+            className={styles.bannerImg}
+            decoding="async"
+            fetchPriority="high"
+          />
           <div className={styles.bannerGradient} />
         </div>
       )}

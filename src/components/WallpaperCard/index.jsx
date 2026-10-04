@@ -60,10 +60,11 @@ const WallpaperCard = memo(function WallpaperCard({
       <img
         className={`${styles.image} ${loaded ? styles.loaded : ''}`}
         src={thumbSrc}
-        srcSet={previewSrc && previewSrc !== thumbSrc ? `${thumbSrc} 600w, ${previewSrc} 1440w` : undefined}
-        sizes="(max-width: 768px) 100vw, (max-width: 1440px) 33vw, (max-width: 2560px) 25vw, 20vw"
+        srcSet={previewSrc && previewSrc !== thumbSrc ? `${thumbSrc} 960w, ${previewSrc} 1920w` : undefined}
+        sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, (max-width: 1535px) 25vw, (max-width: 1919px) 20vw, (max-width: 2559px) 17vw, 15vw"
         alt={wallpaper.title || 'Wallpaper'}
         loading="lazy"
+        decoding="async"
         onLoad={() => setLoaded(true)}
         onError={() => setLoaded(true)}
       />

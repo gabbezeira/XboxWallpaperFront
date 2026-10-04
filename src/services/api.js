@@ -97,7 +97,13 @@ export const api = {
       setCache(`/api/wallpapers/${id}`, null, data, 5 * 60 * 1000);
       return data;
     },
-    mine: () => request('/api/wallpapers/mine'),
+    mine: async () => {
+      const cached = getCached('/api/wallpapers/mine');
+      if (cached) return cached;
+      const data = await request('/api/wallpapers/mine');
+      setCache('/api/wallpapers/mine', null, data, 60 * 1000);
+      return data;
+    },
     upload: async (file, { title, game, tags, isPublic, collectionId } = {}) => {
       const formData = new FormData();
       formData.append('image', file);
@@ -108,6 +114,7 @@ export const api = {
       if (collectionId) formData.append('collectionId', collectionId);
       const result = await request('/api/wallpapers/upload', { method: 'POST', body: formData });
       invalidateCache('/api/wallpapers');
+      invalidateCache('/api/collections');
       return result;
     },
     updateVisibility: async (id, isPublic) => {
@@ -116,11 +123,13 @@ export const api = {
         body: JSON.stringify({ isPublic }),
       });
       invalidateCache('/api/wallpapers');
+      invalidateCache('/api/collections');
       return result;
     },
     remove: async (id) => {
       const result = await request(`/api/wallpapers/${id}`, { method: 'DELETE' });
       invalidateCache('/api/wallpapers');
+      invalidateCache('/api/collections');
       return result;
     },
     batchRemove: async (ids) => {
@@ -129,6 +138,7 @@ export const api = {
         body: JSON.stringify({ ids }),
       });
       invalidateCache('/api/wallpapers');
+      invalidateCache('/api/collections');
       return result;
     },
     downloadUrl: async (id) => {
@@ -138,22 +148,54 @@ export const api = {
   },
 
   collections: {
-    list: () => request('/api/collections'),
-    getBySlug: (slug) => request(`/api/collections/${slug}`),
-    mine: () => request('/api/collections/mine'),
-    removeWallpaperFromMine: (wallpaperId) =>
-      request(`/api/collections/mine/wallpapers/${wallpaperId}`, { method: 'DELETE' }),
-    create: (data) =>
-      request('/api/collections', {
+    list: async () => {
+      const cached = getCached('/api/collections');
+      if (cached) return cached;
+      const data = await request('/api/collections');
+      setCache('/api/collections', null, data, 5 * 60 * 1000);
+      return data;
+    },
+    getBySlug: async (slug) => {
+      const clean = String(slug || '').toLowerCase().trim();
+      const cached = getCached(`/api/collections/${clean}`);
+      if (cached) return cached;
+      const data = await request(`/api/collections/${clean}`);
+      setCache(`/api/collections/${clean}`, null, data, 5 * 60 * 1000);
+      return data;
+    },
+    mine: async () => {
+      const cached = getCached('/api/collections/mine');
+      if (cached) return cached;
+      const data = await request('/api/collections/mine');
+      setCache('/api/collections/mine', null, data, 60 * 1000);
+      return data;
+    },
+    removeWallpaperFromMine: async (wallpaperId) => {
+      const result = await request(`/api/collections/mine/wallpapers/${wallpaperId}`, { method: 'DELETE' });
+      invalidateCache('/api/collections');
+      return result;
+    },
+    create: async (data) => {
+      const result = await request('/api/collections', {
         method: 'POST',
         body: JSON.stringify(data),
-      }),
-    update: (id, data) =>
-      request(`/api/collections/${id}`, {
+      });
+      invalidateCache('/api/collections');
+      return result;
+    },
+    update: async (id, data) => {
+      const result = await request(`/api/collections/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
-      }),
-    remove: (id) => request(`/api/collections/${id}`, { method: 'DELETE' }),
+      });
+      invalidateCache('/api/collections');
+      return result;
+    },
+    remove: async (id) => {
+      const result = await request(`/api/collections/${id}`, { method: 'DELETE' });
+      invalidateCache('/api/collections');
+      return result;
+    },
   },
 
   admin: {

@@ -12,7 +12,7 @@ import styles from './styles.module.scss';
 
 export default function MyWallpapers() {
   const { refreshProfile } = useAuth();
-  const { wallpapers, loading, refetch } = useWallpapers();
+  const { wallpapers, setWallpapers, loading, refetch } = useWallpapers();
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,7 +57,17 @@ export default function MyWallpapers() {
       setVisibilityModal({ open: false, wallpaper: null, nextIsPublic: false });
 
       await api.wallpapers.updateVisibility(targetId, nextPublic);
-      await refetch();
+      setWallpapers((prev) =>
+        prev.map((w) =>
+          w.id === targetId
+            ? {
+                ...w,
+                isPublic: nextPublic,
+                status: nextPublic ? (w.status === 'rejected' ? 'pending' : (w.status || 'approved')) : 'private',
+              }
+            : w
+        )
+      );
       await refreshProfile();
     } catch (err) {
       setErrorModal({
@@ -76,14 +86,14 @@ export default function MyWallpapers() {
 
   const confirmDelete = async () => {
     if (!wallpaperToDelete) return;
+    const targetId = wallpaperToDelete.id;
 
     try {
       setDeleting(true);
       setIsModalOpen(false);
-      await api.wallpapers.remove(wallpaperToDelete.id);
-
+      await api.wallpapers.remove(targetId);
+      setWallpapers((prev) => prev.filter((w) => w.id !== targetId));
       await refreshProfile();
-      await refetch();
     } catch (err) {
       setErrorModal({
         open: true,

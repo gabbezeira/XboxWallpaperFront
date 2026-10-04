@@ -72,11 +72,12 @@ export default function MyCollection() {
 
   const confirmDelete = async () => {
     if (!wallpaperToDelete) return;
+    const targetId = wallpaperToDelete.id;
     try {
       setDeleting(true);
       setIsModalOpen(false);
-      await api.collections.removeWallpaperFromMine(wallpaperToDelete.id);
-      await fetchMine();
+      await api.collections.removeWallpaperFromMine(targetId);
+      setWallpapers((prev) => prev.filter((w) => w.id !== targetId));
     } catch (err) {
       alert(err.message || 'Erro ao remover wallpaper da coleção');
     } finally {
@@ -107,7 +108,17 @@ export default function MyCollection() {
       setVisibilityModal({ open: false, wallpaper: null, nextIsPublic: false });
 
       await api.wallpapers.updateVisibility(targetId, nextPublic);
-      await fetchMine();
+      setWallpapers((prev) =>
+        prev.map((w) =>
+          w.id === targetId
+            ? {
+                ...w,
+                isPublic: nextPublic,
+                status: nextPublic ? (w.status === 'rejected' ? 'pending' : (w.status || 'approved')) : 'private',
+              }
+            : w
+        )
+      );
     } catch (err) {
       alert(err.response?.data?.error || err.message || 'Erro ao alterar visibilidade');
     } finally {

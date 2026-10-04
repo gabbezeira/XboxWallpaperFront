@@ -475,7 +475,7 @@ export default function DebugMetrics() {
               {caches.wallpapersList?.listQueriesCount ?? 0}
             </div>
             <span className={styles.cacheCardSub}>
-              {caches.wallpapersList?.singleWallpapersCount ?? 0} wallpapers únicos | {caches.wallpapersList?.userPrefsCount ?? 0} preferências
+              {caches.wallpapersList?.singleWallpapersCount ?? 0} únicos | {caches.wallpapersList?.userWallpapersMineCount ?? 0} privadas | {caches.wallpapersList?.userPrefsCount ?? 0} preferências
             </span>
           </div>
 
@@ -509,9 +509,13 @@ export default function DebugMetrics() {
               <span className={styles.cacheCardTitle}>Coleções Oficiais</span>
             </div>
             <div className={styles.cacheCardValue}>
-              {caches.collections?.cached ? `${caches.collections.itemsCount} itens` : 'Vazio'}
+              {caches.collections?.cached || (caches.collections?.slugsCount > 0) || (caches.collections?.userMineCount > 0)
+                ? `${caches.collections?.itemsCount || 0} catálogo | ${caches.collections?.slugsCount || 0} slugs`
+                : 'Vazio'}
             </div>
-            <span className={styles.cacheCardSub}>TTL 10 min + Edge CDN</span>
+            <span className={styles.cacheCardSub}>
+              {caches.collections?.userMineCount > 0 ? `${caches.collections.userMineCount} criador(es) em cache | ` : ''}TTL 10 min + Edge CDN
+            </span>
           </div>
 
           <div className={styles.cacheCard}>

@@ -7,9 +7,10 @@ export function useWallpapers() {
   const { user } = useAuth();
   const [wallpapers, setWallpapers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const userUid = user?.uid;
 
   const fetchWallpapers = useCallback(async () => {
-    if (!user) {
+    if (!userUid) {
       setWallpapers([]);
       setLoading(false);
       return;
@@ -18,18 +19,18 @@ export function useWallpapers() {
     try {
       setLoading(true);
       const data = await api.wallpapers.mine();
-      const token = await user.getIdToken();
+      const token = await user?.getIdToken();
       setWallpapers(attachAuthenticatedMediaUrls(data, token));
     } catch (error) {
       console.warn('Erro ao carregar wallpapers:', error);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [userUid, user]);
 
   useEffect(() => {
     fetchWallpapers();
   }, [fetchWallpapers]);
 
-  return { wallpapers, loading, refetch: fetchWallpapers };
+  return { wallpapers, setWallpapers, loading, refetch: fetchWallpapers };
 }

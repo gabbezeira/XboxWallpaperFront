@@ -161,9 +161,6 @@ export default function DebugMetrics() {
       <AdminHeader
         title="Métricas do Sistema"
         subtitle="Uso real do Firebase Storage, contagem do Firestore, consumo de leituras e estado dos caches em memória."
-        badge={
-          <span>Tempo Real</span>
-        }
       >
         <button
           type="button"

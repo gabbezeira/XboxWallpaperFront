@@ -2169,7 +2169,9 @@
   transition: all $transition-fast;
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 7;
+  min-height: 150px;
+  max-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2221,8 +2223,8 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: $spacing-lg;
-  gap: 8px;
+  padding: $spacing-md;
+  gap: 6px;
   color: $color-text-muted;
 }
 
@@ -2780,6 +2782,24 @@
   &:hover {
     background-color: rgba(0, 171, 0, 0.15);
     border-color: rgba(0, 171, 0, 0.35);
+    color: #ffffff;
+  }
+}
+
+.suggestedTagBtnAll {
+  background-color: rgba(0, 171, 0, 0.12);
+  border: 1px solid rgba(0, 171, 0, 0.3);
+  border-radius: $radius-full;
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-weight: $fw-semibold;
+  color: $color-primary;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: rgba(0, 171, 0, 0.22);
+    border-color: rgba(0, 171, 0, 0.5);
     color: #ffffff;
   }
 }

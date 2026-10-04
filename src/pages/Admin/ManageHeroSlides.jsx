@@ -440,133 +440,139 @@ export default function ManageHeroSlides() {
                   </div>
                 )}
 
-                <div className={styles.formGrid}>
-                  <div className={styles.formCol}>
-                    <div className={styles.formField}>
-                      <label className={styles.fieldLabel}>Título Principal *</label>
-                      <input
-                        type="text"
-                        value={formTitle}
-                        onChange={(e) => setFormTitle(e.target.value)}
-                        placeholder="Ex: Halo Infinite: Temporada 5"
-                        required
-                        className={styles.fieldInput}
-                      />
-                    </div>
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>
+                    {editingSlide ? 'Imagem do Banner (Deixe vazio para manter)' : 'Imagem do Banner (16:9) *'}
+                  </label>
 
-                    <div className={styles.formField}>
-                      <label className={styles.fieldLabel}>Subtítulo / Descrição</label>
-                      <textarea
-                        value={formSubtitle}
-                        onChange={(e) => setFormSubtitle(e.target.value)}
-                        placeholder="Ex: Novos wallpapers em resolução máxima 4K HDR para sua dashboard."
-                        rows={2}
-                        className={styles.fieldTextarea}
-                      />
-                    </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleFileChange}
+                    className={styles.hiddenFileInput}
+                  />
 
-                    <div className={styles.formRowTwo}>
-                      <div className={styles.formField}>
-                        <label className={styles.fieldLabel}>Coleção Rápida</label>
-                        <select
-                          value={collections.some((c) => (c.slug || c.name.toLowerCase()) === formTargetTag) ? formTargetTag : ''}
-                          onChange={(e) => setFormTargetTag(e.target.value)}
-                          className={styles.fieldSelect}
-                        >
-                          <option value="">Personalizada / Nenhuma</option>
-                          {collections.map((c) => (
-                            <option key={c.id} value={c.slug || c.name.toLowerCase()}>
-                              Coleção: {c.name} ({c.slug})
-                            </option>
-                          ))}
-                        </select>
+                  <div
+                    className={styles.heroDropZone}
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        const droppedFile = e.dataTransfer.files[0];
+                        if (droppedFile.type.startsWith('image/')) {
+                          setFile(droppedFile);
+                          setPreviewUrl(URL.createObjectURL(droppedFile));
+                          setFormError('');
+                        }
+                      }
+                    }}
+                  >
+                    {previewUrl ? (
+                      <div className={styles.heroPreviewContainer}>
+                        <img src={previewUrl} alt="Preview" className={styles.heroPreviewImg} />
+                        <div className={styles.heroPreviewOverlay}>
+                          <UploadCloud size={20} />
+                          <span>Clique para alterar imagem</span>
+                        </div>
                       </div>
-
-                      <div className={styles.formField}>
-                        <label className={styles.fieldLabel}>Tag ou Destino Manual</label>
-                        <input
-                          type="text"
-                          value={formTargetTag}
-                          onChange={(e) => setFormTargetTag(e.target.value)}
-                          placeholder="Ex: Forza Horizon, Halo, Cyberpunk 2077"
-                          className={styles.fieldInput}
-                        />
+                    ) : (
+                      <div className={styles.heroDropPrompt}>
+                        <UploadCloud size={32} />
+                        <span className={styles.dropMainText}>Clique ou arraste a imagem do banner</span>
+                        <span className={styles.dropSubText}>Proporção 16:9 (1920x1080 ou superior em JPG/PNG/WebP)</span>
                       </div>
-                    </div>
+                    )}
+                  </div>
+                </div>
 
-                    <div className={styles.formRowTwo}>
-                      <div className={styles.formField}>
-                        <label className={styles.fieldLabel}>Texto do Botão de Ação</label>
-                        <input
-                          type="text"
-                          value={formButtonText}
-                          onChange={(e) => setFormButtonText(e.target.value)}
-                          placeholder="Ex: Ver Coleção"
-                          className={styles.fieldInput}
-                        />
-                      </div>
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Título Principal *</label>
+                  <input
+                    type="text"
+                    value={formTitle}
+                    onChange={(e) => setFormTitle(e.target.value)}
+                    placeholder="Ex: Halo Infinite: Temporada 5"
+                    required
+                    className={styles.fieldInput}
+                  />
+                </div>
 
-                      <div className={styles.formField}>
-                        <label className={styles.fieldLabel}>Ordem de Exibição</label>
-                        <input
-                          type="number"
-                          min={1}
-                          max={99}
-                          value={formOrder}
-                          onChange={(e) => setFormOrder(parseInt(e.target.value, 10) || 1)}
-                          className={styles.fieldInput}
-                        />
-                      </div>
-                    </div>
+                <div className={styles.formField}>
+                  <label className={styles.fieldLabel}>Subtítulo / Descrição</label>
+                  <textarea
+                    value={formSubtitle}
+                    onChange={(e) => setFormSubtitle(e.target.value)}
+                    placeholder="Ex: Novos wallpapers em resolução máxima 4K HDR para sua dashboard."
+                    rows={2}
+                    className={styles.fieldTextarea}
+                  />
+                </div>
 
-                    <div className={styles.formField}>
-                      <label className={styles.checkboxField}>
-                        <input
-                          type="checkbox"
-                          checked={formIsActive}
-                          onChange={(e) => setFormIsActive(e.target.checked)}
-                        />
-                        <span>Slide ativo (visível no carrossel da Home)</span>
-                      </label>
-                    </div>
+                <div className={styles.formRowTwo}>
+                  <div className={styles.formField}>
+                    <label className={styles.fieldLabel}>Coleção Rápida</label>
+                    <select
+                      value={collections.some((c) => (c.slug || c.name.toLowerCase()) === formTargetTag) ? formTargetTag : ''}
+                      onChange={(e) => setFormTargetTag(e.target.value)}
+                      className={styles.fieldSelect}
+                    >
+                      <option value="">Personalizada / Nenhuma</option>
+                      {collections.map((c) => (
+                        <option key={c.id} value={c.slug || c.name.toLowerCase()}>
+                          Coleção: {c.name} ({c.slug})
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
-                  <div className={styles.formCol}>
-                    <div className={styles.formField}>
-                      <label className={styles.fieldLabel}>
-                        {editingSlide ? 'Imagem do Banner (Deixe vazio para manter)' : 'Imagem do Banner (16:9) *'}
-                      </label>
-
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        accept="image/jpeg,image/png,image/webp"
-                        onChange={handleFileChange}
-                        className={styles.hiddenFileInput}
-                      />
-
-                      <div
-                        className={styles.heroDropZone}
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        {previewUrl ? (
-                          <div className={styles.heroPreviewContainer}>
-                            <img src={previewUrl} alt="Preview" className={styles.heroPreviewImg} />
-                            <div className={styles.heroPreviewOverlay}>
-                              <UploadCloud size={20} />
-                              <span>Clique para alterar imagem</span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className={styles.heroDropPrompt}>
-                            <UploadCloud size={32} />
-                            <span className={styles.dropMainText}>Clique ou arraste a imagem do banner</span>
-                            <span className={styles.dropSubText}>Proporção 16:9 (1920x1080 ou superior em JPG/PNG/WebP)</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                  <div className={styles.formField}>
+                    <label className={styles.fieldLabel}>Tag ou Destino Manual</label>
+                    <input
+                      type="text"
+                      value={formTargetTag}
+                      onChange={(e) => setFormTargetTag(e.target.value)}
+                      placeholder="Ex: Forza Horizon, Halo, Cyberpunk 2077"
+                      className={styles.fieldInput}
+                    />
                   </div>
+                </div>
+
+                <div className={styles.formRowTwo}>
+                  <div className={styles.formField}>
+                    <label className={styles.fieldLabel}>Texto do Botão de Ação</label>
+                    <input
+                      type="text"
+                      value={formButtonText}
+                      onChange={(e) => setFormButtonText(e.target.value)}
+                      placeholder="Ex: Ver Coleção"
+                      className={styles.fieldInput}
+                    />
+                  </div>
+
+                  <div className={styles.formField}>
+                    <label className={styles.fieldLabel}>Ordem de Exibição</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={99}
+                      value={formOrder}
+                      onChange={(e) => setFormOrder(parseInt(e.target.value, 10) || 1)}
+                      className={styles.fieldInput}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.checkboxField}>
+                    <input
+                      type="checkbox"
+                      checked={formIsActive}
+                      onChange={(e) => setFormIsActive(e.target.checked)}
+                    />
+                    <span>Slide ativo (visível no carrossel da Home)</span>
+                  </label>
                 </div>
               </div>
 

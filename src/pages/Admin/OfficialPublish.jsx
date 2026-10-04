@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { api } from '../../services/api';
 import { auth } from '../../services/firebase';
 import {
@@ -25,11 +25,10 @@ import {
   loadQueueFromDb,
 } from '../../utils/uploadQueueDb';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
+import { suggestTags, detectGameFromText } from '../../utils/tagSuggester';
 import styles from './styles.module.scss';
 
 const API_URL = String(import.meta.env.VITE_API_URL).replace(/\/$/, '');
-
-const SUGGESTED_BATCH_TAGS = ['4k', 'oled', 'hdr', 'exclusivo', 'halo', 'forza', 'minimalista', 'paisagem'];
 
 function cleanFileNameToTitle(fileName) {
   if (!fileName) return '';
@@ -126,6 +125,14 @@ export default function OfficialPublish({ onPublishComplete }) {
       error: null,
     }));
 
+    if (!globalGame && valid.length > 0) {
+      const detected = detectGameFromText(valid[0].name);
+      if (detected) {
+        setGlobalGame(detected);
+        saveQueueMetaDb('globalGame', detected);
+      }
+    }
+
     setBatchFiles((prev) => {
       const updated = [...prev, ...mapped];
       saveAllQueueItemsDb(updated);
@@ -182,17 +189,39 @@ export default function OfficialPublish({ onPublishComplete }) {
     saveQueueMetaDb('titlePrefix', cleanPrefix);
   };
 
-  const handleAddSuggestedTag = (tag) => {
-    const existing = globalTags
+  const currentGlobalTagsList = useMemo(() => {
+    return globalTags
       .split(',')
       .map((t) => t.trim().toLowerCase())
       .filter(Boolean);
+  }, [globalTags]);
 
-    if (!existing.includes(tag.toLowerCase())) {
-      const updated = [...existing, tag.toLowerCase()].join(', ');
+  const dynamicSuggestedTags = useMemo(() => {
+    const titlesSample = batchFiles.slice(0, 15).map((f) => f.title).join(' ');
+    const namesSample = batchFiles.slice(0, 15).map((f) => f.file?.name || '').join(' ');
+    return suggestTags({
+      title: `${titlePrefix} ${titlesSample}`,
+      fileName: namesSample,
+      game: globalGame,
+      existingTags: currentGlobalTagsList,
+      limit: 10,
+    });
+  }, [batchFiles, titlePrefix, globalGame, currentGlobalTagsList]);
+
+  const handleAddSuggestedTag = (tag) => {
+    if (!currentGlobalTagsList.includes(tag.toLowerCase())) {
+      const updated = [...currentGlobalTagsList, tag.toLowerCase()].join(', ');
       setGlobalTags(updated);
       saveQueueMetaDb('globalTags', updated);
     }
+  };
+
+  const handleAddAllSuggestedTags = () => {
+    const combined = Array.from(
+      new Set([...currentGlobalTagsList, ...dynamicSuggestedTags.map((t) => t.toLowerCase())])
+    ).join(', ');
+    setGlobalTags(combined);
+    saveQueueMetaDb('globalTags', combined);
   };
 
   const handleCollectionChange = (val) => {
@@ -462,8 +491,8 @@ export default function OfficialPublish({ onPublishComplete }) {
                 className={styles.fieldInput}
               />
               <div className={styles.suggestedTagsRow}>
-                <span className={styles.suggestedPrompt}>Sugeridas:</span>
-                {SUGGESTED_BATCH_TAGS.map((tag) => (
+                <span className={styles.suggestedPrompt}>Sugeridas dinâmicas:</span>
+                {dynamicSuggestedTags.map((tag) => (
                   <button
                     key={tag}
                     type="button"
@@ -473,6 +502,16 @@ export default function OfficialPublish({ onPublishComplete }) {
                     +{tag}
                   </button>
                 ))}
+                {dynamicSuggestedTags.length > 1 && (
+                  <button
+                    type="button"
+                    className={styles.suggestedTagBtnAll}
+                    onClick={handleAddAllSuggestedTags}
+                    title="Adicionar todas as tags sugeridas"
+                  >
+                    + Adicionar todas
+                  </button>
+                )}
               </div>
             </div>
 

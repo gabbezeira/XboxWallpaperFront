@@ -11,12 +11,11 @@ import {
   UploadCloud,
   X,
 } from 'lucide-react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUpload } from '../../hooks/useUpload';
+import { suggestTags, detectGameFromText } from '../../utils/tagSuggester';
 import styles from './styles.module.scss';
-
-const POPULAR_TAGS = ['Halo', 'Forza', 'Xbox', '4K', 'Retrô', 'Minimalista', 'Cyberpunk', 'Natureza'];
 
 export default function UploadZone({ onUploadComplete }) {
   const { upload, uploading, progress, error } = useUpload();
@@ -95,6 +94,10 @@ export default function UploadZone({ onUploadComplete }) {
         .replace(/[-_.]+/g, ' ')
         .trim();
       setTitle(derived);
+      const detected = detectGameFromText(derived);
+      if (detected && !game) {
+        setGame(detected);
+      }
     }
   };
 
@@ -155,12 +158,29 @@ export default function UploadZone({ onUploadComplete }) {
   };
 
   const addTag = (tag) => {
-    const cleaned = tag.trim().toLowerCase();
+    const cleaned = tag.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '');
     if (cleaned && !tags.includes(cleaned) && tags.length < 5) {
       setTags((prev) => [...prev, cleaned]);
     }
     setTagInput('');
     setShowTagSuggestions(false);
+  };
+
+  const dynamicSuggestedTags = useMemo(() => {
+    return suggestTags({
+      title,
+      fileName: selectedFile?.name || '',
+      game,
+      existingTags: tags,
+      limit: 6,
+    });
+  }, [title, selectedFile?.name, game, tags]);
+
+  const handleAddAllSuggestions = () => {
+    const slots = 5 - tags.length;
+    if (slots <= 0) return;
+    const toAdd = dynamicSuggestedTags.slice(0, slots);
+    setTags((prev) => [...prev, ...toAdd]);
   };
 
   const removeTag = (tag) => {
@@ -354,11 +374,11 @@ export default function UploadZone({ onUploadComplete }) {
                 )}
               </div>
 
-              {tags.length < 5 && (
+              {tags.length < 5 && dynamicSuggestedTags.length > 0 && (
                 <div className={styles.quickTagsContainer}>
-                  <span className={styles.quickTagsPrompt}>Sugestões rápidas:</span>
+                  <span className={styles.quickTagsPrompt}>Sugestões dinâmicas:</span>
                   <div className={styles.quickTagsList}>
-                    {POPULAR_TAGS.filter((t) => !tags.includes(t.toLowerCase())).slice(0, 5).map((pt) => (
+                    {dynamicSuggestedTags.map((pt) => (
                       <button
                         key={pt}
                         type="button"
@@ -368,6 +388,16 @@ export default function UploadZone({ onUploadComplete }) {
                         +{pt}
                       </button>
                     ))}
+                    {dynamicSuggestedTags.length > 1 && tags.length + dynamicSuggestedTags.length <= 5 && (
+                      <button
+                        type="button"
+                        className={styles.quickTagBtnAll}
+                        onClick={handleAddAllSuggestions}
+                        title="Adicionar todas as sugestões"
+                      >
+                        + Adicionar todas
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

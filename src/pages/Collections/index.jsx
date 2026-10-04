@@ -2,16 +2,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import Loader from '../../components/Loader';
-import {
-  Layers,
-  Search,
-  ArrowRight,
-  Copy,
-  Check,
-  Compass,
-} from 'lucide-react';
-import VerifiedBadge from '../../components/VerifiedBadge';
-import UserAvatar from '../../components/UserAvatar';
+import CollectionCard from '../../components/CollectionCard';
+import { Search, ArrowRight, Compass } from 'lucide-react';
 import Pagination from '../../components/Pagination';
 import PageHeader from '../../components/PageHeader';
 import EmptyState from '../../components/EmptyState';
@@ -142,70 +134,20 @@ export default function Collections() {
           <>
             <div className={styles.collectionsGrid}>
               {paginatedCollections.map((col) => {
-              const displayCode = col.code || col.slug?.toUpperCase() || `COL-${col.id.slice(0, 5).toUpperCase()}`;
-              const isCopied = copiedCode === displayCode;
-              const hasLinkedUser = Boolean(col.linkedUserName);
-              const linkedUserName = col.linkedUserName || 'Spartan Wallpapers';
-              const linkedUserVerified = hasLinkedUser ? col.linkedUserVerified : true;
+                const displayCode = col.code || col.slug?.toUpperCase() || `COL-${col.id.slice(0, 5).toUpperCase()}`;
+                const isCopied = copiedCode === displayCode;
 
-              return (
-                <div
-                  key={col.id}
-                  className={styles.collectionCard}
-                  onClick={() => navigate(`/collection/${col.slug || col.id}`)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      navigate(`/collection/${col.slug || col.id}`);
-                    }
-                  }}
-                >
-                  <div className={styles.cardBannerArea}>
-                    {col.bannerUrl ? (
-                      <img src={col.bannerUrl} alt="" className={styles.cardBannerImg} loading="lazy" />
-                    ) : (
-                      <div className={styles.cardBannerFallback}>
-                        <Layers size={36} />
-                      </div>
-                    )}
-                    <div className={styles.cardBannerGradient} />
-                    <button
-                      type="button"
-                      className={styles.btnCopyCardCode}
-                      onClick={(e) => handleCopyCode(e, displayCode)}
-                      onKeyDown={(e) => e.stopPropagation()}
-                      title="Copiar código da coleção"
-                      aria-label={`Copiar código ${displayCode}`}
-                      tabIndex={0}
-                    >
-                      {isCopied ? <Check size={12} /> : <Copy size={12} />}
-                      <span>{isCopied ? 'Copiado!' : displayCode}</span>
-                    </button>
-                    <div className={styles.cardOverlay}>
-                      <h3 className={styles.cardTitle}>{col.name}</h3>
-                      {col.description && <p className={styles.cardDesc}>{col.description}</p>}
-                      <div className={styles.cardFooter}>
-                        <span className={styles.creatorPill} title={`Criador: ${linkedUserName}`}>
-                          <UserAvatar
-                            photoUrl={hasLinkedUser ? col.linkedUserPhoto : null}
-                            name={linkedUserName}
-                            size="small"
-                          />
-                          <span className={styles.creatorName}>{linkedUserName}</span>
-                          {linkedUserVerified && <VerifiedBadge size={13} />}
-                        </span>
-                        <span className={styles.viewLink}>
-                          Ver coleção <ArrowRight size={14} />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                return (
+                  <CollectionCard
+                    key={col.id}
+                    collection={col}
+                    onClick={() => navigate(`/collection/${col.slug || col.id}`)}
+                    onCopyCode={handleCopyCode}
+                    isCopied={isCopied}
+                  />
+                );
+              })}
+            </div>
           {totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}

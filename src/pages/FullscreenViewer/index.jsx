@@ -108,13 +108,15 @@ export default function FullscreenViewer() {
       />
 
       <div className={styles.guide}>
-        <span>No Xbox, aperte</span>
-        <div className={styles.icon}>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-          </svg>
+        <div className={styles.guideStep}>
+          <span>No Xbox, aperte</span>
+          <span className={styles.icon} aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+            </svg>
+          </span>
         </div>
-        <span>e selecione &quot;Definir como fundo de tela&quot;</span>
+        <span className={styles.guideAction}>e selecione &quot;Definir como fundo de tela&quot;</span>
       </div>
     </div>
   );

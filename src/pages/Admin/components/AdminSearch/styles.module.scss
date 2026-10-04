@@ -12,10 +12,11 @@
   height: 38px;
   width: 100%;
   max-width: 320px;
-  transition: border-color $transition-fast;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
 
   &:focus-within {
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 }
 

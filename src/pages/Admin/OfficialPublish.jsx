@@ -588,12 +588,6 @@ export default function OfficialPublish({ onPublishComplete }) {
             <p className={styles.dropzoneHint}>
               Formatos recomendados: 16:9 em WebP, PNG ou JPG (até 20MB cada).
             </p>
-            <div className={styles.dropzoneBadges}>
-              <span className={styles.badgeSmall}>WebP</span>
-              <span className={styles.badgeSmall}>PNG</span>
-              <span className={styles.badgeSmall}>JPG</span>
-              <span className={styles.badgeSmall}>Múltiplos Arquivos</span>
-            </div>
             <input
               ref={fileInputRef}
               type="file"

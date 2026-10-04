@@ -31,9 +31,9 @@
   gap: $spacing-md;
   padding: $spacing-md;
   border-radius: $radius-md;
-  background-color: #290b0b;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
   margin-bottom: $spacing-lg;
   font-size: 0.88rem;
 }
@@ -150,8 +150,13 @@
   cursor: pointer;
   transition: border-color $transition-fast;
 
-  &:hover, &:focus {
+  &:hover {
     border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 }
 
@@ -175,13 +180,13 @@
 }
 
 .verifyBtnActive {
-  background-color: #0d260d;
-  border-color: rgba(16, 124, 16, 0.4);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.12);
+  border-color: rgba(0, 171, 0, 0.35);
+  color: $color-primary;
 
   &:hover {
-    background-color: #123312;
-    border-color: rgba(16, 124, 16, 0.6);
+    background-color: rgba(0, 171, 0, 0.2);
+    border-color: rgba(0, 171, 0, 0.5);
   }
 }
 
@@ -224,8 +229,8 @@
   transition: all $transition-fast;
 
   &:hover {
-    background-color: #290b0b;
-    border-color: rgba(239, 68, 68, 0.3);
+    background-color: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.25);
     color: #f87171;
   }
 }
@@ -329,7 +334,8 @@
   width: 100%;
 
   &:focus {
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 }
 

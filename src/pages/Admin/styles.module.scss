@@ -170,9 +170,9 @@
   font-size: 0.72rem;
   font-weight: $fw-bold;
   padding: 2px 7px;
-  border-radius: $radius-xs;
-  background-color: #2b0d0d;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: $radius-full;
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   color: #f87171;
   line-height: 1;
 }
@@ -181,9 +181,9 @@
   margin-left: auto;
   font-size: 0.72rem;
   font-weight: $fw-medium;
-  padding: 2px 6px;
-  border-radius: $radius-xs;
-  background-color: $color-bg-tertiary;
+  padding: 2px 7px;
+  border-radius: $radius-full;
+  background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: $color-text-muted;
   line-height: 1;
@@ -249,7 +249,7 @@
 
 .userRole {
   font-size: 0.68rem;
-  color: #107c10;
+  color: $color-primary;
   font-weight: $fw-medium;
 }
 
@@ -479,9 +479,9 @@
 .counterBadge {
   font-size: 0.75rem;
   font-weight: $fw-bold;
-  color: #55d688;
-  background-color: rgba(16, 124, 16, 0.15);
-  border: 1px solid rgba(16, 124, 16, 0.3);
+  color: $color-primary;
+  background-color: rgba(0, 171, 0, 0.1);
+  border: 1px solid rgba(0, 171, 0, 0.25);
   padding: 2px 8px;
   border-radius: $radius-full;
   white-space: nowrap;
@@ -543,8 +543,8 @@
   transition: all $transition-fast;
 
   &:focus {
-    border-color: #107c10;
-    box-shadow: 0 0 0 2px rgba(16, 124, 16, 0.25);
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba(0, 171, 0, 0.2);
   }
 
   &::placeholder {
@@ -675,11 +675,12 @@
   &:hover {
     border-color: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 
   &.wpCardSelected {
-    border-color: #107c10;
-    box-shadow: 0 0 0 1px #107c10;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 }
 
@@ -715,7 +716,7 @@
   transition: all $transition-fast;
 
   &:hover {
-    background-color: rgba(16, 124, 16, 0.8);
+    background-color: rgba(0, 171, 0, 0.85);
   }
 }
 
@@ -757,8 +758,8 @@
 }
 
 .batchActionBar {
-  background-color: rgba(16, 124, 16, 0.12);
-  border: 1px solid rgba(16, 124, 16, 0.3);
+  background-color: rgba(0, 171, 0, 0.1);
+  border: 1px solid rgba(0, 171, 0, 0.25);
   border-radius: $radius-md;
   padding: 10px $spacing-md;
   display: flex;
@@ -853,10 +854,10 @@
 .orderNumberBadge {
   font-size: 0.75rem;
   font-weight: $fw-bold;
-  color: #55d688;
+  color: $color-primary;
   padding: 2px 6px;
   border-radius: $radius-xs;
-  background-color: rgba(16, 124, 16, 0.15);
+  background-color: rgba(0, 171, 0, 0.12);
 }
 
 .heroSlidePreviewWrapper {
@@ -909,7 +910,7 @@
 .thumbButton {
   font-size: 0.62rem;
   font-weight: 600;
-  color: #55d688;
+  color: $color-primary;
   background: rgba(0, 0, 0, 0.6);
   padding: 1px 5px;
   border-radius: 3px;
@@ -949,9 +950,9 @@
   border: none;
 
   &.statusActive {
-    background-color: rgba(16, 124, 16, 0.15);
-    color: #55d688;
-    border: 1px solid rgba(16, 124, 16, 0.3);
+    background-color: rgba(0, 171, 0, 0.12);
+    color: $color-primary;
+    border: 1px solid rgba(0, 171, 0, 0.3);
   }
 
   &.statusPaused {
@@ -1079,7 +1080,7 @@
   min-height: 36px;
   border-radius: $radius-full;
   background-color: $color-bg-tertiary;
-  color: #55d688;
+  color: $color-primary;
   font-weight: $fw-bold;
   font-size: 0.82rem;
   display: flex;
@@ -1164,9 +1165,9 @@
   }
 
   &.verifyActive {
-    background-color: rgba(16, 124, 16, 0.15);
-    border-color: rgba(16, 124, 16, 0.35);
-    color: #55d688;
+    background-color: rgba(0, 171, 0, 0.12);
+    border-color: rgba(0, 171, 0, 0.35);
+    color: $color-primary;
   }
 }
 
@@ -1253,7 +1254,9 @@
   transition: all $transition-fast;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -1293,7 +1296,7 @@
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #55d688;
+  color: $color-primary;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1316,7 +1319,7 @@
 
 .collectionSlug {
   font-size: 0.74rem;
-  color: #55d688;
+  color: $color-text-muted;
   font-family: monospace;
 }
 
@@ -1368,9 +1371,9 @@
 }
 
 .kpiCard {
-  background-color: #0d0d0d;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: $radius-md;
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius-lg;
   padding: $spacing-lg;
   display: flex;
   flex-direction: column;
@@ -1379,8 +1382,10 @@
   transition: all $transition-fast;
 
   &:hover {
-    background-color: #141414;
-    border-color: rgba(255, 255, 255, 0.18);
+    background-color: rgba(255, 255, 255, 0.025);
+    border-color: rgba(0, 171, 0, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -1458,9 +1463,9 @@
 }
 
 .overviewModuleCard {
-  background-color: #0d0d0d;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: $radius-md;
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius-lg;
   padding: $spacing-lg;
   display: flex;
   flex-direction: column;
@@ -1472,6 +1477,11 @@
   align-items: center;
   gap: $spacing-sm;
   color: #ffffff;
+
+  svg {
+    color: $color-primary;
+    flex-shrink: 0;
+  }
 
   h3 {
     font-size: 0.95rem;
@@ -1491,8 +1501,8 @@
   align-items: center;
   gap: $spacing-md;
   padding: 12px 14px;
-  border-radius: $radius-sm;
-  background-color: transparent;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.015);
   border: 1px solid rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition: all $transition-fast;
@@ -1500,30 +1510,19 @@
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(0, 171, 0, 0.3);
     color: #ffffff;
+    transform: translateX(2px);
   }
 }
 
 .actionItemIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: $radius-xs;
-  background-color: $color-bg-tertiary;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: $color-primary;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.actionItemIcon {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: $radius-md;
-  background-color: rgba(16, 124, 16, 0.12);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.1);
+  border: 1px solid rgba(0, 171, 0, 0.25);
+  color: $color-primary;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1579,9 +1578,9 @@
   font-weight: $fw-semibold;
   padding: 3px 8px;
   border-radius: $radius-sm;
-  background-color: #0b2918;
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  color: #4ade80;
+  background-color: rgba(0, 171, 0, 0.1);
+  border: 1px solid rgba(0, 171, 0, 0.25);
+  color: $color-primary;
 }
 
 .badgeXbox {
@@ -1589,9 +1588,9 @@
   font-weight: $fw-semibold;
   padding: 3px 8px;
   border-radius: $radius-sm;
-  background-color: #0d260d;
-  border: 1px solid rgba(16, 124, 16, 0.4);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.1);
+  border: 1px solid rgba(0, 171, 0, 0.25);
+  color: $color-primary;
 }
 
 .quotaBarWrapper {
@@ -1619,13 +1618,13 @@
   }
 
   &::-webkit-progress-value {
-    background: linear-gradient(90deg, #107c10, #55d688);
+    background: linear-gradient(90deg, #107C10, $color-primary);
     border-radius: $radius-full;
     transition: width 0.3s ease;
   }
 
   &::-moz-progress-bar {
-    background: linear-gradient(90deg, #107c10, #55d688);
+    background: linear-gradient(90deg, #107C10, $color-primary);
     border-radius: $radius-full;
   }
 }
@@ -1796,7 +1795,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #55d688;
+  color: $color-primary;
 }
 
 .cacheCardTitle {
@@ -1837,8 +1836,8 @@
   font-weight: $fw-semibold;
   padding: 2px 6px;
   border-radius: $radius-full;
-  background-color: rgba(16, 124, 16, 0.15);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.12);
+  color: $color-primary;
 }
 
 .cacheMetrics {
@@ -1907,8 +1906,8 @@
   }
 
   &.methodPost {
-    background-color: rgba(16, 124, 16, 0.15);
-    color: #55d688;
+    background-color: rgba(0, 171, 0, 0.12);
+    color: $color-primary;
   }
 
   &.methodPatch {
@@ -1925,7 +1924,7 @@
 .endpointPath {
   font-family: monospace;
   font-size: 0.78rem;
-  color: #55d688;
+  color: #ffffff;
   padding-right: 16px;
   display: inline-block;
 }
@@ -1941,9 +1940,9 @@
   gap: 6px;
   padding: 3px 8px;
   border-radius: $radius-full;
-  background-color: rgba(16, 124, 16, 0.15);
-  border: 1px solid rgba(16, 124, 16, 0.35);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.12);
+  border: 1px solid rgba(0, 171, 0, 0.3);
+  color: $color-primary;
   font-size: 0.72rem;
   font-weight: $fw-semibold;
 }
@@ -1952,8 +1951,8 @@
   width: 6px;
   height: 6px;
   border-radius: $radius-full;
-  background-color: #107c10;
-  box-shadow: 0 0 8px #107c10;
+  background-color: $color-primary;
+  box-shadow: 0 0 6px rgba(0, 171, 0, 0.6);
 }
 
 .autoRefreshToggle {
@@ -1983,10 +1982,10 @@
 .modalContent {
   width: 100%;
   max-width: 480px;
-  background-color: #0c0c0c;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-xl;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.85);
   display: flex;
   flex-direction: column;
   animation: scaleIn $transition-fast;
@@ -1995,11 +1994,11 @@
 
 .modalContentLarge {
   width: 100%;
-  max-width: 640px;
-  background-color: #0c0c0c;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 680px;
+  background-color: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: $radius-xl;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.85);
   display: flex;
   flex-direction: column;
   animation: scaleIn $transition-fast;
@@ -2056,6 +2055,27 @@
   gap: $spacing-md;
 }
 
+.formRowTwo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.heroBadgeWrapper {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+.dropzoneIcon {
+  color: $color-primary;
+}
+
 .formField {
   display: flex;
   flex-direction: column;
@@ -2080,8 +2100,8 @@
   transition: all $transition-fast;
 
   &:focus {
-    border-color: #107c10;
-    box-shadow: 0 0 0 2px rgba(16, 124, 16, 0.25);
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba(0, 171, 0, 0.2);
   }
 
   &::placeholder {
@@ -2101,7 +2121,8 @@
   cursor: pointer;
 
   &:focus {
-    border-color: #107c10;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 }
 
@@ -2118,7 +2139,8 @@
   resize: vertical;
 
   &:focus {
-    border-color: #107c10;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 }
 
@@ -2153,8 +2175,8 @@
   justify-content: center;
 
   &:hover {
-    border-color: #107c10;
-    background-color: rgba(16, 124, 16, 0.03);
+    border-color: $color-primary;
+    background-color: rgba(0, 171, 0, 0.03);
   }
 }
 
@@ -2229,8 +2251,8 @@
   transition: all $transition-fast;
 
   &:hover {
-    border-color: #107c10;
-    background-color: rgba(16, 124, 16, 0.03);
+    border-color: $color-primary;
+    background-color: rgba(0, 171, 0, 0.03);
   }
 }
 
@@ -2251,9 +2273,9 @@
 .actionSuccessToast {
   padding: 10px $spacing-md;
   border-radius: $radius-md;
-  background-color: rgba(16, 124, 16, 0.15);
-  border: 1px solid rgba(16, 124, 16, 0.3);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.12);
+  border: 1px solid rgba(0, 171, 0, 0.3);
+  color: $color-primary;
   font-size: 0.82rem;
   display: flex;
   align-items: center;
@@ -2393,7 +2415,9 @@
   transition: all $transition-fast;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -2504,7 +2528,8 @@
   outline: none;
 
   &:focus {
-    border-color: #107c10;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 }
 
@@ -2521,7 +2546,7 @@
   gap: 6px;
   padding: 8px 12px;
   border-radius: $radius-md;
-  background-color: #107c10;
+  background-color: $color-primary;
   border: none;
   color: #ffffff;
   font-size: 0.82rem;
@@ -2530,7 +2555,7 @@
   transition: all $transition-fast;
 
   &:hover:not(:disabled) {
-    background-color: #16a516;
+    background-color: $color-primary-hover;
   }
 
   &:disabled {
@@ -2577,7 +2602,7 @@
   gap: 6px;
   padding: 8px;
   border-radius: $radius-md;
-  background-color: #107c10;
+  background-color: $color-primary;
   border: none;
   color: #ffffff;
   font-size: 0.82rem;
@@ -2586,7 +2611,7 @@
   transition: all $transition-fast;
 
   &:hover {
-    background-color: #16a516;
+    background-color: $color-primary-hover;
   }
 }
 
@@ -2625,8 +2650,8 @@
   align-items: center;
   justify-content: space-between;
   gap: $spacing-md;
-  background-color: rgba(16, 124, 16, 0.12);
-  border: 1px solid rgba(16, 124, 16, 0.4);
+  background-color: rgba(0, 171, 0, 0.1);
+  border: 1px solid rgba(0, 171, 0, 0.3);
   border-radius: $radius-lg;
   padding: 14px $spacing-lg;
   margin-bottom: $spacing-xl;
@@ -2640,7 +2665,7 @@
 }
 
 .batchSuccessIcon {
-  color: #55d688;
+  color: $color-primary;
   flex-shrink: 0;
 }
 
@@ -2680,8 +2705,8 @@
   width: 34px;
   height: 34px;
   border-radius: $radius-md;
-  background-color: rgba(16, 124, 16, 0.15);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.12);
+  color: $color-primary;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2716,7 +2741,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #55d688;
+  color: $color-primary;
 
   .fieldLabel {
     color: #ffffff;
@@ -2753,8 +2778,8 @@
   transition: all $transition-fast;
 
   &:hover {
-    background-color: rgba(16, 124, 16, 0.15);
-    border-color: rgba(16, 124, 16, 0.4);
+    background-color: rgba(0, 171, 0, 0.15);
+    border-color: rgba(0, 171, 0, 0.35);
     color: #ffffff;
   }
 }
@@ -2765,7 +2790,7 @@
 }
 
 .batchSummaryCard {
-  background-color: rgba(0, 0, 0, 0.35);
+  background-color: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: $radius-md;
   padding: 14px;
@@ -2831,12 +2856,12 @@
   }
 
   &::-webkit-progress-value {
-    background: linear-gradient(90deg, #107c10, #55d688);
+    background: linear-gradient(90deg, #107C10, $color-primary);
     border-radius: $radius-full;
   }
 
   &::-moz-progress-bar {
-    background: linear-gradient(90deg, #107c10, #55d688);
+    background: linear-gradient(90deg, #107C10, $color-primary);
     border-radius: $radius-full;
   }
 }
@@ -2871,27 +2896,27 @@
 
   &:hover,
   &:focus-visible {
-    border-color: #107c10;
-    background-color: rgba(16, 124, 16, 0.04);
+    border-color: $color-primary;
+    background-color: rgba(0, 171, 0, 0.04);
   }
 }
 
 .dropzoneDragging {
-  border-color: #107c10;
-  background-color: rgba(16, 124, 16, 0.08);
+  border-color: $color-primary;
+  background-color: rgba(0, 171, 0, 0.08);
 }
 
 .dropzoneIconWrapper {
   width: 58px;
   height: 58px;
   border-radius: $radius-full;
-  background-color: rgba(16, 124, 16, 0.12);
-  border: 1px solid rgba(16, 124, 16, 0.3);
+  background-color: rgba(0, 171, 0, 0.1);
+  border: 1px solid rgba(0, 171, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: $spacing-sm;
-  color: #55d688;
+  color: $color-primary;
 }
 
 .dropzoneTitle {
@@ -3019,8 +3044,8 @@
   align-items: center;
   justify-content: space-between;
   gap: $spacing-md;
-  background-color: rgba(16, 124, 16, 0.08);
-  border: 1px solid rgba(16, 124, 16, 0.35);
+  background-color: rgba(0, 171, 0, 0.08);
+  border: 1px solid rgba(0, 171, 0, 0.25);
   border-radius: $radius-lg;
   padding: 12px $spacing-lg;
   margin-bottom: $spacing-xl;
@@ -3034,7 +3059,7 @@
 }
 
 .batchResumeIcon {
-  color: #55d688;
+  color: $color-primary;
   flex-shrink: 0;
 }
 
@@ -3116,7 +3141,8 @@
   transition: border-color $transition-fast;
 
   &:focus {
-    border-color: #107c10;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px $color-primary;
   }
 
   &:disabled {
@@ -3132,9 +3158,9 @@
 }
 
 .batchFileExt {
-  color: #55d688;
+  color: $color-primary;
   font-weight: $fw-semibold;
-  background-color: rgba(16, 124, 16, 0.12);
+  background-color: rgba(0, 171, 0, 0.1);
   padding: 1px 5px;
   border-radius: 3px;
 }
@@ -3175,8 +3201,8 @@
 }
 
 .statusSuccess {
-  background-color: rgba(16, 124, 16, 0.15);
-  color: #55d688;
+  background-color: rgba(0, 171, 0, 0.12);
+  color: $color-primary;
 }
 
 .statusError {

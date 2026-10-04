@@ -488,25 +488,27 @@ export default function Admin() {
 
                 <div className={styles.overviewModuleCard}>
                   <div className={styles.moduleCardHeader}>
-                    <Server size={18} />
-                    <h3>Saúde e Infraestrutura</h3>
+                    <Activity size={18} />
+                    <h3>Resumo Operacional & Telemetria</h3>
                   </div>
                   <div className={styles.systemHealthList}>
                     <div className={styles.healthRow}>
-                      <span className={styles.healthLabel}>Autenticação Firebase</span>
-                      <span className={styles.badgeSuccess}>Operacional</span>
+                      <span className={styles.healthLabel}>Wallpapers no Catálogo</span>
+                      <span className={styles.healthValue}>{stats.totalWallpapers.toLocaleString('pt-BR')}</span>
                     </div>
                     <div className={styles.healthRow}>
-                      <span className={styles.healthLabel}>Caches em Memória (Node.js)</span>
-                      <span className={styles.badgeSuccess}>Ativos (5 camadas)</span>
+                      <span className={styles.healthLabel}>Coleções Oficiais Ativas</span>
+                      <span className={styles.healthValue}>{stats.collectionsCount}</span>
                     </div>
                     <div className={styles.healthRow}>
-                      <span className={styles.healthLabel}>Armazenamento Firebase Storage</span>
-                      <span className={styles.badgeSuccess}>Operacional</span>
+                      <span className={styles.healthLabel}>Criadores com Selo Verificado</span>
+                      <span className={styles.healthValue}>{stats.creatorsCount}</span>
                     </div>
                     <div className={styles.healthRow}>
-                      <span className={styles.healthLabel}>Cota Diária Spark</span>
-                      <span className={styles.healthValue}>50.000 reads/dia</span>
+                      <span className={styles.healthLabel}>Fila de Moderação</span>
+                      <span className={stats.pending > 0 ? styles.kpiStatusAlert : styles.healthValue}>
+                        {stats.pending === 0 ? 'Fila zerada' : `${stats.pending} pendente(s)`}
+                      </span>
                     </div>
                   </div>
                   <button
@@ -515,7 +517,7 @@ export default function Admin() {
                     onClick={() => handleSelectTab('debug')}
                   >
                     <Activity size={15} />
-                    <span>Ver Métricas do Sistema</span>
+                    <span>Abrir Diagnóstico do Sistema</span>
                   </button>
                 </div>
               </div>

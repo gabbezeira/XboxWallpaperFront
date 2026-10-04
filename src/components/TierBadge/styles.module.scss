@@ -368,7 +368,7 @@
   letter-spacing: 0.6px;
   text-transform: uppercase;
   line-height: 1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  text-shadow: none;
   box-sizing: border-box;
   background-color: transparent;
   isolation: isolate;
@@ -426,7 +426,7 @@
         transparent 100%
       );
       transform: translateX(-160%) skewX(-20deg);
-      animation: badgeShimmer 2.8s ease-in-out infinite;
+      animation: badgeShimmer 4.5s ease-in-out infinite;
     }
   }
 
@@ -471,7 +471,7 @@
         #9ca3af 50%,
         #374151 100%
       );
-      animation: glowPulse_1 5s linear infinite;
+      animation: glowPulse_1 9s linear infinite;
     }
 
     .badgeIcon {
@@ -499,7 +499,7 @@
         #fbbf24 60%,
         #c2410c 100%
       );
-      animation: glowPulse_2 3.8s linear infinite;
+      animation: glowPulse_2 8s linear infinite;
     }
 
     .badgeIcon {
@@ -527,7 +527,7 @@
         #818cf8 70%,
         #0369a1 100%
       );
-      animation: glowPulse_3 3.2s linear infinite;
+      animation: glowPulse_3 7.5s linear infinite;
     }
 
     .badgeIcon {
@@ -555,7 +555,7 @@
         #fda4af 60%,
         #9f1239 100%
       );
-      animation: glowPulse_4 2.6s linear infinite;
+      animation: glowPulse_4 7s linear infinite;
     }
 
     .badgeIcon {
@@ -584,7 +584,7 @@
         #c084fc 75%,
         #6d28d9 100%
       );
-      animation: glowPulse_5 2.2s linear infinite;
+      animation: glowPulse_5 6.5s linear infinite;
     }
 
     .badgeIcon {
@@ -613,7 +613,7 @@
         #ffffff 70%,
         #059669 100%
       );
-      animation: glowPulse_6 1.8s linear infinite;
+      animation: glowPulse_6 6s linear infinite;
     }
 
     .badgeIcon {

@@ -40,6 +40,10 @@ export default function UploadZone({ onUploadComplete }) {
 
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
+    if (!title) {
+      const derived = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+      setTitle(derived);
+    }
   };
 
   const handleSubmit = async () => {

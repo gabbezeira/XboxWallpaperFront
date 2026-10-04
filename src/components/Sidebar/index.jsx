@@ -49,12 +49,12 @@ export default function Sidebar({ onLoginClick }) {
 
         {user ? (
           <NavLink to="/favorites" className={navClass}>
-            <Heart size={20} fill="currentColor" />
+            <Heart size={20} />
             Favoritos
           </NavLink>
         ) : (
           <button className={styles.navItem} onClick={onLoginClick}>
-            <Heart size={20} fill="currentColor" />
+            <Heart size={20} />
             Favoritos
           </button>
         )}

@@ -1,0 +1,178 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-lg;
+  padding: $spacing-2xl $spacing-xl;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: $color-text-secondary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+}
+
+.iconWrapper {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto $spacing-md;
+  border-radius: 50%;
+  background: rgba(0, 224, 0, 0.1);
+  color: $color-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .headerIcon {
+    fill: $color-primary;
+  }
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: $spacing-xs;
+  color: #fff;
+}
+
+.desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.qrArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-2xl;
+  padding: $spacing-xl;
+  background: #000000;
+  border-radius: $radius-lg;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.qrImage {
+  width: 180px;
+  height: 180px;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 8px;
+  object-fit: contain;
+}
+
+.qrHint {
+  font-size: 12px;
+  color: $color-text-muted;
+}
+
+.keyArea {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.keyLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: $color-text-secondary;
+}
+
+.keyBox {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+}
+
+.keyValue {
+  flex: 1;
+  font-family: monospace;
+  font-size: 13px;
+  color: $color-text-primary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyBtn {
+  background: transparent;
+  border: none;
+  color: $color-text-secondary;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: #ffffff;
+  }
+}
+
+.checkIcon {
+  color: $color-primary;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

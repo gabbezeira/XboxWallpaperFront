@@ -5,6 +5,7 @@ import VerifiedBadge from '../VerifiedBadge';
 import TierBadge from '../TierBadge';
 import UserAvatar from '../UserAvatar';
 import VerifyEmailBanner from '../VerifyEmailBanner';
+import SupportModal from '../SupportModal';
 import { useAuth } from '../../hooks/useAuth';
 import { logOut } from '../../services/auth';
 import { getUserLevel } from '../../config/tiers';
@@ -14,6 +15,7 @@ import styles from './styles.module.scss';
 export default function Sidebar({ onLoginClick }) {
   const { user, profile, loading } = useAuth();
   const [tagCopied, setTagCopied] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
 
   const navClass = ({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`;
 
@@ -144,17 +146,26 @@ export default function Sidebar({ onLoginClick }) {
           </button>
         )}
         <div className={styles.sidebarFooter}>
-          <Link to="/guide" className={styles.footerLink}>
-            Guia de Uso
-          </Link>
-          <Link to="/levels" className={styles.footerLink}>
-            Níveis &amp; Badges
-          </Link>
-          <Link to="/terms" className={styles.footerLink}>
-            Termos &amp; Privacidade
-          </Link>
+          <button className={styles.supportLinkBtn} onClick={() => setSupportOpen(true)}>
+            <Heart size={14} fill="currentColor" />
+            Apoiar Projeto
+          </button>
+          <div className={styles.footerLinksRow}>
+            <Link to="/guide" className={styles.footerLink}>
+              Guia
+            </Link>
+            <span>&bull;</span>
+            <Link to="/levels" className={styles.footerLink}>
+              Níveis
+            </Link>
+            <span>&bull;</span>
+            <Link to="/terms" className={styles.footerLink}>
+              Termos
+            </Link>
+          </div>
         </div>
       </div>
+      <SupportModal isOpen={supportOpen} onClose={() => setSupportOpen(false)} />
     </aside>
   );
 }

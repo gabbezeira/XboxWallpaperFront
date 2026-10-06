@@ -1,7 +1,6 @@
 import styles from './styles.module.scss';
 
 export default function PageHeader({
-  kicker,
   title,
   subtitle,
   action,
@@ -10,7 +9,6 @@ export default function PageHeader({
   return (
     <header className={`${styles.header} ${className}`}>
       <div className={styles.content}>
-        {kicker && <span className={styles.kicker}>{kicker}</span>}
         <h1 className={styles.title}>{title}</h1>
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       </div>

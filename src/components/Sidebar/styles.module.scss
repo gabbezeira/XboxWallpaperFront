@@ -6,7 +6,7 @@
   top: 0;
   flex: 0 0 $sidebar-width;
   height: 100vh;
-  background: $color-bg-secondary;
+  background: #000000;
   border-right: 1px solid rgba($color-text-primary, 0.05);
   display: flex;
   flex-direction: column;
@@ -317,11 +317,44 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
+}
+
+.supportLinkBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  font-weight: $fw-bold;
+  color: $color-primary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  svg {
+    fill: $color-primary;
+  }
+
+  &:hover {
+    background: rgba(0, 224, 0, 0.1);
+  }
+}
+
+.footerLinksRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: rgba($color-text-muted, 0.3);
 }
 
 .footerLink {
-  font-size: 11px;
+  font-size: 10px;
   color: $color-text-muted;
   text-decoration: none;
   transition: color $transition-fast;

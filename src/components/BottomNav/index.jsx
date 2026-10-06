@@ -14,12 +14,14 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import SupportModal from '../SupportModal';
 import styles from './styles.module.scss';
 
 export default function BottomNav({ onLoginClick }) {
   const { user, loading } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
   const menuRef = useRef(null);
 
   const isMoreActive = ['/guide', '/levels', '/terms', '/collections'].includes(location.pathname);
@@ -141,6 +143,24 @@ export default function BottomNav({ onLoginClick }) {
                 <span className={styles.menuLinkDesc}>Diretrizes e privacidade</span>
               </div>
             </NavLink>
+
+            <button
+              className={styles.menuLink}
+              onClick={() => {
+                setIsMenuOpen(false);
+                setSupportOpen(true);
+              }}
+              tabIndex={0}
+              style={{ width: '100%', textAlign: 'left', cursor: 'pointer' }}
+            >
+              <div className={styles.menuLinkIcon} style={{ color: '#00ab00', borderColor: 'rgba(0, 171, 0, 0.3)', backgroundColor: 'rgba(0, 171, 0, 0.1)' }}>
+                <Heart size={18} fill="currentColor" />
+              </div>
+              <div className={styles.menuLinkText}>
+                <span className={styles.menuLinkLabel} style={{ color: '#00ab00' }}>Apoiar Projeto</span>
+                <span className={styles.menuLinkDesc}>Ajude a manter os servidores ativos</span>
+              </div>
+            </button>
           </div>
         </div>
       )}
@@ -204,6 +224,8 @@ export default function BottomNav({ onLoginClick }) {
           <span>Mais</span>
         </button>
       </nav>
+
+      <SupportModal isOpen={supportOpen} onClose={() => setSupportOpen(false)} />
     </>
   );
 }
